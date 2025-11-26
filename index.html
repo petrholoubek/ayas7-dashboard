@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<title>AYAS-7 Dashboard – Layer 1</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+  body { font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif; background:#eef2f5; padding:20px; }
+  .box { background:#fff; padding:20px; border-radius:12px; box-shadow:0 4px 16px rgba(0,0,0,0.12); max-width:900px; margin:auto; }
+  .box-title { font-size:1.4em; font-weight:800; margin-bottom:10px; color:#003063; }
+  .token { display:inline-block; padding:6px 12px; border-radius:6px; color:#fff; margin-right:6px; font-size:0.9em; }
+  .usd { background:#1da84f; }
+  .gusd { background:#0066ff; }
+  canvas { background:#f9f9f9; border-radius:8px; margin-top:15px; }
+</style>
+</head>
+<body>
+
+<div class="box">
+  <div class="box-title">Layer 1 – Token Layer</div>
+  <div class="box-desc">Správa páru USDt.z/GUSD a sledování ceny likvidity.</div>
+  <div>
+    <span class="token usd">USDt.z</span>
+    <span class="token gusd">GUSD</span>
+  </div>
+  <canvas id="layer1Chart" height="150"></canvas>
+</div>
+
+<script>
+// ====== Data a graf ======
+const ctx = document.getElementById('layer1Chart').getContext('2d');
+
+const layer1Chart = new Chart(ctx, {
+  type: 'line',
+  data: {
+    labels: ['Týden 1','Týden 2','Týden 3','Týden 4','Týden 5'],
+    datasets: [
+      {
+        label: 'USDt.z',
+        data: [12000, 15000, 17000, 21000, 25000],
+        borderColor: '#1da84f',
+        backgroundColor: 'rgba(29,168,79,0.2)',
+        tension: 0.4,
+        fill: true
+      },
+      {
+        label: 'GUSD',
+        data: [8000, 9000, 12000, 14000, 16000],
+        borderColor: '#0066ff',
+        backgroundColor: 'rgba(0,102,255,0.2)',
+        tension: 0.4,
+        fill: true
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: { position: 'top' }
+    },
+    scales: {
+      y: { beginAtZero: true }
+    }
+  }
+});
+</script>
+
+</body>
+</html>
