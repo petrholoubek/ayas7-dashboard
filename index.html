@@ -5,29 +5,36 @@
 <title>AYAS-7 Dashboard</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
-  body { font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif; background:#eef2f5; margin:0; padding:20px; display:flex; justify-content:center; }
-  #dashboard-container { width:1200px; display:flex; flex-direction:column; gap:20px; }
-  #menu-box { background:#003063; color:#fff; padding:15px; border-radius:12px; display:flex; gap:10px; flex-wrap:wrap; }
-  #menu-box button { padding:8px 15px; font-weight:700; border:none; border-radius:6px; cursor:pointer; background:#0055a5; color:#fff; }
-  #columns { display:flex; gap:20px; }
-  .column { display:flex; flex-direction:column; gap:20px; width:50%; }
-  .box { background:#fff; padding:20px; border-radius:12px; box-shadow:0 4px 16px rgba(0,0,0,0.12); }
-  .box-title { font-size:1.3em; font-weight:800; margin-bottom:10px; display:flex; align-items:center; gap:10px; color:#003063; }
-  .box-desc { margin-bottom:15px; color:#444; }
-  .token { display:inline-block; padding:6px 12px; border-radius:6px; color:#fff; margin-right:6px; font-size:0.9em; }
-  .usd { background:#1da84f; }
-  .gusd { background:#0066ff; }
-  .ww { background:#d10000; }
-  canvas { background:#f9f9f9; border-radius:8px; margin-top:15px; }
-  input[type=number], input[type=text] { padding:5px; width:100px; margin-right:10px; }
-  button.action { padding:5px 10px; cursor:pointer; background:#0055a5; color:#fff; border:none; border-radius:6px; }
-  .member-entry { padding:6px 0; border-bottom:1px solid #ddd; }
+body { font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif; background:#eef2f5; margin:0; padding:20px; display:flex; justify-content:center; }
+#dashboard-container { width:1200px; display:flex; flex-direction:column; gap:15px; }
+/* Horní nadpis */
+#top-title { font-size:2em; font-weight:800; color:#003063; text-align:center; }
+/* Menu */
+#menu-box { background:#003063; color:#fff; padding:10px; border-radius:12px; display:flex; gap:10px; flex-wrap:wrap; justify-content:center; }
+#menu-box button { padding:8px 15px; font-weight:700; border:none; border-radius:6px; cursor:pointer; background:#0055a5; color:#fff; }
+/* Sloupce */
+#columns { display:flex; gap:20px; }
+.column { display:flex; flex-direction:column; gap:20px; width:50%; }
+.box { background:#fff; padding:20px; border-radius:12px; box-shadow:0 4px 16px rgba(0,0,0,0.12); }
+.box-title { font-size:1.3em; font-weight:800; margin-bottom:10px; display:flex; align-items:center; gap:10px; color:#003063; }
+.box-desc { margin-bottom:15px; color:#444; }
+.token { display:inline-block; padding:6px 12px; border-radius:6px; color:#fff; margin-right:6px; font-size:0.9em; }
+.usd { background:#1da84f; }
+.gusd { background:#0066ff; }
+.ww { background:#d10000; }
+canvas { background:#f9f9f9; border-radius:8px; margin-top:15px; }
+input[type=number], input[type=text] { padding:5px; width:100px; margin-right:10px; }
+button.action { padding:5px 10px; cursor:pointer; background:#0055a5; color:#fff; border:none; border-radius:6px; }
+.member-entry { padding:6px 0; border-bottom:1px solid #ddd; }
 </style>
 </head>
 <body>
 <div id="dashboard-container">
 
-  <!-- Menu box -->
+  <!-- Horní nadpis -->
+  <div id="top-title">AYAS-7 Engine – Nástěnka Win-Win</div>
+
+  <!-- Menu -->
   <div id="menu-box">
     <button onclick="alert('Token Management')">Token Management</button>
     <button onclick="alert('Liquidity Engine')">Liquidity Engine</button>
@@ -38,7 +45,7 @@
     <button onclick="alert('Dashboard & Analytics')">Dashboard & Analytics</button>
   </div>
 
-  <!-- Columns -->
+  <!-- Sloupce -->
   <div id="columns">
     <!-- Levý sloupec: motor -->
     <div class="column" id="motor-column"></div>
@@ -89,7 +96,7 @@ layers.forEach((layer,index)=>{
   });
 });
 
-// ====== Pravý sloupec: členská základna a simulovaný DEX ======
+// ====== Pravý sloupec: členská základna a simulovaný DEX/Forex ======
 const functionColumn = document.getElementById('function-column');
 const CURZ_KCZ_USD = 24.5;
 const MONTHLY_YIELD = 0.05;
@@ -99,71 +106,37 @@ let members = [
   {name:'Eva Svobodova', czk:10000, ww:408}
 ];
 
-// Login box
-const loginBox = document.createElement('div');
-loginBox.className='box';
-loginBox.innerHTML=`
-  <div class='box-title'>Login / Registrace člena</div>
-  <input type='text' id='member-name' placeholder='Jméno člena'>
-  <button class='action' onclick='addMemberForm()'>Přihlásit / Registrovat</button>
-`;
-functionColumn.appendChild(loginBox);
+// Boxy
+function addFunctionBox(title, innerHTML) {
+  const box = document.createElement('div');
+  box.className='box';
+  box.innerHTML=`<div class='box-title'>${title}</div>` + innerHTML;
+  functionColumn.appendChild(box);
+}
 
-// Declaration
-const declarationBox = document.createElement('div');
-declarationBox.className='box';
-declarationBox.innerHTML=`
-  <div class='box-title'>Prohlášení člena</div>
-  <label><input type='checkbox' id='member-agree' checked> Souhlasím s podmínkami systému AYAS-7</label>
-`;
-functionColumn.appendChild(declarationBox);
+// Login / registrace
+addFunctionBox('Login / Registrace člena', `<input type='text' id='member-name' placeholder='Jméno člena'>
+<button class='action' onclick='addMemberForm()'>Přihlásit / Registrovat</button>`);
+
+// Prohlášení
+addFunctionBox('Prohlášení člena', `<label><input type='checkbox' id='member-agree' checked> Souhlasím s podmínkami systému AYAS-7</label>`);
 
 // WW-KEY
-const wwBox = document.createElement('div');
-wwBox.className='box';
-wwBox.innerHTML=`
-  <div class='box-title'>Přidělení WW-KEY</div>
-  <label>Vklad (CZK): <input type='number' id='member-amount' value='15000'></label>
-  <button class='action' onclick='assignWWKey()'>Přidělit WW-KEY</button>
-  <div id='member-ww-display'></div>
-`;
-functionColumn.appendChild(wwBox);
+addFunctionBox('Přidělení WW-KEY', `<label>Vklad (CZK): <input type='number' id='member-amount' value='15000'></label>
+<button class='action' onclick='assignWWKey()'>Přidělit WW-KEY</button>
+<div id='member-ww-display'></div>`);
 
 // Členská základna
-const baseBox = document.createElement('div');
-baseBox.className='box';
-baseBox.innerHTML=`
-  <div class='box-title'>Členská základna</div>
-  <div id='member-list'></div>
-`;
-functionColumn.appendChild(baseBox);
+addFunctionBox('Členská základna', `<div id='member-list'></div>`);
 
 // Osobní měsíční výnos
-const yieldBox = document.createElement('div');
-yieldBox.className='box';
-yieldBox.innerHTML=`
-  <div class='box-title'>Osobní měsíční výnos</div>
-  <div id='member-yield'></div>
-`;
-functionColumn.appendChild(yieldBox);
+addFunctionBox('Osobní měsíční výnos', `<div id='member-yield'></div>`);
 
 // Celkový výnos motoru
-const totalYieldBox = document.createElement('div');
-totalYieldBox.className='box';
-totalYieldBox.innerHTML=`
-  <div class='box-title'>Celkový výnos motoru</div>
-  <div id='total-yield'></div>
-`;
-functionColumn.appendChild(totalYieldBox);
+addFunctionBox('Celkový výnos motoru', `<div id='total-yield'></div>`);
 
-// Simulovaný DEX / Objem
-const dexBox = document.createElement('div');
-dexBox.className='box';
-dexBox.innerHTML=`
-  <div class='box-title'>DEX / Simulovaný Forex</div>
-  <canvas id='volume-chart' height='120'></canvas>
-`;
-functionColumn.appendChild(dexBox);
+// Simulovaný DEX / kurz měn
+addFunctionBox('DEX / Simulovaný Forex', `<canvas id='volume-chart' height='120'></canvas>`);
 
 // ====== Funkce ======
 function addMemberForm(){
@@ -202,6 +175,7 @@ function renderYields(){
   document.getElementById('total-yield').innerText = `Celkový měsíční výnos motoru: ${totalYield} WW-KEY`;
 }
 
+// DEX / Forex graf
 new Chart(document.getElementById('volume-chart'),{
   type:'bar',
   data:{ labels:['T1','T2','T3','T4','T5'], datasets:[
