@@ -2,68 +2,194 @@
 <html lang="cs">
 <head>
 <meta charset="UTF-8">
-<title>AYAS-7 Dashboard – Layer 1</title>
+<title>AYAS-7 Super Dashboard</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
-  body { font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif; background:#eef2f5; padding:20px; }
-  .box { background:#fff; padding:20px; border-radius:12px; box-shadow:0 4px 16px rgba(0,0,0,0.12); max-width:900px; margin:auto; }
-  .box-title { font-size:1.4em; font-weight:800; margin-bottom:10px; color:#003063; }
+  body { font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif; background:#eef2f5; display:flex; justify-content:center; padding:40px 0; }
+  #dashboard { width:1200px; display:flex; gap:20px; }
+  .column { display:flex; flex-direction:column; gap:20px; width:50%; }
+  .box { background:#fff; padding:20px; border-radius:12px; box-shadow:0 4px 16px rgba(0,0,0,0.12); }
+  .box-title { font-size:1.4em; font-weight:800; margin-bottom:10px; color:#003063; display:flex; align-items:center; gap:10px; }
+  .box-desc { margin-bottom:15px; color:#444; }
   .token { display:inline-block; padding:6px 12px; border-radius:6px; color:#fff; margin-right:6px; font-size:0.9em; }
   .usd { background:#1da84f; }
   .gusd { background:#0066ff; }
+  .ww { background:#d10000; }
   canvas { background:#f9f9f9; border-radius:8px; margin-top:15px; }
+  input[type=number], input[type=text] { padding:5px; width:100px; margin-right:10px; }
+  button { padding:5px 10px; cursor:pointer; }
+  .member-entry { padding:6px 0; border-bottom:1px solid #ddd; }
 </style>
 </head>
 <body>
+<div id="dashboard">
 
-<div class="box">
-  <div class="box-title">Layer 1 – Token Layer</div>
-  <div class="box-desc">Správa páru USDt.z/GUSD a sledování ceny likvidity.</div>
-  <div>
-    <span class="token usd">USDt.z</span>
-    <span class="token gusd">GUSD</span>
-  </div>
-  <canvas id="layer1Chart" height="150"></canvas>
+  <!-- Levý sloupec: 7 vrstev motoru -->
+  <div class="column" id="motor-column"></div>
+
+  <!-- Pravý sloupec: členská základna -->
+  <div class="column" id="function-column"></div>
+
 </div>
 
 <script>
-// ====== Data a graf ======
-const ctx = document.getElementById('layer1Chart').getContext('2d');
+const layers = [
+  {name:"Layer 1 – Token Layer", desc:"Správa páru USDt.z/GUSD a sledování ceny likvidity.", img:"assets/1.png"},
+  {name:"Layer 2 – Liquidity Engine", desc:"Reálná data z DEX/BSC, hloubka poolů, objemy a stabilita.", img:"assets/2.png"},
+  {name:"Layer 3 – Yield Routing", desc:"Směrování výnosů, optimalizace a distribuce.", img:"assets/3.png"},
+  {name:"Layer 4 – Risk & Compliance", desc:"Kontrola volatility, bezpečnost a auditní stopa.", img:"assets/4.png"},
+  {name:"Layer 5 – FinTech Interaction", desc:"Interakce s uživateli, reporting a provozní vrstva.", img:"assets/5.png"},
+  {name:"Layer 6 – Core Engine", desc:"Výpočetní AYAS jádro – výkon podle likvidity a WW-KEY.", img:"assets/6.png"},
+  {name:"Layer 7 – Dashboard & Analytics", desc:"Kompletní vizualizace ekosystému.", img:"assets/7.png"}
+];
 
-const layer1Chart = new Chart(ctx, {
-  type: 'line',
-  data: {
-    labels: ['Týden 1','Týden 2','Týden 3','Týden 4','Týden 5'],
-    datasets: [
-      {
-        label: 'USDt.z',
-        data: [12000, 15000, 17000, 21000, 25000],
-        borderColor: '#1da84f',
-        backgroundColor: 'rgba(29,168,79,0.2)',
-        tension: 0.4,
-        fill: true
-      },
-      {
-        label: 'GUSD',
-        data: [8000, 9000, 12000, 14000, 16000],
-        borderColor: '#0066ff',
-        backgroundColor: 'rgba(0,102,255,0.2)',
-        tension: 0.4,
-        fill: true
-      }
-    ]
-  },
-  options: {
-    responsive: true,
-    plugins: {
-      legend: { position: 'top' }
+const motorColumn = document.getElementById('motor-column');
+
+layers.forEach((layer,index)=>{
+  const box = document.createElement('div');
+  box.className='box';
+  box.innerHTML=`
+    <div class='box-title'><img src='${layer.img}' width='50' alt='Layer ${index+1}'> ${layer.name}</div>
+    <div class='box-desc'>${layer.desc}</div>
+    <div>
+      <span class='token usd'>USDt.z</span>
+      <span class='token gusd'>GUSD</span>
+    </div>
+    <canvas id='motor-chart-${index}' height='100'></canvas>
+  `;
+  motorColumn.appendChild(box);
+
+  const ctx = document.getElementById(`motor-chart-${index}`).getContext('2d');
+  new Chart(ctx,{
+    type:'line',
+    data:{
+      labels:['T1','T2','T3','T4','T5'],
+      datasets:[
+        { label:'USDt.z', data:[12000+Math.random()*5000,15000+Math.random()*4000,17000+Math.random()*6000,21000+Math.random()*5000,25000+Math.random()*4000], borderColor:'#1da84f', backgroundColor:'rgba(29,168,79,0.2)', tension:0.4, fill:true },
+        { label:'GUSD', data:[8000+Math.random()*3000,9000+Math.random()*2000,12000+Math.random()*3000,14000+Math.random()*4000,16000+Math.random()*3000], borderColor:'#0066ff', backgroundColor:'rgba(0,102,255,0.2)', tension:0.4, fill:true }
+      ]
     },
-    scales: {
-      y: { beginAtZero: true }
-    }
-  }
+    options:{ responsive:true, plugins:{ legend:{ position:'top' } }, scales:{ y:{ beginAtZero:true } } }
+  });
 });
-</script>
 
+// ====== Pravá strana – členská základna ======
+const functionColumn = document.getElementById('function-column');
+const CURZ_KCZ_USD = 24.5;
+const MONTHLY_YIELD = 0.05;
+let members = [
+  {name:'Jan Novak', czk:15000, ww:615},
+  {name:'Petr Holoubek', czk:20000, ww:816},
+  {name:'Eva Svobodova', czk:10000, ww:408}
+];
+
+const loginBox = document.createElement('div');
+loginBox.className='box';
+loginBox.innerHTML=`
+  <div class='box-title'>Login / Registrace člena</div>
+  <input type='text' id='member-name' placeholder='Jméno člena'>
+  <button onclick='addMemberForm()'>Přihlásit / Registrovat</button>
+`;
+functionColumn.appendChild(loginBox);
+
+const declarationBox = document.createElement('div');
+declarationBox.className='box';
+declarationBox.innerHTML=`
+  <div class='box-title'>Prohlášení člena</div>
+  <label><input type='checkbox' id='member-agree' checked> Souhlasím s podmínkami systému AYAS-7</label>
+`;
+functionColumn.appendChild(declarationBox);
+
+const wwBox = document.createElement('div');
+wwBox.className='box';
+wwBox.innerHTML=`
+  <div class='box-title'>Přidělení WW-KEY</div>
+  <label>Vklad (CZK): <input type='number' id='member-amount' value='15000'></label>
+  <button onclick='assignWWKey()'>Přidělit WW-KEY</button>
+  <div id='member-ww-display'></div>
+`;
+functionColumn.appendChild(wwBox);
+
+const baseBox = document.createElement('div');
+baseBox.className='box';
+baseBox.innerHTML=`
+  <div class='box-title'>Členská základna</div>
+  <div id='member-list'></div>
+`;
+functionColumn.appendChild(baseBox);
+
+const yieldBox = document.createElement('div');
+yieldBox.className='box';
+yieldBox.innerHTML=`
+  <div class='box-title'>Osobní měsíční výnos</div>
+  <div id='member-yield'></div>
+`;
+functionColumn.appendChild(yieldBox);
+
+const totalYieldBox = document.createElement('div');
+totalYieldBox.className='box';
+totalYieldBox.innerHTML=`
+  <div class='box-title'>Celkový výnos motoru</div>
+  <div id='total-yield'></div>
+`;
+functionColumn.appendChild(totalYieldBox);
+
+const volumeBox = document.createElement('div');
+volumeBox.className='box';
+volumeBox.innerHTML=`
+  <div class='box-title'>Objem USDT.Z a Vynosu</div>
+  <canvas id='volume-chart' height='120'></canvas>
+`;
+functionColumn.appendChild(volumeBox);
+
+// ====== Funkce ======
+function addMemberForm(){
+  const name = document.getElementById('member-name').value;
+  if(name){
+    members.push({name, czk:0, ww:0});
+    renderMembers();
+    renderYields();
+  }
+}
+
+function assignWWKey(){
+  const amountCZK = Number(document.getElementById('member-amount').value);
+  const usd = amountCZK / CURZ_KCZ_USD;
+  const ww = Math.round(usd);
+  if(members.length>0){
+    members[members.length-1].czk = amountCZK;
+    members[members.length-1].ww = ww;
+    document.getElementById('member-ww-display').innerText=`Přiděleno WW-KEY: ${ww}`;
+    renderMembers();
+    renderYields();
+  }
+}
+
+function renderMembers(){
+  document.getElementById('member-list').innerHTML = members.map(m=>`<div class='member-entry'>${m.name}: ${m.czk} CZK → ${m.ww} WW-KEY</div>`).join('');
+}
+
+function renderYields(){
+  document.getElementById('member-yield').innerHTML = members.map(m=>{
+    const yieldAmount = Math.round(m.ww*MONTHLY_YIELD);
+    return `${m.name}: ${yieldAmount} WW-KEY (${(MONTHLY_YIELD*100).toFixed(1)}%)`;
+  }).join('<br>');
+
+  const totalYield = members.reduce((sum,m)=>sum + Math.round(m.ww*MONTHLY_YIELD),0);
+  document.getElementById('total-yield').innerText = `Celkový měsíční výnos motoru: ${totalYield} WW-KEY`;
+}
+
+new Chart(document.getElementById('volume-chart'),{
+  type:'bar',
+  data:{ labels:['T1','T2','T3','T4','T5'], datasets:[
+    { label:'Objem USDT.Z', data:[12000,15000,17000,21000,25000], backgroundColor:'#1da84f' },
+    { label:'Výnos WW-KEY', data:[600,800,950,1100,1300], backgroundColor:'#d10000' }
+  ]},
+  options:{ responsive:true, plugins:{ legend:{ position:'top' } }, scales:{ y:{ beginAtZero:true } } }
+});
+
+renderMembers();
+renderYields();
+</script>
 </body>
 </html>
