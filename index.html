@@ -88,212 +88,122 @@
 </nav>
 <!-- Konec menu -->
 
-<!-- Pravá strana dashboardu -->
-<div class="right-container">
 
-  <!-- 1. Přidání člena -->
-  <div class="box" id="member-box">
-    <h3>Přidat nového člena</h3>
-    <form id="member-form">
-      <label>Jméno: <input type="text" id="member-name" required></label><br>
-      <label>Email: <input type="email" id="member-email" required></label><br>
-      <label>Telefon: <input type="text" id="member-phone" required></label><br>
-      <label>Způsob platby:
-        <select id="payment-method">
-          <option value="fiat">Fiat (CZK / EUR)</option>
-          <option value="bnb">BNB</option>
-          <option value="usdt">USDT</option>
-          <option value="trx">TRX</option>
-        </select>
-      </label><br>
-      <button type="submit">Přidat člena</button>
-    </form>
-    <div id="member-result"></div>
-  </div>
+<div class="left-container">
 
-  <!-- 2. Platba -->
-  <div class="box" id="payment-box">
-    <h3>Platba</h3>
-    <p>Možnost platby: Fiat nebo Krypto. Odkažte na Metamask nebo swap platformu.</p>
-    <button onclick="window.open('https://www.pancakeswap.finance/', '_blank')">Swap / Metamask</button>
-  </div>
+ 
+ <div class="layer-box" data-layer="1" style="border-left:5px solid #ff0000;">
+   <h3>Vrstva 1: Generátor likvidity</h3>
+   <p>Generuje základní likviditu pro USDT.z pool.</p>
+   <p>USDt.z: <span class="rate-usdtz">0</span> | GUSD: <span class="rate-gusd">0</span></p>
+   <canvas class="layer-chart" height="80"></canvas>
+ </div>
 
-  <!-- 3. Aktuální kurz -->
-  <div class="box" id="rates-box">
-    <h3>Aktuální kurzy</h3>
-    <p>USDt.z: <span id="rate-usdtz">0</span></p>
-    <p>USDC: <span id="rate-usdc">0</span></p>
-    <p>BNB: <span id="rate-bnb">0</span></p>
-  </div>
+ <div class="layer-box" data-layer="2" style="border-left:5px solid #00ff00;">
+   <h3>Vrstva 2: Distribuce zisku</h3>
+   <p>Distribuuje zisky mezi členy dle WW-key.</p>
+   <p>USDt.z: <span class="rate-usdtz">0</span> | GUSD: <span class="rate-gusd">0</span></p>
+   <canvas class="layer-chart" height="80"></canvas>
+ </div>
 
-  <!-- 4. Výnos družstva -->
-  <div class="box" id="yield-box">
-    <h3>Výnos družstva</h3>
-    <canvas id="yield-chart" height="150"></canvas>
-  </div>
+ <div class="layer-box" data-layer="3" style="border-left:5px solid #0000ff;">
+   <h3>Vrstva 3: Reinvestiční modul</h3>
+   <p>Automaticky reinvestuje část zisku pro růst kapitálu.</p>
+   <p>USDt.z: <span class="rate-usdtz">0</span> | GUSD: <span class="rate-gusd">0</span></p>
+   <canvas class="layer-chart" height="80"></canvas>
+ </div>
 
-  <!-- 5. Denní audit / report -->
-  <div class="box" id="audit-box">
-    <h3>Denní audit</h3>
-    <div id="audit-report">Načítání...</div>
-    <button onclick="exportAuditCSV()">Export CSV</button>
-  </div>
+ <div class="layer-box" data-layer="4" style="border-left:5px solid #ff00ff;">
+   <h3>Vrstva 4: Rezervní fond</h3>
+   <p>Spravuje rezervní kapitál pro nepředvídané situace.</p>
+   <p>USDt.z: <span class="rate-usdtz">0</span> | GUSD: <span class="rate-gusd">0</span></p>
+   <canvas class="layer-chart" height="80"></canvas>
+ </div>
 
-  <!-- 6. Token info -->
-  <div class="box" id="token-info-box">
-    <h3>Token info</h3>
-    <p>Token: USDt.z</p>
-    <p>Celková zásoba: <span id="total-supply">0</span></p>
-    <p>Další info: <a href="#" target="_blank">Link</a></p>
-  </div>
+ <div class="layer-box" data-layer="5" style="border-left:5px solid #00ffff;">
+   <h3>Vrstva 5: Podpora členů</h3>
+   <p>Zajišťuje bonusy a odměny pro aktivní členy.</p>
+   <p>USDt.z: <span class="rate-usdtz">0</span> | GUSD: <span class="rate-gusd">0</span></p>
+   <canvas class="layer-chart" height="80"></canvas>
+ </div>
 
-  <!-- 7. Živý DEX -->
-  <div class="box" id="dex-box">
-    <h3>Živý DEX</h3>
-    <p>USDt.z pool: <span id="dex-usdtz">0</span></p>
-    <p>GUSD pool: <span id="dex-gusd">0</span></p>
-  </div>
+ <div class="layer-box" data-layer="6" style="border-left:5px solid #ffa500;">
+   <h3>Vrstva 6: Token info & komunikace</h3>
+   <p>Zobrazuje tokenové informace a rychlé odkazy pro členy.</p>
+   <p>USDt.z: <span class="rate-usdtz">0</span> | GUSD: <span class="rate-gusd">0</span></p>
+   <canvas class="layer-chart" height="80"></canvas>
+ </div>
+
+ <div class="layer-box" data-layer="7" style="border-left:5px solid #800080;">
+   <h3>Vrstva 7: Analytika a reporty</h3>
+   <p>Zobrazuje denní reporty a přehled výkonu motoru AYAS-7.</p>
+   <p>USDt.z: <span class="rate-usdtz">0</span> | GUSD: <span class="rate-gusd">0</span></p>
+   <canvas class="layer-chart" height="80"></canvas>
+ </div>
 
 </div>
 
 <style>
-.right-container {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  max-width: 600px;
-  margin: 20px auto;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+.left-container {
+ display: flex;
+ flex-direction: column;
+ gap: 15px;
+ max-width: 600px;
+ margin: 20px auto;
+ font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-.box {
-  background: #fff;
-  padding: 15px;
-  border-radius: 8px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+.layer-box {
+ background: #fff;
+ padding: 15px;
+ border-radius: 8px;
+ box-shadow: 0 2px 6px rgba(0,0,0,0.1);
 }
 
-.box h3 {
-  margin-top: 0;
-}
-
-input, select {
-  width: 100%;
-  margin-bottom: 10px;
-  padding: 5px;
-}
-
-button {
-  background: #003063;
-  color: white;
-  padding: 5px 10px;
-  border-radius: 5px;
-  border: none;
-  cursor: pointer;
-}
-
-button:hover {
-  background: #0055a5;
+.layer-box h3 {
+ margin-top: 0;
 }
 </style>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js/dist/supabase.min.js"></script>
+
 <script>
-const supabaseUrl = 'https://hurayrwshmsvsylhwlbj.supabase.co';
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh1cmF5cndzaG1zdnN5bGh3bGJqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQyMTk4MzEsImV4cCI6MjA3OTc5NTgzMX0.Q0KpZX_Dln9_9OwZcCty-bbyw8drX84ax098Uy03VUI';
-const supabase = supabase.createClient(supabaseUrl, supabaseKey);
-
-// 1. Přidání člena
-document.getElementById('member-form').addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const name = document.getElementById('member-name').value;
-  const email = document.getElementById('member-email').value;
-  const phone = document.getElementById('member-phone').value;
-  const payment = document.getElementById('payment-method').value;
-
-  const usdtAmount = Math.round(600); // přepočet za 15K CZK
-  const { data, error } = await supabase
-    .from('members_data')
-    .insert([{ name, email, phone, payment_method: payment, ww_key: usdtAmount, paid: true }]);
-
-  if (error) {
-    document.getElementById('member-result').innerText = 'Chyba: ' + error.message;
-  } else {
-    document.getElementById('member-result').innerText = 'Člen přidán, WW-key: ' + usdtAmount;
-    updateYieldChart();
-    updateAuditReport();
-  }
+// Inicializace grafů pro vrstvy
+const layerCharts = [];
+document.querySelectorAll('.layer-box').forEach((box, i)=>{
+ const ctx = box.querySelector('.layer-chart').getContext('2d');
+ const chart = new Chart(ctx, {
+   type: 'bar',
+   data: {
+     labels: ['Výkon'],
+     datasets: [{
+       label: 'Výkon %',
+       data: [Math.random()*5+1], // startovní náhodná data
+       backgroundColor: box.style.borderLeftColor
+     }]
+   },
+   options: { responsive:true, plugins:{legend:{display:false}}, scales:{y:{beginAtZero:true, max:10}} }
+ });
+ layerCharts.push(chart);
 });
 
-// 4. Výnos družstva
-const yieldCtx = document.getElementById('yield-chart').getContext('2d');
-const yieldChart = new Chart(yieldCtx, {
-  type: 'bar',
-  data: {
-    labels: ['Družstvo'],
-    datasets: [{ label: 'Výnos %', data: [0], backgroundColor: 'green' }]
-  },
-  options: { responsive:true, plugins:{legend:{display:false}}, scales:{y:{beginAtZero:true, max:10}} }
-});
-
-async function updateYieldChart() {
-  const { data } = await supabase.from('members_data').select('ww_key');
-  const total = data.reduce((sum,row)=>sum+row.ww_key,0);
-  yieldChart.data.datasets[0].data = [total/1000]; // příklad %
-  yieldChart.update();
+// Aktualizace každých 10 sekund
+async function updateLayerRates() {
+ try {
+   const resUSDT = await axios.get('https://api.coingecko.com/api/v3/simple/price?ids=tether&vs_currencies=usd');
+   const resGUSD = await axios.get('https://api.coingecko.com/api/v3/simple/price?ids=gemini-dollar&vs_currencies=usd');
+   document.querySelectorAll('.layer-box').forEach(box=>{
+     box.querySelector('.rate-usdtz').innerText = resUSDT.data.tether.usd;
+     box.querySelector('.rate-gusd').innerText = resGUSD.data['gemini-dollar'].usd;
+     // Graf vrstvy: náhodné simulace výkonu pro ukázku
+     const chart = layerCharts[parseInt(box.dataset.layer)-1];
+     chart.data.datasets[0].data = [Math.random()*5+1];
+     chart.update();
+   });
+ } catch(e){ console.error(e); }
 }
 
-// 5. Denní audit / report
-async function updateAuditReport() {
-  const { data } = await supabase.from('members_data').select('name, email, ww_key');
-  let html = '<table><tr><th>Jméno</th><th>Email</th><th>WW-key</th></tr>';
-  data.forEach(row=>{
-    html += `<tr><td>${row.name}</td><td>${row.email}</td><td>${row.ww_key}</td></tr>`;
-  });
-  html += '</table>';
-  document.getElementById('audit-report').innerHTML = html;
-}
-function exportAuditCSV() {
-  const table = document.querySelector('#audit-report table');
-  let csv = '';
-  for(let row of table.rows){
-    let cells = Array.from(row.cells).map(c=>c.innerText).join(',');
-    csv += cells + '\n';
-  }
-  const blob = new Blob([csv], {type:'text/csv'});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url; a.download='audit.csv'; a.click();
-}
-
-// 3. Aktuální kurzy
-async function updateRates() {
-  try {
-    const res = await axios.get('https://api.coingecko.com/api/v3/simple/price?ids=tether,usd-coin,binancecoin&vs_currencies=usd');
-    document.getElementById('rate-usdtz').innerText = res.data.tether.usd;
-    document.getElementById('rate-usdc').innerText = res.data['usd-coin'].usd;
-    document.getElementById('rate-bnb').innerText = res.data.binancecoin.usd;
-  } catch(e){ console.error(e); }
-}
-
-// 7. Živý DEX (příklad z GeckoTerminal API)
-async function updateDex() {
-  try {
-    const resUsdt = await axios.get('https://api.coingecko.com/api/v3/simple/price?ids=tether&vs_currencies=usd');
-    const resGusd = await axios.get('https://api.coingecko.com/api/v3/simple/price?ids=gemini-dollar&vs_currencies=usd');
-    document.getElementById('dex-usdtz').innerText = resUsdt.data.tether.usd;
-    document.getElementById('dex-gusd').innerText = resGusd.data['gemini-dollar'].usd;
-  } catch(e){ console.error(e); }
-}
-
-// 6. Token info
-async function updateTokenInfo() {
-  document.getElementById('total-supply').innerText = '1000000'; // příklad
-}
-
-// Aktualizace každých 10s
-setInterval(()=>{ updateRates(); updateDex(); updateYieldChart(); updateAuditReport(); updateTokenInfo(); }, 10000);
-updateRates(); updateDex(); updateYieldChart(); updateAuditReport(); updateTokenInfo();
+setInterval(updateLayerRates, 10000);
+updateLayerRates();
 </script>
