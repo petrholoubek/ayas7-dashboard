@@ -2,99 +2,115 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>AYAS-7 Engine Dashboard</title>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<title>AYAS-7 Member Dashboard</title>
 <style>
-  body { font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif; background:#eef2f5; margin:0; padding:0; }
-  header { background:#003063; color:#fff; padding:15px 20px; display:flex; align-items:center; justify-content:space-between; }
-  header h1 { margin:0; font-size:1.8em; }
-  nav a { color:#fff; margin-left:20px; text-decoration:none; font-weight:600; }
-  nav a:hover { text-decoration:underline; }
-  #dashboard { width:1200px; display:flex; gap:20px; margin:20px auto; }
-  .column { display:flex; flex-direction:column; gap:20px; width:50%; }
-  .box { background:#fff; padding:20px; border-radius:12px; box-shadow:0 4px 16px rgba(0,0,0,0.12); }
-  .box-title { font-size:1.4em; font-weight:800; margin-bottom:10px; color:#003063; display:flex; align-items:center; gap:10px; }
-  .box-desc { margin-bottom:15px; color:#444; }
-  canvas { background:#f9f9f9; border-radius:8px; margin-top:15px; }
+  body { font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif; background:#eef2f5; margin:0; padding:20px; }
+  h1 { color:#003063; }
+  table { width:100%; border-collapse:collapse; margin-top:20px; }
+  th, td { border:1px solid #ccc; padding:8px; text-align:left; }
+  th { background:#003063; color:#fff; position:sticky; top:0; }
+  tr:nth-child(even) { background:#f9f9f9; }
+  input[type=text], input[type=number] { padding:5px; margin-right:10px; }
+  button { padding:5px 10px; margin:2px; cursor:pointer; }
 </style>
 </head>
 <body>
 
-<header>
-  <h1>AYAS-7 Engine</h1>
-  <nav>
-    <a href="index.html">Dashboard</a>
-    <a href="member-dashboard.html">Members</a>
-    <a href="https://winwin.coop/#ww-onb" target="_blank">Win-Win</a>
-    <a href="#layer1">Token Layer</a>
-    <a href="#layer2">Liquidity Engine</a>
-    <a href="#layer3">Yield Routing</a>
-    <a href="#layer4">Risk & Compliance</a>
-    <a href="#layer5">FinTech Interaction</a>
-    <a href="#layer6">Core Engine</a>
-    <a href="#layer7">Analytics</a>
-  </nav>
-</header>
+<h1>AYAS-7 Member Dashboard</h1>
 
-<div id="dashboard">
-  <!-- Levý sloupec: 7 vrstev motoru -->
-  <div class="column" id="motor-column"></div>
+<!-- Přidání člena -->
+<div>
+  <input type="text" id="newMemberName" placeholder="Member Name">
+  <input type="number" id="newMemberDeposit" placeholder="Deposit CZK">
+  <button onclick="addMember()">Add Member</button>
+</div>
 
-  <!-- Pravý sloupec: boxy s daty a dex/forex -->
-  <div class="column" id="function-column"></div>
+<!-- Filtr -->
+<div style="margin-top:10px;">
+  <input type="text" id="searchName" placeholder="Search by Name" oninput="filterMembers()">
+</div>
+
+<!-- Tabulka členů -->
+<table id="memberTable">
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Name</th>
+      <th>Deposit (CZK)</th>
+      <th>WW-KEY</th>
+      <th>Monthly Yield (WW-KEY)</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
+
+<!-- Export tlačítka -->
+<div style="margin-top:20px;">
+  <button onclick="exportCSV()">Export CSV</button>
 </div>
 
 <script>
-// ====== Levý sloupec: vrstvy ======
-const layers = [
-  {id:'layer1', name:"Token Layer", desc:"Správa páru USDt.z/GUSD a sledování ceny likvidity.", img:"assets/1.png"},
-  {id:'layer2', name:"Liquidity Engine", desc:"Reálná data z DEX/BSC, hloubka poolů, objemy a stabilita.", img:"assets/2.png"},
-  {id:'layer3', name:"Yield Routing", desc:"Směrování výnosů, optimalizace a distribuce.", img:"assets/3.png"},
-  {id:'layer4', name:"Risk & Compliance", desc:"Kontrola volatility, bezpečnost a auditní stopa.", img:"assets/4.png"},
-  {id:'layer5', name:"FinTech Interaction", desc:"Interakce s uživateli, reporting a provozní vrstva.", img:"assets/5.png"},
-  {id:'layer6', name:"Core Engine", desc:"Výpočetní AYAS jádro – výkon podle likvidity a WW-KEY.", img:"assets/6.png"},
-  {id:'layer7', name:"Dashboard & Analytics", desc:"Kompletní vizualizace ekosystému.", img:"assets/7.png"}
-];
+const CURZ_KCZ_USD = 24.5;
+const MONTHLY_YIELD = 0.05;
+let members = [];
 
-const motorColumn = document.getElementById('motor-column');
-
-layers.forEach((layer,index)=>{
-  const box = document.createElement('div');
-  box.className='box';
-  box.id = layer.id;
-  box.innerHTML=`
-    <div class='box-title'><img src='${layer.img}' width='50' alt='Layer ${index+1}'> ${layer.name}</div>
-    <div class='box-desc'>${layer.desc}</div>
-    <canvas id='motor-chart-${index}' height='100'></canvas>
-  `;
-  motorColumn.appendChild(box);
-
-  const ctx = document.getElementById(`motor-chart-${index}`).getContext('2d');
-  new Chart(ctx,{
-    type:'line',
-    data:{
-      labels:['T1','T2','T3','T4','T5'],
-      datasets:[
-        { label:'USDt.z', data:[12000+Math.random()*5000,15000+Math.random()*4000,17000+Math.random()*6000,21000+Math.random()*5000,25000+Math.random()*4000], borderColor:'#1da84f', backgroundColor:'rgba(29,168,79,0.2)', tension:0.4, fill:true },
-        { label:'GUSD', data:[8000+Math.random()*3000,9000+Math.random()*2000,12000+Math.random()*3000,14000+Math.random()*4000,16000+Math.random()*3000], borderColor:'#0066ff', backgroundColor:'rgba(0,102,255,0.2)', tension:0.4, fill:true }
-      ]
-    },
-    options:{ responsive:true, plugins:{ legend:{ position:'top' } }, scales:{ y:{ beginAtZero:true } } }
-  });
-});
-
-// ====== Pravá strana: boxy (dex, kurzy, členové atd.) ======
-const functionColumn = document.getElementById('function-column');
-
-// zde budeme doplňovat živá data, kurzy, DEX a odkazy na smart kontrakty
-// zatím můžeme připravit prázdné boxy pro budoucí naplnění
-
-for(let i=0;i<6;i++){
-  const box = document.createElement('div');
-  box.className='box';
-  box.innerHTML=`<div class='box-title'>Box ${i+1}</div><div class='box-desc'>Data will be here...</div>`;
-  functionColumn.appendChild(box);
+// Funkce pro přidání člena
+function addMember() {
+  const name = document.getElementById('newMemberName').value.trim();
+  const deposit = Number(document.getElementById('newMemberDeposit').value);
+  if(!name || deposit <= 0) { alert('Enter valid name and deposit'); return; }
+  const ww = Math.round(deposit / CURZ_KCZ_USD);
+  members.push({name, deposit, ww});
+  document.getElementById('newMemberName').value = '';
+  document.getElementById('newMemberDeposit').value = '';
+  renderMembers();
 }
+
+// Render členů do tabulky
+function renderMembers(filteredList) {
+  const list = filteredList || members;
+  const tbody = document.getElementById('memberTable').querySelector('tbody');
+  tbody.innerHTML = '';
+  list.forEach((m, idx) => {
+    const yieldAmount = Math.round(m.ww * MONTHLY_YIELD);
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${idx+1}</td>
+                    <td>${m.name}</td>
+                    <td>${m.deposit}</td>
+                    <td>${m.ww}</td>
+                    <td>${yieldAmount}</td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+// Filtr podle jména
+function filterMembers() {
+  const query = document.getElementById('searchName').value.toLowerCase();
+  const filtered = members.filter(m => m.name.toLowerCase().includes(query));
+  renderMembers(filtered);
+}
+
+// Export do CSV
+function exportCSV() {
+  let csv = 'Index,Name,Deposit CZK,WW-KEY,Monthly Yield WW-KEY\n';
+  members.forEach((m, idx) => {
+    const yieldAmount = Math.round(m.ww * MONTHLY_YIELD);
+    csv += `${idx+1},${m.name},${m.deposit},${m.ww},${yieldAmount}\n`;
+  });
+  const blob = new Blob([csv], {type:'text/csv'});
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = 'ayas7_members.csv';
+  link.click();
+}
+
+// Předvyplnění pro test (volitelné)
+members = [
+  {name:'Jan Novak', deposit:15000, ww:615},
+  {name:'Petr Holoubek', deposit:20000, ww:816},
+  {name:'Eva Svobodova', deposit:10000, ww:408}
+];
+renderMembers();
 </script>
 
 </body>
