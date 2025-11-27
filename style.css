@@ -1,0 +1,154 @@
+/* --- Základní nastavení stránky --- */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #eef2f5;
+  margin: 0;
+  padding: 0;
+}
+
+/* --- Modrá lišta nahoře (AYAS-7 Engine + Win-Win) --- */
+.top-bar {
+  background-color: #003063;
+  color: #fff;
+  text-align: center;
+  padding: 15px 0;
+  font-size: 1.8em;
+  font-weight: bold;
+}
+
+.top-bar a {
+  color: #00ffff;  /* Win-Win odkaz */
+  text-decoration: none;
+  margin-left: 20px;
+  font-size: 1em;
+}
+
+.top-bar a:hover {
+  text-decoration: underline;
+}
+
+/* --- Menu --- */
+.nav-menu {
+  background-color: #0050a0;
+  text-align: center;
+  padding: 10px 0;
+}
+
+.nav-menu ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-width: 1200px;
+  display: inline-flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.nav-menu li {
+  display: inline-block;
+}
+
+.nav-menu a {
+  text-decoration: none;
+  color: #fff;
+  font-weight: bold;
+  padding: 8px 12px;
+  transition: all 0.3s;
+}
+
+.nav-menu a:hover {
+  background-color: #0073e6;
+  border-radius: 6px;
+}
+
+/* --- Dashboard container --- */
+#dashboard {
+  max-width: 1200px;
+  margin: 30px auto;
+  display: flex;
+  gap: 20px;
+}
+
+/* --- Sloupce --- */
+.column {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  flex: 1;
+}
+
+/* --- Boxy --- */
+.box {
+  background: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+}
+
+.box-title {
+  font-size: 1.4em;
+  font-weight: 800;
+  margin-bottom: 10px;
+  color: #003063;
+}
+
+.box-desc {
+  margin-bottom: 15px;
+  color: #444;
+}
+
+.token {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 6px;
+  color: #fff;
+  margin-right: 6px;
+  font-size: 0.9em;
+}
+
+.usd { background:#1da84f; }
+.gusd { background:#0066ff; }
+.ww { background:#d10000; }
+
+canvas {
+  background: #f9f9f9;
+  border-radius: 8px;
+  margin-top: 15px;
+}
+
+/* --- Formuláře --- */
+input[type=number], input[type=text] {
+  padding:5px;
+  width:100px;
+  margin-right:10px;
+}
+
+button {
+  padding:5px 10px;
+  cursor:pointer;
+  border: none;
+  border-radius: 6px;
+  background-color: #0050a0;
+  color: #fff;
+  transition: all 0.3s;
+}
+
+button:hover {
+  background-color: #0073e6;
+}
+
+/* --- Členská databáze --- */
+.member-entry {
+  padding: 6px 0;
+  border-bottom: 1px solid #ddd;
+}
+
+/* --- Footer --- */
+footer {
+  text-align: center;
+  padding: 15px 0;
+  color: #666;
+  font-size: 0.9em;
+  margin-top: 40px;
+}
