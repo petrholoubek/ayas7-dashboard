@@ -88,45 +88,196 @@
 </nav>
 <!-- Konec menu -->
 
-<div class="row">
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<title>AYAS-7 Dashboard - Test Layer</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f4f4f4;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+  }
 
-  <!-- Levý box -->
-  <div class="left-box">
-    <img src="https://raw.githubusercontent.com/petrholoubek/ayas7-dashboard/main/assets/1.png" alt="Layer 1" style="width:40px; height:40px;">
-    <div class="layer-title">Layer 1: Token Layer</div>
-    <div class="layer-desc">Správa tokenů USDt.z a GUSD</div>
+  #main-container {
+    max-width: 1200px;
+    width: 100%;
+    margin: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+  }
 
-    <div class="token-box">
-      <div class="token usd">USDT.z: <span id="usd-1">0</span></div>
-      <div class="token gusd">GUSD: <span id="gusd-1">0</span></div>
+  .row {
+    display: flex;
+    gap: 20px;
+    width: 100%;
+    justify-content: center;
+  }
+
+  .left-box, .right-box {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+    padding: 20px;
+    flex: 1;
+    max-width: 550px;
+    min-width: 300px;
+  }
+
+  .layer-title {
+    font-weight: bold;
+    font-size: 1.3em;
+    margin-bottom: 10px;
+  }
+
+  .token-box {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+  }
+
+  .token {
+    flex: 1;
+    text-align: center;
+    padding: 8px;
+    border-radius: 5px;
+    color: #fff;
+    font-weight: bold;
+  }
+
+  .usd { background: #1da84f; }
+  .gusd { background: #007bff; }
+
+  canvas { background: #f9f9f9; border-radius: 5px; margin-top: 10px; }
+
+  /* Pravý formulář */
+  .right-box form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .right-box input[type="text"],
+  .right-box input[type="email"],
+  .right-box input[type="tel"],
+  .right-box input[type="number"] {
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    width: 100%;
+  }
+
+  .right-box label {
+    font-weight: bold;
+  }
+
+  .right-box button {
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    background: #003063;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+  }
+
+</style>
+</head>
+<body>
+
+<div id="main-container">
+  <div class="row">
+    <!-- Levý box - Motor -->
+    <div class="left-box">
+      <div class="layer-title">Layer 1: Motor AYAS-7</div>
+      <div class="token-box">
+        <div class="token usd">USDT.z: <span id="usd">600</span></div>
+        <div class="token gusd">GUSD: <span id="gusd">7500</span></div>
+      </div>
+      <canvas id="lineChart" height="150"></canvas>
+      <canvas id="barChart" height="150"></canvas>
     </div>
 
-    <canvas id="line-1" height="80"></canvas>
-  </div>
+    <!-- Pravý box - Formulář člena -->
+    <div class="right-box">
+      <div class="layer-title">Přidat nového člena</div>
+      <form id="memberForm">
+        <label for="name">Jméno a příjmení:</label>
+        <input type="text" id="name" placeholder="Petr Holoubek" required>
 
-  <!-- Pravý box -->
-  <div class="right-box">
-    <h4>Přidat člena</h4>
-    <label>Jméno: <input type="text" id="name-1"></label><br>
-    <label>Email: <input type="email" id="email-1"></label><br>
-    <label>Telefon: <input type="text" id="phone-1"></label><br>
-    <label>Vklad (CZK): <input type="number" id="member-1" value="15000"></label><br>
-    <button onclick="addMember(1)">Přidat člena</button>
-    <div>WW-KEY: <span id="ww-1">0</span></div>
-    <div>Aktuální kurz USDT.z: <span id="rate-1">0</span></div>
-  </div>
+        <label for="email">Email:</label>
+        <input type="email" id="email" placeholder="petr@example.com" required>
 
+        <label for="phone">Telefon:</label>
+        <input type="tel" id="phone" placeholder="123456789" required>
+
+        <label for="deposit">Vklad (CZK):</label>
+        <input type="number" id="deposit" value="15000" required>
+
+        <label>
+          <input type="checkbox" id="terms" required> Souhlasím s podmínkami Win-Win
+        </label>
+
+        <button type="submit">Přidat člena</button>
+      </form>
+    </div>
+  </div>
 </div>
 
 <script>
-function addMember(id){
-  const vklad = Number(document.getElementById(`member-${id}`).value);
-  const usd = Math.round(vklad / 25); // příklad kurzu 25 CZK/USD -> 15k CZK = 600 USDT.z
-  const ww = usd;
-  document.getElementById(`usd-${id}`).innerText = usd;
-  document.getElementById(`ww-${id}`).innerText = ww;
+  // Inicializace grafů
+  const lineCtx = document.getElementById('lineChart').getContext('2d');
+  const lineChart = new Chart(lineCtx, {
+    type: 'line',
+    data: {
+      labels: ['Týden 1', 'Týden 2', 'Týden 3', 'Týden 4'],
+      datasets: [{
+        label: 'Výkon motoru',
+        data: [600, 610, 595, 620], // příklad generovaných hodnot
+        borderColor: 'orange',
+        backgroundColor: 'rgba(255,165,0,0.2)',
+        tension: 0.3,
+        fill: true
+      }]
+    },
+    options: { responsive: true, plugins:{legend:{display:true}}, scales:{y:{beginAtZero:true}} }
+  });
 
-  document.getElementById(`rate-${id}`).innerText = 25; // kurz 25 CZK/USD
-  document.getElementById(`gusd-${id}`).innerText = Math.round(usd/2); // jen pro palivo
-}
+  const barCtx = document.getElementById('barChart').getContext('2d');
+  const barChart = new Chart(barCtx, {
+    type: 'bar',
+    data: {
+      labels: ['Družstvo WIN-WIN'],
+      datasets: [{
+        label: 'Celkový výnos %',
+        data: [5.5], // příklad hodnoty
+        backgroundColor: 'green'
+      }]
+    },
+    options: { responsive: true, plugins:{legend:{display:true}}, scales:{y:{beginAtZero:true}} }
+  });
+
+  // Formulář člena
+  document.getElementById('memberForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    const name = document.getElementById('name').value;
+    const email = document.getElementById('email').value;
+    const phone = document.getElementById('phone').value;
+    const deposit = Number(document.getElementById('deposit').value);
+    const usdt = Math.round(deposit * 0.04); // kurz CZK -> USDT.z
+    const gusd = Math.round(deposit * 0.5);  // pouze pro vizualizaci
+
+    alert(`Člen ${name} přidán.\nUSDT.z: ${usdt}\nGUSD: ${gusd}`);
+    // Zde bude později volání Supabase API k zápisu člena do members_data
+  });
 </script>
+
+</body>
+</html>
