@@ -89,121 +89,246 @@
 <!-- Konec menu -->
 
 
-<div class="left-container">
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<title>AYAS-7 Dashboard</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+ #msg_body {
+   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+   background: #f4f4f4;
+   margin: 0;
+   padding: 0;
+   display: flex;
+   justify-content: center;
+ }
+
+ #main-container {
+   max-width: 1200px;
+   width: 100%;
+   margin: 20px;
+   display: flex;
+   gap: 20px;
+ }
+
+ .left-side, .right-side {
+   background: #fff;
+   border-radius: 8px;
+   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+   padding: 15px;
+   flex: 1;
+   display: flex;
+   flex-direction: column;
+   gap: 20px;
+ }
+
+ .layer-box, .right-box {
+   background: #f9f9f9;
+   border-radius: 8px;
+   padding: 10px;
+   display: flex;
+   flex-direction: column;
+   gap: 10px;
+ }
+
+ .layer-color {
+   width: 10px;
+   height: 10px;
+   display: inline-block;
+   margin-right: 5px;
+   border-radius: 50%;
+ }
+
+ .token-box {
+   display: flex;
+   gap: 10px;
+ }
+
+ .token {
+   flex: 1;
+   text-align: center;
+   padding: 5px;
+   border-radius: 5px;
+   font-weight: bold;
+   color: #fff;
+ }
+
+ .usd { background: #1da84f; }
+ .gusd { background: #007bff; }
+
+ canvas { background:#fff; border-radius:5px; }
+
+ input[type="text"], input[type="email"], input[type="number"] {
+   width: 100%;
+   padding: 5px;
+   border-radius: 5px;
+   border: 1px solid #ccc;
+ }
+
+ button {
+   padding: 7px 10px;
+   border:none;
+   background:#003063;
+   color:white;
+   border-radius:5px;
+   cursor:pointer;
+ }
+
+ h3 { margin: 0; }
+
+ @media(max-width:1000px){
+   #main-container { flex-direction: column; }
+ }
+
+ .copyright { text-align:center; font-size:0.8em; margin-top:20px; color:#555; }
+</style>
+</head>
+<body>
+
+<div id="main-container">
 
  
- <div class="layer-box" data-layer="1" style="border-left:5px solid #ff0000;">
-   <h3>Vrstva 1: Generátor likvidity</h3>
-   <p>Generuje základní likviditu pro USDT.z pool.</p>
-   <p>USDt.z: <span class="rate-usdtz">0</span> | GUSD: <span class="rate-gusd">0</span></p>
-   <canvas class="layer-chart" height="80"></canvas>
+ <div class="left-side">
+   <div class="layer-box">
+     <span class="layer-color" style="background:green;"></span><strong>Layer 1: Token Layer</strong>
+     <div class="token-box">
+       <div class="token usd">USDT.z: <span id="usd-1">0</span></div>
+       <div class="token gusd">GUSD: <span id="gusd-1">0</span></div>
+     </div>
+     <canvas id="line-1" height="150"></canvas>
+     <div>Popis vrstvy: Správa tokenů, zhodnocení a motor AYAS-7.</div>
+   </div>
  </div>
 
- <div class="layer-box" data-layer="2" style="border-left:5px solid #00ff00;">
-   <h3>Vrstva 2: Distribuce zisku</h3>
-   <p>Distribuuje zisky mezi členy dle WW-key.</p>
-   <p>USDt.z: <span class="rate-usdtz">0</span> | GUSD: <span class="rate-gusd">0</span></p>
-   <canvas class="layer-chart" height="80"></canvas>
- </div>
+ 
+ <div class="right-side">
 
- <div class="layer-box" data-layer="3" style="border-left:5px solid #0000ff;">
-   <h3>Vrstva 3: Reinvestiční modul</h3>
-   <p>Automaticky reinvestuje část zisku pro růst kapitálu.</p>
-   <p>USDt.z: <span class="rate-usdtz">0</span> | GUSD: <span class="rate-gusd">0</span></p>
-   <canvas class="layer-chart" height="80"></canvas>
- </div>
+   
+   <div class="right-box">
+     <h3>Přidat nového člena</h3>
+     <label>Jméno:<input type="text" id="member-name"></label>
+     <label>Email:<input type="email" id="member-email"></label>
+     <label>Telefon:<input type="text" id="member-phone"></label>
+     <button onclick="addMember()">Přidat člena</button>
+   </div>
 
- <div class="layer-box" data-layer="4" style="border-left:5px solid #ff00ff;">
-   <h3>Vrstva 4: Rezervní fond</h3>
-   <p>Spravuje rezervní kapitál pro nepředvídané situace.</p>
-   <p>USDt.z: <span class="rate-usdtz">0</span> | GUSD: <span class="rate-gusd">0</span></p>
-   <canvas class="layer-chart" height="80"></canvas>
- </div>
+   
+   <div class="right-box">
+     <h3>Platba</h3>
+     <label>Způsob platby:
+       <select id="payment-method">
+         <option value="fiat">Fiat</option>
+         <option value="usdt">USDT</option>
+         <option value="bnb">BNB</option>
+         <option value="trx">TRX</option>
+       </select>
+     </label>
+     <div>Instrukce platby: Metamask / Swap / Fiat</div>
+   </div>
 
- <div class="layer-box" data-layer="5" style="border-left:5px solid #00ffff;">
-   <h3>Vrstva 5: Podpora členů</h3>
-   <p>Zajišťuje bonusy a odměny pro aktivní členy.</p>
-   <p>USDt.z: <span class="rate-usdtz">0</span> | GUSD: <span class="rate-gusd">0</span></p>
-   <canvas class="layer-chart" height="80"></canvas>
- </div>
+   
+   <div class="right-box">
+     <h3>Živé kurzy</h3>
+     <div>USDT.z: <span id="rate-usdt">0</span></div>
+     <div>GUSD: <span id="rate-gusd">0</span></div>
+     <div>BNB: <span id="rate-bnb">0</span></div>
+   </div>
 
- <div class="layer-box" data-layer="6" style="border-left:5px solid #ffa500;">
-   <h3>Vrstva 6: Token info & komunikace</h3>
-   <p>Zobrazuje tokenové informace a rychlé odkazy pro členy.</p>
-   <p>USDt.z: <span class="rate-usdtz">0</span> | GUSD: <span class="rate-gusd">0</span></p>
-   <canvas class="layer-chart" height="80"></canvas>
- </div>
+   
+   <div class="right-box">
+     <h3>Výnos družstva</h3>
+     <canvas id="bar-all" height="150"></canvas>
+   </div>
 
- <div class="layer-box" data-layer="7" style="border-left:5px solid #800080;">
-   <h3>Vrstva 7: Analytika a reporty</h3>
-   <p>Zobrazuje denní reporty a přehled výkonu motoru AYAS-7.</p>
-   <p>USDt.z: <span class="rate-usdtz">0</span> | GUSD: <span class="rate-gusd">0</span></p>
-   <canvas class="layer-chart" height="80"></canvas>
- </div>
+   
+   <div class="right-box">
+     <h3>Denní report / audit</h3>
+     <div id="daily-report">Data budou aktualizována každých 10 sekund</div>
+   </div>
 
+   
+   <div class="right-box">
+     <h3>Token Info</h3>
+     <div>USDT.z a GUSD – základní informace, rychlý přehled, aktuální stav.</div>
+   </div>
+
+   
+   <div class="right-box">
+     <h3>Živý DEX</h3>
+     <div><a href="https://www.geckoterminal.com/bsc/pools/0xa55ccb41096aacf28eaa15efe00ea01b3e773cdd" target="_blank">USDt.z Pool</a></div>
+     <div><a href="https://www.geckoterminal.com/bsc/pools/0xb7c6f12c7232bc6ea895d24447be8d0dbc3438ed" target="_blank">GUSD Pool</a></div>
+   </div>
+
+ </div>
 </div>
 
-<style>
-.left-container {
- display: flex;
- flex-direction: column;
- gap: 15px;
- max-width: 600px;
- margin: 20px auto;
- font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-
-.layer-box {
- background: #fff;
- padding: 15px;
- border-radius: 8px;
- box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-}
-
-.layer-box h3 {
- margin-top: 0;
-}
-</style>
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<div class="copyright">
+&copy; 2025 WIN-WIN
+</div>
 
 <script>
-// Inicializace grafů pro vrstvy
-const layerCharts = [];
-document.querySelectorAll('.layer-box').forEach((box, i)=>{
- const ctx = box.querySelector('.layer-chart').getContext('2d');
- const chart = new Chart(ctx, {
-   type: 'bar',
+ // Levý graf – simulace výkonu motoru
+ const ctxLine = document.getElementById('line-1').getContext('2d');
+ const lineChart = new Chart(ctxLine, {
+   type: 'line',
    data: {
-     labels: ['Výkon'],
-     datasets: [{
-       label: 'Výkon %',
-       data: [Math.random()*5+1], // startovní náhodná data
-       backgroundColor: box.style.borderLeftColor
+     labels: ["Týden 1","Týden 2","Týden 3","Týden 4"],
+     datasets:[{
+       label:'Výkon',
+       data:[10,15,12,20],
+       borderColor:'orange',
+       fill:false,
+       tension:0.3
      }]
    },
-   options: { responsive:true, plugins:{legend:{display:false}}, scales:{y:{beginAtZero:true, max:10}} }
+   options:{ responsive:true, plugins:{legend:{display:false}}, scales:{y:{beginAtZero:true}} }
  });
- layerCharts.push(chart);
-});
 
-// Aktualizace každých 10 sekund
-async function updateLayerRates() {
- try {
-   const resUSDT = await axios.get('https://api.coingecko.com/api/v3/simple/price?ids=tether&vs_currencies=usd');
-   const resGUSD = await axios.get('https://api.coingecko.com/api/v3/simple/price?ids=gemini-dollar&vs_currencies=usd');
-   document.querySelectorAll('.layer-box').forEach(box=>{
-     box.querySelector('.rate-usdtz').innerText = resUSDT.data.tether.usd;
-     box.querySelector('.rate-gusd').innerText = resGUSD.data['gemini-dollar'].usd;
-     // Graf vrstvy: náhodné simulace výkonu pro ukázku
-     const chart = layerCharts[parseInt(box.dataset.layer)-1];
-     chart.data.datasets[0].data = [Math.random()*5+1];
-     chart.update();
-   });
- } catch(e){ console.error(e); }
-}
+ // Pravý graf – výnos družstva
+ const ctxBar = document.getElementById('bar-all').getContext('2d');
+ const barChart = new Chart(ctxBar, {
+   type:'bar',
+   data:{
+     labels:["Layer 1","Layer 2","Layer 3","Layer 4","Layer 5","Layer 6","Layer 7"],
+     datasets:[{
+       label:'Výnos %',
+       data:[5,6,4,7,5,6,3],
+       backgroundColor:['green','red','midnightblue','purple','yellow','orange','gray']
+     }]
+   },
+   options:{ responsive:true, plugins:{legend:{display:false}}, scales:{y:{beginAtZero:true, max:10}} }
+ });
 
-setInterval(updateLayerRates, 10000);
-updateLayerRates();
+ // Simulace živých kurzů
+ function updateRates(){
+   document.getElementById('rate-usdt').innerText = (1 + Math.random()*0.02).toFixed(2);
+   document.getElementById('rate-gusd').innerText = (1 + Math.random()*0.02).toFixed(2);
+   document.getElementById('rate-bnb').innerText = (300 + Math.random()*10).toFixed(2);
+   document.getElementById('daily-report').innerText = "Aktualizováno: " + new Date().toLocaleTimeString();
+ }
+ setInterval(updateRates, 10000);
+ updateRates();
+
+ // Simulace USDt.z/GUSD pro levou stranu
+ document.getElementById('usd-1').innerText = 600; // za 15K CZK
+ document.getElementById('gusd-1').innerText = 3000;
+
+ // Přidání člena (simulace)
+ function addMember(){
+   const name = document.getElementById('member-name').value;
+   const email = document.getElementById('member-email').value;
+   const phone = document.getElementById('member-phone').value;
+   if(name && email && phone){
+     alert(`Člen ${name} přidán! WW-key a další info se uloží do DB.`);
+   }else{
+     alert('Vyplň všechny údaje!');
+   }
+ }
+
 </script>
+
+</body>
+</html>
+
