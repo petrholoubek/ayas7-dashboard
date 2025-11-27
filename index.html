@@ -88,254 +88,212 @@
 </nav>
 <!-- Konec menu -->
 
-<!DOCTYPE html>
-<html lang="cs">
-<head>
-<meta charset="UTF-8">
-<title>AYAS-7 Dashboard</title>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<style>
- #msg_body {
-   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-   margin: 0;
-   padding: 0;
-   background: #f4f4f4;
- }
+<!-- Pravá strana dashboardu -->
+<div class="right-container">
 
- #main-container {
-   max-width: 1200px;
-   margin: 20px auto;
-   display: flex;
-   gap: 20px;
-   justify-content: center;
- }
+  <!-- 1. Přidání člena -->
+  <div class="box" id="member-box">
+    <h3>Přidat nového člena</h3>
+    <form id="member-form">
+      <label>Jméno: <input type="text" id="member-name" required></label><br>
+      <label>Email: <input type="email" id="member-email" required></label><br>
+      <label>Telefon: <input type="text" id="member-phone" required></label><br>
+      <label>Způsob platby:
+        <select id="payment-method">
+          <option value="fiat">Fiat (CZK / EUR)</option>
+          <option value="bnb">BNB</option>
+          <option value="usdt">USDT</option>
+          <option value="trx">TRX</option>
+        </select>
+      </label><br>
+      <button type="submit">Přidat člena</button>
+    </form>
+    <div id="member-result"></div>
+  </div>
 
- .column {
-   flex: 1;
-   display: flex;
-   flex-direction: column;
-   gap: 20px;
- }
+  <!-- 2. Platba -->
+  <div class="box" id="payment-box">
+    <h3>Platba</h3>
+    <p>Možnost platby: Fiat nebo Krypto. Odkažte na Metamask nebo swap platformu.</p>
+    <button onclick="window.open('https://www.pancakeswap.finance/', '_blank')">Swap / Metamask</button>
+  </div>
 
- .box {
-   background: #fff;
-   border-radius: 8px;
-   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-   padding: 15px;
- }
+  <!-- 3. Aktuální kurz -->
+  <div class="box" id="rates-box">
+    <h3>Aktuální kurzy</h3>
+    <p>USDt.z: <span id="rate-usdtz">0</span></p>
+    <p>USDC: <span id="rate-usdc">0</span></p>
+    <p>BNB: <span id="rate-bnb">0</span></p>
+  </div>
 
- .box h3 {
-   margin-top: 0;
-   font-size: 1.2em;
- }
+  <!-- 4. Výnos družstva -->
+  <div class="box" id="yield-box">
+    <h3>Výnos družstva</h3>
+    <canvas id="yield-chart" height="150"></canvas>
+  </div>
 
- .token-box {
-   display: flex;
-   gap: 10px;
-   margin-bottom: 10px;
- }
+  <!-- 5. Denní audit / report -->
+  <div class="box" id="audit-box">
+    <h3>Denní audit</h3>
+    <div id="audit-report">Načítání...</div>
+    <button onclick="exportAuditCSV()">Export CSV</button>
+  </div>
 
- .token {
-   flex: 1;
-   text-align: center;
-   padding: 5px;
-   border-radius: 5px;
-   color: #fff;
-   font-weight: bold;
- }
+  <!-- 6. Token info -->
+  <div class="box" id="token-info-box">
+    <h3>Token info</h3>
+    <p>Token: USDt.z</p>
+    <p>Celková zásoba: <span id="total-supply">0</span></p>
+    <p>Další info: <a href="#" target="_blank">Link</a></p>
+  </div>
 
- .usd { background:#1da84f; }
- .gusd { background:#007bff; }
-
- canvas {
-   background:#f9f9f9;
-   border-radius:5px;
-   margin-top:10px;
- }
-
- form label {
-   display:block;
-   margin:5px 0;
- }
-
- form input, form select {
-   width: 100%;
-   padding:5px;
-   margin-bottom:10px;
- }
-
- form button {
-   padding:5px 10px;
-   background:#003063;
-   color:white;
-   border:none;
-   border-radius:5px;
-   cursor:pointer;
- }
-
- .copyright {
-   text-align:center;
-   margin:20px 0;
-   font-size:0.9em;
-   color:#555;
- }
-
- @media(max-width:1000px){
-   #main-container {
-     flex-direction: column;
-   }
- }
-
-</style>
-</head>
-<body>
-
-
-<div id="main-container">
-
- 
- <div class="column" id="left-column">
-   
- </div>
-
- 
- <div class="column" id="right-column">
-   
- </div>
+  <!-- 7. Živý DEX -->
+  <div class="box" id="dex-box">
+    <h3>Živý DEX</h3>
+    <p>USDt.z pool: <span id="dex-usdtz">0</span></p>
+    <p>GUSD pool: <span id="dex-gusd">0</span></p>
+  </div>
 
 </div>
 
-<div class="copyright">© 2025 Win-Win</div>
-
-<script>
-// Levé boxy – vrstvy motoru
-const leftColumn = document.getElementById('left-column');
-const layers = [
- {id:1, name:"Layer 1: Token Layer"},
- {id:2, name:"Layer 2: Liquidity Engine"},
- {id:3, name:"Layer 3: Yield Routing"},
- {id:4, name:"Layer 4: Risk & Compliance"},
- {id:5, name:"Layer 5: FinTech Interaction"},
- {id:6, name:"Layer 6: Core Engine"},
- {id:7, name:"Layer 7: Dashboard Layer"}
-];
-
-layers.forEach(layer => {
- const box = document.createElement('div');
- box.className = 'box';
- box.innerHTML = `
-   <h3>${layer.name}</h3>
-   <div class="token-box">
-     <div class="token usd">USDT.z: <span id="usd-${layer.id}">0</span></div>
-     <div class="token gusd">GUSD: <span id="gusd-${layer.id}">0</span></div>
-   </div>
-   <canvas id="line-${layer.id}" height="80"></canvas>
- `;
- leftColumn.appendChild(box);
-
- const ctx = document.getElementById(`line-${layer.id}`).getContext('2d');
- new Chart(ctx, {
-   type: 'line',
-   data: {
-     labels: ["Týden 1","Týden 2","Týden 3","Týden 4"],
-     datasets: [{label:'Výkon', data:[Math.random()*100,Math.random()*100,Math.random()*100,Math.random()*100], borderColor:'orange', tension:0.3, fill:false}]
-   },
-   options: {responsive:true, plugins:{legend:{display:false}}, scales:{y:{beginAtZero:true}}}
- });
-});
-
-// Pravé boxy
-const rightColumn = document.getElementById('right-column');
-
-// Box 1: Přidání člena
-const box1 = document.createElement('div');
-box1.className='box';
-box1.innerHTML = `
- <h3>Přidat člena</h3>
- <form id="member-form">
-   <label>Jméno:<input type="text" id="member-name"></label>
-   <label>Email:<input type="email" id="member-email"></label>
-   <label>Telefon:<input type="text" id="member-phone"></label>
-   <button type="button" onclick="addMember()">Přidat člena</button>
- </form>
- <div>WW-KEY: <span id="member-ww">0</span></div>
-`;
-rightColumn.appendChild(box1);
-
-// Box 2: Platba
-const box2 = document.createElement('div');
-box2.className='box';
-box2.innerHTML = `
- <h3>Způsob platby</h3>
- <select id="payment-method">
-   <option value="fiat">Fiat</option>
-   <option value="bnb">BNB</option>
-   <option value="usdt">USDT</option>
-   <option value="trx">TRX</option>
- </select>
- <button>Proveď platbu</button>
-`;
-rightColumn.appendChild(box2);
-
-// Box 3: Kurzy
-const box3 = document.createElement('div');
-box3.className='box';
-box3.innerHTML = `<h3>Aktuální kurzy</h3>
- <div>Krypto: <span id="crypto-rate">---</span></div>
- <div>Fiat: <span id="fiat-rate">---</span></div>
-`;
-rightColumn.appendChild(box3);
-
-// Box 4: Výnos družstva
-const box4 = document.createElement('div');
-box4.className='box';
-box4.innerHTML = `<h3>Výnos družstva</h3><canvas id="yield-bar" height="80"></canvas>`;
-rightColumn.appendChild(box4);
-
-const ctxYield = document.getElementById('yield-bar').getContext('2d');
-new Chart(ctxYield, {
- type:'bar',
- data:{labels:["Družstvo"], datasets:[{label:'Zhodnocení %', data:[5], backgroundColor:'green'}]},
- options:{responsive:true, plugins:{legend:{display:false}}, scales:{y:{beginAtZero:true}}}
-});
-
-// Box 5: Dení report / audit
-const box5 = document.createElement('div');
-box5.className='box';
-box5.innerHTML = `<h3>Dení report / Audit</h3><div id="audit-report">Živá data denního reportu zde...</div>`;
-rightColumn.appendChild(box5);
-
-// Box 6: Token info
-const box6 = document.createElement('div');
-box6.className='box';
-box6.innerHTML = `<h3>Token info</h3><div>Rychlé odkazy, aktuální stav tokenů</div>`;
-rightColumn.appendChild(box6);
-
-// Box 7: DEX živý terminál
-const box7 = document.createElement('div');
-box7.className='box';
-box7.innerHTML = `<h3>DEX živý terminál</h3>
- <div><a href="https://www.geckoterminal.com/bsc/pools/0xa55ccb41096aacf28eaa15efe00ea01b3e773cdd" target="_blank">USDt.z pool</a></div>
- <div><a href="https://www.geckoterminal.com/bsc/pools/0xb7c6f12c7232bc6ea895d24447be8d0dbc3438ed" target="_blank">GUSD pool</a></div>
-`;
-rightColumn.appendChild(box7);
-
-// Funkce přidání člena
-function addMember(){
- const name = document.getElementById('member-name').value;
- const email = document.getElementById('member-email').value;
- const phone = document.getElementById('member-phone').value;
- const ww = Math.floor(Math.random()*100000); // příklad výpočtu WW-key
- document.getElementById('member-ww').innerText = ww;
- alert(`Přidán člen: ${name}, WW-KEY: ${ww}`);
+<style>
+.right-container {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  max-width: 600px;
+  margin: 20px auto;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-// Simulace kurzů
-setInterval(()=>{
- document.getElementById('crypto-rate').innerText = (Math.random()*500+1).toFixed(2);
- document.getElementById('fiat-rate').innerText = (Math.random()*30+1).toFixed(2);
-},3000);
+.box {
+  background: #fff;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
 
+.box h3 {
+  margin-top: 0;
+}
+
+input, select {
+  width: 100%;
+  margin-bottom: 10px;
+  padding: 5px;
+}
+
+button {
+  background: #003063;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #0055a5;
+}
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js/dist/supabase.min.js"></script>
+<script>
+const supabaseUrl = 'https://hurayrwshmsvsylhwlbj.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh1cmF5cndzaG1zdnN5bGh3bGJqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQyMTk4MzEsImV4cCI6MjA3OTc5NTgzMX0.Q0KpZX_Dln9_9OwZcCty-bbyw8drX84ax098Uy03VUI';
+const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
+// 1. Přidání člena
+document.getElementById('member-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const name = document.getElementById('member-name').value;
+  const email = document.getElementById('member-email').value;
+  const phone = document.getElementById('member-phone').value;
+  const payment = document.getElementById('payment-method').value;
+
+  const usdtAmount = Math.round(600); // přepočet za 15K CZK
+  const { data, error } = await supabase
+    .from('members_data')
+    .insert([{ name, email, phone, payment_method: payment, ww_key: usdtAmount, paid: true }]);
+
+  if (error) {
+    document.getElementById('member-result').innerText = 'Chyba: ' + error.message;
+  } else {
+    document.getElementById('member-result').innerText = 'Člen přidán, WW-key: ' + usdtAmount;
+    updateYieldChart();
+    updateAuditReport();
+  }
+});
+
+// 4. Výnos družstva
+const yieldCtx = document.getElementById('yield-chart').getContext('2d');
+const yieldChart = new Chart(yieldCtx, {
+  type: 'bar',
+  data: {
+    labels: ['Družstvo'],
+    datasets: [{ label: 'Výnos %', data: [0], backgroundColor: 'green' }]
+  },
+  options: { responsive:true, plugins:{legend:{display:false}}, scales:{y:{beginAtZero:true, max:10}} }
+});
+
+async function updateYieldChart() {
+  const { data } = await supabase.from('members_data').select('ww_key');
+  const total = data.reduce((sum,row)=>sum+row.ww_key,0);
+  yieldChart.data.datasets[0].data = [total/1000]; // příklad %
+  yieldChart.update();
+}
+
+// 5. Denní audit / report
+async function updateAuditReport() {
+  const { data } = await supabase.from('members_data').select('name, email, ww_key');
+  let html = '<table><tr><th>Jméno</th><th>Email</th><th>WW-key</th></tr>';
+  data.forEach(row=>{
+    html += `<tr><td>${row.name}</td><td>${row.email}</td><td>${row.ww_key}</td></tr>`;
+  });
+  html += '</table>';
+  document.getElementById('audit-report').innerHTML = html;
+}
+function exportAuditCSV() {
+  const table = document.querySelector('#audit-report table');
+  let csv = '';
+  for(let row of table.rows){
+    let cells = Array.from(row.cells).map(c=>c.innerText).join(',');
+    csv += cells + '\n';
+  }
+  const blob = new Blob([csv], {type:'text/csv'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download='audit.csv'; a.click();
+}
+
+// 3. Aktuální kurzy
+async function updateRates() {
+  try {
+    const res = await axios.get('https://api.coingecko.com/api/v3/simple/price?ids=tether,usd-coin,binancecoin&vs_currencies=usd');
+    document.getElementById('rate-usdtz').innerText = res.data.tether.usd;
+    document.getElementById('rate-usdc').innerText = res.data['usd-coin'].usd;
+    document.getElementById('rate-bnb').innerText = res.data.binancecoin.usd;
+  } catch(e){ console.error(e); }
+}
+
+// 7. Živý DEX (příklad z GeckoTerminal API)
+async function updateDex() {
+  try {
+    const resUsdt = await axios.get('https://api.coingecko.com/api/v3/simple/price?ids=tether&vs_currencies=usd');
+    const resGusd = await axios.get('https://api.coingecko.com/api/v3/simple/price?ids=gemini-dollar&vs_currencies=usd');
+    document.getElementById('dex-usdtz').innerText = resUsdt.data.tether.usd;
+    document.getElementById('dex-gusd').innerText = resGusd.data['gemini-dollar'].usd;
+  } catch(e){ console.error(e); }
+}
+
+// 6. Token info
+async function updateTokenInfo() {
+  document.getElementById('total-supply').innerText = '1000000'; // příklad
+}
+
+// Aktualizace každých 10s
+setInterval(()=>{ updateRates(); updateDex(); updateYieldChart(); updateAuditReport(); updateTokenInfo(); }, 10000);
+updateRates(); updateDex(); updateYieldChart(); updateAuditReport(); updateTokenInfo();
 </script>
-</body>
-</html>
