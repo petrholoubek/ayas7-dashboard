@@ -1,83 +1,70 @@
 <!DOCTYPE html>
-<html lang="cs">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>AYAS-7 Dashboard</title>
+<title>AYAS-7 Engine Dashboard</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
-body { font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif; background:#eef2f5; margin:0; padding:20px; display:flex; justify-content:center; }
-#dashboard-container { width:1200px; display:flex; flex-direction:column; gap:15px; }
-/* Horní nadpis */
-#top-title { font-size:2em; font-weight:800; color:#003063; text-align:center; }
-/* Menu */
-#menu-box { background:#003063; color:#fff; padding:10px; border-radius:12px; display:flex; gap:10px; flex-wrap:wrap; justify-content:center; }
-#menu-box button { padding:8px 15px; font-weight:700; border:none; border-radius:6px; cursor:pointer; background:#0055a5; color:#fff; }
-/* Sloupce */
-#columns { display:flex; gap:20px; }
-.column { display:flex; flex-direction:column; gap:20px; width:50%; }
-.box { background:#fff; padding:20px; border-radius:12px; box-shadow:0 4px 16px rgba(0,0,0,0.12); }
-.box-title { font-size:1.3em; font-weight:800; margin-bottom:10px; display:flex; align-items:center; gap:10px; color:#003063; }
-.box-desc { margin-bottom:15px; color:#444; }
-.token { display:inline-block; padding:6px 12px; border-radius:6px; color:#fff; margin-right:6px; font-size:0.9em; }
-.usd { background:#1da84f; }
-.gusd { background:#0066ff; }
-.ww { background:#d10000; }
-canvas { background:#f9f9f9; border-radius:8px; margin-top:15px; }
-input[type=number], input[type=text] { padding:5px; width:100px; margin-right:10px; }
-button.action { padding:5px 10px; cursor:pointer; background:#0055a5; color:#fff; border:none; border-radius:6px; }
-.member-entry { padding:6px 0; border-bottom:1px solid #ddd; }
+  body { font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif; background:#eef2f5; margin:0; padding:0; }
+  header { background:#003063; color:#fff; padding:15px 20px; display:flex; align-items:center; justify-content:space-between; }
+  header h1 { margin:0; font-size:1.8em; }
+  nav a { color:#fff; margin-left:20px; text-decoration:none; font-weight:600; }
+  nav a:hover { text-decoration:underline; }
+  #dashboard { width:1200px; display:flex; gap:20px; margin:20px auto; }
+  .column { display:flex; flex-direction:column; gap:20px; width:50%; }
+  .box { background:#fff; padding:20px; border-radius:12px; box-shadow:0 4px 16px rgba(0,0,0,0.12); }
+  .box-title { font-size:1.4em; font-weight:800; margin-bottom:10px; color:#003063; display:flex; align-items:center; gap:10px; }
+  .box-desc { margin-bottom:15px; color:#444; }
+  canvas { background:#f9f9f9; border-radius:8px; margin-top:15px; }
 </style>
 </head>
 <body>
-<div id="dashboard-container">
 
-  <!-- Horní nadpis -->
-  <div id="top-title">AYAS-7 Engine – Nástěnka Win-Win</div>
+<header>
+  <h1>AYAS-7 Engine</h1>
+  <nav>
+    <a href="index.html">Dashboard</a>
+    <a href="member-dashboard.html">Members</a>
+    <a href="https://winwin.coop/#ww-onb" target="_blank">Win-Win</a>
+    <a href="#layer1">Token Layer</a>
+    <a href="#layer2">Liquidity Engine</a>
+    <a href="#layer3">Yield Routing</a>
+    <a href="#layer4">Risk & Compliance</a>
+    <a href="#layer5">FinTech Interaction</a>
+    <a href="#layer6">Core Engine</a>
+    <a href="#layer7">Analytics</a>
+  </nav>
+</header>
 
-  <!-- Menu -->
-  <div id="menu-box">
-    <button onclick="alert('Token Management')">Token Management</button>
-    <button onclick="alert('Liquidity Engine')">Liquidity Engine</button>
-    <button onclick="alert('Yield Routing')">Yield Routing</button>
-    <button onclick="alert('Risk & Compliance')">Risk & Compliance</button>
-    <button onclick="alert('FinTech Interaction')">FinTech Interaction</button>
-    <button onclick="alert('Core Engine')">Core Engine</button>
-    <button onclick="alert('Dashboard & Analytics')">Dashboard & Analytics</button>
-  </div>
+<div id="dashboard">
+  <!-- Levý sloupec: 7 vrstev motoru -->
+  <div class="column" id="motor-column"></div>
 
-  <!-- Sloupce -->
-  <div id="columns">
-    <!-- Levý sloupec: motor -->
-    <div class="column" id="motor-column"></div>
-
-    <!-- Pravý sloupec: členská základna a DEX -->
-    <div class="column" id="function-column"></div>
-  </div>
+  <!-- Pravý sloupec: boxy s daty a dex/forex -->
+  <div class="column" id="function-column"></div>
 </div>
 
 <script>
-// ====== Levý sloupec: motor ======
+// ====== Levý sloupec: vrstvy ======
 const layers = [
-  {name:"Token Management", desc:"Správa páru USDt.z/GUSD a sledování ceny likvidity.", img:"assets/1.png"},
-  {name:"Liquidity Engine", desc:"Reálná data z DEX/BSC, hloubka poolů, objemy a stabilita.", img:"assets/2.png"},
-  {name:"Yield Routing", desc:"Směrování výnosů, optimalizace a distribuce.", img:"assets/3.png"},
-  {name:"Risk & Compliance", desc:"Kontrola volatility, bezpečnost a auditní stopa.", img:"assets/4.png"},
-  {name:"FinTech Interaction", desc:"Interakce s uživateli, reporting a provozní vrstva.", img:"assets/5.png"},
-  {name:"Core Engine", desc:"Výpočetní AYAS jádro – výkon podle likvidity a WW-KEY.", img:"assets/6.png"},
-  {name:"Dashboard & Analytics", desc:"Kompletní vizualizace ekosystému.", img:"assets/7.png"}
+  {id:'layer1', name:"Token Layer", desc:"Správa páru USDt.z/GUSD a sledování ceny likvidity.", img:"assets/1.png"},
+  {id:'layer2', name:"Liquidity Engine", desc:"Reálná data z DEX/BSC, hloubka poolů, objemy a stabilita.", img:"assets/2.png"},
+  {id:'layer3', name:"Yield Routing", desc:"Směrování výnosů, optimalizace a distribuce.", img:"assets/3.png"},
+  {id:'layer4', name:"Risk & Compliance", desc:"Kontrola volatility, bezpečnost a auditní stopa.", img:"assets/4.png"},
+  {id:'layer5', name:"FinTech Interaction", desc:"Interakce s uživateli, reporting a provozní vrstva.", img:"assets/5.png"},
+  {id:'layer6', name:"Core Engine", desc:"Výpočetní AYAS jádro – výkon podle likvidity a WW-KEY.", img:"assets/6.png"},
+  {id:'layer7', name:"Dashboard & Analytics", desc:"Kompletní vizualizace ekosystému.", img:"assets/7.png"}
 ];
 
 const motorColumn = document.getElementById('motor-column');
+
 layers.forEach((layer,index)=>{
   const box = document.createElement('div');
   box.className='box';
+  box.id = layer.id;
   box.innerHTML=`
     <div class='box-title'><img src='${layer.img}' width='50' alt='Layer ${index+1}'> ${layer.name}</div>
     <div class='box-desc'>${layer.desc}</div>
-    <div>
-      <span class='token usd'>USDt.z</span>
-      <span class='token gusd'>GUSD</span>
-    </div>
     <canvas id='motor-chart-${index}' height='100'></canvas>
   `;
   motorColumn.appendChild(box);
@@ -96,97 +83,19 @@ layers.forEach((layer,index)=>{
   });
 });
 
-// ====== Pravý sloupec: členská základna a simulovaný DEX/Forex ======
+// ====== Pravá strana: boxy (dex, kurzy, členové atd.) ======
 const functionColumn = document.getElementById('function-column');
-const CURZ_KCZ_USD = 24.5;
-const MONTHLY_YIELD = 0.05;
-let members = [
-  {name:'Jan Novak', czk:15000, ww:615},
-  {name:'Petr Holoubek', czk:20000, ww:816},
-  {name:'Eva Svobodova', czk:10000, ww:408}
-];
 
-// Boxy
-function addFunctionBox(title, innerHTML) {
+// zde budeme doplňovat živá data, kurzy, DEX a odkazy na smart kontrakty
+// zatím můžeme připravit prázdné boxy pro budoucí naplnění
+
+for(let i=0;i<6;i++){
   const box = document.createElement('div');
   box.className='box';
-  box.innerHTML=`<div class='box-title'>${title}</div>` + innerHTML;
+  box.innerHTML=`<div class='box-title'>Box ${i+1}</div><div class='box-desc'>Data will be here...</div>`;
   functionColumn.appendChild(box);
 }
-
-// Login / registrace
-addFunctionBox('Login / Registrace člena', `<input type='text' id='member-name' placeholder='Jméno člena'>
-<button class='action' onclick='addMemberForm()'>Přihlásit / Registrovat</button>`);
-
-// Prohlášení
-addFunctionBox('Prohlášení člena', `<label><input type='checkbox' id='member-agree' checked> Souhlasím s podmínkami systému AYAS-7</label>`);
-
-// WW-KEY
-addFunctionBox('Přidělení WW-KEY', `<label>Vklad (CZK): <input type='number' id='member-amount' value='15000'></label>
-<button class='action' onclick='assignWWKey()'>Přidělit WW-KEY</button>
-<div id='member-ww-display'></div>`);
-
-// Členská základna
-addFunctionBox('Členská základna', `<div id='member-list'></div>`);
-
-// Osobní měsíční výnos
-addFunctionBox('Osobní měsíční výnos', `<div id='member-yield'></div>`);
-
-// Celkový výnos motoru
-addFunctionBox('Celkový výnos motoru', `<div id='total-yield'></div>`);
-
-// Simulovaný DEX / kurz měn
-addFunctionBox('DEX / Simulovaný Forex', `<canvas id='volume-chart' height='120'></canvas>`);
-
-// ====== Funkce ======
-function addMemberForm(){
-  const name = document.getElementById('member-name').value;
-  if(name){
-    members.push({name, czk:0, ww:0});
-    renderMembers();
-    renderYields();
-  }
-}
-
-function assignWWKey(){
-  const amountCZK = Number(document.getElementById('member-amount').value);
-  const usd = amountCZK / CURZ_KCZ_USD;
-  const ww = Math.round(usd);
-  if(members.length>0){
-    members[members.length-1].czk = amountCZK;
-    members[members.length-1].ww = ww;
-    document.getElementById('member-ww-display').innerText=`Přiděleno WW-KEY: ${ww}`;
-    renderMembers();
-    renderYields();
-  }
-}
-
-function renderMembers(){
-  document.getElementById('member-list').innerHTML = members.map(m=>`<div class='member-entry'>${m.name}: ${m.czk} CZK → ${m.ww} WW-KEY</div>`).join('');
-}
-
-function renderYields(){
-  document.getElementById('member-yield').innerHTML = members.map(m=>{
-    const yieldAmount = Math.round(m.ww*MONTHLY_YIELD);
-    return `${m.name}: ${yieldAmount} WW-KEY (${(MONTHLY_YIELD*100).toFixed(1)}%)`;
-  }).join('<br>');
-
-  const totalYield = members.reduce((sum,m)=>sum + Math.round(m.ww*MONTHLY_YIELD),0);
-  document.getElementById('total-yield').innerText = `Celkový měsíční výnos motoru: ${totalYield} WW-KEY`;
-}
-
-// DEX / Forex graf
-new Chart(document.getElementById('volume-chart'),{
-  type:'bar',
-  data:{ labels:['T1','T2','T3','T4','T5'], datasets:[
-    { label:'Objem USDT.Z', data:[12000,15000,17000,21000,25000], backgroundColor:'#1da84f' },
-    { label:'Výnos WW-KEY', data:[600,800,950,1100,1300], backgroundColor:'#d10000' }
-  ]},
-  options:{ responsive:true, plugins:{ legend:{ position:'top' } }, scales:{ y:{ beginAtZero:true } } }
-});
-
-renderMembers();
-renderYields();
 </script>
+
 </body>
 </html>
