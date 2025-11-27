@@ -92,147 +92,156 @@
 <html lang="cs">
 <head>
 <meta charset="UTF-8">
-<title>AYAS-7 Dashboard - Test Layer</title>
+<title>AYAS-7 Dashboard</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
   body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: #f4f4f4;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    justify-content: center;
+    background:#f4f4f4;
+    margin:0;
+    padding:0;
+  }
+
+  /* Menu - zachovat stávající */
+  nav {
+    background:#003063;
+    color:#fff;
+    padding:10px 20px;
+  }
+
+  nav ul {
+    list-style:none;
+    margin:0;
+    padding:0;
+    display:flex;
+    gap:20px;
+  }
+
+  nav ul li {
+    display:inline;
+  }
+
+  nav ul li a {
+    color:white;
+    text-decoration:none;
+    font-weight:bold;
   }
 
   #main-container {
-    max-width: 1200px;
-    width: 100%;
-    margin: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    align-items: center;
-  }
-
-  .row {
-    display: flex;
-    gap: 20px;
-    width: 100%;
-    justify-content: center;
+    max-width:1200px;
+    margin:20px auto;
+    display:flex;
+    gap:20px;
+    flex-wrap:wrap;
   }
 
   .left-box, .right-box {
-    background: #fff;
-    border-radius: 10px;
-    box-shadow: 0 3px 8px rgba(0,0,0,0.15);
-    padding: 20px;
-    flex: 1;
-    max-width: 550px;
-    min-width: 300px;
+    background:#fff;
+    border-radius:8px;
+    box-shadow:0 2px 6px rgba(0,0,0,0.1);
+    padding:20px;
+    flex:1;
+    min-width:400px;
   }
 
   .layer-title {
-    font-weight: bold;
-    font-size: 1.3em;
-    margin-bottom: 10px;
+    font-weight:bold;
+    font-size:1.3em;
+    margin-bottom:10px;
   }
 
   .token-box {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 15px;
+    display:flex;
+    gap:10px;
+    margin-bottom:15px;
   }
 
   .token {
-    flex: 1;
-    text-align: center;
-    padding: 8px;
-    border-radius: 5px;
-    color: #fff;
-    font-weight: bold;
+    flex:1;
+    text-align:center;
+    padding:8px;
+    border-radius:5px;
+    color:#fff;
+    font-weight:bold;
   }
 
-  .usd { background: #1da84f; }
-  .gusd { background: #007bff; }
-
-  canvas { background: #f9f9f9; border-radius: 5px; margin-top: 10px; }
-
-  /* Pravý formulář */
-  .right-box form {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-
-  .right-box input[type="text"],
-  .right-box input[type="email"],
-  .right-box input[type="tel"],
-  .right-box input[type="number"] {
-    padding: 8px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-    width: 100%;
-  }
+  .usd { background:#1da84f; }
+  .gusd { background:#007bff; }
 
   .right-box label {
-    font-weight: bold;
+    display:block;
+    margin-bottom:10px;
+  }
+
+  .right-box input {
+    width:100%;
+    padding:8px;
+    margin-top:5px;
+    border-radius:5px;
+    border:1px solid #ccc;
   }
 
   .right-box button {
-    padding: 10px;
-    border: none;
-    border-radius: 5px;
-    background: #003063;
-    color: white;
-    font-weight: bold;
-    cursor: pointer;
+    padding:8px 15px;
+    border:none;
+    background:#003063;
+    color:white;
+    border-radius:5px;
+    cursor:pointer;
+    margin-top:10px;
   }
 
+  canvas {
+    background:#f9f9f9;
+    border-radius:5px;
+    margin-top:15px;
+  }
+
+  @media(max-width:900px){
+    #main-container { flex-direction:column; }
+  }
 </style>
 </head>
 <body>
 
+<!-- Menu -->
+<nav>
+  <ul>
+    <li><a href="#">Home</a></li>
+    <li><a href="#">Motor</a></li>
+    <li><a href="#">Členové</a></li>
+  </ul>
+</nav>
+
 <div id="main-container">
-  <div class="row">
-    <!-- Levý box - Motor -->
-    <div class="left-box">
-      <div class="layer-title">Layer 1: Motor AYAS-7</div>
-      <div class="token-box">
-        <div class="token usd">USDT.z: <span id="usd">600</span></div>
-        <div class="token gusd">GUSD: <span id="gusd">7500</span></div>
-      </div>
-      <canvas id="lineChart" height="150"></canvas>
-      <canvas id="barChart" height="150"></canvas>
+
+  <!-- Levý box - Motor -->
+  <div class="left-box">
+    <div class="layer-title">Motor AYAS-7</div>
+    <div class="token-box">
+      <div class="token usd">USDT.z: <span id="usd">600</span></div>
+      <div class="token gusd">GUSD: <span id="gusd">7500</span></div>
     </div>
-
-    <!-- Pravý box - Formulář člena -->
-    <div class="right-box">
-      <div class="layer-title">Přidat nového člena</div>
-      <form id="memberForm">
-        <label for="name">Jméno a příjmení:</label>
-        <input type="text" id="name" placeholder="Petr Holoubek" required>
-
-        <label for="email">Email:</label>
-        <input type="email" id="email" placeholder="petr@example.com" required>
-
-        <label for="phone">Telefon:</label>
-        <input type="tel" id="phone" placeholder="123456789" required>
-
-        <label for="deposit">Vklad (CZK):</label>
-        <input type="number" id="deposit" value="15000" required>
-
-        <label>
-          <input type="checkbox" id="terms" required> Souhlasím s podmínkami Win-Win
-        </label>
-
-        <button type="submit">Přidat člena</button>
-      </form>
-    </div>
+    <canvas id="lineChart" height="150"></canvas>
   </div>
+
+  <!-- Pravý box - Přidání člena -->
+  <div class="right-box">
+    <div class="layer-title">Přidání nového člena</div>
+    <label>Jméno: <input type="text" id="memberName"></label>
+    <label>Email: <input type="email" id="memberEmail"></label>
+    <label>Telefon: <input type="text" id="memberPhone"></label>
+    <label>Vklad (CZK): <input type="number" id="memberDeposit" value="15000"></label>
+    <button onclick="addMember()">Přidat člena</button>
+    <div style="margin-top:15px;">WW-KEY: <span id="wwKey">0</span></div>
+    <div>Aktuální kurz USDT.z: <span id="usdRate">1</span></div>
+    <canvas id="barChart" height="150"></canvas>
+  </div>
+
 </div>
 
 <script>
-  // Inicializace grafů
+  // Line chart - Motor AYAS-7
   const lineCtx = document.getElementById('lineChart').getContext('2d');
   const lineChart = new Chart(lineCtx, {
     type: 'line',
@@ -240,43 +249,47 @@
       labels: ['Týden 1', 'Týden 2', 'Týden 3', 'Týden 4'],
       datasets: [{
         label: 'Výkon motoru',
-        data: [600, 610, 595, 620], // příklad generovaných hodnot
+        data: [600, 610, 595, 620],
         borderColor: 'orange',
         backgroundColor: 'rgba(255,165,0,0.2)',
         tension: 0.3,
         fill: true
       }]
     },
-    options: { responsive: true, plugins:{legend:{display:true}}, scales:{y:{beginAtZero:true}} }
+    options: {
+      responsive: true,
+      plugins:{ legend:{display:true} },
+      scales:{ y:{ beginAtZero:true } }
+    }
   });
 
+  // Bar chart - Výnos družstva
   const barCtx = document.getElementById('barChart').getContext('2d');
   const barChart = new Chart(barCtx, {
-    type: 'bar',
+    type:'bar',
     data: {
-      labels: ['Družstvo WIN-WIN'],
-      datasets: [{
-        label: 'Celkový výnos %',
-        data: [5.5], // příklad hodnoty
-        backgroundColor: 'green'
+      labels:['Družstvo'],
+      datasets:[{
+        label:'Zhodnocení %',
+        data:[5],
+        backgroundColor:'green'
       }]
     },
-    options: { responsive: true, plugins:{legend:{display:true}}, scales:{y:{beginAtZero:true}} }
+    options:{ responsive:true, plugins:{legend:{display:true}}, scales:{y:{beginAtZero:true, max:10}} }
   });
 
-  // Formulář člena
-  document.getElementById('memberForm').addEventListener('submit', function(e){
-    e.preventDefault();
-    const name = document.getElementById('name').value;
-    const email = document.getElementById('email').value;
-    const phone = document.getElementById('phone').value;
-    const deposit = Number(document.getElementById('deposit').value);
-    const usdt = Math.round(deposit * 0.04); // kurz CZK -> USDT.z
-    const gusd = Math.round(deposit * 0.5);  // pouze pro vizualizaci
+  function addMember(){
+    const deposit = Number(document.getElementById('memberDeposit').value);
+    const usdRate = 1; // nebo dynamicky z API
+    const usdt = Math.floor(deposit / usdRate);
+    const wwKey = usdt; // jen USDT.z
+    document.getElementById('wwKey').innerText = wwKey;
+    document.getElementById('usdRate').innerText = usdRate;
 
-    alert(`Člen ${name} přidán.\nUSDT.z: ${usdt}\nGUSD: ${gusd}`);
-    // Zde bude později volání Supabase API k zápisu člena do members_data
-  });
+    // aktualizace barChart - simulace
+    barChart.data.datasets[0].data = [Math.random()*6 + 4];
+    barChart.update();
+  }
 </script>
 
 </body>
