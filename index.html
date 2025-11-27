@@ -95,202 +95,247 @@
 <title>AYAS-7 Dashboard</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
-  body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background:#f4f4f4;
-    margin:0;
-    padding:0;
-  }
+ #msg_body {
+   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+   margin: 0;
+   padding: 0;
+   background: #f4f4f4;
+ }
 
-  /* Menu - zachovat stávající */
-  nav {
-    background:#003063;
-    color:#fff;
-    padding:10px 20px;
-  }
+ #main-container {
+   max-width: 1200px;
+   margin: 20px auto;
+   display: flex;
+   gap: 20px;
+   justify-content: center;
+ }
 
-  nav ul {
-    list-style:none;
-    margin:0;
-    padding:0;
-    display:flex;
-    gap:20px;
-  }
+ .column {
+   flex: 1;
+   display: flex;
+   flex-direction: column;
+   gap: 20px;
+ }
 
-  nav ul li {
-    display:inline;
-  }
+ .box {
+   background: #fff;
+   border-radius: 8px;
+   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+   padding: 15px;
+ }
 
-  nav ul li a {
-    color:white;
-    text-decoration:none;
-    font-weight:bold;
-  }
+ .box h3 {
+   margin-top: 0;
+   font-size: 1.2em;
+ }
 
-  #main-container {
-    max-width:1200px;
-    margin:20px auto;
-    display:flex;
-    gap:20px;
-    flex-wrap:wrap;
-  }
+ .token-box {
+   display: flex;
+   gap: 10px;
+   margin-bottom: 10px;
+ }
 
-  .left-box, .right-box {
-    background:#fff;
-    border-radius:8px;
-    box-shadow:0 2px 6px rgba(0,0,0,0.1);
-    padding:20px;
-    flex:1;
-    min-width:400px;
-  }
+ .token {
+   flex: 1;
+   text-align: center;
+   padding: 5px;
+   border-radius: 5px;
+   color: #fff;
+   font-weight: bold;
+ }
 
-  .layer-title {
-    font-weight:bold;
-    font-size:1.3em;
-    margin-bottom:10px;
-  }
+ .usd { background:#1da84f; }
+ .gusd { background:#007bff; }
 
-  .token-box {
-    display:flex;
-    gap:10px;
-    margin-bottom:15px;
-  }
+ canvas {
+   background:#f9f9f9;
+   border-radius:5px;
+   margin-top:10px;
+ }
 
-  .token {
-    flex:1;
-    text-align:center;
-    padding:8px;
-    border-radius:5px;
-    color:#fff;
-    font-weight:bold;
-  }
+ form label {
+   display:block;
+   margin:5px 0;
+ }
 
-  .usd { background:#1da84f; }
-  .gusd { background:#007bff; }
+ form input, form select {
+   width: 100%;
+   padding:5px;
+   margin-bottom:10px;
+ }
 
-  .right-box label {
-    display:block;
-    margin-bottom:10px;
-  }
+ form button {
+   padding:5px 10px;
+   background:#003063;
+   color:white;
+   border:none;
+   border-radius:5px;
+   cursor:pointer;
+ }
 
-  .right-box input {
-    width:100%;
-    padding:8px;
-    margin-top:5px;
-    border-radius:5px;
-    border:1px solid #ccc;
-  }
+ .copyright {
+   text-align:center;
+   margin:20px 0;
+   font-size:0.9em;
+   color:#555;
+ }
 
-  .right-box button {
-    padding:8px 15px;
-    border:none;
-    background:#003063;
-    color:white;
-    border-radius:5px;
-    cursor:pointer;
-    margin-top:10px;
-  }
+ @media(max-width:1000px){
+   #main-container {
+     flex-direction: column;
+   }
+ }
 
-  canvas {
-    background:#f9f9f9;
-    border-radius:5px;
-    margin-top:15px;
-  }
-
-  @media(max-width:900px){
-    #main-container { flex-direction:column; }
-  }
 </style>
 </head>
 <body>
 
-<!-- Menu -->
-<nav>
-  <ul>
-    <li><a href="#">Home</a></li>
-    <li><a href="#">Motor</a></li>
-    <li><a href="#">Členové</a></li>
-  </ul>
-</nav>
 
 <div id="main-container">
 
-  <!-- Levý box - Motor -->
-  <div class="left-box">
-    <div class="layer-title">Motor AYAS-7</div>
-    <div class="token-box">
-      <div class="token usd">USDT.z: <span id="usd">600</span></div>
-      <div class="token gusd">GUSD: <span id="gusd">7500</span></div>
-    </div>
-    <canvas id="lineChart" height="150"></canvas>
-  </div>
+ 
+ <div class="column" id="left-column">
+   
+ </div>
 
-  <!-- Pravý box - Přidání člena -->
-  <div class="right-box">
-    <div class="layer-title">Přidání nového člena</div>
-    <label>Jméno: <input type="text" id="memberName"></label>
-    <label>Email: <input type="email" id="memberEmail"></label>
-    <label>Telefon: <input type="text" id="memberPhone"></label>
-    <label>Vklad (CZK): <input type="number" id="memberDeposit" value="15000"></label>
-    <button onclick="addMember()">Přidat člena</button>
-    <div style="margin-top:15px;">WW-KEY: <span id="wwKey">0</span></div>
-    <div>Aktuální kurz USDT.z: <span id="usdRate">1</span></div>
-    <canvas id="barChart" height="150"></canvas>
-  </div>
+ 
+ <div class="column" id="right-column">
+   
+ </div>
 
 </div>
 
+<div class="copyright">© 2025 Win-Win</div>
+
 <script>
-  // Line chart - Motor AYAS-7
-  const lineCtx = document.getElementById('lineChart').getContext('2d');
-  const lineChart = new Chart(lineCtx, {
-    type: 'line',
-    data: {
-      labels: ['Týden 1', 'Týden 2', 'Týden 3', 'Týden 4'],
-      datasets: [{
-        label: 'Výkon motoru',
-        data: [600, 610, 595, 620],
-        borderColor: 'orange',
-        backgroundColor: 'rgba(255,165,0,0.2)',
-        tension: 0.3,
-        fill: true
-      }]
-    },
-    options: {
-      responsive: true,
-      plugins:{ legend:{display:true} },
-      scales:{ y:{ beginAtZero:true } }
-    }
-  });
+// Levé boxy – vrstvy motoru
+const leftColumn = document.getElementById('left-column');
+const layers = [
+ {id:1, name:"Layer 1: Token Layer"},
+ {id:2, name:"Layer 2: Liquidity Engine"},
+ {id:3, name:"Layer 3: Yield Routing"},
+ {id:4, name:"Layer 4: Risk & Compliance"},
+ {id:5, name:"Layer 5: FinTech Interaction"},
+ {id:6, name:"Layer 6: Core Engine"},
+ {id:7, name:"Layer 7: Dashboard Layer"}
+];
 
-  // Bar chart - Výnos družstva
-  const barCtx = document.getElementById('barChart').getContext('2d');
-  const barChart = new Chart(barCtx, {
-    type:'bar',
-    data: {
-      labels:['Družstvo'],
-      datasets:[{
-        label:'Zhodnocení %',
-        data:[5],
-        backgroundColor:'green'
-      }]
-    },
-    options:{ responsive:true, plugins:{legend:{display:true}}, scales:{y:{beginAtZero:true, max:10}} }
-  });
+layers.forEach(layer => {
+ const box = document.createElement('div');
+ box.className = 'box';
+ box.innerHTML = `
+   <h3>${layer.name}</h3>
+   <div class="token-box">
+     <div class="token usd">USDT.z: <span id="usd-${layer.id}">0</span></div>
+     <div class="token gusd">GUSD: <span id="gusd-${layer.id}">0</span></div>
+   </div>
+   <canvas id="line-${layer.id}" height="80"></canvas>
+ `;
+ leftColumn.appendChild(box);
 
-  function addMember(){
-    const deposit = Number(document.getElementById('memberDeposit').value);
-    const usdRate = 1; // nebo dynamicky z API
-    const usdt = Math.floor(deposit / usdRate);
-    const wwKey = usdt; // jen USDT.z
-    document.getElementById('wwKey').innerText = wwKey;
-    document.getElementById('usdRate').innerText = usdRate;
+ const ctx = document.getElementById(`line-${layer.id}`).getContext('2d');
+ new Chart(ctx, {
+   type: 'line',
+   data: {
+     labels: ["Týden 1","Týden 2","Týden 3","Týden 4"],
+     datasets: [{label:'Výkon', data:[Math.random()*100,Math.random()*100,Math.random()*100,Math.random()*100], borderColor:'orange', tension:0.3, fill:false}]
+   },
+   options: {responsive:true, plugins:{legend:{display:false}}, scales:{y:{beginAtZero:true}}}
+ });
+});
 
-    // aktualizace barChart - simulace
-    barChart.data.datasets[0].data = [Math.random()*6 + 4];
-    barChart.update();
-  }
+// Pravé boxy
+const rightColumn = document.getElementById('right-column');
+
+// Box 1: Přidání člena
+const box1 = document.createElement('div');
+box1.className='box';
+box1.innerHTML = `
+ <h3>Přidat člena</h3>
+ <form id="member-form">
+   <label>Jméno:<input type="text" id="member-name"></label>
+   <label>Email:<input type="email" id="member-email"></label>
+   <label>Telefon:<input type="text" id="member-phone"></label>
+   <button type="button" onclick="addMember()">Přidat člena</button>
+ </form>
+ <div>WW-KEY: <span id="member-ww">0</span></div>
+`;
+rightColumn.appendChild(box1);
+
+// Box 2: Platba
+const box2 = document.createElement('div');
+box2.className='box';
+box2.innerHTML = `
+ <h3>Způsob platby</h3>
+ <select id="payment-method">
+   <option value="fiat">Fiat</option>
+   <option value="bnb">BNB</option>
+   <option value="usdt">USDT</option>
+   <option value="trx">TRX</option>
+ </select>
+ <button>Proveď platbu</button>
+`;
+rightColumn.appendChild(box2);
+
+// Box 3: Kurzy
+const box3 = document.createElement('div');
+box3.className='box';
+box3.innerHTML = `<h3>Aktuální kurzy</h3>
+ <div>Krypto: <span id="crypto-rate">---</span></div>
+ <div>Fiat: <span id="fiat-rate">---</span></div>
+`;
+rightColumn.appendChild(box3);
+
+// Box 4: Výnos družstva
+const box4 = document.createElement('div');
+box4.className='box';
+box4.innerHTML = `<h3>Výnos družstva</h3><canvas id="yield-bar" height="80"></canvas>`;
+rightColumn.appendChild(box4);
+
+const ctxYield = document.getElementById('yield-bar').getContext('2d');
+new Chart(ctxYield, {
+ type:'bar',
+ data:{labels:["Družstvo"], datasets:[{label:'Zhodnocení %', data:[5], backgroundColor:'green'}]},
+ options:{responsive:true, plugins:{legend:{display:false}}, scales:{y:{beginAtZero:true}}}
+});
+
+// Box 5: Dení report / audit
+const box5 = document.createElement('div');
+box5.className='box';
+box5.innerHTML = `<h3>Dení report / Audit</h3><div id="audit-report">Živá data denního reportu zde...</div>`;
+rightColumn.appendChild(box5);
+
+// Box 6: Token info
+const box6 = document.createElement('div');
+box6.className='box';
+box6.innerHTML = `<h3>Token info</h3><div>Rychlé odkazy, aktuální stav tokenů</div>`;
+rightColumn.appendChild(box6);
+
+// Box 7: DEX živý terminál
+const box7 = document.createElement('div');
+box7.className='box';
+box7.innerHTML = `<h3>DEX živý terminál</h3>
+ <div><a href="https://www.geckoterminal.com/bsc/pools/0xa55ccb41096aacf28eaa15efe00ea01b3e773cdd" target="_blank">USDt.z pool</a></div>
+ <div><a href="https://www.geckoterminal.com/bsc/pools/0xb7c6f12c7232bc6ea895d24447be8d0dbc3438ed" target="_blank">GUSD pool</a></div>
+`;
+rightColumn.appendChild(box7);
+
+// Funkce přidání člena
+function addMember(){
+ const name = document.getElementById('member-name').value;
+ const email = document.getElementById('member-email').value;
+ const phone = document.getElementById('member-phone').value;
+ const ww = Math.floor(Math.random()*100000); // příklad výpočtu WW-key
+ document.getElementById('member-ww').innerText = ww;
+ alert(`Přidán člen: ${name}, WW-KEY: ${ww}`);
+}
+
+// Simulace kurzů
+setInterval(()=>{
+ document.getElementById('crypto-rate').innerText = (Math.random()*500+1).toFixed(2);
+ document.getElementById('fiat-rate').innerText = (Math.random()*30+1).toFixed(2);
+},3000);
+
 </script>
-
 </body>
 </html>
