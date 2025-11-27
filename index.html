@@ -1,51 +1,59 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="cs">
 <head>
 <meta charset="UTF-8">
 <title>AYAS-7 Engine Dashboard</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
   body { font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif; background:#eef2f5; margin:0; padding:0; }
-  header { background:#003063; color:#fff; padding:15px 20px; display:flex; align-items:center; justify-content:space-between; }
-  header h1 { margin:0; font-size:1.8em; }
-  nav a { color:#fff; margin-left:20px; text-decoration:none; font-weight:600; }
-  nav a:hover { text-decoration:underline; }
-  #dashboard { width:1200px; display:flex; gap:20px; margin:20px auto; }
+  header { background:#003063; color:#fff; padding:15px 0; text-align:center; font-size:1.8em; font-weight:bold; }
+  nav { background:#0050a0; display:flex; justify-content:center; gap:20px; padding:10px 0; }
+  nav a { color:#fff; text-decoration:none; font-weight:bold; padding:5px 12px; border-radius:6px; background:#0066cc; }
+  nav a:hover { background:#0080ff; }
+
+  #dashboard { display:flex; justify-content:center; gap:20px; padding:20px 0; max-width:1200px; margin:auto; }
   .column { display:flex; flex-direction:column; gap:20px; width:50%; }
   .box { background:#fff; padding:20px; border-radius:12px; box-shadow:0 4px 16px rgba(0,0,0,0.12); }
   .box-title { font-size:1.4em; font-weight:800; margin-bottom:10px; color:#003063; display:flex; align-items:center; gap:10px; }
   .box-desc { margin-bottom:15px; color:#444; }
+  .token { display:inline-block; padding:6px 12px; border-radius:6px; color:#fff; margin-right:6px; font-size:0.9em; }
+  .usd { background:#1da84f; }
+  .gusd { background:#0066ff; }
+  .ww { background:#d10000; }
   canvas { background:#f9f9f9; border-radius:8px; margin-top:15px; }
+  input[type=number], input[type=text] { padding:5px; width:100px; margin-right:10px; }
+  button { padding:5px 10px; cursor:pointer; }
+  .member-entry { padding:6px 0; border-bottom:1px solid #ddd; }
 </style>
 </head>
 <body>
 
-<header>
-  <h1>AYAS-7 Engine</h1>
-  <nav>
-    <a href="index.html">Dashboard</a>
-    <a href="member-dashboard.html">Members</a>
-    <a href="https://winwin.coop/#ww-onb" target="_blank">Win-Win</a>
-    <a href="#layer1">Token Layer</a>
-    <a href="#layer2">Liquidity Engine</a>
-    <a href="#layer3">Yield Routing</a>
-    <a href="#layer4">Risk & Compliance</a>
-    <a href="#layer5">FinTech Interaction</a>
-    <a href="#layer6">Core Engine</a>
-    <a href="#layer7">Analytics</a>
-  </nav>
-</header>
+<header>AYAS-7 Engine / Win-Win</header>
+
+<nav>
+  <a href="#layer1">Token Layer</a>
+  <a href="#layer2">Liquidity Engine</a>
+  <a href="#layer3">Yield Routing</a>
+  <a href="#layer4">Risk & Compliance</a>
+  <a href="#layer5">FinTech Interaction</a>
+  <a href="#layer6">Core Engine</a>
+  <a href="#layer7">Dashboard & Analytics</a>
+  <a href="member-dashboard.html">Members</a>
+  <a href="https://winwin.coop/#ww-onb" target="_blank">Win-Win</a>
+</nav>
 
 <div id="dashboard">
+
   <!-- Levý sloupec: 7 vrstev motoru -->
   <div class="column" id="motor-column"></div>
 
-  <!-- Pravý sloupec: boxy s daty a dex/forex -->
+  <!-- Pravý sloupec: členové, kurzy, DEX -->
   <div class="column" id="function-column"></div>
+
 </div>
 
 <script>
-// ====== Levý sloupec: vrstvy ======
+// ====== Levý sloupec: vrstvy motoru ======
 const layers = [
   {id:'layer1', name:"Token Layer", desc:"Správa páru USDt.z/GUSD a sledování ceny likvidity.", img:"assets/1.png"},
   {id:'layer2', name:"Liquidity Engine", desc:"Reálná data z DEX/BSC, hloubka poolů, objemy a stabilita.", img:"assets/2.png"},
@@ -65,6 +73,10 @@ layers.forEach((layer,index)=>{
   box.innerHTML=`
     <div class='box-title'><img src='${layer.img}' width='50' alt='Layer ${index+1}'> ${layer.name}</div>
     <div class='box-desc'>${layer.desc}</div>
+    <div>
+      <span class='token usd'>USDt.z</span>
+      <span class='token gusd'>GUSD</span>
+    </div>
     <canvas id='motor-chart-${index}' height='100'></canvas>
   `;
   motorColumn.appendChild(box);
@@ -83,19 +95,82 @@ layers.forEach((layer,index)=>{
   });
 });
 
-// ====== Pravá strana: boxy (dex, kurzy, členové atd.) ======
+// ====== Pravý sloupec: členové, kurzy a DEX ======
 const functionColumn = document.getElementById('function-column');
+let members = [
+  {name:'Jan Novak', czk:15000, ww:615},
+  {name:'Petr Holoubek', czk:20000, ww:816},
+  {name:'Eva Svobodova', czk:10000, ww:408}
+];
 
-// zde budeme doplňovat živá data, kurzy, DEX a odkazy na smart kontrakty
-// zatím můžeme připravit prázdné boxy pro budoucí naplnění
+const loginBox = document.createElement('div');
+loginBox.className='box';
+loginBox.innerHTML=`
+  <div class='box-title'>Member Dashboard</div>
+  <p>Total Members: <span id='total-members'>0</span></p>
+  <p>Total Deposits (CZK): <span id='total-czk'>0</span></p>
+  <p><a href="member-dashboard.html">Open Full Member Database</a></p>
+  <input type='text' id='new-member-name' placeholder='New Member Name'>
+  <input type='number' id='new-member-deposit' placeholder='Deposit CZK'>
+  <button onclick='addNewMember()'>Add Member</button>
+`;
+functionColumn.appendChild(loginBox);
 
-for(let i=0;i<6;i++){
-  const box = document.createElement('div');
-  box.className='box';
-  box.innerHTML=`<div class='box-title'>Box ${i+1}</div><div class='box-desc'>Data will be here...</div>`;
-  functionColumn.appendChild(box);
+const ratesBox = document.createElement('div');
+ratesBox.className='box';
+ratesBox.innerHTML=`
+  <div class='box-title'>Live Currency Rates</div>
+  <div id='currency-rates'>Loading rates...</div>
+`;
+functionColumn.appendChild(ratesBox);
+
+const dexBox = document.createElement('div');
+dexBox.className='box';
+dexBox.innerHTML=`
+  <div class='box-title'>DEX Live Data</div>
+  <div id='dex-data'>Loading DEX data...</div>
+`;
+functionColumn.appendChild(dexBox);
+
+// ====== Funkce pro členy ======
+function addNewMember(){
+  const name = document.getElementById('new-member-name').value;
+  const deposit = Number(document.getElementById('new-member-deposit').value);
+  if(name && deposit>0){
+    members.push({name, deposit, ww:Math.round(deposit/24.5)});
+    renderMemberStats();
+  }
 }
-</script>
 
+function renderMemberStats(){
+  const totalMembers = members.length;
+  const totalCzk = members.reduce((sum,m)=>sum+m.deposit,0);
+  document.getElementById('total-members').innerText = totalMembers;
+  document.getElementById('total-czk').innerText = totalCzk;
+}
+
+// ====== Simulace živých dat ======
+function loadCurrencyRates(){
+  // Zde můžeš propojit API např. z Binance / CoinGecko
+  document.getElementById('currency-rates').innerHTML = `
+    USD/EUR: 0.93<br>
+    USD/GBP: 0.81<br>
+    USD/JPY: 142.5
+  `;
+}
+
+function loadDexData(){
+  // Simulace DEX
+  document.getElementById('dex-data').innerHTML = `
+    USDT.Z liquidity pool: 1,200,000<br>
+    GUSD liquidity pool: 900,000<br>
+    Last swap: 5,000 USDT.Z → 4,950 GUSD
+  `;
+}
+
+renderMemberStats();
+loadCurrencyRates();
+loadDexData();
+</script>
 </body>
 </html>
