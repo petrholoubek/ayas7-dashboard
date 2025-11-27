@@ -1,1 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>AYAS-7 Member Dashboard</title>
+<style>
+  body { font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif; background:#eef2f5; margin:0; padding:20px; }
+  h1 { color:#003063; }
+  table { width:100%; border-collapse:collapse; margin-top:20px; }
+  th, td { border:1px solid #ccc; padding:8px; text-align:left; }
+  th { background:#003063; color:#fff; position:sticky; top:0; }
+  tr:nth-child(even) { background:#f9f9f9; }
+  input[type=text], input[type=number] { padding:5px; margin-right:10px; }
+  button { padding:5px 10px; margin:2px; cursor:pointer; }
+</style>
+</head>
+<body>
 
+<h1>AYAS-7 Member Dashboard</h1>
+
+<!-- Přidání člena -->
+<div>
+  <input type="text" id="newMemberName" placeholder="Member Name">
+  <input type="number" id="newMemberDeposit" placeholder="Deposit CZK">
+  <button onclick="addMember()">Add Member</button>
+</div>
+
+<!-- Filtr -->
+<div style="margin-top:10px;">
+  <input type="text" id="searchName" placeholder="Search by Name" oninput="filterMembers()">
+</div>
+
+<!-- Tabulka členů -->
+<table id="memberTable">
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Name</th>
+      <th>Deposit (CZK)</th>
+      <th>WW-KEY</th>
+      <th>Monthly Yield (WW-KEY)</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
+
+<!-- Export tlačítka -->
+<div style="margin-top:20px;">
+  <button onclick="exportCSV()">Export CSV</button>
+</div>
+
+<script>
+const CURZ_KCZ_USD = 24.5;
+const MONTHLY_YIELD = 0.05;
+let members = [];
+
+// Funkce pro přidání člena
+function addMember() {
+  const name = document.getElementById('newMemberName').value.trim();
+  const deposit = Number(document.getElementById('newMemberDeposit').value);
+  if(!name || deposit <= 0) { alert('Enter valid name and deposit'); return; }
+  const ww = Math.round(deposit / CURZ_KCZ_USD);
+  members.push({name, deposit, ww});
+  document.getElementById('newMemberName').value = '';
+  document.getElementById('newMemberDeposit').value = '';
+  renderMembers();
+}
+
+// Render členů do tabulky
+function renderMembers(filteredList) {
+  const list = filteredList || members;
+  const tbody = document.getElementById('memberTable').querySelector('tbody');
+  tbody.innerHTML = '';
+  list.forEach((m, idx) => {
+    const yieldAmount = Math.round(m.ww * MONTHLY_YIELD);
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${idx+1}</td>
+                    <td>${m.name}</td>
+                    <td>${m.deposit}</td>
+                    <td>${m.ww}</td>
+                    <td>${yieldAmount}</td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+// Filtr podle jména
+function filterMembers() {
+  const query = document.getElementById('searchName').value.toLowerCase();
+  const filtered = members.filter(m => m.name.toLowerCase().includes(query));
+  renderMembers(filtered);
+}
+
+// Export do CSV
+function exportCSV() {
+  let csv = 'Index,Name,Deposit CZK,WW-KEY,Monthly Yield WW-KEY\n';
+  members.forEach((m, idx) => {
+    const yieldAmount = Math.round(m.ww * MONTHLY_YIELD);
+    csv += `${idx+1},${m.name},${m.deposit},${m.ww},${yieldAmount}\n`;
+  });
+  const blob = new Blob([csv], {type:'text/csv'});
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = 'ayas7_members.csv';
+  link.click();
+}
+
+// Předvyplnění pro test (volitelné)
+members = [
+  {name:'Jan Novak', deposit:15000, ww:615},
+  {name:'Petr Holoubek', deposit:20000, ww:816},
+  {name:'Eva Svobodova', deposit:10000, ww:408}
+];
+renderMembers();
+</script>
+
+</body>
+</html>
