@@ -6,54 +6,56 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
   body { font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif; background:#eef2f5; margin:0; padding:0; }
-  header { background:#003063; color:#fff; padding:15px 0; text-align:center; font-size:1.8em; font-weight:bold; }
-  nav { background:#0050a0; display:flex; justify-content:center; gap:20px; padding:10px 0; }
-  nav a { color:#fff; text-decoration:none; font-weight:bold; padding:5px 12px; border-radius:6px; background:#0066cc; }
-  nav a:hover { background:#0080ff; }
-
-  #dashboard { display:flex; justify-content:center; gap:20px; padding:20px 0; max-width:1200px; margin:auto; }
+  header { background:#003063; color:#fff; padding:15px 40px; display:flex; justify-content:space-between; align-items:center; }
+  header h1 { margin:0; font-size:1.8em; }
+  nav button { margin-left:10px; padding:6px 12px; font-weight:600; cursor:pointer; border:none; border-radius:5px; background:#1da84f; color:#fff; }
+  #dashboard { display:flex; gap:20px; width:1200px; margin:20px auto; }
   .column { display:flex; flex-direction:column; gap:20px; width:50%; }
   .box { background:#fff; padding:20px; border-radius:12px; box-shadow:0 4px 16px rgba(0,0,0,0.12); }
-  .box-title { font-size:1.4em; font-weight:800; margin-bottom:10px; color:#003063; display:flex; align-items:center; gap:10px; }
+  .box-title { font-size:1.2em; font-weight:800; margin-bottom:10px; color:#003063; display:flex; align-items:center; gap:10px; }
   .box-desc { margin-bottom:15px; color:#444; }
   .token { display:inline-block; padding:6px 12px; border-radius:6px; color:#fff; margin-right:6px; font-size:0.9em; }
   .usd { background:#1da84f; }
   .gusd { background:#0066ff; }
   .ww { background:#d10000; }
-  canvas { background:#f9f9f9; border-radius:8px; margin-top:15px; }
-  input[type=number], input[type=text] { padding:5px; width:100px; margin-right:10px; }
-  button { padding:5px 10px; cursor:pointer; }
+  canvas { background:#f9f9f9; border-radius:8px; margin-top:10px; }
+  input[type=number], input[type=text] { padding:5px; width:120px; margin-right:10px; }
+  button.pay { background:#0066ff; color:#fff; }
+  footer { text-align:center; padding:15px; background:#003063; color:#fff; margin-top:20px; }
   .member-entry { padding:6px 0; border-bottom:1px solid #ddd; }
 </style>
 </head>
 <body>
 
-<header>AYAS-7 Engine / Win-Win</header>
-
-<nav>
-  <a href="#layer1">Token Layer</a>
-  <a href="#layer2">Liquidity Engine</a>
-  <a href="#layer3">Yield Routing</a>
-  <a href="#layer4">Risk & Compliance</a>
-  <a href="#layer5">FinTech Interaction</a>
-  <a href="#layer6">Core Engine</a>
-  <a href="#layer7">Dashboard & Analytics</a>
-  <a href="member-dashboard.html">Members</a>
-  <a href="https://winwin.coop/#ww-onb" target="_blank">Win-Win</a>
-</nav>
+<header>
+  <h1>AYAS-7 Engine</h1>
+  <nav>
+    <button onclick="window.location.href='#layer1'">Token Layer</button>
+    <button onclick="window.location.href='#layer2'">Liquidity Engine</button>
+    <button onclick="window.location.href='#layer3'">Yield Routing</button>
+    <button onclick="window.location.href='#layer4'">Risk & Compliance</button>
+    <button onclick="window.location.href='#layer5'">FinTech</button>
+    <button onclick="window.location.href='#layer6'">Core Engine</button>
+    <button onclick="window.location.href='#layer7'">Dashboard</button>
+    <button onclick="window.location.href='member-dashboard.html'">Members</button>
+    <button onclick="window.open('https://winwin.coop/#ww-onb','_blank')">Win-Win</button>
+  </nav>
+</header>
 
 <div id="dashboard">
 
-  <!-- Levý sloupec: 7 vrstev motoru -->
+  <!-- Levá část – vrstvy motoru -->
   <div class="column" id="motor-column"></div>
 
-  <!-- Pravý sloupec: členové, kurzy, DEX -->
+  <!-- Pravá část – členská databáze a DEX/kurzy -->
   <div class="column" id="function-column"></div>
 
 </div>
 
+<footer>© 2025 Win-Win Cooperative, All rights reserved.</footer>
+
 <script>
-// ====== Levý sloupec: vrstvy motoru ======
+// ====== Levá část ======
 const layers = [
   {id:'layer1', name:"Token Layer", desc:"Správa páru USDt.z/GUSD a sledování ceny likvidity.", img:"assets/1.png"},
   {id:'layer2', name:"Liquidity Engine", desc:"Reálná data z DEX/BSC, hloubka poolů, objemy a stabilita.", img:"assets/2.png"},
@@ -65,22 +67,16 @@ const layers = [
 ];
 
 const motorColumn = document.getElementById('motor-column');
-
 layers.forEach((layer,index)=>{
   const box = document.createElement('div');
   box.className='box';
   box.id = layer.id;
   box.innerHTML=`
-    <div class='box-title'><img src='${layer.img}' width='50' alt='Layer ${index+1}'> ${layer.name}</div>
+    <div class='box-title'><img src='${layer.img}' width='50' alt='${layer.name}'> ${layer.name}</div>
     <div class='box-desc'>${layer.desc}</div>
-    <div>
-      <span class='token usd'>USDt.z</span>
-      <span class='token gusd'>GUSD</span>
-    </div>
     <canvas id='motor-chart-${index}' height='100'></canvas>
   `;
   motorColumn.appendChild(box);
-
   const ctx = document.getElementById(`motor-chart-${index}`).getContext('2d');
   new Chart(ctx,{
     type:'line',
@@ -95,82 +91,80 @@ layers.forEach((layer,index)=>{
   });
 });
 
-// ====== Pravý sloupec: členové, kurzy a DEX ======
+// ====== Pravá část ======
 const functionColumn = document.getElementById('function-column');
-let members = [
-  {name:'Jan Novak', czk:15000, ww:615},
-  {name:'Petr Holoubek', czk:20000, ww:816},
-  {name:'Eva Svobodova', czk:10000, ww:408}
-];
+const CURZ_KCZ_USD = 24.5;
+const MONTHLY_YIELD = 0.05;
+let members = [];
 
-const loginBox = document.createElement('div');
-loginBox.className='box';
-loginBox.innerHTML=`
-  <div class='box-title'>Member Dashboard</div>
-  <p>Total Members: <span id='total-members'>0</span></p>
-  <p>Total Deposits (CZK): <span id='total-czk'>0</span></p>
-  <p><a href="member-dashboard.html">Open Full Member Database</a></p>
-  <input type='text' id='new-member-name' placeholder='New Member Name'>
-  <input type='number' id='new-member-deposit' placeholder='Deposit CZK'>
-  <button onclick='addNewMember()'>Add Member</button>
-`;
-functionColumn.appendChild(loginBox);
-
-const ratesBox = document.createElement('div');
-ratesBox.className='box';
-ratesBox.innerHTML=`
-  <div class='box-title'>Live Currency Rates</div>
-  <div id='currency-rates'>Loading rates...</div>
-`;
-functionColumn.appendChild(ratesBox);
-
-const dexBox = document.createElement('div');
-dexBox.className='box';
-dexBox.innerHTML=`
-  <div class='box-title'>DEX Live Data</div>
-  <div id='dex-data'>Loading DEX data...</div>
-`;
-functionColumn.appendChild(dexBox);
-
-// ====== Funkce pro členy ======
-function addNewMember(){
-  const name = document.getElementById('new-member-name').value;
-  const deposit = Number(document.getElementById('new-member-deposit').value);
-  if(name && deposit>0){
-    members.push({name, deposit, ww:Math.round(deposit/24.5)});
-    renderMemberStats();
-  }
+function createRightBox(title, innerHTML){
+  const box = document.createElement('div');
+  box.className='box';
+  box.innerHTML=`<div class='box-title'>${title}</div>${innerHTML}`;
+  functionColumn.appendChild(box);
 }
 
-function renderMemberStats(){
-  const totalMembers = members.length;
-  const totalCzk = members.reduce((sum,m)=>sum+m.deposit,0);
-  document.getElementById('total-members').innerText = totalMembers;
-  document.getElementById('total-czk').innerText = totalCzk;
+// 1. Live DEX / Smart Contracts
+createRightBox('Live DEX & Smart Contracts', `
+  <p>USDt.z: <a href="https://bscscan.com/address/YOUR_USDTZ_CONTRACT" target="_blank">BSC</a></p>
+  <p>GUSD: <a href="https://bscscan.com/address/YOUR_GUSD_CONTRACT" target="_blank">BSC</a></p>
+`);
+
+// 2. Kurzy měn
+createRightBox('Exchange Rates', `
+  <p>EUR/USD: 1.08</p>
+  <p>USD/CZK: 24.5</p>
+`);
+
+// 3. Platba člena – flexibilní
+createRightBox('Member Payment (Flexible)', `
+  <input type='number' id='pay-amount' placeholder='Amount'><br><br>
+  <button class='pay' onclick='processPayment()'>Pay & Receive WW-KEY</button>
+`);
+
+// 4. Osobní měsíční výnos
+createRightBox('Personal Monthly Yield', `<div id='member-yield'></div>`);
+
+// 5. Celkový výnos motoru
+createRightBox('Total Win-Win Yield', `<canvas id='total-volume-chart' height='100'></canvas>`);
+
+// 6. Statistiky členů
+createRightBox('Member Statistics', `<div id='member-list'></div>`);
+
+// 7. Odkazy a integrace
+createRightBox('Links & Integration', `
+  <p><a href="https://www.pancakeswap.finance/" target="_blank">PancakeSwap</a></p>
+  <p><a href="https://metamask.io/" target="_blank">MetaMask</a></p>
+  <p><a href="https://winwin.coop/" target="_blank">Win-Win Cooperative</a></p>
+`);
+
+// ====== Funkce pro platby a členy ======
+function processPayment(){
+  const amt = Number(document.getElementById('pay-amount').value);
+  if(!amt) return alert('Enter an amount');
+  const wwKey = Math.round(amt / CURZ_KCZ_USD);
+  alert(`Member received ${wwKey} WW-KEY`);
+  // Tady doplnit backend / logiku pro uložení člena a platby
 }
 
-// ====== Simulace živých dat ======
-function loadCurrencyRates(){
-  // Zde můžeš propojit API např. z Binance / CoinGecko
-  document.getElementById('currency-rates').innerHTML = `
-    USD/EUR: 0.93<br>
-    USD/GBP: 0.81<br>
-    USD/JPY: 142.5
-  `;
+function renderMembers(){
+  document.getElementById('member-list').innerHTML = members.map(m=>`${m.name}: ${m.czk} CZK → ${m.ww} WW-KEY`).join('<br>');
 }
 
-function loadDexData(){
-  // Simulace DEX
-  document.getElementById('dex-data').innerHTML = `
-    USDT.Z liquidity pool: 1,200,000<br>
-    GUSD liquidity pool: 900,000<br>
-    Last swap: 5,000 USDT.Z → 4,950 GUSD
-  `;
+function renderTotalVolume(){
+  const ctx = document.getElementById('total-volume-chart').getContext('2d');
+  new Chart(ctx,{
+    type:'bar',
+    data:{ labels:['T1','T2','T3','T4','T5'], datasets:[
+      { label:'Total Volume', data:[50000,60000,55000,65000,70000], backgroundColor:'#1da84f' },
+      { label:'Total WW-Yield', data:[1500,1800,1700,2000,2200], backgroundColor:'#d10000' }
+    ]},
+    options:{ responsive:true, plugins:{ legend:{ position:'top' } }, scales:{ y:{ beginAtZero:true } } }
+  });
 }
 
-renderMemberStats();
-loadCurrencyRates();
-loadDexData();
+renderMembers();
+renderTotalVolume();
 </script>
 </body>
 </html>
