@@ -1,25 +1,21 @@
-<nav id="top-menu">
-   <div class="menu-left">
-       <a href="dashboard.html" class="menu-logo">
-           <img src="assets/logo-ayas7.png" alt="AYAS-7 logo">
-           <span class="menu-title">AYAS-7 Engine</span>
-       </a>
-   </div>
+<nav class="topmenu">
+ <div class="menu-left">
+   <img src="assets/img/logo-ayas7.png" alt="AYAS-7 Logo" class="menu-logo">
+   <span class="menu-title">AYAS-7 Engine</span>
+ </div>
 
-   <div class="menu-center">
-       <a href="dashboard.html" class="menu-link">Home</a>
-       <a href="layers.html" class="menu-link">AYAS-7</a>
-       <a href="members.html" class="menu-link">Členská sekce</a>
-       <a href="reports.html" class="menu-link">Reporty</a>
-       <a href="contact.html" class="menu-link">Kontakt</a>
-   </div>
+ <ul class="menu-links">
+   <li><a href="dashboard.html">Home</a></li>
+   <li><a href="members.html">Členové</a></li>
+   <li><a href="payments.html">Platby</a></li>
+   <li><a href="reports.html">Reporty</a></li>
+   <li><a href="dex.html">DEX data</a></li>
+ </ul>
 
-   <div class="menu-right">
-       <div class="lang-switch">
-           <a href="#" class="lang active">CZ</a> |
-           <a href="#" class="lang">EN</a>
-       </div>
+ <div class="menu-right">
+   <a href="#" class="lang-switch">CZ</a> |
+   <a href="#" class="lang-switch">EN</a>
 
-       <a href="login.html" class="menu-login-btn">Přihlásit se</a>
-   </div>
+   <a href="login.html" class="menu-login">Přihlášení</a>
+ </div>
 </nav>
