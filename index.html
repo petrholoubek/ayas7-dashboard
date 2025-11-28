@@ -1,83 +1,123 @@
 <!DOCTYPE html>
 <html lang="cs">
 <head>
-  <meta charset="UTF-8">
-  <title>AYAS-7 Engine</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AYAS-7 Engine – Úvod</title>
+
+<style>
     body {
-      margin: 0;
-      padding: 0;
-      background: #000;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      color: #fff;
-      overflow: hidden;
+        margin: 0;
+        padding: 0;
+        background: #000;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        overflow: hidden;
     }
 
     .hero {
-      width: 100%;
-      height: 100vh;
-      background: url("assets/ayas7-hero.jpg") no-repeat center center/cover;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      padding: 20px;
+        width: 100vw;
+        height: 100vh;
+        background: url("assets/ayas7-hero.jpg") no-repeat center center / cover;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        flex-direction: column;
+        padding: 20px;
     }
 
-    /* Hlavní nadpis AYAS-7 zvětšíme */
-    .hero-title {
-      font-size: 64px;            /* bylo 52px → teď je větší */
-      font-weight: 800;
-      margin-bottom: 10px;
-      letter-spacing: 2px;
-      text-shadow: 0px 0px 12px rgba(0,0,0,0.4);
+    .title {
+        color: white;
+        font-size: 54px;     /* ZVĚTŠENO PODLE TVÉHO POŽADAVKU */
+        font-weight: 700;
+        letter-spacing: 1px;
+        margin-bottom: 14px;
+        text-shadow: 0 3px 10px rgba(0,0,0,0.55);
     }
 
-    /* Druhý text mírně zmenšíme, aby se WIN-WIN vešlo na jeden řádek */
-    .hero-subtitle {
-      font-size: 26px;            /* bylo 30px → menší o 4px */
-      font-weight: 600;
-      max-width: 90%;
-      line-height: 1.25;
-      text-shadow: 0px 0px 10px rgba(0,0,0,0.3);
+    .subtitle {
+        color: white;
+        font-size: 22px;     /* ZMENŠENO – ABY SE VEŠLO WIN-WIN NA JEDEN ŘÁDEK */
+        font-weight: 500;
+        max-width: 900px;
+        line-height: 1.3;
+        margin-bottom: 35px;
+        text-shadow: 0 2px 6px rgba(0,0,0,0.55);
+        white-space: nowrap; /* VYNUTÍ JEDEN ŘÁDEK */
     }
 
-    .enter-btn {
-      margin-top: 40px;
-      padding: 14px 42px;
-      font-size: 20px;
-      font-weight: 600;
-      color: #fff;
-      background: #0d6efd;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: 0.25s;
+    .btn-row {
+        display: flex;
+        gap: 20px;
+        margin-top: 10px;
     }
 
-    .enter-btn:hover {
-      background: #0a58ca;
+    .btn {
+        padding: 14px 26px;
+        font-size: 17px;
+        font-weight: 600;
+        border-radius: 6px;
+        cursor: pointer;
+        border: none;
+        text-decoration: none;
+        font-family: inherit;
+        transition: 0.2s ease;
     }
 
-  </style>
+    .btn-primary {
+        background: #0055cc;
+        color: white;
+    }
+
+    .btn-primary:hover {
+        background: #003f99;
+    }
+
+    .btn-secondary {
+        background: #ffffff;
+        color: #003063;
+    }
+
+    .btn-secondary:hover {
+        background: #e3e3e3;
+    }
+
+    @media(max-width: 768px) {
+        .title {
+            font-size: 38px;
+        }
+        .subtitle {
+            font-size: 17px;
+            white-space: normal; /* povolí zalamování na mobilech */
+        }
+        .btn-row {
+            flex-direction: column;
+            width: 90%;
+        }
+        .btn {
+            width: 100%;
+        }
+    }
+</style>
 </head>
 
 <body>
 
-  <div class="hero">
-    <div class="hero-title">AYAS-7</div>
+<div class="hero">
+    
+    <div class="title">AYAS-7 Engine</div>
 
-    <div class="hero-subtitle">
-      Revoluční sedmivrstvý výkonný motor <br>
-      finančního ekosystému <b>Win-Win</b>
+    <div class="subtitle">
+        Revoluční sedmistupňový výkonný motor družstva Win-Win
     </div>
 
-    <button class="enter-btn" onclick="window.location.href='dashboard.html'">
-      Pokračovat
-    </button>
-  </div>
+    <div class="btn-row">
+        <a href="dashboard.html" class="btn btn-primary">Vstup do systému</a>
+        <a href="login.html" class="btn btn-secondary">Členská sekce – Přihlásit</a>
+    </div>
+
+</div>
 
 </body>
 </html>
