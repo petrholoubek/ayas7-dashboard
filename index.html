@@ -1,78 +1,83 @@
 <!DOCTYPE html>
 <html lang="cs">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
   <title>AYAS-7 Engine</title>
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
       margin: 0;
       padding: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background: #000;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       color: #fff;
-      overflow-x: hidden;
+      overflow: hidden;
     }
 
     .hero {
-      position: relative;
       width: 100%;
       height: 100vh;
-      background: url("assets/ayas7-hero.jpg") center center / cover no-repeat;
+      background: url("assets/ayas7-hero.jpg") no-repeat center center/cover;
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
       text-align: center;
-      padding: 0 20px;
+      padding: 20px;
     }
 
+    /* Hlavní nadpis AYAS-7 zvětšíme */
     .hero-title {
-      font-size: 48px;
-      font-weight: 700;
-      letter-spacing: -0.5px;
-      text-shadow: 0 4px 12px rgba(0,0,0,0.5);
-      margin-bottom: 18px;
+      font-size: 64px;            /* bylo 52px → teď je větší */
+      font-weight: 800;
+      margin-bottom: 10px;
+      letter-spacing: 2px;
+      text-shadow: 0px 0px 12px rgba(0,0,0,0.4);
     }
 
+    /* Druhý text mírně zmenšíme, aby se WIN-WIN vešlo na jeden řádek */
     .hero-subtitle {
-      font-size: 26px;
+      font-size: 26px;            /* bylo 30px → menší o 4px */
       font-weight: 600;
-      max-width: 1100px;
-      line-height: 1.35;
-      text-shadow: 0 3px 8px rgba(0,0,0,0.45);
-      white-space: nowrap;      /* donuti text držet se na jednom řádku */
-      overflow: hidden;
+      max-width: 90%;
+      line-height: 1.25;
+      text-shadow: 0px 0px 10px rgba(0,0,0,0.3);
     }
 
-    @media (max-width: 1100px) {
-      .hero-subtitle {
-        font-size: 22px;
-        white-space: normal;    /* na menších mobilech povolíme zalomení */
-      }
+    .enter-btn {
+      margin-top: 40px;
+      padding: 14px 42px;
+      font-size: 20px;
+      font-weight: 600;
+      color: #fff;
+      background: #0d6efd;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.25s;
     }
 
-    @media (max-width: 700px) {
-      .hero-title {
-        font-size: 34px;
-      }
-      .hero-subtitle {
-        font-size: 18px;
-      }
+    .enter-btn:hover {
+      background: #0a58ca;
     }
 
   </style>
 </head>
+
 <body>
 
-  <section class="hero">
-    <div class="hero-title">AYAS-7 ENGINE</div>
+  <div class="hero">
+    <div class="hero-title">AYAS-7</div>
 
     <div class="hero-subtitle">
-      Revoluční sedmivrstvý engine pro výkonnost, stabilitu a růst – vyvinutý pro ekosystém Win-Win.
+      Revoluční sedmivrstvý výkonný motor <br>
+      finančního ekosystému <b>Win-Win</b>
     </div>
-  </section>
+
+    <button class="enter-btn" onclick="window.location.href='dashboard.html'">
+      Pokračovat
+    </button>
+  </div>
 
 </body>
 </html>
