@@ -96,7 +96,6 @@
  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
  
  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
  
  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -129,7 +128,7 @@
    #ayas-dashboard {
      max-width: 1200px;
      margin: 20px auto 40px auto;
-     padding: 0 10px 20px 10px;
+     padding: 0 5px 20px 5px;
    }
 
    .page-title {
@@ -151,7 +150,7 @@
 
    .columns {
      display: flex;
-     gap: 24px;
+     gap: 12px; /* menší mezera mezi levým a pravým sloupcem */
      align-items: flex-start;
      justify-content: center;
      flex-wrap: wrap;
@@ -162,7 +161,7 @@
      flex-direction: column;
      gap: 16px;
      align-items: flex-start;
-     flex: 1;
+     flex: 0 0 50%;
      min-width: 0;
    }
 
@@ -177,10 +176,22 @@
    }
 
    .layer-box {
-     min-height: 300px; /* zvětšené boxy pro graf + text */
+     min-height: 300px; /* 500 x 300: výška boxu pro text + graf */
      display: flex;
      flex-direction: column;
      justify-content: space-between;
+   }
+
+   .layer-header-wrap {
+     display: flex;
+     align-items: stretch;
+   }
+
+   .color-strip {
+     width: 4px;
+     border-radius: 4px;
+     align-self: stretch;
+     margin-right: 8px;
    }
 
    .layer-header {
@@ -196,6 +207,7 @@
      border-radius: 8px;
      object-fit: contain;
      flex-shrink: 0;
+     cursor: pointer;
    }
 
    .layer-title {
@@ -207,18 +219,6 @@
    .layer-desc {
      font-size: 13px;
      color: var(--text-muted);
-   }
-
-   .color-strip {
-     width: 4px;
-     border-radius: 4px;
-     align-self: stretch;
-     margin-right: 8px;
-   }
-
-   .layer-header-wrap {
-     display: flex;
-     align-items: stretch;
    }
 
    .token-row {
@@ -398,7 +398,7 @@
      text-decoration: underline;
    }
 
-   /* Modální okno pro podmínky */
+   /* Modal podmínky */
    .modal-backdrop {
      display: none;
      position: fixed;
@@ -446,7 +446,7 @@
      color: var(--text-main);
    }
 
-   /* Graf pro výnos družstva */
+   /* Výnos družstva graf */
    #coopYieldChart {
      width: 100%;
      height: 220px;
@@ -465,6 +465,9 @@
      .columns {
        flex-direction: column;
        align-items: center;
+     }
+     .col {
+       flex: 1 1 100%;
      }
      .layer-box,
      .rbox {
@@ -490,7 +493,9 @@
        <div class="layer-header-wrap">
          <div class="color-strip" style="background:#1da84f;"></div>
          <div class="layer-header">
-           <img src="assets/1.png" alt="Layer 1" />
+           <a href="token-layer.html">
+             <img src="assets/1.png" alt="Layer 1" />
+           </a>
            <div>
              <div class="layer-title">Layer 1: Token Layer</div>
              <div class="layer-desc">Správa a distribuce tokenů USDt.z a GUSD pro celý ekosystém.</div>
@@ -515,7 +520,9 @@
        <div class="layer-header-wrap">
          <div class="color-strip" style="background:#e11d48;"></div>
          <div class="layer-header">
-           <img src="assets/2.png" alt="Layer 2" />
+           <a href="liquidity-engine.html">
+             <img src="assets/2.png" alt="Layer 2" />
+           </a>
            <div>
              <div class="layer-title">Layer 2: Liquidity Engine</div>
              <div class="layer-desc">Řízení likvidity, LP pozic a rebalancování pro stabilní TVL.</div>
@@ -540,7 +547,9 @@
        <div class="layer-header-wrap">
          <div class="color-strip" style="background:#7c3aed;"></div>
          <div class="layer-header">
-           <img src="assets/3.png" alt="Layer 3" />
+           <a href="yield-routing.html">
+             <img src="assets/3.png" alt="Layer 3" />
+           </a>
            <div>
              <div class="layer-title">Layer 3: Yield Routing</div>
              <div class="layer-desc">Směrování kapitálu do strategií s nejlepším risk-reward poměrem.</div>
@@ -565,7 +574,9 @@
        <div class="layer-header-wrap">
          <div class="color-strip" style="background:#facc15;"></div>
          <div class="layer-header">
-           <img src="assets/4.png" alt="Layer 4" />
+           <a href="risk-compliance.html">
+             <img src="assets/4.png" alt="Layer 4" />
+           </a>
            <div>
              <div class="layer-title">Layer 4: Risk & Compliance</div>
              <div class="layer-desc">Kontrola limitů, auditní stopa a řízení rizikového profilu.</div>
@@ -590,7 +601,9 @@
        <div class="layer-header-wrap">
          <div class="color-strip" style="background:#f97316;"></div>
          <div class="layer-header">
-           <img src="assets/5.png" alt="Layer 5" />
+           <a href="fintech-interaction.html">
+             <img src="assets/5.png" alt="Layer 5" />
+           </a>
            <div>
              <div class="layer-title">Layer 5: FinTech Interaction</div>
              <div class="layer-desc">Rozhraní pro členy, reporting a napojení na finanční partnery.</div>
@@ -615,7 +628,9 @@
        <div class="layer-header-wrap">
          <div class="color-strip" style="background:#6b7280;"></div>
          <div class="layer-header">
-           <img src="assets/6.png" alt="Layer 6" />
+           <a href="core-engine.html">
+             <img src="assets/6.png" alt="Layer 6" />
+           </a>
            <div>
              <div class="layer-title">Layer 6: Core Engine</div>
              <div class="layer-desc">Výpočetní jádro – algoritmy, párování, monitorování výkonu.</div>
@@ -640,7 +655,9 @@
        <div class="layer-header-wrap">
          <div class="color-strip" style="background:#0ea5e9;"></div>
          <div class="layer-header">
-           <img src="assets/7.png" alt="Layer 7" />
+           <a href="dashboard-analytics.html">
+             <img src="assets/7.png" alt="Layer 7" />
+           </a>
            <div>
              <div class="layer-title">Layer 7: Dashboard & Analytics</div>
              <div class="layer-desc">Konsolidovaný přehled, KPI a analytika výkonnosti motoru.</div>
@@ -708,7 +725,7 @@
        <p class="small-muted">Přečti si podmínky služby a potvrď souhlas před aktivací účtu.</p>
 
        <div class="terms-row">
-         <button class="btn btn-secondary" id="btnShowTerms">Zobrazit podmínky</button>
+         <button class="btn btn-secondary" id="btnShowTerms" type="button">Zobrazit podmínky</button>
          <label class="small-muted">
            <input type="checkbox" id="chkAgreeTerms" />
            Souhlasím s podmínkami Win-Win
@@ -725,14 +742,14 @@
        <p class="small-muted">Člen si může vybrat mezi fiat a krypto platbou. WW-KEY se přidělí podle aktuálního kurzu.</p>
 
        <p><b>Fiat platba:</b></p>
-       <button class="btn btn-secondary" onclick="window.open('payment.html','_blank')">
+       <button class="btn btn-secondary" type="button" onclick="window.open('payment.html','_blank')">
          Platba bankovním převodem / kartou
        </button>
 
        <p style="margin-top:10px;"><b>Krypto platba:</b></p>
        <div style="display:flex; flex-wrap:wrap; gap:8px;">
-         <button class="btn btn-ghost" onclick="window.open('https://metamask.io','_blank')">Stáhnout MetaMask</button>
-         <button class="btn btn-ghost" onclick="window.open('https://pancakeswap.finance','_blank')">Přejít na PancakeSwap</button>
+         <button class="btn btn-ghost" type="button" onclick="window.open('https://metamask.io','_blank')">Stáhnout MetaMask</button>
+         <button class="btn btn-ghost" type="button" onclick="window.open('https://pancakeswap.finance','_blank')">Přejít na PancakeSwap</button>
        </div>
        <p class="small-muted" style="margin-top:8px;">Podporované měny: USDt, BNB, TRX, USDt.z (přepočet na WW-KEY dle USD).</p>
      </div>
@@ -824,7 +841,7 @@
 </div>
 
 <script>
- /************* Supabase klient (pokud používáš vlastní supabase.js, uprav to) *************/
+ /************* Supabase klient *************/
  const supabaseUrl = 'https://hurayrwshmsvsylhwlbj.supabase.co';
  const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh1cmF5cndzaG1zdnN5bGh3bGJqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQyMTk4MzEsImV4cCI6MjA3OTc5NTgzMX0.Q0KpZX_Dln9_9OwZcCty-bbyw8drX84ax098Uy03VUI';
 
@@ -878,12 +895,12 @@
    layerCharts.push(createLayerChart('layerChart-' + i));
  }
 
- // lehké "dýchání" grafů – občasná aktualizace dat
+ // mírná aktualizace křivek
  setInterval(() => {
    layerCharts.forEach(chart => {
      const ds = chart.data.datasets[0].data;
      for (let i = 0; i < ds.length; i++) {
-       ds[i] = ds[i] + (Math.random() - 0.5) * 0.2; // drobná odchylka
+       ds[i] = ds[i] + (Math.random() - 0.5) * 0.2;
      }
      chart.update('none');
    });
