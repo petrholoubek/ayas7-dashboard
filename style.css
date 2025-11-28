@@ -1,154 +1,197 @@
-/* --- Základní nastavení stránky --- */
-body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: #eef2f5;
-  margin: 0;
-  padding: 0;
+/* ============================
+  GLOBAL
+============================ */
+#msg_body {
+   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+   background: #f4f4f4;
+   margin: 0;
+   padding: 0;
+   display: flex;
+   justify-content: center;
 }
 
-/* --- Modrá lišta nahoře (AYAS-7 Engine + Win-Win) --- */
-.top-bar {
-  background-color: #003063;
-  color: #fff;
-  text-align: center;
-  padding: 15px 0;
-  font-size: 1.8em;
-  font-weight: bold;
+#main-container {
+   width: 1200px;
+   margin-top: 20px;
+   display: flex;
+   flex-direction: column;
+   gap: 20px;
 }
 
-.top-bar a {
-  color: #00ffff;  /* Win-Win odkaz */
-  text-decoration: none;
-  margin-left: 20px;
-  font-size: 1em;
+/* ============================
+  GRID LAYOUT (LEFT / RIGHT)
+============================ */
+.row {
+   display: flex;
+   justify-content: space-between;
+   gap: 20px;
 }
 
-.top-bar a:hover {
-  text-decoration: underline;
+/* Každý box zabere přesně 50% šířky */
+.left-box, .right-box {
+   width: 50%;
+   background: #ffffff;
+   border-radius: 10px;
+   padding: 20px;
+   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+   box-sizing: border-box;
 }
 
-/* --- Menu --- */
-.nav-menu {
-  background-color: #0050a0;
-  text-align: center;
-  padding: 10px 0;
+/* ============================
+  LEFT BOX STYLING (MOTOR)
+============================ */
+
+/* Pevná výška pro 7 vrstev motoru */
+.left-box {
+   height: 300px;
+   position: relative;
 }
 
-.nav-menu ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  max-width: 1200px;
-  display: inline-flex;
-  justify-content: center;
-  gap: 20px;
-  flex-wrap: wrap;
+/* Obrázek vrstvy vlevo */
+.left-box img {
+   width: 60px;
+   height: 60px;
+   float: left;
+   margin-right: 15px;
 }
 
-.nav-menu li {
-  display: inline-block;
+/* Titulek vrstvy */
+.layer-title {
+   font-weight: bold;
+   font-size: 1.2em;
+   margin-top: 2px;
 }
 
-.nav-menu a {
-  text-decoration: none;
-  color: #fff;
-  font-weight: bold;
-  padding: 8px 12px;
-  transition: all 0.3s;
+/* Krátký popis vrstvy */
+.layer-desc {
+   margin-top: 5px;
+   font-size: 0.95em;
 }
 
-.nav-menu a:hover {
-  background-color: #0073e6;
-  border-radius: 6px;
-}
-
-/* --- Dashboard container --- */
-#dashboard {
-  max-width: 1200px;
-  margin: 30px auto;
-  display: flex;
-  gap: 20px;
-}
-
-/* --- Sloupce --- */
-.column {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  flex: 1;
-}
-
-/* --- Boxy --- */
-.box {
-  background: #fff;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.12);
-}
-
-.box-title {
-  font-size: 1.4em;
-  font-weight: 800;
-  margin-bottom: 10px;
-  color: #003063;
-}
-
-.box-desc {
-  margin-bottom: 15px;
-  color: #444;
+/* Tokenové boxy */
+.token-box {
+   display: flex;
+   width: 100%;
+   gap: 10px;
+   margin-top: 10px;
 }
 
 .token {
-  display: inline-block;
-  padding: 6px 12px;
-  border-radius: 6px;
-  color: #fff;
-  margin-right: 6px;
-  font-size: 0.9em;
+   flex: 1;
+   padding: 8px;
+   border-radius: 6px;
+   text-align: center;
+   font-weight: bold;
+   color: white;
 }
 
-.usd { background:#1da84f; }
-.gusd { background:#0066ff; }
-.ww { background:#d10000; }
-
-canvas {
-  background: #f9f9f9;
-  border-radius: 8px;
-  margin-top: 15px;
+.usdt {
+   background: #1da84f; /* zelená */
 }
 
-/* --- Formuláře --- */
-input[type=number], input[type=text] {
-  padding:5px;
-  width:100px;
-  margin-right:10px;
+.gusd {
+   background: #007bff; /* modrá */
 }
 
-button {
-  padding:5px 10px;
-  cursor:pointer;
-  border: none;
-  border-radius: 6px;
-  background-color: #0050a0;
-  color: #fff;
-  transition: all 0.3s;
+/* Graf hezky vystředěný */
+.left-box canvas {
+   background: #f5f5f5;
+   margin-top: 15px;
+   width: 100% !important;
+   height: 160px !important;
+   border-radius: 6px;
+   padding: 5px;
 }
 
-button:hover {
-  background-color: #0073e6;
+/* ============================
+  RIGHT BOX (FORM, PLATBY, DEX)
+============================ */
+
+.right-box {
+   height: auto;
+   min-height: 300px;
 }
 
-/* --- Členská databáze --- */
-.member-entry {
-  padding: 6px 0;
-  border-bottom: 1px solid #ddd;
+/* Nadpisy vpravo vlevo zarovnané */
+.right-box h3, .right-box h4 {
+   margin: 0 0 10px 0;
+   text-align: left;
 }
 
-/* --- Footer --- */
+/* Formulář */
+.right-box label {
+   font-size: 0.95em;
+   font-weight: 600;
+   display: block;
+   margin-bottom: 5px;
+}
+
+.right-box input {
+   width: 100%;
+   padding: 8px;
+   border: 1px solid #ccc;
+   border-radius: 6px;
+   margin-bottom: 10px;
+}
+
+/* Tlačítka – modré */
+.btn-main {
+   background: #003063;
+   color: white;
+   padding: 10px 16px;
+   border: none;
+   border-radius: 6px;
+   cursor: pointer;
+   margin-top: 5px;
+}
+
+.btn-secondary {
+   background: #1f8bff;
+   color: white;
+   padding: 10px 16px;
+   border: none;
+   border-radius: 6px;
+   cursor: pointer;
+   margin-top: 5px;
+}
+
+/* Checkbox + popisek */
+.agree-box {
+   display: flex;
+   align-items: center;
+   margin-top: 15px;
+}
+
+.agree-box input {
+   margin-right: 10px;
+}
+
+/* ============================
+  DEX / KURZY / AUDIT
+============================ */
+
+.dex-box iframe {
+   width: 100%;
+   height: 300px;
+   border: none;
+   border-radius: 6px;
+}
+
+.table-live {
+   width: 100%;
+   background: white;
+   border-radius: 6px;
+   padding: 10px;
+   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+/* ============================
+  FOOTER
+============================ */
+
 footer {
-  text-align: center;
-  padding: 15px 0;
-  color: #666;
-  font-size: 0.9em;
-  margin-top: 40px;
+   text-align: center;
+   padding: 15px;
+   color: #555;
+   font-size: 0.9em;
 }
