@@ -365,3 +365,82 @@ h2, h3 {
        height: 100px;
    }
 }
+/* ============ MENU ============ */
+
+.top-menu {
+   width: 100%;
+   height: 70px;
+   background: #003063;
+   color: #ffffff;
+   display: flex;
+   align-items: center;
+   justify-content: space-between;
+   padding: 0 30px;
+   position: fixed;
+   top: 0;
+   left: 0;
+   z-index: 9999;
+   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* LEVÁ STRANA (logo + název) */
+.menu-left {
+   display: flex;
+   align-items: center;
+   gap: 12px;
+}
+
+.menu-logo {
+   height: 38px;
+   width: 38px;
+   border-radius: 50%;
+   object-fit: contain;
+}
+
+.menu-title {
+   font-size: 22px;
+   font-weight: 600;
+}
+
+/* STŘED (linky menu) */
+.menu-links {
+   display: flex;
+   align-items: center;
+   gap: 25px;
+}
+
+.menu-links a {
+   color: #ffffff;
+   text-decoration: none;
+   font-size: 16px;
+   font-weight: 500;
+}
+
+.menu-links a:hover {
+   text-decoration: underline;
+}
+
+/* PRAVÁ STRANA (jazyk + login) */
+.menu-right {
+   display: flex;
+   align-items: center;
+   gap: 20px;
+}
+
+.lang {
+   font-size: 14px;
+   opacity: 0.85;
+}
+
+.login-btn {
+   padding: 6px 14px;
+   border: 1px solid white;
+   border-radius: 6px;
+   color: white;
+   text-decoration: none;
+   font-size: 14px;
+}
+
+.login-btn:hover {
+   background: rgba(255, 255, 255, 0.15);
+}
