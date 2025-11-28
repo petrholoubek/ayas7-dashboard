@@ -1,1066 +1,128 @@
-<!-- AYAS-7 Menu s animovanou zelenou kostkou -->
-<style>
-  body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    margin: 0;
-    background: #eef2f5;
-  }
-
-  #header {
-    text-align: center;
-    color: #003063;
-    font-size: 2em;
-    font-weight: bold;
-    padding: 20px 0;
-  }
-
-  nav {
-    background-color: #003063;
-    padding: 10px 0;
-  }
-
-  nav ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-  }
-
-  nav li {
-    position: relative;
-    font-weight: bold;
-  }
-
-  nav li a {
-    text-decoration: none;
-    color: white;
-    padding: 10px 15px;
-    display: block;
-    transition: color 0.3s;
-    position: relative;
-    z-index: 1;
-  }
-
-  /* Animovaná zelená kostka */
-  nav li::after {
-    content: '';
-    position: absolute;
-    left: 50%;
-    bottom: 0;
-    transform: translateX(-50%) scaleY(0);
-    width: 100%;
-    height: 6px;
-    background-color: #1da84f;
-    border-radius: 3px;
-    transition: transform 0.3s ease;
-    pointer-events: none;
-    transform-origin: bottom;
-  }
-
-  nav li:hover::after {
-    transform: translateX(-50%) scaleY(1);
-  }
-
-  nav li:hover a {
-    color: #1da84f;
-  }
-
-  nav li:last-child a {
-    color: #1da84f;
-  }
-</style>
-
-<div id="header">AYAS-7 Engine</div>
-
-<nav>
-  <ul>
-    <li><a href="token-layer.html">AGS</a></li>
-    <li><a href="liquidity-engine.html">TVL</a></li>
-    <li><a href="yield-routing.html">LRE</a></li>
-    <li><a href="risk-compliance.html">RIC</a></li>
-    <li><a href="fintech-interaction.html">YRO</a></li>
-    <li><a href="core-engine.html">RMC</a></li>
-    <li><a href="dashboard-analytics.html">FIA</a></li>
-    <li><a href="https://winwin.coop/#ww-onb" target="_blank" rel="noopener noreferrer">Win-Win</a></li>
-  </ul>
-</nav>
-<!-- Konec menu -->
-
 <!DOCTYPE html>
 <html lang="cs">
 <head>
- <meta charset="UTF-8" />
- <title>AYAS-7 Dashboard</title>
- <meta name="viewport" content="width=device-width, initial-scale=1.0" />
- 
- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
- <style>
-   :root {
-     --font-main: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-     --blue-dark: #003063;
-     --blue: #007bff;
-     --green: #1da84f;
-     --bg-light: #eef2f5;
-     --box-bg: #ffffff;
-     --border-soft: #dde3ec;
-   }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AYAS-7 Engine – Úvod</title>
 
-   * {
-     box-sizing: border-box;
-   }
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #000;
+      color: #fff;
+    }
 
-   #msg_body {
-     margin: 0;
-     padding: 0;
-     font-family: var(--font-main);
-     background: var(--bg-light);
-   }
+    /* Horní lišta */
+    header {
+      width: 100%;
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(0,0,0,0.55);
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 10;
+    }
 
-   /* Hlavní obsah pod tvým menu */
-   main {
-     max-width: 1200px;
-     margin: 40px auto;
-     padding: 0 10px 40px;
-   }
+    header img {
+      height: 48px;
+      width: 48px;
+      border-radius: 50%;
+    }
 
-   #columns {
-     display: flex;
-     justify-content: center;
-     gap: 40px;
-     align-items: flex-start;
-     flex-wrap: wrap;
-   }
+    header h1 {
+      font-size: 20px;
+      font-weight: 600;
+      margin: 0;
+    }
 
-   .col {
-     display: flex;
-     flex-direction: column;
-     gap: 20px;
-   }
+    /* Hero sekce */
+    .hero {
+      width: 100%;
+      height: 100vh;
+      background: url('assets/ayas7-hero.jpg') no-repeat center center;
+      background-size: cover;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      text-align: center;
+      padding: 20px;
+    }
 
-   .col-left .box,
-   .col-right .box {
-     width: 500px;
-     margin: 0 auto;
-   }
+    .hero-title {
+      font-size: 40px;
+      font-weight: 700;
+      text-shadow: 0 4px 16px rgba(0,0,0,0.7);
+      margin-bottom: 20px;
+    }
 
-   .box {
-     background: var(--box-bg);
-     border-radius: 10px;
-     box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-     padding: 14px 16px;
-   }
+    .hero-sub {
+      font-size: 18px;
+      max-width: 680px;
+      text-shadow: 0 4px 12px rgba(0,0,0,0.6);
+      margin-bottom: 35px;
+    }
 
-   h2, h3 {
-     font-family: var(--font-main);
-     margin: 0 0 10px 0;
-     color: #111827;
-     font-weight: 600;
-   }
+    .buttons {
+      display: flex;
+      gap: 18px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
 
-   .box-title {
-     display: flex;
-     align-items: center;
-     gap: 8px;
-     margin-bottom: 10px;
-   }
+    .btn {
+      padding: 12px 28px;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      text-decoration: none;
+      font-family: inherit;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.35);
+    }
 
-   .box-title .dot {
-     width: 10px;
-     height: 10px;
-     border-radius: 3px;
-     background: var(--blue);
-   }
+    .btn-primary {
+      background: #007bff;
+      color: #ffffff;
+    }
 
-   .small-text {
-     font-size: 0.86rem;
-     color: #4b5563;
-     line-height: 1.4;
-   }
+    .btn-secondary {
+      background: rgba(255,255,255,0.15);
+      color: #ffffff;
+      backdrop-filter: blur(3px);
+    }
 
-   /* LEVÁ STRANA – vrstvy AYAS-7 */
+    @media (max-width: 768px) {
+      .hero-title { font-size: 30px; }
+      .hero-sub { font-size: 16px; }
+    }
+  </style>
 
-   .layer-box {
-     position: relative;
-     height: 200px;
-     padding-left: 18px;
-     overflow: hidden;
-   }
-
-   .layer-box::before {
-     content: "";
-     position: absolute;
-     left: 0;
-     top: 0;
-     width: 6px;
-     height: 100%;
-     border-radius: 10px 0 0 10px;
-     background: #10b981; /* default, přepíšeme u jednotlivých vrstev */
-   }
-
-   .layer-header {
-     display: flex;
-     align-items: flex-start;
-     gap: 10px;
-     margin-bottom: 6px;
-   }
-
-   .layer-header img {
-     width: 40px;
-     height: 40px;
-     flex-shrink: 0;
-     object-fit: contain;
-   }
-
-   .layer-text a {
-     text-decoration: none;
-     color: #111827;
-     font-weight: 600;
-     font-size: 0.98rem;
-   }
-
-   .layer-text a:hover {
-     text-decoration: underline;
-   }
-
-   .layer-desc {
-     font-size: 0.8rem;
-     color: #4b5563;
-     margin-top: 2px;
-   }
-
-   .token-row {
-     display: flex;
-     gap: 10px;
-     margin: 6px 0;
-   }
-
-   .token-pill {
-     flex: 1;
-     border-radius: 6px;
-     padding: 6px 8px;
-     display: flex;
-     align-items: center;
-     justify-content: space-between;
-     font-size: 0.78rem;
-     font-weight: 600;
-     color: #ffffff;
-   }
-
-   .token-label {
-     opacity: 0.9;
-   }
-
-   .token-value {
-     font-family: var(--font-main);
-   }
-
-   .token-usdtz {
-     background: var(--green);
-   }
-
-   .token-gusd {
-     background: var(--blue);
-   }
-
-   .layer-chart-wrap {
-     margin-top: 4px;
-     background: #f3f4f6;
-     border-radius: 6px;
-     padding: 4px 6px 2px;
-   }
-
-   .layer-chart-wrap canvas {
-     width: 100%;
-     height: 70px;
-   }
-
-   /* Barevné proužky pro 7 vrstev */
-   .layer-1::before { background:#10b981; }  /* zelená */
-   .layer-2::before { background:#ef4444; }  /* červená */
-   .layer-3::before { background:#2563eb; }  /* modrá */
-   .layer-4::before { background:#8b5cf6; }  /* fialová */
-   .layer-5::before { background:#eab308; }  /* žlutá */
-   .layer-6::before { background:#f97316; }  /* oranžová */
-   .layer-7::before { background:#6b7280; }  /* šedá */
-
-   /* PRAVÁ STRANA – 7 boxů */
-
-   .box form input,
-   .box form select {
-     width: 100%;
-     padding: 7px 8px;
-     border-radius: 4px;
-     border: 1px solid #d1d5db;
-     font-family: var(--font-main);
-     font-size: 0.9rem;
-   }
-
-   .box form label {
-     font-size: 0.85rem;
-     color: #374151;
-   }
-
-   .btn {
-     display: inline-block;
-     padding: 8px 16px;
-     border-radius: 5px;
-     border: none;
-     font-family: var(--font-main);
-     font-size: 0.88rem;
-     cursor: pointer;
-     text-decoration: none;
-   }
-
-   .btn-primary {
-     background: var(--blue-dark);
-     color: #ffffff;
-   }
-
-   .btn-primary.light {
-     background: #2563eb;
-   }
-
-   .btn-secondary {
-     background: #e5e7eb;
-     color: #111827;
-   }
-
-   .btn-link {
-     background: transparent;
-     color: var(--blue-dark);
-     padding: 0;
-   }
-
-   .result-panel {
-     margin-top: 10px;
-     padding: 8px 10px;
-     border-radius: 6px;
-     background: #ecfdf3;
-     font-size: 0.85rem;
-     color: #166534;
-   }
-
-   .rates-list p {
-     margin: 4px 0;
-     font-size: 0.88rem;
-   }
-
-   .rates-label {
-     font-weight: 600;
-   }
-
-   .muted {
-     font-size: 0.8rem;
-     color: #6b7280;
-   }
-
-   /* Modál pro podmínky */
-
-   .modal-backdrop {
-     position: fixed;
-     inset: 0;
-     background: rgba(15,23,42,0.45);
-     display: none;
-     align-items: center;
-     justify-content: center;
-     z-index: 999;
-   }
-
-   .modal {
-     background: #ffffff;
-     border-radius: 12px;
-     max-width: 640px;
-     width: 90%;
-     max-height: 80vh;
-     overflow-y: auto;
-     padding: 20px 22px;
-     box-shadow: 0 20px 40px rgba(0,0,0,0.25);
-   }
-
-   .modal-close {
-     float: right;
-     font-size: 1.3rem;
-     cursor: pointer;
-     color: #6b7280;
-   }
-
-   .modal-close:hover {
-     color: #111827;
-   }
-
-   /* Graf výnosu družstva */
-
-   .bar-chart-wrap {
-     background: #f3f4f6;
-     border-radius: 8px;
-     padding: 8px 10px 4px;
-   }
-
-   .bar-chart-wrap canvas {
-     width: 100%;
-     height: 180px;
-   }
-
-   /* Tabulka pro audit */
-
-   table.audit {
-     width: 100%;
-     border-collapse: collapse;
-     font-size: 0.82rem;
-     margin-top: 6px;
-   }
-
-   table.audit th,
-   table.audit td {
-     border: 1px solid #e5e7eb;
-     padding: 6px 8px;
-   }
-
-   table.audit th {
-     background: #f3f4f6;
-     text-align: left;
-   }
-
-   /* Footer */
-
-   footer {
-     margin-top: 40px;
-     text-align: center;
-     font-size: 0.8rem;
-     color: #6b7280;
-   }
-
-   @media (max-width: 1100px) {
-     #columns {
-       flex-direction: column;
-       align-items: center;
-     }
-   }
- </style>
 </head>
 <body>
 
+<header>
+  <img src="assets/logo-ayas7.png" alt="AYAS-7 Logo">
+  <h1>AYAS-7 Engine</h1>
+</header>
 
+<div class="hero">
+  <div class="hero-title">AYAS-7 Performance Engine</div>
+  <div class="hero-sub">
+    Revoluční sedmivrstvý motor pro správu kapitálu, výnosů a členství v družstvu WIN-WIN.
+  </div>
 
-<main>
- 
- <div id="columns">
-   
-   <div class="col col-left">
-
-     
-     <div class="box layer-box layer-1">
-       <div class="layer-header">
-         <img src="assets/1.png" alt="Layer 1 logo">
-         <div class="layer-text">
-           <a href="token-layer.html">Layer 1: Token Layer</a>
-           <div class="layer-desc">
-             Správa tokenů USDt.z a GUSD, rozdělení mezi členské účty a rezervy družstva.
-           </div>
-         </div>
-       </div>
-       <div class="token-row">
-         <div class="token-pill token-usdtz">
-           <span class="token-label">USDt.z</span>
-           <span class="token-value" id="l1-usdtz">0</span>
-         </div>
-         <div class="token-pill token-gusd">
-           <span class="token-label">GUSD</span>
-           <span class="token-value" id="l1-gusd">0</span>
-         </div>
-       </div>
-       <div class="layer-chart-wrap">
-         <canvas id="layerChart1"></canvas>
-       </div>
-     </div>
-
-     
-     <div class="box layer-box layer-2">
-       <div class="layer-header">
-         <img src="assets/2.png" alt="Layer 2 logo">
-         <div class="layer-text">
-           <a href="liquidity-engine.html">Layer 2: Liquidity Engine</a>
-           <div class="layer-desc">
-             Řízení likvidity, LP pozic a výkonu poolů na DEXech pro družstvo a členy.
-           </div>
-         </div>
-       </div>
-       <div class="token-row">
-         <div class="token-pill token-usdtz">
-           <span class="token-label">USDt.z</span>
-           <span class="token-value" id="l2-usdtz">0</span>
-         </div>
-         <div class="token-pill token-gusd">
-           <span class="token-label">GUSD</span>
-           <span class="token-value" id="l2-gusd">0</span>
-         </div>
-       </div>
-       <div class="layer-chart-wrap">
-         <canvas id="layerChart2"></canvas>
-       </div>
-     </div>
-
-     
-     <div class="box layer-box layer-3">
-       <div class="layer-header">
-         <img src="assets/3.png" alt="Layer 3 logo">
-         <div class="layer-text">
-           <a href="yield-routing.html">Layer 3: Yield Routing</a>
-           <div class="layer-desc">
-             Směrování výnosů do nejefektivnějších strategií v rámci celého AYAS-7.
-           </div>
-         </div>
-       </div>
-       <div class="token-row">
-         <div class="token-pill token-usdtz">
-           <span class="token-label">USDt.z</span>
-           <span class="token-value" id="l3-usdtz">0</span>
-         </div>
-         <div class="token-pill token-gusd">
-           <span class="token-label">GUSD</span>
-           <span class="token-value" id="l3-gusd">0</span>
-         </div>
-       </div>
-       <div class="layer-chart-wrap">
-         <canvas id="layerChart3"></canvas>
-       </div>
-     </div>
-
-     
-     <div class="box layer-box layer-4">
-       <div class="layer-header">
-         <img src="assets/4.png" alt="Layer 4 logo">
-         <div class="layer-text">
-           <a href="risk-compliance.html">Layer 4: Risk &amp; Compliance</a>
-           <div class="layer-desc">
-             Řízení rizik, limity expozic, kontrola pravidel a auditní stopa.
-           </div>
-         </div>
-       </div>
-       <div class="token-row">
-         <div class="token-pill token-usdtz">
-           <span class="token-label">USDt.z</span>
-           <span class="token-value" id="l4-usdtz">0</span>
-         </div>
-         <div class="token-pill token-gusd">
-           <span class="token-label">GUSD</span>
-           <span class="token-value" id="l4-gusd">0</span>
-         </div>
-       </div>
-       <div class="layer-chart-wrap">
-         <canvas id="layerChart4"></canvas>
-       </div>
-     </div>
-
-     
-     <div class="box layer-box layer-5">
-       <div class="layer-header">
-         <img src="assets/5.png" alt="Layer 5 logo">
-         <div class="layer-text">
-           <a href="fintech-interaction.html">Layer 5: FinTech Interaction</a>
-           <div class="layer-desc">
-             Interakce s členy, notifikace, reporting a přehledy v reálném čase.
-           </div>
-         </div>
-       </div>
-       <div class="token-row">
-         <div class="token-pill token-usdtz">
-           <span class="token-label">USDt.z</span>
-           <span class="token-value" id="l5-usdtz">0</span>
-         </div>
-         <div class="token-pill token-gusd">
-           <span class="token-label">GUSD</span>
-           <span class="token-value" id="l5-gusd">0</span>
-         </div>
-       </div>
-       <div class="layer-chart-wrap">
-         <canvas id="layerChart5"></canvas>
-       </div>
-     </div>
-
-     
-     <div class="box layer-box layer-6">
-       <div class="layer-header">
-         <img src="assets/6.png" alt="Layer 6 logo">
-         <div class="layer-text">
-           <a href="core-engine.html">Layer 6: Core Engine</a>
-           <div class="layer-desc">
-             Výpočetní jádro motoru – výpočet podílů, rebalancování a přidělování benefitů.
-           </div>
-         </div>
-       </div>
-       <div class="token-row">
-         <div class="token-pill token-usdtz">
-           <span class="token-label">USDt.z</span>
-           <span class="token-value" id="l6-usdtz">0</span>
-         </div>
-         <div class="token-pill token-gusd">
-           <span class="token-label">GUSD</span>
-           <span class="token-value" id="l6-gusd">0</span>
-         </div>
-       </div>
-       <div class="layer-chart-wrap">
-         <canvas id="layerChart6"></canvas>
-       </div>
-     </div>
-
-     
-     <div class="box layer-box layer-7">
-       <div class="layer-header">
-         <img src="assets/7.png" alt="Layer 7 logo">
-         <div class="layer-text">
-           <a href="dashboard-analytics.html">Layer 7: Dashboard Layer</a>
-           <div class="layer-desc">
-             Hlavní přehled výkonu motoru AYAS-7 a členů družstva Win-Win.
-           </div>
-         </div>
-       </div>
-       <div class="token-row">
-         <div class="token-pill token-usdtz">
-           <span class="token-label">USDt.z</span>
-           <span class="token-value" id="l7-usdtz">0</span>
-         </div>
-         <div class="token-pill token-gusd">
-           <span class="token-label">GUSD</span>
-           <span class="token-value" id="l7-gusd">0</span>
-         </div>
-       </div>
-       <div class="layer-chart-wrap">
-         <canvas id="layerChart7"></canvas>
-       </div>
-     </div>
-   </div>
-
-   
-   <div class="col col-right">
-
-     
-     <div class="box" id="box-member">
-       <div class="box-title">
-         <span class="dot" style="background:#2563eb;"></span>
-         <h2>Přidání nového člena</h2>
-       </div>
-       <p class="small-text">
-         Vyplň údaje člena a částku investice. Systém vypočítá WW-KEY na základě kurzu 1 WW-KEY = 25 CZK.
-       </p>
-       <form id="addMemberForm">
-         <div style="margin-bottom:8px;">
-           <label for="memberName">Jméno a příjmení</label><br>
-           <input id="memberName" required />
-         </div>
-         <div style="margin-bottom:8px;">
-           <label for="memberEmail">E-mail</label><br>
-           <input type="email" id="memberEmail" required />
-         </div>
-         <div style="margin-bottom:8px;">
-           <label for="memberPhone">Telefon</label><br>
-           <input id="memberPhone" required />
-         </div>
-         <div style="margin-bottom:12px;">
-           <label for="investmentAmount">Investice (CZK)</label><br>
-           <input type="number" id="investmentAmount" min="0" required />
-         </div>
-         <button type="submit" class="btn btn-primary">Přidat člena</button>
-       </form>
-       <div id="memberResult" class="result-panel" style="display:none;">
-         <div id="memberResultText"></div>
-       </div>
-       <p class="muted">Poznámka: zápis probíhá do tabulky <b>members_data</b> v Supabase (pokud je klient načten).</p>
-     </div>
-
-     
-     <div class="box" id="box-terms">
-       <div class="box-title">
-         <span class="dot" style="background:#60a5fa;"></span>
-         <h2>Podmínky služeb Win-Win</h2>
-       </div>
-       <p class="small-text">
-         Před vstupem do družstva si prosím pečlivě přečti podmínky služby Win-Win a potvrď souhlas.
-       </p>
-       <div style="display:flex; align-items:center; gap:10px; margin-top:8px; flex-wrap:wrap;">
-         <button type="button" class="btn btn-primary light" id="btnShowTerms">Zobrazit podmínky</button>
-         <label style="display:flex; align-items:center; gap:6px; font-size:0.84rem;">
-           <input type="checkbox" id="agreeTerms" />
-           Souhlasím s podmínkami Win-Win
-         </label>
-       </div>
-     </div>
-
-     
-     <div class="box" id="box-payment">
-       <div class="box-title">
-         <span class="dot" style="background:#16a34a;"></span>
-         <h2>Platba členského vkladu</h2>
-       </div>
-       <p class="small-text">
-         Člen může platit bankovním převodem (FIAT) nebo kryptem (USDT, BNB, TRX). Po připsání platby se vklad
-         spáruje s jeho WW-KEY.
-       </p>
-       <div style="display:flex; flex-direction:column; gap:8px; margin-top:8px;">
-         <a href="payment.html#fiat" class="btn btn-secondary">Platba FIAT (bankovní převod)</a>
-         <a href="payment.html#crypto" class="btn btn-secondary">Platba krypto (USDT / BNB / TRX)</a>
-         <a href="https://metamask.io/" target="_blank" class="btn btn-link">Návod: vytvoření peněženky MetaMask</a>
-       </div>
-     </div>
-
-     
-     <div class="box" id="box-rates">
-       <div class="box-title">
-         <span class="dot" style="background:#f97316;"></span>
-         <h2>Živé kurzy – USDT a BNB</h2>
-       </div>
-       <p class="small-text">
-         Kurzy z CoinGecko, aktualizace každých 10 sekund. Slouží jako referenční kurz pro převod CZK na WW-KEY.
-       </p>
-       <div class="rates-list">
-         <p><span class="rates-label">USDT:</span> <span id="rateUSDT">Načítám…</span></p>
-         <p><span class="rates-label">BNB:</span> <span id="rateBNB">Načítám…</span></p>
-       </div>
-       <p class="muted">Výchozí interní kurz pro WW-KEY: 1 WW-KEY = 25 CZK (lze později nahradit živým kurzem).</p>
-     </div>
-
-     
-     <div class="box" id="box-yield">
-       <div class="box-title">
-         <span class="dot" style="background:#facc15;"></span>
-         <h2>Výnos družstva – vrstvy AYAS-7</h2>
-       </div>
-       <p class="small-text">
-         Sloupcový graf ukazuje modelované roční zhodnocení jednotlivých vrstev motoru AYAS-7 (4–6&nbsp;%).
-       </p>
-       <div class="bar-chart-wrap">
-         <canvas id="coopYieldChart"></canvas>
-       </div>
-     </div>
-
-     
-     <div class="box" id="box-audit">
-       <div class="box-title">
-         <span class="dot" style="background:#a855f7;"></span>
-         <h2>Denní report / audit</h2>
-       </div>
-       <p class="small-text">
-         Rychlý přehled posledních operací pro interní audit. Pro produkci lze napojit přímo na data z
-         <b>members_data</b> a <b>members_rewards</b>.
-       </p>
-       <table class="audit">
-         <thead>
-           <tr>
-             <th>Datum</th>
-             <th>Počet nových členů</th>
-             <th>Vklad celkem (CZK)</th>
-             <th>Přidělené WW-KEY</th>
-           </tr>
-         </thead>
-         <tbody>
-           <tr>
-             <td>2025-11-27</td>
-             <td>7</td>
-             <td>105&nbsp;000</td>
-             <td>4&nbsp;200</td>
-           </tr>
-           <tr>
-             <td>2025-11-26</td>
-             <td>5</td>
-             <td>75&nbsp;000</td>
-             <td>3&nbsp;000</td>
-           </tr>
-           <tr>
-             <td>2025-11-25</td>
-             <td>3</td>
-             <td>45&nbsp;000</td>
-             <td>1&nbsp;800</td>
-           </tr>
-         </tbody>
-       </table>
-       <button class="btn btn-secondary" style="margin-top:8px;">Stáhnout denní report (CSV)</button>
-     </div>
-
-     
-     <div class="box" id="box-dex">
-       <div class="box-title">
-         <span class="dot" style="background:#0ea5e9;"></span>
-         <h2>Živá data – DEX pooly</h2>
-       </div>
-       <p class="small-text">
-         Otevři živé pooly USDt.z a GUSD na DEXu (GeckoTerminal). Slouží jako kontrola objemů, cen a likvidity.
-       </p>
-       <div style="display:flex; flex-direction:column; gap:8px; margin-top:8px;">
-         <a href="https://www.geckoterminal.com/bsc/pools/0xa55ccb41096aacf28eaa15efe00ea01b3e773cdd"
-            target="_blank" class="btn btn-secondary">
-           Otevřít USDt.z pool (BSC)
-         </a>
-         <a href="https://www.geckoterminal.com/bsc/pools/0xb7c6f12c7232bc6ea895d24447be8d0dbc3438ed"
-            target="_blank" class="btn btn-secondary">
-           Otevřít GUSD pool (BSC)
-         </a>
-       </div>
-       <p class="muted">
-         Pro plnou integraci lze později napojit přímo API (on-chain data) a promítat hodnoty do grafů.
-       </p>
-     </div>
-
-   </div>
- </div>
-
- <footer>
-   © 2025 Win-Win Družstvo · AYAS-7 Engine
- </footer>
-</main>
-
-
-<div class="modal-backdrop" id="termsBackdrop">
- <div class="modal">
-   <span class="modal-close" id="termsClose">&times;</span>
-   <h3>Podmínky služeb Win-Win</h3>
-   <p class="small-text">
-     Zde vlož plné znění podmínek družstva Win-Win. Tento text můžeš nahradit obsahem z vlastní stránky
-     nebo markdown souboru. Člen potvrzuje, že se seznámil s podmínkami, rozumí rizikům a souhlasí s
-     pravidly vstupu do družstva.
-   </p>
-   <p class="small-text">
-     Můžeš sem doplnit např.:
-     <ul class="small-text">
-       <li>Popis práv a povinností člena</li>
-       <li>Informace o zhodnocení a rizicích</li>
-       <li>Postup pro ukončení členství</li>
-     </ul>
-   </p>
- </div>
+  <div class="buttons">
+    <a href="dashboard.html" class="btn btn-primary">Vstoupit do systému</a>
+    <a href="login.html" class="btn btn-secondary">Přihlásit se</a>
+  </div>
 </div>
-
-<script>
- // ---------- LEVÁ STRANA – simulace hodnot a křivek ----------
-
- const layerTokenValues = [
-   { usdtz: 7.2, gusd: 3.4 },
-   { usdtz: 5.9, gusd: 2.8 },
-   { usdtz: 6.4, gusd: 3.1 },
-   { usdtz: 4.8, gusd: 2.2 },
-   { usdtz: 5.5, gusd: 2.9 },
-   { usdtz: 6.8, gusd: 3.6 },
-   { usdtz: 4.3, gusd: 2.0 },
- ];
-
- layerTokenValues.forEach((layer, idx) => {
-   const i = idx + 1;
-   const uEl = document.getElementById(`l${i}-usdtz`);
-   const gEl = document.getElementById(`l${i}-gusd`);
-   if (uEl) uEl.textContent = layer.usdtz.toFixed(2) + ' %';
-   if (gEl) gEl.textContent = layer.gusd.toFixed(2) + ' %';
- });
-
- function generateSeries(base, volatility = 0.3) {
-   const arr = [];
-   let current = base;
-   for (let i = 0; i < 7; i++) {
-     const delta = (Math.random() - 0.5) * volatility;
-     current = Math.max(base - 1, current + delta);
-     arr.push(Number(current.toFixed(2)));
-   }
-   return arr;
- }
-
- const layerColors = [
-   '#10b981',
-   '#ef4444',
-   '#2563eb',
-   '#8b5cf6',
-   '#eab308',
-   '#f97316',
-   '#6b7280'
- ];
-
- for (let i = 1; i <= 7; i++) {
-   const ctx = document.getElementById(`layerChart${i}`);
-   if (!ctx) continue;
-   const base = 4 + Math.random() * 3; // 4–7 %
-   const data = generateSeries(base, 0.4);
-   new Chart(ctx.getContext('2d'), {
-     type: 'line',
-     data: {
-       labels: ['T1','T2','T3','T4','T5','T6','T7'],
-       datasets: [{
-         data,
-         borderColor: layerColors[i-1],
-         borderWidth: 2,
-         fill: false,
-         pointRadius: 0,
-         tension: 0.35,
-       }]
-     },
-     options: {
-       responsive: true,
-       maintainAspectRatio: false,
-       plugins: { legend: { display:false } },
-       scales: {
-         x: {
-           grid: { color:'rgba(148,163,184,0.2)' },
-           ticks: { display:false }
-         },
-         y: {
-           grid: { color:'rgba(148,163,184,0.25)' },
-           ticks: {
-             display:false,
-             beginAtZero: false
-           }
-         }
-       }
-     }
-   });
- }
-
- // ---------- PRAVÁ STRANA – BOX 1: Přidání člena ----------
-
- const memberForm = document.getElementById('addMemberForm');
- const memberResult = document.getElementById('memberResult');
- const memberResultText = document.getElementById('memberResultText');
-
- memberForm.addEventListener('submit', async (e) => {
-   e.preventDefault();
-
-   const name = document.getElementById('memberName').value.trim();
-   const email = document.getElementById('memberEmail').value.trim();
-   const phone = document.getElementById('memberPhone').value.trim();
-   const amountCZK = Number(document.getElementById('investmentAmount').value);
-
-   // Kontrola podmínek – musí být zaškrtnuto Souhlasím
-   const agree = document.getElementById('agreeTerms');
-   if (agree && !agree.checked) {
-     alert('Pro přidání člena je nutné souhlasit s podmínkami Win-Win.');
-     return;
-   }
-
-   if (!name || !email || !phone || !amountCZK || amountCZK <= 0) {
-     alert('Vyplň všechny údaje a částku větší než 0.');
-     return;
-   }
-
-   // Výpočet WW-KEY – 1 WW-KEY = 25 CZK
-   const wwKeyCount = Math.floor(amountCZK / 25);
-   const usdtAmount = (amountCZK / 25).toFixed(2);
-
-   memberResultText.innerHTML =
-     `Člen <b>${name}</b> s vkladem <b>${amountCZK.toLocaleString('cs-CZ')} CZK</b> ` +
-     `získá <b>${wwKeyCount} WW-KEY</b> (ekvivalent cca <b>${usdtAmount} USDT</b>).`;
-
-   memberResult.style.display = 'block';
-
-   // Zápis do Supabase – pokud je dostupný klient
-   if (window.supabase) {
-     try {
-       const { data, error } = await supabase
-         .from('members_data')
-         .insert({
-           name: name,
-           email: email,
-           phone: phone,
-           deposit: amountCZK,
-           ww_key: wwKeyCount,
-           paid: false
-         });
-       if (error) {
-         console.error('Supabase error:', error);
-         alert('Zápis do databáze selhal: ' + error.message);
-       }
-     } catch (err) {
-       console.error('Supabase client error:', err);
-     }
-   } else {
-     console.warn('Supabase klient není načten – proběhla pouze simulace.');
-   }
-
-   memberForm.reset();
-   if (agree) agree.checked = false;
- });
-
- // ---------- PRAVÁ STRANA – BOX 2: Podmínky (modál) ----------
-
- const termsBackdrop = document.getElementById('termsBackdrop');
- const btnShowTerms = document.getElementById('btnShowTerms');
- const termsClose = document.getElementById('termsClose');
-
- btnShowTerms.addEventListener('click', () => {
-   termsBackdrop.style.display = 'flex';
- });
- termsClose.addEventListener('click', () => {
-   termsBackdrop.style.display = 'none';
- });
- termsBackdrop.addEventListener('click', (e) => {
-   if (e.target === termsBackdrop) {
-     termsBackdrop.style.display = 'none';
-   }
- });
-
- // ---------- PRAVÁ STRANA – BOX 4: Živé kurzy (USDT, BNB) ----------
-
- const rateUSDTEl = document.getElementById('rateUSDT');
- const rateBNBEl = document.getElementById('rateBNB');
-
- async function fetchRates() {
-   try {
-     const res = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=tether,binancecoin&vs_currencies=usd');
-     const data = await res.json();
-     const usdt = data.tether?.usd;
-     const bnb = data.binancecoin?.usd;
-     if (usdt) rateUSDTEl.textContent = usdt.toFixed(4) + ' USD';
-     else rateUSDTEl.textContent = 'Nedostupné';
-
-     if (bnb) rateBNBEl.textContent = bnb.toFixed(2) + ' USD';
-     else rateBNBEl.textContent = 'Nedostupné';
-   } catch (err) {
-     console.error('Chyba při načítání kurzů:', err);
-     rateUSDTEl.textContent = 'Chyba';
-     rateBNBEl.textContent = 'Chyba';
-   }
- }
-
- fetchRates();
- setInterval(fetchRates, 10000);
-
- // ---------- PRAVÁ STRANA – BOX 5: Výnos družstva (sloupcový graf) ----------
-
- const coopCtx = document.getElementById('coopYieldChart');
- if (coopCtx) {
-   new Chart(coopCtx.getContext('2d'), {
-     type: 'bar',
-     data: {
-       labels: [
-         'Layer 1','Layer 2','Layer 3','Layer 4','Layer 5','Layer 6','Layer 7'
-       ],
-       datasets: [{
-         data: [5.2, 5.8, 5.1, 4.7, 5.5, 6.0, 4.4],
-         backgroundColor: [
-           '#10b981','#ef4444','#2563eb',
-           '#8b5cf6','#eab308','#f97316','#6b7280'
-         ]
-       }]
-     },
-     options: {
-       responsive:true,
-       maintainAspectRatio:false,
-       plugins:{ legend:{ display:false } },
-       scales:{
-         x:{
-           grid:{ display:false },
-           ticks:{ font:{ family: 'Segoe UI' } }
-         },
-         y:{
-           grid:{ color:'rgba(148,163,184,0.35)' },
-           ticks:{
-             beginAtZero:true,
-             callback:(v)=> v + ' %',
-             font:{ family:'Segoe UI' }
-           },
-           suggestedMax:7
-         }
-       }
-     }
-   });
- }
-</script>
 
 </body>
 </html>
