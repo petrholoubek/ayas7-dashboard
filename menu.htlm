@@ -1,28 +1,18 @@
-<nav class="top-nav">
- <div class="top-nav-inner">
-   <div class="nav-left">
-     <a href="dashboard.html" class="nav-logo-link">
-       <img src="assets/img/logo-ayas7.png" alt="AYAS-7 logo" class="nav-logo">
-       <span class="nav-title">AYAS-7 Engine</span>
-     </a>
-   </div>
+<nav class="top-menu">
+ <div class="menu-left">
+   <img src="assets/img/logo-ayas7.png" class="menu-logo" alt="AYAS-7 logo">
+   <span class="menu-title">AYAS-7 ENGINE</span>
+ </div>
 
-   <div class="nav-center">
-     <a href="dashboard.html" class="nav-link">Home</a>
-     <a href="dashboard.html#engine" class="nav-link">AYAS-7 Motor</a>
-     <a href="dashboard.html#members" class="nav-link">Členové</a>
-     <a href="dashboard.html#payments" class="nav-link">Platby</a>
-     <a href="dashboard.html#dex" class="nav-link">DEX</a>
-     <a href="dashboard.html#contact" class="nav-link">Kontakt</a>
-   </div>
+ <ul class="menu-links">
+   <li><a href="dashboard.html">Home</a></li>
+   <li><a href="#">Investice</a></li>
+   <li><a href="#">Členové</a></li>
+   <li><a href="#">Výnosy</a></li>
+ </ul>
 
-   <div class="nav-right">
-     <div class="nav-lang">
-       <button type="button" class="nav-lang-btn nav-lang-active">CZ</button>
-       <span class="nav-lang-sep">|</span>
-       <button type="button" class="nav-lang-btn">EN</button>
-     </div>
-     <a href="login.html" class="nav-login-btn">Členská sekce</a>
-   </div>
+ <div class="menu-right">
+   <span class="lang-switch">CZ | EN</span>
+   <a href="login.html" class="menu-login">Přihlásit</a>
  </div>
 </nav>
