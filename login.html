@@ -1,188 +1,23 @@
-<!DOCTYPE html>
-<html lang="cs">
-<head>
- <meta charset="UTF-8">
- <title>AYAS-7 | Login</title>
- <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
- 
- <link rel="stylesheet" href="assets/css/global.css">
-
- <style>
-   /* --- LOGIN STRÁNKA --- */
-
-   #msg_body {
-     margin: 0;
-     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-     background: #eef2f5;
-   }
-
-   /* NAVBAR */
-   .navbar {
-     width: 100%;
-     background: #003063;
-     padding: 14px 40px;
-     display: flex;
-     align-items: center;
-     justify-content: space-between;
-   }
-
-   .nav-left {
-     display: flex;
-     align-items: center;
-     gap: 16px;
-   }
-
-   .nav-left img {
-     height: 45px;
-   }
-
-   .nav-menu {
-     display: flex;
-     gap: 24px;
-   }
-
-   .nav-menu a {
-     color: #ffffff;
-     font-size: 15px;
-     font-weight: 500;
-     text-decoration: none;
-   }
-
-   .nav-menu a:hover {
-     text-decoration: underline;
-   }
-
-   /* LOGIN PRAVÁ STRANA */
-   .nav-login {
-     display: flex;
-     align-items: center;
-     gap: 10px;
-   }
-
-   .nav-login input {
-     padding: 6px 8px;
-     border-radius: 4px;
-     border: none;
-     font-family: inherit;
-     font-size: 14px;
-   }
-
-   .nav-login button {
-     background: #1da84f;
-     border: none;
-     padding: 7px 14px;
-     color: #fff;
-     border-radius: 4px;
-     cursor: pointer;
-     font-size: 14px;
-   }
-
-   .nav-login button:hover {
-     background: #14833d;
-   }
-
-   /* OBSAH LOGINU */
-   .login-wrapper {
-     max-width: 420px;
-     margin: 120px auto;
-     background: #ffffff;
-     padding: 30px 28px;
-     border-radius: 10px;
-     box-shadow: 0 4px 14px rgba(0,0,0,0.08);
-     text-align: center;
-   }
-
-   .login-wrapper h2 {
-     color: #003063;
-     margin-bottom: 14px;
-     font-size: 24px;
-     font-weight: 600;
-   }
-
-   .login-wrapper input {
-     width: 100%;
-     padding: 10px 12px;
-     border-radius: 6px;
-     border: 1px solid #d1d5db;
-     font-size: 15px;
-     margin-bottom: 12px;
-   }
-
-   .login-wrapper button {
-     width: 100%;
-     padding: 10px;
-     border-radius: 6px;
-     background: #003063;
-     color: #fff;
-     border: none;
-     font-size: 16px;
-     cursor: pointer;
-   }
-
-   .login-wrapper button:hover {
-     background: #00244a;
-   }
-
-   /* RESPONSIVE */
-   @media (max-width: 750px) {
-     .navbar {
-       flex-direction: column;
-       gap: 12px;
-       padding: 16px;
-     }
-
-     .nav-menu {
-       flex-wrap: wrap;
-       justify-content: center;
-       gap: 12px;
-     }
-
-     .nav-login {
-       flex-wrap: wrap;
-       justify-content: center;
-     }
-
-     .nav-login input {
-       width: 100%;
-     }
-
-     .nav-login button {
-       width: 100%;
-     }
-   }
- </style>
-</head>
-
-<body>
-
- 
- <div class="navbar">
+<header class="top-nav">
    <div class="nav-left">
-     <img src="assets/images/logo-ayas7.png" alt="AYAS-7 Logo">
-     <div class="nav-menu">
-       <a href="index.html">Domů</a>
-       <a href="about.html">O projektu</a>
-       <a href="engine.html">AYAS-7 Engine</a>
-       <a href="members.html">Členství</a>
-       <a href="contact.html">Kontakt</a>
-     </div>
+       <img src="assets/logo-ayas7.png" alt="AYAS-7 Logo" class="nav-logo">
+
+       <nav class="nav-links">
+           <a href="dashboard.html">Dashboard</a>
+           <a href="members.html">Členové</a>
+           <a href="payments.html">Platby</a>
+           <a href="engine.html">Motor</a>
+           <a href="contact.html">Kontakt</a>
+       </nav>
    </div>
 
-   <div class="nav-login">
-     <input type="text" placeholder="Uživatel">
-     <input type="password" placeholder="Heslo">
-     <button>Přihlásit</button>
+   <div class="nav-right">
+       <a class="lang-switch">CZ | EN</a>
+
+       <div class="login-box">
+           <input type="text" placeholder="Jméno" />
+           <input type="password" placeholder="Heslo" />
+           <button class="btn-login">Přihlásit</button>
+       </div>
    </div>
- </div>
-
- 
- <div class="login-wrapper">
-   <h2>Členská sekce</h2>
-   <input type="text" placeholder="Uživatel">
-   <input type="password" placeholder="Heslo">
-   <button>Vstoupit</button>
- </div>
-
-</body>
-</html>
+</header>
