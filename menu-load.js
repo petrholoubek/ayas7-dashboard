@@ -1,24 +1,18 @@
 // menu-load.js
-document.addEventListener('DOMContentLoaded', function () {
- const placeholder = document.getElementById('main-menu');
- if (!placeholder) {
-   console.error('main-menu element not found');
-   return;
- }
-
- // menu.html musí být ve STEJNÉ složce jako tahle stránka
- fetch('menu.html', { cache: 'no-cache' })
-   .then(function (response) {
+document.addEventListener("DOMContentLoaded", () => {
+ // Cesta musí být relativní ke stránce kde se nacházím → stejná složka
+ fetch("menu.html")
+   .then(response => {
      if (!response.ok) {
-       throw new Error('HTTP error ' + response.status);
+       throw new Error("Menu load error: " + response.status);
      }
      return response.text();
    })
-   .then(function (html) {
-     placeholder.innerHTML = html;
+   .then(html => {
+     document.getElementById("main-menu").innerHTML = html;
    })
-   .catch(function (err) {
-     console.error('Chyba při načítání menu:', err);
-     placeholder.innerHTML = '';
+   .catch(err => {
+     console.error(err);
+     document.getElementById("main-menu").innerHTML = "<p style='color:red;'>Menu se nepodařilo načíst.</p>";
    });
 });
