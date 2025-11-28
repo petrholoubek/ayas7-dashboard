@@ -1,162 +1,214 @@
-/* ===========================
-  GLOBAL SETTINGS
-=========================== */
+/* -------------------------------
+  ZÁKLADNÍ NASTAVENÍ
+--------------------------------*/
 #msg_body {
    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-   background:#f4f4f4;
-   margin:0;
-   padding:0;
-   display:flex;
-   justify-content:center;
+   margin: 0;
+   padding: 0;
+   background: #f2f2f2;
+   display: flex;
+   justify-content: center;
 }
 
 #main-container {
-   width:1200px;
-   display:flex;
-   gap:20px;
-   margin-top:20px;
+   width: 1200px;
+   display: flex;
+   justify-content: space-between;
+   gap: 20px;
+   padding-top: 20px;
 }
 
-/* ===========================
-  LEFT + RIGHT COLUMNS
-=========================== */
-.column {
-   width:50%;
-   display:flex;
-   flex-direction:column;
-   gap:20px;
+/* --------------------------------
+  LEVÁ A PRAVÁ STRANA (KOLEM BOXŮ)
+---------------------------------*/
+.left-side,
+.right-side {
+   width: 48%;
+   display: flex;
+   flex-direction: column;
+   gap: 20px;
 }
 
-/* ===========================
-  BOXES (LEFT & RIGHT)
-=========================== */
+/* ------------------------------
+   BOX – 500×300px pevný rám
+-------------------------------*/
 .box {
-   background:#fff;
-   border-radius:10px;
-   box-shadow:0 2px 6px rgba(0,0,0,0.12);
-   padding:20px;
-   position:relative;
-   height:300px;                /* FIXED HEIGHT */
-   overflow:hidden;             /* !!! DŮLEŽITÉ: nic nevyjede ven */
-   display:flex;
-   flex-direction:column;
+   width: 100%;
+   height: 300px;                 /* pevná výška */
+   background: white;
+   border-radius: 12px;
+   box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+   padding: 20px;
+   box-sizing: border-box;
+   display: flex;
+   flex-direction: column;
+   position: relative;
 }
 
-/* ===========================
-  LEFT SIDE : IMAGE + TITLE
-=========================== */
-.layer-header {
-   display:flex;
-   align-items:center;
-   gap:15px;
+/* ------------------------------
+  BAREVNÝ PRUH
+-------------------------------*/
+.color-strip {
+   position: absolute;
+   left: 0;
+   top: 0;
+   width: 8px;
+   height: 100%;
+   border-radius: 12px 0 0 12px;
 }
 
-.layer-header img {
-   width:60px;
-   height:60px;
+/* BARVY PRO 7 VRSTEV */
+.strip-green { background: #31c45a; }
+.strip-red { background: #d94141; }
+.strip-blue { background: #2583ff; }
+.strip-purple { background: #8f3dff; }
+.strip-yellow { background: #ffcc00; }
+.strip-orange { background: #ff7b22; }
+.strip-grey { background: #9c9c9c; }
+
+/* --------------------------------
+  OBRAZEK VLEVO
+--------------------------------*/
+.layer-icon {
+   width: 60px;
+   height: 60px;
+   margin-bottom: 10px;
 }
 
+/* --------------------------------
+  NADPIS A TEXT
+--------------------------------*/
 .layer-title {
-   font-size:1.3em;
-   font-weight:600;
+   font-size: 20px;
+   font-weight: bold;
+   margin-bottom: 5px;
 }
 
 .layer-desc {
-   margin-top:5px;
-   font-size:0.92em;
+   font-size: 14px;
+   color: #444;
+   margin-bottom: 10px;
 }
 
-/* ===========================
-  TOKEN BOX
-=========================== */
-.token-row {
-   display:flex;
-   gap:12px;
-   margin-top:10px;
+/* --------------------------------
+  TOKENOVÉ BOXÍKY
+--------------------------------*/
+.token-box {
+   display: flex;
+   gap: 10px;
+   margin-bottom: 10px;
 }
 
-.token {
-   flex:1;
-   padding:6px 10px;
-   border-radius:6px;
-   color:white;
-   font-weight:bold;
-   display:flex;
-   flex-direction:column;
-   justify-content:center;
+.token-item {
+   flex: 1;
+   padding: 6px;
+   border-radius: 6px;
+   text-align: center;
+   font-weight: bold;
+   color: white;
 }
 
-.token .value {
-   font-size:1.1em;
-   margin-top:3px;
+/* TOKEN BARVY */
+.token-usdtz {
+   background: #2ecc71;
 }
 
-.usdtz {
-   background:#16a34a; /* zelená */
+.token-gusd {
+   background: #3498db;
 }
 
-.gusd {
-   background:#0d6efd; /* modrá */
+/* --------------------------------
+  KŘIVKOVÝ GRAF (LEPŠÍ STYL)
+--------------------------------*/
+.chart-canvas {
+   width: 100% !important;
+   height: 120px !important;
+   background: #f8f8f8;
+   border-radius: 8px;
+   padding: 5px;
 }
 
-/* ===========================
-  GRAPH (LEFT)
-=========================== */
-.chart-container {
-   margin-top:auto; /* graf vždy na konci boxu */
-   height:140px;    /* zvětšeno kvůli čitelnosti */
+/* Větší odsazení textů nahoře */
+.box-header {
+   margin-bottom: 12px;
 }
 
-/* ===========================
-  RIGHT SIDE : FORM
-=========================== */
-.form-title {
-   font-size:1.3em;
-   font-weight:600;
-   margin-bottom:10px;
-   color:#003063;
+/* --------------------------------
+  PRAVÁ STRANA – FORMULÁŘ
+--------------------------------*/
+form label {
+   font-size: 14px;
+   font-weight: bold;
+   display: block;
+   margin-top: 5px;
 }
 
-.form-group {
-   display:flex;
-   flex-direction:column;
-   gap:6px;
-   margin-bottom:12px;
+form input {
+   width: 90%;
+   padding: 8px;
+   border-radius: 6px;
+   border: 1px solid #ccc;
+   margin-top: 3px;
+   font-size: 14px;
 }
 
-input[type="text"], input[type="email"], input[type="number"], input[type="tel"] {
-   padding:8px;
-   border:1px solid #ccc;
-   border-radius:6px;
-   font-size:1em;
-   width:100%;
-}
-
-.btn-primary {
-   background:#003063;
-   color:white;
-   padding:10px 15px;
-   border-radius:6px;
-   border:none;
-   cursor:pointer;
-   width:160px;
-   text-align:center;
+/* Tlačítka */
+.btn-main {
+   background: #005bbb;
+   color: white;
+   border: none;
+   padding: 10px 16px;
+   border-radius: 6px;
+   cursor: pointer;
+   margin-top: 12px;
+   font-size: 15px;
 }
 
 .btn-secondary {
-   background:#0d6efd;
-   color:white;
-   padding:10px 15px;
-   border-radius:6px;
-   border:none;
-   cursor:pointer;
-   width:180px;
-   text-align:center;
+   background: #4da3ff;
+   color: white;
+   border: none;
+   padding: 8px 14px;
+   border-radius: 6px;
+   cursor: pointer;
+   margin-top: 10px;
+   font-size: 14px;
 }
 
-.conditions-row {
-   margin-top:auto;
-   display:flex;
-   align-items:center;
-   gap:10px;
+/* Checkbox souhlas */
+.agree-box {
+   display: flex;
+   align-items: center;
+   margin-top: 12px;
+}
+
+.agree-box label {
+   margin-left: 8px;
+}
+
+/* Modal okno - podmínky */
+.modal {
+   display: none;
+   position: fixed;
+   left: 0;
+   top: 0;
+   width: 100%;
+   height: 100%;
+   background: rgba(0,0,0,0.45);
+   justify-content: center;
+   align-items: center;
+}
+
+.modal-content {
+   width: 500px;
+   background: white;
+   padding: 25px;
+   border-radius: 12px;
+   box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+}
+
+.modal-close {
+   float: right;
+   cursor: pointer;
+   font-size: 20px;
 }
