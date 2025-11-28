@@ -1,123 +1,130 @@
-/* === Global Font === */
+/* -----------------------------------------------------------
+   GLOBAL STYLE – AYAS-7 / WIN-WIN
+   Tento soubor bude společný pro všechny stránky.
+----------------------------------------------------------- */
+
+:root {
+  --blue-dark: #003063;
+  --blue: #1f5fbf;
+  --blue-light: #66b0ff;
+  --green: #1da84f;
+  --text-main: #1f2933;
+  --text-muted: #6b7280;
+  --bg-page: #eef2f5;
+  --bg-white: #ffffff;
+}
+
+/* Reset */
 * {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-/* === NAVIGATION BAR === */
-.top-nav {
-    width: 100%;
-    background: #003063; /* tmavě modrá */
-    color: white;
-    padding: 10px 30px;
-
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+/* Tělo stránky */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+  background: var(--bg-page);
+  color: var(--text-main);
 }
 
-/* =========== Left =========== */
-.nav-left {
-    display: flex;
-    align-items: center;
-    gap: 12px;
+/* Globální kontejnery */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 16px;
 }
 
-.nav-logo {
-    height: 46px;
-    width: 46px;
-    object-fit: contain;
+/* -----------------------------------------------------------
+   MENU (HORNÍ HLAVIČKA)
+----------------------------------------------------------- */
+
+.header {
+  width: 100%;
+  background: var(--blue-dark);
+  padding: 14px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
-.nav-title {
-    font-size: 22px;
-    font-weight: 700;
-    letter-spacing: 0.5px;
+.header-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
-/* =========== Middle Links =========== */
-.nav-links {
-    display: flex;
-    gap: 24px;
+.header-logo img {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
 }
 
-.nav-links a {
-    color: white;
-    text-decoration: none;
-    font-size: 15px;
-    font-weight: 500;
+.header-logo span {
+  font-size: 20px;
+  font-weight: 600;
+  color: #ffffff;
 }
 
-.nav-links a:hover {
-    text-decoration: underline;
+.nav {
+  display: flex;
+  gap: 22px;
 }
 
-/* =========== Right section =========== */
-.nav-right {
-    display: flex;
-    align-items: center;
-    gap: 14px;
+.nav a {
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 15px;
+  font-weight: 500;
 }
 
-.lang-switch {
-    padding: 5px 8px;
-    border-radius: 4px;
-    border: none;
-    font-size: 14px;
+.nav a:hover {
+  opacity: 0.75;
 }
 
-/* ==== Login Box ==== */
+/* Login box vpravo */
 .login-box {
-    display: flex;
-    align-items: center;
-    gap: 6px;
+  display: flex;
+  gap: 8px;
 }
 
 .login-box input {
-    padding: 5px 8px;
-    border-radius: 4px;
-    border: none;
-    font-size: 14px;
+  padding: 6px 8px;
+  border-radius: 4px;
+  border: none;
+  font-size: 14px;
 }
 
-.login-box button {
-    background: #1da84f;
-    border: none;
-    padding: 6px 14px;
-    border-radius: 4px;
-    color: white;
-    font-weight: 600;
-    cursor: pointer;
+.login-btn {
+  background: var(--blue-light);
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  color: #ffffff;
+  font-size: 14px;
+  cursor: pointer;
 }
 
-.login-box button:hover {
-    background: #14963f;
+.login-btn:hover {
+  opacity: 0.9;
 }
 
-/* ==== RESPONSIVE ==== */
-@media (max-width: 900px) {
-    .top-nav {
-        flex-direction: column;
-        gap: 14px;
-        padding-bottom: 16px;
-    }
+/* -----------------------------------------------------------
+   MOBILNÍ VERZE MENU
+----------------------------------------------------------- */
 
-    .nav-links {
-        flex-wrap: wrap;
-        justify-content: center;
-    }
+@media (max-width: 820px) {
+  .header {
+    flex-direction: column;
+    gap: 12px;
+    padding-bottom: 18px;
+  }
 
-    .login-box {
-        flex-direction: column;
-        width: 100%;
-    }
+  .nav {
+    gap: 14px;
+  }
 
-    .login-box input {
-        width: 100%;
-    }
-
-    .login-box button {
-        width: 100%;
-    }
+  .login-box input {
+    width: 120px;
+  }
 }
-
