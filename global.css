@@ -1,0 +1,109 @@
+/* HORNÍ MODRÉ MENU */
+.topbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 70px;
+  background: #003063;
+  display: flex;
+  align-items: center;
+  z-index: 999;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.topbar-content {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Levá část */
+.topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+}
+
+.brand {
+  font-size: 22px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+/* Menu vprostřed */
+.topbar-nav {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.topbar-nav a {
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 15px;
+  opacity: 0.85;
+}
+
+.topbar-nav a:hover {
+  opacity: 1;
+}
+
+/* Pravá část */
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.btn-login,
+.btn-register {
+  padding: 6px 14px;
+  border-radius: 4px;
+  font-size: 14px;
+  text-decoration: none;
+  color: white;
+  border: 1px solid rgba(255,255,255,0.4);
+  backdrop-filter: blur(4px);
+}
+
+.btn-login:hover,
+.btn-register:hover {
+  background: rgba(255,255,255,0.15);
+}
+
+/* Jazyk */
+.lang-switch {
+  display: flex;
+  gap: 6px;
+}
+
+.lang {
+  padding: 4px 8px;
+  font-size: 13px;
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.3);
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.lang.active {
+  background: rgba(255,255,255,0.25);
+}
+
+body {
+  padding-top: 80px; /* posun obsahu dolů kvůli fixnímu menu */
+}
