@@ -1,80 +1,145 @@
-<header style="
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Login – AYAS-7 Engine</title>
+
+
+<style>
+ @import url('https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600&display=swap');
+</style>
+
+
+<style>
+
+ #msg_body {
+   margin: 0;
+   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+   background: #f4f7fa;
+ }
+
+ /* horní lišta */
+ .topbar {
    width: 100%;
    background: #003063;
-   padding: 10px 0;
-   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-">
+   color: white;
+   padding: 6px 18px;
+   font-size: 13px;
+   display: flex;
+   justify-content: flex-end;
+   gap: 16px;
+ }
 
-   
-   <div style="
-       max-width: 1200px;
-       margin: 0 auto;
-       padding: 0 20px;
-       display: flex;
-       align-items: center;
-       justify-content: space-between;
-       color: white;
-   ">
+ .topbar a {
+   color: white;
+   text-decoration: none;
+   opacity: 0.9;
+ }
 
-       
-       <a href="home.html" style="display:flex; align-items:center; text-decoration:none; color:white;">
-           <img src="assets/img/logo-ayas7.png"
-                alt="AYAS-7 Logo"
-                style="height:48px; width:auto; margin-right:12px;">
-           <span style="font-size: 1.7rem; font-weight:700;">AYAS-7 Engine</span>
-       </a>
+ .topbar a:hover {
+   opacity: 1;
+ }
 
-       
-       <nav style="display:flex; align-items:center; gap:25px;">
+ /* MENU */
+ header {
+   width: 100%;
+   background: #0055a5;
+   display: flex;
+   align-items: center;
+   padding: 10px 22px;
+ }
 
-           <a href="home.html" style="
-               color:white;
-               text-decoration:none;
-               font-size:1rem;
-               font-weight:500;
-           ">Home</a>
+ header img.logo {
+   height: 52px;
+   width: auto;
+   margin-right: 25px;
+ }
 
-           <a href="members.html" style="
-               color:white;
-               text-decoration:none;
-               font-size:1rem;
-               font-weight:500;
-           ">Členové</a>
+ nav {
+   display: flex;
+   align-items: center;
+   gap: 26px;
+ }
 
-           <a href="payments.html" style="
-               color:white;
-               text-decoration:none;
-               font-size:1rem;
-               font-weight:500;
-           ">Platby</a>
+ nav a {
+   color: white;
+   font-size: 17px;
+   text-decoration: none;
+   font-weight: 600;
+   letter-spacing: 0.3px;
+   position: relative;
+ }
 
-           <a href="analytics.html" style="
-               color:white;
-               text-decoration:none;
-               font-size:1rem;
-               font-weight:500;
-           ">Analytika</a>
+ nav a::after {
+   content: "";
+   position: absolute;
+   bottom: -3px;
+   left: 0;
+   width: 0%;
+   height: 2px;
+   background: white;
+   transition: 0.25s;
+ }
 
-           
-           <a href="login.html" style="
-               padding:6px 14px;
-               background:white;
-               color:#003063;
-               border-radius:5px;
-               font-weight:600;
-               text-decoration:none;
-           ">Login</a>
+ nav a:hover::after {
+   width: 100%;
+ }
 
-           
-           <div style="
-               margin-left:15px;
-               font-size:0.9rem;
-               font-weight:600;
-           ">
-               <a href="#" style="color:white; text-decoration:none;">CZ</a> |
-               <a href="#" style="color:white; text-decoration:none;">EN</a>
-           </div>
-       </nav>
+ /* LOGIN tlačítko */
+ .login-btn {
+   margin-left: auto;
+   color: white;
+   padding: 6px 14px;
+   border: 1px solid rgba(255,255,255,0.7);
+   border-radius: 6px;
+   font-size: 15px;
+   text-decoration: none;
+   backdrop-filter: blur(2px);
+ }
 
-   </div>
+ .login-btn:hover {
+   background: rgba(255,255,255,0.15);
+ }
+
+ /* OBSAH STRÁNKY */
+ .content {
+   padding: 40px;
+   text-align: center;
+ }
+
+</style>
+</head>
+
+<body>
+
+
+<div class="topbar">
+ <a href="#">CZ</a> | <a href="#">EN</a>
+</div>
+
+
+<header>
+ <a href="dashboard.html">
+   <img src="assets/img/logo-ayas7.png" alt="AYAS-7" class="logo">
+ </a>
+
+ <nav>
+   <a href="dashboard.html">Home</a>
+   <a href="clenove.html">Členové</a>
+   <a href="platby.html">Platby</a>
+   <a href="vynos.html">Výkon & Výnos</a>
+   <a href="fintech.html">FinTech</a>
+ </nav>
+
+ <a class="login-btn" href="login.html">Login</a>
 </header>
+
+
+<div class="content">
+ <h1>Login stránka</h1>
+ <p>Zde později doplníme přihlášení.</p>
+</div>
+
+</body>
+</html>
