@@ -1,1 +1,880 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+ <meta charset="UTF-8" />
+ <title>AYAS-7 – Risk &amp; Compliance Layer</title>
+ <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+ <style>
+* {
+ margin: 0;
+ padding: 0;
+ box-sizing: border-box;
+}
+
+html, #msg_body {
+ width: 100%;
+ height: 100%;
+ background: radial-gradient(circle at 40% 0%, #0f172a 0%, #020617 55%, #000 100%) !important;
+ font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+ overflow-x: hidden;
+}
+   :root {
+     --blue-dark: #003063;
+     --blue-mid: #0053a6;
+     --blue-light: #4f8edc;
+     --bg-page: #020617;
+     --card-bg: #0b1120;
+     --border-soft: rgba(148, 163, 184, 0.45);
+     --text-main: #e5e7eb;
+     --text-muted: #9ca3af;
+     --accent: #22c55e;
+     --accent-red: #f97373;
+     --accent-amber: #facc15;
+   }
+/* OPRAVA ČERNÝCH TEXTŮ – VŠECHNY NADPISY A TEXTY BUDEME NUTIT DO BÍLÉ */
+h1, h2, h3, h4, h5, h6,
+p, span, label, td, th, li, a, div {
+ color: var(--text-main) !important;
+}
+
+   * {
+     box-sizing: border-box;
+     margin: 0;
+     padding: 0;
+   }
+
+   html, #msg_body {
+     width: 100%;
+     height: 100%;
+   }
+
+   #msg_body {
+     font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+     background: radial-gradient(circle at 40% 0%, #0f172a 0%, #020617 55%, #000 100%);
+     color: var(--text-main);
+     overflow-x: hidden;
+   }
+
+   a {
+     text-decoration: none;
+     color: inherit;
+   }
+
+   /* TOP BAR / MENU – stejný styl jako login / payments */
+   header.topbar {
+     background: linear-gradient(to right, var(--blue-dark), var(--blue-mid));
+     color: #fff;
+     padding: 10px 0;
+     box-shadow: 0 10px 30px rgba(15, 23, 42, 0.7);
+     position: sticky;
+     top: 0;
+     z-index: 50;
+   }
+
+   .topbar-inner {
+     max-width: 1200px;
+     margin: 0 auto;
+     padding: 0 16px;
+     display: flex;
+     align-items: center;
+     justify-content: space-between;
+     gap: 24px;
+   }
+
+   .brand-text-wrap {
+     display: flex;
+     flex-direction: column;
+     align-items: flex-start;
+     gap: 2px;
+   }
+
+   .brand-text-main {
+     font-size: 18px;
+     font-weight: 600;
+     letter-spacing: 0.06em;
+     text-transform: uppercase;
+     white-space: nowrap;
+   }
+
+   .brand-text-sub {
+     font-size: 11px;
+     text-transform: uppercase;
+     letter-spacing: 0.18em;
+     color: rgba(226, 232, 240, 0.75);
+   }
+
+   nav.main-nav {
+     display: flex;
+     align-items: center;
+     justify-content: center;
+     flex: 1;
+     min-width: 0;
+   }
+
+   .nav-list {
+     display: flex;
+     align-items: center;
+     gap: 18px;
+     list-style: none;
+     margin: 0;
+     padding: 0;
+     font-size: 14px;
+   }
+
+   .nav-link {
+     position: relative;
+     padding: 4px 0;
+     color: rgba(226, 232, 240, 0.86);
+     transition: color 0.18s ease;
+     white-space: nowrap;
+   }
+
+   .nav-link::after {
+     content: "";
+     position: absolute;
+     left: 0;
+     bottom: -3px;
+     width: 0;
+     height: 2px;
+     border-radius: 999px;
+     background: linear-gradient(to right, #22c55e, #4ade80);
+     transition: width 0.22s ease;
+   }
+
+   .nav-link:hover {
+     color: #ffffff;
+   }
+
+   .nav-link:hover::after {
+     width: 100%;
+   }
+
+   .nav-link.active {
+     color: #ffffff;
+     font-weight: 600;
+   }
+
+   .nav-link.active::after {
+     width: 100%;
+   }
+
+   .topbar-right {
+     display: flex;
+     align-items: center;
+     gap: 16px;
+     flex-shrink: 0;
+   }
+
+   .lang-switch {
+     font-size: 12px;
+     letter-spacing: 0.12em;
+     text-transform: uppercase;
+     color: rgba(226, 232, 240, 0.8);
+     display: flex;
+     align-items: center;
+     gap: 6px;
+     white-space: nowrap;
+   }
+
+   .lang-switch span {
+     cursor: pointer;
+     opacity: 0.65;
+   }
+
+   .lang-switch span.active {
+     opacity: 1;
+     font-weight: 600;
+     text-decoration: underline;
+     text-underline-offset: 3px;
+   }
+
+   .lang-sep {
+     opacity: 0.4;
+   }
+
+   .btn-login {
+     padding: 6px 16px;
+     border-radius: 999px;
+     border: 1px solid rgba(226, 232, 240, 0.6);
+     background: rgba(15, 23, 42, 0.18);
+     color: #f9fafb;
+     font-size: 13px;
+     font-weight: 500;
+     cursor: pointer;
+     display: inline-flex;
+     align-items: center;
+     gap: 8px;
+     transition: background 0.18s ease, border-color 0.18s ease, transform 0.12s ease;
+     white-space: nowrap;
+   }
+
+   .btn-login span.dot {
+     width: 8px;
+     height: 8px;
+     border-radius: 999px;
+     background: var(--accent);
+     box-shadow: 0 0 8px rgba(34, 197, 94, 0.9);
+   }
+
+   .btn-login:hover {
+     background: rgba(15, 23, 42, 0.35);
+     border-color: #ffffff;
+     transform: translateY(-1px);
+   }
+
+   .btn-login:active {
+     transform: translateY(0);
+   }
+
+   /* HLAVNÍ OBSAH */
+   main {
+     min-height: calc(100vh - 72px - 60px);
+     padding: 32px 16px 40px;
+     display: flex;
+     justify-content: center;
+   }
+
+   .page-wrap {
+     max-width: 1200px;
+     width: 100%;
+   }
+
+   .page-header {
+     margin-bottom: 20px;
+   }
+
+   .page-eyebrow {
+     display: inline-flex;
+     align-items: center;
+     gap: 6px;
+     padding: 2px 10px;
+     border-radius: 999px;
+     border: 1px solid rgba(148, 163, 184, 0.55);
+     font-size: 11px;
+     color: var(--text-muted);
+     background: rgba(15, 23, 42, 0.6);
+     margin-bottom: 8px;
+   }
+
+   .page-eyebrow-dot {
+     width: 7px;
+     height: 7px;
+     border-radius: 999px;
+     background: var(--blue-light);
+     box-shadow: 0 0 10px rgba(79, 163, 255, 0.9);
+   }
+
+   .page-title {
+     font-size: 22px;
+     font-weight: 600;
+     margin-bottom: 4px;
+   }
+
+   .page-subtitle {
+     font-size: 13px;
+     color: var(--text-muted);
+   }
+
+   /* GRID – 3 hlavní risk boxy */
+   .risk-grid {
+     display: grid;
+     grid-template-columns: repeat(3, minmax(0, 1fr));
+     gap: 18px;
+     margin-top: 24px;
+     margin-bottom: 24px;
+   }
+
+   .risk-card {
+     background: radial-gradient(circle at top left, #111827, #020617 75%);
+     border-radius: 18px;
+     border: 1px solid var(--border-soft);
+     padding: 16px 16px 14px;
+     position: relative;
+     overflow: hidden;
+     box-shadow: 0 18px 40px rgba(15, 23, 42, 0.7);
+   }
+
+   .risk-card::before {
+     content: "";
+     position: absolute;
+     top: 0;
+     left: 0;
+     width: 100%;
+     height: 3px;
+     background: linear-gradient(to right, #4fa3ff, #22c55e);
+     opacity: 0.9;
+   }
+
+   .risk-card-header {
+     display: flex;
+     align-items: center;
+     justify-content: space-between;
+     gap: 8px;
+     margin-bottom: 8px;
+   }
+
+   .risk-card-title {
+     font-size: 15px;
+     font-weight: 600;
+   }
+
+   .risk-card-pill {
+     font-size: 11px;
+     padding: 3px 9px;
+     border-radius: 999px;
+     border: 1px solid rgba(148, 163, 184, 0.6);
+     color: var(--text-muted);
+     display: inline-flex;
+     align-items: center;
+     gap: 5px;
+   }
+
+   .pill-dot-green {
+     width: 6px;
+     height: 6px;
+     border-radius: 999px;
+     background: var(--accent);
+     box-shadow: 0 0 8px rgba(34, 197, 94, 0.9);
+   }
+
+   .pill-dot-amber {
+     width: 6px;
+     height: 6px;
+     border-radius: 999px;
+     background: var(--accent-amber);
+     box-shadow: 0 0 8px rgba(250, 204, 21, 0.9);
+   }
+
+   .pill-dot-red {
+     width: 6px;
+     height: 6px;
+     border-radius: 999px;
+     background: var(--accent-red);
+     box-shadow: 0 0 8px rgba(248, 113, 113, 0.9);
+   }
+
+   .risk-card-text {
+     font-size: 12px;
+     color: var(--text-muted);
+     line-height: 1.6;
+     margin-bottom: 10px;
+   }
+
+   .risk-metric-row {
+     display: flex;
+     align-items: center;
+     justify-content: space-between;
+     font-size: 12px;
+     margin-bottom: 4px;
+   }
+
+   .risk-metric-label {
+     color: var(--text-muted);
+   }
+
+   .risk-metric-value {
+     font-weight: 500;
+     letter-spacing: 0.02em;
+   }
+
+   .risk-meter {
+     margin-top: 8px;
+     height: 8px;
+     border-radius: 999px;
+     background: rgba(31, 41, 55, 0.9);
+     overflow: hidden;
+     position: relative;
+   }
+
+   .risk-meter-fill {
+     height: 100%;
+     border-radius: 999px;
+     background: linear-gradient(to right, #22c55e, #facc15, #f97373);
+     box-shadow: 0 0 14px rgba(56, 189, 248, 0.8);
+   }
+
+   /* HEATMAP / MATRIX – spodní část */
+   .lower-layout {
+     display: grid;
+     grid-template-columns: 1.7fr 1.3fr;
+     gap: 18px;
+     margin-top: 10px;
+   }
+
+   .matrix-card,
+   .policy-card {
+     background: radial-gradient(circle at top left, #111827, #020617 80%);
+     border-radius: 18px;
+     border: 1px solid var(--border-soft);
+     padding: 16px 16px 14px;
+     box-shadow: 0 18px 40px rgba(15, 23, 42, 0.7);
+     position: relative;
+     overflow: hidden;
+   }
+
+   .matrix-card::before,
+   .policy-card::before {
+     content: "";
+     position: absolute;
+     top: 0;
+     left: 0;
+     width: 100%;
+     height: 2px;
+     background: linear-gradient(to right, #4fa3ff, #22c55e);
+     opacity: 0.9;
+   }
+
+   .card-title-row {
+     display: flex;
+     align-items: center;
+     justify-content: space-between;
+     gap: 8px;
+     margin-bottom: 10px;
+   }
+
+   .card-title {
+     font-size: 14px;
+     font-weight: 600;
+   }
+
+   .card-pill {
+     font-size: 11px;
+     padding: 2px 8px;
+     border-radius: 999px;
+     border: 1px solid rgba(148, 163, 184, 0.6);
+     color: var(--text-muted);
+     display: inline-flex;
+     align-items: center;
+     gap: 5px;
+   }
+
+   .card-text {
+     font-size: 12px;
+     color: var(--text-muted);
+     margin-bottom: 10px;
+     line-height: 1.6;
+   }
+
+   /* Jednoduchá risk matrice */
+   table.risk-matrix {
+     width: 100%;
+     border-collapse: collapse;
+     font-size: 11px;
+     margin-top: 4px;
+   }
+
+   table.risk-matrix th,
+   table.risk-matrix td {
+     border: 1px solid rgba(55, 65, 81, 0.9);
+     padding: 6px 6px;
+     text-align: center;
+     color: var(--text-main);
+   }
+
+   table.risk-matrix th {
+     background: rgba(15, 23, 42, 0.9);
+     font-weight: 500;
+   }
+
+   .risk-low {
+     background: rgba(34, 197, 94, 0.18);
+     color: #bbf7d0;
+   }
+
+   .risk-med {
+     background: rgba(250, 204, 21, 0.18);
+     color: #fef3c7;
+   }
+
+   .risk-high {
+     background: rgba(248, 113, 113, 0.25);
+     color: #fecaca;
+   }
+
+   .policy-list {
+     margin-top: 4px;
+     padding-left: 18px;
+     font-size: 12px;
+     color: var(--text-muted);
+   }
+
+   .policy-list li {
+     margin-bottom: 4px;
+   }
+
+   .policy-badge {
+     display: inline-flex;
+     align-items: center;
+     gap: 6px;
+     padding: 3px 9px;
+     border-radius: 999px;
+     border: 1px solid rgba(148, 163, 184, 0.6);
+     font-size: 11px;
+     color: var(--text-muted);
+     margin-bottom: 6px;
+   }
+
+   .policy-badge-dot {
+     width: 7px;
+     height: 7px;
+     border-radius: 999px;
+     background: var(--accent);
+     box-shadow: 0 0 8px rgba(34, 197, 94, 0.9);
+   }
+
+   /* INFO PANEL DOLE – vysvětlení layeru */
+   .info-panel {
+     margin-top: 18px;
+     padding-top: 16px;
+     border-top: 1px solid rgba(31, 41, 55, 0.9);
+     display: grid;
+     grid-template-columns: 2.1fr 1.2fr;
+     gap: 18px;
+   }
+
+   .info-title {
+     font-size: 14px;
+     font-weight: 600;
+     margin-bottom: 6px;
+   }
+
+   .info-text {
+     font-size: 12px;
+     color: var(--text-muted);
+     line-height: 1.7;
+   }
+
+   .info-list {
+     margin-top: 4px;
+     padding-left: 18px;
+     font-size: 12px;
+     color: var(--text-muted);
+   }
+
+   .info-list li {
+     margin-bottom: 4px;
+   }
+
+   /* FOOTER */
+   footer {
+     text-align: center;
+     padding: 10px 16px 16px;
+     font-size: 11px;
+     color: var(--text-muted);
+   }
+
+   /* RESPONSIVE */
+   @media (max-width: 1024px) {
+     .risk-grid {
+       grid-template-columns: repeat(2, minmax(0, 1fr));
+     }
+   }
+
+   @media (max-width: 800px) {
+     .risk-grid {
+       grid-template-columns: 1fr;
+     }
+     .lower-layout {
+       grid-template-columns: 1fr;
+     }
+     .info-panel {
+       grid-template-columns: 1fr;
+     }
+     nav.main-nav {
+       justify-content: flex-start;
+     }
+     .nav-list {
+       flex-wrap: wrap;
+       row-gap: 4px;
+     }
+   }
+
+   @media (max-width: 640px) {
+     .topbar-inner {
+       flex-direction: column;
+       align-items: flex-start;
+       row-gap: 8px;
+     }
+     .topbar-right {
+       align-self: stretch;
+       justify-content: space-between;
+       width: 100%;
+     }
+     .brand-text-main {
+       font-size: 16px;
+     }
+   }
+
+ </style>
+</head>
+<body>
+
+ 
+ <header class="topbar">
+   <div class="topbar-inner">
+
+     <div class="brand-text-wrap">
+       <div class="brand-text-main">AYAS-7 Engine</div>
+       <div class="brand-text-sub">WIN-WIN COOPERATIVE</div>
+     </div>
+
+     <nav class="main-nav" aria-label="Hlavní menu">
+       <ul class="nav-list">
+         <li><a href="dashboard.html" class="nav-link">Home</a></li>
+         <li><a href="members.html" class="nav-link">Členové</a></li>
+         <li><a href="payments.html" class="nav-link">Platby</a></li>
+         <li><a href="performance.html" class="nav-link">Výkon &amp; výnos</a></li>
+         <li><a href="fintech.html" class="nav-link">FinTech</a></li>
+         <li><a href="risk-compliance.html" class="nav-link active">Risk &amp; Compliance</a></li>
+       </ul>
+     </nav>
+
+     <div class="topbar-right">
+       <div class="lang-switch" aria-label="Přepnutí jazyka">
+         <span class="active">CZ</span>
+         <span class="lang-sep">|</span>
+         <span>EN</span>
+       </div>
+       <a href="login.html">
+         <button type="button" class="btn-login">
+           <span class="dot"></span>
+           <span>Login</span>
+         </button>
+       </a>
+     </div>
+
+   </div>
+ </header>
+
+ 
+ <main>
+   <section class="page-wrap">
+     <div class="page-header">
+       <div class="page-eyebrow">
+         <span class="page-eyebrow-dot"></span>
+         Layer 4 – Risk &amp; Compliance Engine
+       </div>
+       <h1 class="page-title">Řízení rizik a ochrana členů družstva</h1>
+       <p class="page-subtitle">
+         Centrální vrstva, která hlídá limity, expozice, auditní stopu a soulad s pravidly Win-Win.
+         Všech 7 vrstev AYAS-7 vede přes tento „bezpečnostní filtr“.
+       </p>
+     </div>
+
+     
+     <div class="risk-grid">
+
+       
+       <article class="risk-card">
+         <div class="risk-card-header">
+           <div class="risk-card-title">Limity &amp; expozice</div>
+           <div class="risk-card-pill">
+             <span class="pill-dot-green"></span>
+             Režim ochrany kapitálu
+           </div>
+         </div>
+         <p class="risk-card-text">
+           Definuje maximální expozice na jednotlivé strategie, páry a burzy. Jakmile systém
+           narazí na limit, nový kapitál se nepřiděluje, dokud se rizikový profil neuvolní.
+         </p>
+
+         <div class="risk-metric-row">
+           <span class="risk-metric-label">Max. expozice na jednu strategii</span>
+           <span class="risk-metric-value">např. 18 % TVL</span>
+         </div>
+         <div class="risk-metric-row">
+           <span class="risk-metric-label">Max. expozice na jednu burzu</span>
+           <span class="risk-metric-value">např. 25 % TVL</span>
+         </div>
+         <div class="risk-meter">
+           
+           <div class="risk-meter-fill" style="width: 32%;"></div>
+         </div>
+       </article>
+
+       
+       <article class="risk-card">
+         <div class="risk-card-header">
+           <div class="risk-card-title">Compliance &amp; KYC / AML</div>
+           <div class="risk-card-pill">
+             <span class="pill-dot-amber"></span>
+             Pravidla vstupu a kontroly
+           </div>
+         </div>
+         <p class="risk-card-text">
+           Vstup člena, platba a přidělení WW-KEY probíhá podle interních směrnic Win-Win.
+           Vrstva eviduje zdroj prostředků, úroveň prověření a případné „red flag“ události.
+         </p>
+
+         <div class="risk-metric-row">
+           <span class="risk-metric-label">Úroveň prověření</span>
+           <span class="risk-metric-value">Standard / Rozšířené</span>
+         </div>
+         <div class="risk-metric-row">
+           <span class="risk-metric-label">Stav KYC</span>
+           <span class="risk-metric-value">např. 98 % členů OK</span>
+         </div>
+         <div class="risk-meter">
+           <div class="risk-meter-fill" style="width: 48%;"></div>
+         </div>
+       </article>
+
+       
+       <article class="risk-card">
+         <div class="risk-card-header">
+           <div class="risk-card-title">Monitoring &amp; alerty</div>
+           <div class="risk-card-pill">
+             <span class="pill-dot-red"></span>
+             Reálný čas · incidenty
+           </div>
+         </div>
+         <p class="risk-card-text">
+           Hlídá extrémní výkyvy, technické chyby a nestandardní chování. Při překročení prahu
+           spouští alert a může dočasně pozastavit část motoru AYAS-7.
+         </p>
+
+         <div class="risk-metric-row">
+           <span class="risk-metric-label">Aktivních alertů</span>
+           <span class="risk-metric-value">např. 0</span>
+         </div>
+         <div class="risk-metric-row">
+           <span class="risk-metric-label">Poslední incident</span>
+           <span class="risk-metric-value">+30 dní bez incidentu</span>
+         </div>
+         <div class="risk-meter">
+           <div class="risk-meter-fill" style="width: 12%;"></div>
+         </div>
+       </article>
+
+     </div>
+
+     
+     <div class="lower-layout">
+
+       
+       <article class="matrix-card">
+         <div class="card-title-row">
+           <div class="card-title">Risk matice – strategie vs. riziko</div>
+           <div class="card-pill">
+             <span class="pill-dot-amber"></span>
+             Modelový příklad
+           </div>
+         </div>
+         <p class="card-text">
+           Jednoduchá matice pro prezentaci družstvu – jak se strategie rozkládají podle rizika
+           a očekávaného výnosu. V ostré verzi může být napojena na skutečné metriky motoru.
+         </p>
+
+         <table class="risk-matrix">
+           <thead>
+             <tr>
+               <th>Strategie</th>
+               <th>Riziko</th>
+               <th>Očekávaný výnos</th>
+               <th>Limit v AYAS-7</th>
+             </tr>
+           </thead>
+           <tbody>
+             <tr>
+               <td>Stabilní pooly (blue-chip)</td>
+               <td class="risk-low">Nízké</td>
+               <td>4–6 % p.a.</td>
+               <td>do 40 % TVL</td>
+             </tr>
+             <tr>
+               <td>Smíšené DeFi strategie</td>
+               <td class="risk-med">Střední</td>
+               <td>6–10 % p.a.</td>
+               <td>do 30 % TVL</td>
+             </tr>
+             <tr>
+               <td>Výkonné / volatilní strategie</td>
+               <td class="risk-high">Vyšší</td>
+               <td>10–18 % p.a.</td>
+               <td>do 15 % TVL</td>
+             </tr>
+             <tr>
+               <td>Rezervy &amp; likvidita</td>
+               <td class="risk-low">Nízké</td>
+               <td>2–3 % p.a.</td>
+               <td>min. 15 % TVL</td>
+             </tr>
+           </tbody>
+         </table>
+       </article>
+
+       
+       <article class="policy-card">
+         <div class="card-title-row">
+           <div class="card-title">Politiky, audit a governance</div>
+           <div class="card-pill">
+             <span class="pill-dot-green"></span>
+             Layer 4 – governance
+           </div>
+         </div>
+         <p class="card-text">
+           Layer Risk &amp; Compliance definuje, jak se změny pravidel schvalují a jak se
+           uchovává auditní stopa pro členy, auditora a regulatorní partnery.
+         </p>
+
+         <div class="policy-badge">
+           <span class="policy-badge-dot"></span>
+           Klíčové mechanizmy ochrany členů
+         </div>
+
+         <ul class="policy-list">
+           <li>Víceúrovňové schvalování změn strategií (správní rada + risk comité).</li>
+           <li>Auditní log každého zásahu do limitů a konfigurace motoru AYAS-7.</li>
+           <li>Možnost exportu kompletní historie pro externí audit (CSV / PDF).</li>
+           <li>Napojitelnost na multi-sig peněženku pro kritické operace.</li>
+         </ul>
+       </article>
+
+     </div>
+
+     
+     <div class="info-panel">
+
+       <div>
+         <div class="info-title">Jak Risk &amp; Compliance spolupracuje s ostatními vrstvami</div>
+         <p class="info-text">
+           Layer 4 neobchoduje. Je to „bezpečnostní štít“ AYAS-7. Vše, co prochází přes
+           Liquidity Engine, Yield Routing a Core Engine, je filtrováno přes sadu pravidel,
+           limitů a kontrol. V okamžiku, kdy se rizikový profil přiblíží hranici, Risk Layer
+           umí:
+         </p>
+         <ul class="info-list">
+           <li>pozastavit nové vklady do vybraných strategií,</li>
+           <li>přesměrovat výnosy do konzervativnější části systému,</li>
+           <li>vygenerovat alert pro správce a připravit podklady pro rozhodnutí,</li>
+           <li>v krajním případě navrhnout řízené snížení expozice (de-risking).</li>
+         </ul>
+       </div>
+
+       <div>
+         <div class="info-title">Co uvidí člen a co uvidí auditor</div>
+         <p class="info-text">
+           Pro členy družstva lze zobrazit jednoduchý přehled: že jejich vklady splňují
+           interní risk profil a že nejsou v zóně extrémního rizika. Auditor nebo
+           partnerská banka může dostat detailnější report – historii limitů, expozic
+           a zásahů risk layeru v čase.
+         </p>
+         <ul class="info-list">
+           <li>Člen: jednoduchý „risk status“ (OK / sledováno / omezeno).</li>
+           <li>Audit: kompletní log zásahů a změn parametrů.</li>
+           <li>Banky / partneři: agregované metriky a risk matice podle strategií.</li>
+         </ul>
+       </div>
+
+     </div>
+
+   </section>
+ </main>
+
+ <footer>
+   © 2025 Win-Win Družstvo · AYAS-7 Engine · Risk &amp; Compliance Layer
+ </footer>
+
+</body>
+</html>
