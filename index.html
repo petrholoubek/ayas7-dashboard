@@ -7,29 +7,24 @@
 
  <style>
    :root {
-     --blue-dark: #0a1a33;
-     --blue-mid: #124c99;
      --blue-light: #4fa3ff;
      --neon: #4dabff;
      --text-main: #e5e7eb;
      --text-muted: #9ca3af;
-     --card-bg: #0d1628;
    }
 
-   * { box-sizing: border-box; }
+   * { box-sizing: border-box; margin:0; padding:0; }
 
+   /* 🔥 TMAVÉ FINTECH POZADÍ – jako login page */
    #msg_body {
-     margin: 0;
-     padding: 0;
      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-
-     /* 🔥 TADY JE ZMĚNA – tmavý luxusní fintech background */
      background: radial-gradient(circle at 40% 0%, #0f172a, #020617 60%, #000 100%);
      color: var(--text-main);
      overflow-x: hidden;
+     min-height: 100vh;
    }
 
-   /* HERO WRAPPER */
+   /* CELÝ OBSAH */
    .hero {
      min-height: 100vh;
      display: flex;
@@ -39,13 +34,13 @@
      position: relative;
    }
 
-   /* Modré ambient světlo */
+   /* Ambientní světlo */
    .hero::before {
      content: "";
      position: absolute;
      width: 520px;
      height: 520px;
-     background: radial-gradient(circle, rgba(76, 162, 255, 0.25), transparent 70%);
+     background: radial-gradient(circle, rgba(76, 162, 255, 0.18), transparent 70%);
      top: -140px;
      left: 50%;
      transform: translateX(-50%);
@@ -53,15 +48,12 @@
      z-index: 0;
    }
 
-   /* HERO BOX */
+   /* 🔥 HERO BOX – plně tmavý jako login box */
    .hero-box {
      max-width: 560px;
      width: 100%;
-
-     /* TADY OPRAVENO – žádná světlá barva, jen dark fintech */
-     background: radial-gradient(circle at top left, #0c1424 0%, #0a0f1a 70%);
+     background: radial-gradient(circle at top left, #0c1424, #0a0f1a 80%);
      border: 1px solid rgba(148, 163, 184, 0.4);
-
      border-radius: 22px;
      padding: 40px 32px 36px;
      text-align: center;
@@ -72,7 +64,7 @@
      z-index: 2;
    }
 
-   /* NEON BADGE */
+   /* Badge */
    .hero-badge {
      display: inline-flex;
      align-items: center;
@@ -80,7 +72,7 @@
      padding: 3px 12px;
      border-radius: 999px;
      border: 1px solid rgba(148, 163, 184, 0.45);
-     background: rgba(10, 20, 40, 0.5);
+     background: rgba(10, 20, 40, 0.6);
      font-size: 12px;
      color: var(--text-muted);
      margin-bottom: 14px;
@@ -94,7 +86,6 @@
      box-shadow: 0 0 12px rgba(79, 163, 255, 1);
    }
 
-   /* TITLES */
    .hero-title {
      font-size: 42px;
      font-weight: 700;
@@ -112,7 +103,6 @@
      margin-bottom: 26px;
    }
 
-   /* BUTTONS */
    .btn-main {
      display: block;
      width: 100%;
@@ -153,17 +143,10 @@
      border-color: rgba(209, 213, 219, 0.6);
    }
 
-   /* RESPONSIVE */
    @media (max-width: 600px) {
-     .hero-box {
-       padding: 32px 22px 30px;
-     }
-     .hero-title {
-       font-size: 32px;
-     }
-     .hero-sub {
-       font-size: 14px;
-     }
+     .hero-box { padding: 32px 22px 30px; }
+     .hero-title { font-size: 32px; }
+     .hero-sub { font-size: 14px; }
    }
  </style>
 </head>
