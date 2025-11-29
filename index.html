@@ -2,20 +2,18 @@
 <html lang="cs">
 <head>
  <meta charset="UTF-8" />
- <title>AYAS-7 Engine — Win-Win Cooperative</title>
- <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>AYAS-7 Engine – Win-Win Cooperative</title>
+ <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
  <style>
    :root {
      --blue-dark: #0a1a33;
-     --blue-mid: #0f2a52;
-     --blue-light: #3b82f6;
-     --glass: rgba(255,255,255,0.06);
+     --blue-mid: #124c99;
+     --blue-light: #4fa3ff;
+     --neon: #4dabff;
      --text-main: #e5e7eb;
-     --text-sub: #9ca3af;
-     --accent: #22c55e;
-     --accent-soft: rgba(34,197,94,0.55);
-     --bg: radial-gradient(circle at 40% -20%, #1e3a8a 0%, #0a0f1f 55%, #000 100%);
+     --text-muted: #9ca3af;
+     --card-bg: #0d1628;
    }
 
    * { box-sizing: border-box; }
@@ -24,284 +22,174 @@
      margin: 0;
      padding: 0;
      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-     background: var(--bg);
+     background: radial-gradient(circle at 40% 0%, #0f172a, #020617 60%, #000 100%);
      color: var(--text-main);
      overflow-x: hidden;
    }
 
-   a { text-decoration: none; color: inherit; }
-
-   /* TOP MENU */
-   header.topbar {
-     background: linear-gradient(to right, var(--blue-dark), var(--blue-mid));
-     padding: 12px 0;
-     backdrop-filter: blur(18px);
-     border-bottom: 1px solid rgba(255,255,255,0.08);
-   }
-   .topbar-inner {
-     max-width: 1200px;
-     margin:auto;
-     padding:0 20px;
-     display:flex;
-     justify-content:space-between;
-     align-items:center;
-     gap:24px;
-   }
-   .brand {
-     display:flex;
-     align-items:center;
-     gap:12px;
-   }
-   .brand-logo {
-     width:52px;
-     height:52px;
-     border-radius:50%;
-     object-fit:cover;
-     background:#000;
-     box-shadow:0 0 12px rgba(59,130,246,0.55);
-   }
-   .brand-text-main {
-     font-size:20px;
-     font-weight:700;
-     letter-spacing:0.06em;
-     text-transform:uppercase;
-   }
-   .brand-text-sub {
-     font-size:11px;
-     opacity:0.7;
-     letter-spacing:0.14em;
+   /* HERO WRAPPER */
+   .hero {
+     min-height: 100vh;
+     display: flex;
+     align-items: center;
+     justify-content: center;
+     padding: 40px 16px;
+     position: relative;
    }
 
-   nav.main-nav ul {
-     display:flex;
-     list-style:none;
-     gap:20px;
-     margin:0;
-     padding:0;
-     font-size:14px;
-   }
-   .nav-link {
-     padding:4px 0;
-     position:relative;
-     color:rgba(226,232,240,0.75);
-   }
-   .nav-link:hover { color:#fff; }
-   .nav-link::after {
-     content:"";
-     position:absolute;
-     left:0; bottom:-2px;
-     height:2px;
-     width:0;
-     background:linear-gradient(to right,#22c55e,#4ade80);
-     transition:0.25s;
-     border-radius:999px;
-   }
-   .nav-link:hover::after { width:100%; }
-
-   .topbar-right {
-     display:flex;
-     align-items:center;
-     gap:16px;
+   /* Modré ambient světlo */
+   .hero::before {
+     content: "";
+     position: absolute;
+     width: 520px;
+     height: 520px;
+     background: radial-gradient(circle, rgba(76, 162, 255, 0.25), transparent 70%);
+     top: -140px;
+     left: 50%;
+     transform: translateX(-50%);
+     filter: blur(70px);
+     z-index: 0;
    }
 
-   .lang-switch span {
-     cursor:pointer;
-     opacity:0.65;
-     font-size:12px;
-   }
-   .lang-switch span.active {
-     opacity:1;
-     text-decoration:underline;
-   }
-   .lang-sep { opacity:0.4; }
-
-   .btn-login {
-     padding:7px 18px;
-     border-radius:999px;
-     border:1px solid rgba(255,255,255,0.4);
-     background:rgba(255,255,255,0.05);
-     display:flex;
-     align-items:center;
-     gap:8px;
-     font-size:13px;
-     cursor:pointer;
-     transition:0.25s;
-   }
-   .btn-login:hover {
-     background:rgba(255,255,255,0.12);
-     border-color:#fff;
-     transform:translateY(-1px);
-   }
-
-   .dot {
-     width:8px;height:8px;
-     border-radius:50%;
-     background:var(--accent);
-     box-shadow:0 0 10px var(--accent);
-   }
-
-   /* HERO */
-   section.hero {
-     height: calc(100vh - 80px);
-     display:flex;
-     align-items:center;
-     justify-content:center;
-     text-align:center;
-     padding:20px;
-     position:relative;
-   }
-
-   .hero-inner {
-     max-width:780px;
-     padding:40px 30px;
-     border-radius:22px;
-     background:var(--glass);
-     border:1px solid rgba(255,255,255,0.14);
-     backdrop-filter: blur(24px);
+   /* HERO BOX */
+   .hero-box {
+     max-width: 560px;
+     width: 100%;
+     background: radial-gradient(circle at top left, #0c1424, #0a0f1a 70%);
+     border: 1px solid rgba(148, 163, 184, 0.4);
+     border-radius: 22px;
+     padding: 40px 32px 36px;
+     text-align: center;
      box-shadow:
-       0 0 32px rgba(59,130,246,0.25),
-       inset 0 0 24px rgba(255,255,255,0.05);
-     animation: fadein 1.2s ease forwards;
+       0 30px 80px rgba(15, 23, 42, 0.7),
+       0 0 0 1px rgba(15, 23, 42, 0.9);
+     position: relative;
+     z-index: 2;
    }
 
-   @keyframes fadein {
-     from { opacity:0; transform:translateY(20px); }
-     to { opacity:1; transform:translateY(0); }
+   /* NEON BADGE */
+   .hero-badge {
+     display: inline-flex;
+     align-items: center;
+     gap: 6px;
+     padding: 3px 12px;
+     border-radius: 999px;
+     border: 1px solid rgba(148, 163, 184, 0.45);
+     background: rgba(10, 20, 40, 0.5);
+     font-size: 12px;
+     color: var(--text-muted);
+     margin-bottom: 14px;
    }
 
+   .hero-badge-dot {
+     width: 8px;
+     height: 8px;
+     border-radius: 999px;
+     background: var(--blue-light);
+     box-shadow: 0 0 12px rgba(79, 163, 255, 1);
+   }
+
+   /* TITLES */
    .hero-title {
-     font-size:54px;
-     font-weight:700;
-     letter-spacing:0.02em;
-     margin-bottom:16px;
-     background:linear-gradient(to right,#fff,#3b82f6);
-     -webkit-background-clip:text;
-     color:transparent;
+     font-size: 42px;
+     font-weight: 700;
+     letter-spacing: 0.03em;
+     margin: 0 0 10px;
+     background: linear-gradient(to right, #74b7ff, #d7e9ff);
+     -webkit-background-clip: text;
+     color: transparent;
    }
 
    .hero-sub {
-     font-size:20px;
-     color:var(--text-sub);
-     margin-bottom:36px;
-     line-height:1.5;
+     font-size: 15px;
+     line-height: 1.6;
+     color: var(--text-muted);
+     margin-bottom: 26px;
    }
 
-   .hero-buttons {
-     display:flex;
-     gap:20px;
-     justify-content:center;
-     margin-top:10px;
-     flex-wrap:wrap;
-   }
-
+   /* BUTTONS */
    .btn-main {
-     padding:12px 32px;
-     font-size:16px;
-     border-radius:999px;
-     background:linear-gradient(to right,#22c55e,#4ade80);
-     color:#000;
-     font-weight:600;
-     border:none;
-     cursor:pointer;
-     box-shadow:0 12px 40px rgba(22,163,74,0.35);
-     transition:0.25s;
+     display: block;
+     width: 100%;
+     padding: 12px 18px;
+     margin-bottom: 12px;
+     border-radius: 12px;
+     background: linear-gradient(to right, #4fa3ff, #70c3ff);
+     color: #0a0f1a;
+     font-size: 15px;
+     font-weight: 600;
+     border: none;
+     cursor: pointer;
+     transition: transform 0.15s ease, filter 0.15s ease;
+     box-shadow: 0 20px 40px rgba(79, 163, 255, 0.5);
    }
+
    .btn-main:hover {
-     transform:translateY(-2px);
-     box-shadow:0 16px 50px rgba(22,163,74,0.55);
+     transform: translateY(-2px);
+     filter: brightness(1.05);
    }
 
    .btn-secondary {
-     padding:12px 32px;
-     font-size:16px;
-     border-radius:999px;
-     border:1px solid rgba(255,255,255,0.35);
-     background:rgba(255,255,255,0.08);
-     color:#fff;
-     cursor:pointer;
-     transition:0.25s;
+     display: block;
+     width: 100%;
+     padding: 12px 18px;
+     border-radius: 12px;
+     border: 1px solid rgba(148, 163, 184, 0.4);
+     background: rgba(15, 23, 42, 0.4);
+     color: var(--text-main);
+     font-size: 15px;
+     font-weight: 500;
+     cursor: pointer;
+     transition: background 0.2s ease, border-color 0.2s ease;
    }
+
    .btn-secondary:hover {
-     background:rgba(255,255,255,0.18);
-     transform:translateY(-2px);
+     background: rgba(15, 23, 42, 0.65);
+     border-color: rgba(209, 213, 219, 0.6);
    }
 
-   footer {
-     text-align:center;
-     padding:20px;
-     color:var(--text-sub);
-     background:#020617;
-     font-size:12px;
+   /* RESPONSIVE */
+   @media (max-width: 600px) {
+     .hero-box {
+       padding: 32px 22px 30px;
+     }
+     .hero-title {
+       font-size: 32px;
+     }
+     .hero-sub {
+       font-size: 14px;
+     }
    }
-
  </style>
 </head>
 
 <body>
 
- 
- <header class="topbar">
-   <div class="topbar-inner">
+<div class="hero">
+ <div class="hero-box">
 
-     <div class="brand">
-       <img src="assets/img/logo-ayas7.png" class="brand-logo">
-       <div>
-         <div class="brand-text-main">AYAS-7 Engine</div>
-         <div class="brand-text-sub">WIN-WIN COOPERATIVE</div>
-       </div>
-     </div>
-
-     <nav class="main-nav">
-       <ul>
-         <li><a href="dashboard.html" class="nav-link">Home</a></li>
-         <li><a href="members.html" class="nav-link">Členové</a></li>
-         <li><a href="payments.html" class="nav-link">Platby</a></li>
-         <li><a href="performance.html" class="nav-link">Výkon & výnos</a></li>
-         <li><a href="fintech.html" class="nav-link">FinTech</a></li>
-       </ul>
-     </nav>
-
-     <div class="topbar-right">
-       <div class="lang-switch">
-         <span class="active">CZ</span>
-         <span class="lang-sep">|</span>
-         <span>EN</span>
-       </div>
-
-       <a href="login.html">
-         <button class="btn-login">
-           <span class="dot"></span>
-           Login
-         </button>
-       </a>
-     </div>
-
+   <div class="hero-badge">
+     <span class="hero-badge-dot"></span>
+     Next-Generation Financial Engine
    </div>
- </header>
 
- 
- <section class="hero">
-   <div class="hero-inner">
+   <h1 class="hero-title">AYAS-7 Engine</h1>
 
-     <h1 class="hero-title">AYAS-7 ENGINE</h1>
+   <p class="hero-sub">
+     Revoluční sedmivrstvý finanční systém pro družstvo Win-Win.<br />
+     Bezpečný. Auditovatelný. Výkonný.
+   </p>
 
-     <p class="hero-sub">
-       Revoluční sedmivrstvý autonomní systém výnosu,  
-       navržený pro Win-Win Cooperative.  
-       Moderní FinTech. Řízený daty. Stabilní. Transparentní.  
-     </p>
+   <a href="login.html">
+     <button class="btn-main">Vstoupit do systému</button>
+   </a>
 
-     <div class="hero-buttons">
-       <a href="dashboard.html"><button class="btn-main">Vstoupit do systému</button></a>
-       <a href="login.html"><button class="btn-secondary">Členská sekce</button></a>
-     </div>
+   <a href="about.html">
+     <button class="btn-secondary">O družstvu Win-Win</button>
+   </a>
 
-   </div>
- </section>
-
- <footer>
-   © 2025 Win-Win Družstvo · AYAS-7 Engine · Všechna práva vyhrazena
- </footer>
+ </div>
+</div>
 
 </body>
 </html>
