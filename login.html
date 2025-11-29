@@ -1,128 +1,122 @@
-<!DOCTYPE html>
-<html lang="cs">
-<head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Login – AYAS-7</title>
-
 <style>
+ :root {
+   --font-main: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+   --blue-dark: #003063;
+   --blue: #0d6efd;
+ }
+
  #msg_body {
    margin: 0;
-   padding: 0;
-   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-   background: #f4f5f7;
+   font-family: var(--font-main);
  }
 
- /* HLAVNÍ MODRÝ PRUHY */
- header {
+ /* HORNÍ MODRÝ PÁS */
+ .topbar {
    width: 100%;
-   background: #003063; /* corporate blue */
-   padding: 0;
-   height: 70px;
+   background: var(--blue-dark);
+   padding: 12px 0;
    display: flex;
+   justify-content: center;
+   align-items: center;
+ }
+
+ .topbar-inner {
+   width: 100%;
+   max-width: 1200px;
+   padding: 0 20px;
+   display: flex;
+   align-items: center;
    justify-content: space-between;
-   align-items: center;
  }
 
- /* LEVÁ ČÁST – LOGO + TEXT */
- .nav-left {
+ /* LOGO */
+ .logo-wrap {
    display: flex;
    align-items: center;
-   gap: 14px;
-   margin-left: 20px;
+   gap: 12px;
  }
 
- .nav-left img {
-   height: 48px;     /* ZVĚTŠENÉ LOGO */
+ .logo-wrap img {
+   height: 48px;       /* větší logo */
    width: auto;
  }
 
- .brand-name {
+ .logo-title {
    color: white;
-   font-size: 1.45rem;   /* VĚTŠÍ – FINTECH PREMIUM */
+   font-size: 1.4rem;
    font-weight: 600;
    letter-spacing: 0.5px;
  }
 
- /* PRAVÁ ČÁST – MENU ODKAZY */
- .nav-right {
+ /* MENU */
+ .menu {
    display: flex;
    align-items: center;
-   gap: 24px;
-   margin-right: 20px;
+   gap: 26px;
  }
 
- .nav-right a {
+ .menu a {
    color: white;
    text-decoration: none;
-   font-size: 0.95rem;
+   font-size: 1rem;
    font-weight: 500;
-   transition: 0.2s ease;
+   transition: opacity 0.2s ease;
  }
 
- .nav-right a:hover {
+ .menu a:hover {
    opacity: 0.7;
  }
 
- /* LOGIN BUTTON */
- .btn-login {
-   padding: 8px 16px;
-   border: 1px solid #ffffff;
+ /* LOGIN TLAČÍTKO */
+ .login-btn {
+   padding: 8px 18px;
+   background: white;
+   color: var(--blue-dark);
    border-radius: 6px;
-   color: white;
+   font-weight: 600;
    text-decoration: none;
    font-size: 0.95rem;
-   transition: 0.25s;
+   transition: 0.2s;
  }
 
- .btn-login:hover {
-   background: white;
-   color: #003063;
+ .login-btn:hover {
+   background: #e5e7eb;
  }
 
  /* CZ/EN přepínač */
  .lang-switch {
-   color: #ffffffd0;
+   color: white;
    font-size: 0.9rem;
- }
-
- .lang-switch span {
+   margin-left: 16px;
    cursor: pointer;
-   padding: 0 4px;
+   opacity: 0.85;
  }
 
- .lang-switch span:hover {
-   color: #ffffff;
+ .lang-switch:hover {
+   opacity: 1;
  }
 </style>
 
-</head>
-<body>
+<div class="topbar">
+ <div class="topbar-inner">
 
-<header>
- <div class="nav-left">
-   <img src="assets/img/logo-ayas7.png" alt="AYAS-7 logo" />
-   <div class="brand-name">AYAS-7 Engine</div>
- </div>
-
- <div class="nav-right">
-   <a href="dashboard.html">Home</a>
-   <a href="members.html">Členové</a>
-   <a href="finance.html">Finance</a>
-   <a href="layers.html">AYAS-7</a>
-
-   <a class="btn-login" href="login.html">Přihlásit</a>
-
-   <div class="lang-switch">
-     <span>CZ</span> | <span>EN</span>
+   
+   <div class="logo-wrap">
+     <img src="assets/img/logo-ayas7.png" alt="AYAS-7 logo">
+     <span class="logo-title">AYAS-7 Engine</span>
    </div>
+
+   
+   <nav class="menu">
+     <a href="dashboard.html">Home</a>
+     <a href="layers.html">AYAS-7 Layers</a>
+     <a href="members.html">Členská sekce</a>
+     <a href="payments.html">Platby</a>
+
+     <a class="login-btn" href="login.html">Přihlásit</a>
+
+     <span class="lang-switch">CZ | EN</span>
+   </nav>
+
  </div>
-</header>
-
-
-<div style="padding: 40px;">
- Sem přijde přihlašovací formulář.
 </div>
-
-</body>
-</html>
