@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+ <meta charset="UTF-8" />
+ <title>AYAS-7 – Audit & Governance Layer</title>
+ <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+ <style>
+* {
+ margin: 0;
+ padding: 0;
+ box-sizing: border-box;
+}
+
+html, #msg_body {
+ width: 100%;
+ height: 100%;
+ background: radial-gradient(circle at 40% 0%, #0f172a 0%, #020617 55%, #000 100%) !important;
+ font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+ overflow-x: hidden;
+}
+   :root {
+     --blue-dark: #003063;
+     --blue-mid: #0053a6;
+     --blue-light: #4f8edc;
+     --bg-page: #020617;
+     --card-bg: #0b1120;
+     --border-soft: rgba(148, 163, 184, 0.4);
+     --text-main: #e5e7eb;
+     --text-muted: #9ca3af;
+     --accent: #22c55e;
+     --accent-blue: #4fa3ff;
+   }
+/* OPRAVA ČERNÝCH TEXTŮ – VŠECHNY NADPISY A TEXTY BUDEME NUTIT DO BÍLÉ */
+h1, h2, h3, h4, h5, h6,
+p, span, label, td, th, li, a, div {
+ color: var(--text-main) !important;
+}
+
+   * {
+     box-sizing: border-box;
+     margin: 0;
+     padding: 0;
+   }
+
+   html, #msg_body {
+     width: 100%;
+     height: 100%;
+   }
+
+   #msg_body {
+     font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+     background: radial-gradient(circle at 40% 0%, #0f172a 0%, #020617 55%, #000 100%);
+     color: var(--text-main);
+     overflow-x: hidden;
+   }
+
+   a {
+     text-decoration: none;
+     color: inherit;
+   }
+
+   /* TOP BAR / MENU – stejný základ jako na login/payments */
+   header.topbar {
+     background: linear-gradient(to right, var(--blue-dark), var(--blue-mid));
+     color: #fff;
+     padding: 10px 0;
+     box-shadow: 0 10px 30px rgba(15, 23, 42, 0.7);
+     position: sticky;
+     top: 0;
+     z-index: 50;
+   }
+
+   .topbar-inner {
+     max-width: 1200px;
+     margin: 0 auto;
+     padding: 0 16px;
+     display: flex;
+     align-items: center;
+     justify-content: space-between;
+     gap: 24px;
+   }
+
+   .brand-text-wrap {
+     display: flex;
+     flex-direction: column;
+     align-items: flex-start;
+     gap: 2px;
+   }
+
+   .brand-text-main {
+     font-size: 18px;
+     font-weight: 600;
+     letter-spacing: 0.06em;
+     text-transform: uppercase;
+     white-space: nowrap;
+   }
+
+   .brand-text-sub {
+     font-size: 11px;
+     text-transform: uppercase;
+     letter-spacing: 0.18em;
+     color: rgba(226, 232, 240, 0.75);
+   }
+
+   nav.main-nav {
+     display: flex;
+     align-items: center;
+     justify-content: center;
+     flex: 1;
+     min-width: 0;
+   }
+
+   .nav-list {
+     display: flex;
+     align-items: center;
+     gap: 18px;
+     list-style: none;
+     margin: 0;
+     padding: 0;
+     font-size: 14px;
+   }
+
+   .nav-link {
+     position: relative;
+     padding: 4px 0;
+     color: rgba(226, 232, 240, 0.86);
+     transition: color 0.18s ease;
+     white-space: nowrap;
+   }
+
+   .nav-link::after {
+     content: "";
+     position: absolute;
+     left: 0;
+     bottom: -3px;
+     width: 0;
+     height: 2px;
+     border-radius: 999px;
+     background: linear-gradient(to right, #22c55e, #4ade80);
+     transition: width 0.22s ease;
+   }
+
+   .nav-link:hover {
+     color: #ffffff;
+   }
+
+   .nav-link:hover::after {
+     width: 100%;
+   }
+
+   .nav-link.active {
+     color: #ffffff;
+     font-weight: 600;
+   }
+
+   .nav-link.active::after {
+     width: 100%;
+   }
+
+   .topbar-right {
+     display: flex;
+     align-items: center;
+     gap: 16px;
+     flex-shrink: 0;
+   }
+
+   .lang-switch {
+     font-size: 12px;
+     letter-spacing: 0.12em;
+     text-transform: uppercase;
+     color: rgba(226, 232, 240, 0.8);
+     display: flex;
+     align-items: center;
+     gap: 6px;
+     white-space: nowrap;
+   }
+
+   .lang-switch span {
+     cursor: pointer;
+     opacity: 0.65;
+   }
+
+   .lang-switch span.active {
+     opacity: 1;
+     font-weight: 600;
+     text-decoration: underline;
+     text-underline-offset: 3px;
+   }
+
+   .lang-sep {
+     opacity: 0.4;
+   }
+
+   .btn-login {
+     padding: 6px 16px;
+     border-radius: 999px;
+     border: 1px solid rgba(226, 232, 240, 0.6);
+     background: rgba(15, 23, 42, 0.18);
+     color: #f9fafb;
+     font-size: 13px;
+     font-weight: 500;
+     cursor: pointer;
+     display: inline-flex;
+     align-items: center;
+     gap: 8px;
+     transition: background 0.18s ease, border-color 0.18s ease, transform 0.12s ease;
+     white-space: nowrap;
+   }
+
+   .btn-login span.dot {
+     width: 8px;
+     height: 8px;
+     border-radius: 999px;
+     background: var(--accent);
+     box-shadow: 0 0 8px rgba(34, 197, 94, 0.9);
+   }
+
+   .btn-login:hover {
+     background: rgba(15, 23, 42, 0.35);
+     border-color: #ffffff;
+     transform: translateY(-1px);
+   }
+
+   .btn-login:active {
+     transform: translateY(0);
+   }
+
+   /* HLAVNÍ OBSAH */
+   main {
+     min-height: calc(100vh - 72px - 60px);
+     padding: 32px 16px 40px;
+     display: flex;
+     justify-content: center;
+   }
+
+   .page-wrap {
+     max-width: 1200px;
+     width: 100%;
+   }
+
+   .page-header {
+     margin-bottom: 22px;
+   }
+
+   .page-eyebrow {
+     display: inline-flex;
+     align-items: center;
+     gap: 6px;
+     padding: 2px 10px;
+     border-radius: 999px;
+     border: 1px solid rgba(148, 163, 184, 0.55);
+     font-size: 11px;
+     color: var(--text-muted);
+     background: rgba(15, 23, 42, 0.6);
+     margin-bottom: 8px;
+   }
+
+   .page-eyebrow-dot {
+     width: 7px;
+     height: 7px;
+     border-radius: 999px;
+     background: var(--blue-light);
+     box-shadow: 0 0 10px rgba(79, 163, 255, 0.9);
+   }
+
+   .page-title {
+     font-size: 22px;
+     font-weight: 600;
+     margin-bottom: 4px;
+   }
+
+   .page-subtitle {
+     font-size: 13px;
+     color: var(--text-muted);
+   }
+
+   /* GRID – DVA BLOKY NAJEDNOU */
+   .audit-grid {
+     display: grid;
+     grid-template-columns: minmax(0, 1.6fr) minmax(0, 1.4fr);
+     gap: 18px;
+     margin-top: 24px;
+     margin-bottom: 24px;
+   }
+
+   .audit-card {
+     background: radial-gradient(circle at top left, #111827, #020617 75%);
+     border-radius: 18px;
+     border: 1px solid var(--border-soft);
+     padding: 16px 18px 16px;
+     position: relative;
+     overflow: hidden;
+     box-shadow: 0 18px 40px rgba(15, 23, 42, 0.7);
+   }
+
+   .audit-card::before {
+     content: "";
+     position: absolute;
+     top: 0;
+     left: 0;
+     width: 100%;
+     height: 3px;
+     background: linear-gradient(to right, #4fa3ff, #22c55e);
+     opacity: 0.9;
+   }
+
+   .audit-header {
+     display: flex;
+     align-items: center;
+     justify-content: space-between;
+     gap: 10px;
+     margin-bottom: 12px;
+   }
+
+   .audit-title {
+     font-size: 15px;
+     font-weight: 600;
+   }
+
+   .audit-pill {
+     font-size: 11px;
+     padding: 3px 10px;
+     border-radius: 999px;
+     border: 1px solid rgba(148, 163, 184, 0.6);
+     color: var(--text-muted);
+     display: inline-flex;
+     align-items: center;
+     gap: 5px;
+     white-space: nowrap;
+   }
+
+   .pill-dot {
+     width: 6px;
+     height: 6px;
+     border-radius: 999px;
+     background: var(--accent);
+     box-shadow: 0 0 8px rgba(34, 197, 94, 0.9);
+   }
+
+   .audit-text {
+     font-size: 12px;
+     color: var(--text-muted);
+     margin-bottom: 10px;
+     line-height: 1.5;
+   }
+
+   /* TABULKA – DENNÍ AUDIT */
+   table.audit-xtable {
+     width: 100%;
+     border-collapse: collapse;
+     font-size: 12px;
+     margin-bottom: 10px;
+     color: var(--text-main);
+   }
+
+   table.audit-table thead {
+     background: rgba(15, 23, 42, 0.9);
+   }
+
+   table.audit-table th,
+   table.audit-table td {
+     border: 1px solid rgba(55, 65, 81, 0.9);
+     padding: 6px 8px;
+     text-align: left;
+   }
+
+   table.audit-table th {
+     font-weight: 500;
+     color: var(--text-muted);
+   }
+
+   table.audit-table tbody tr:nth-child(odd) {
+     background: rgba(15, 23, 42, 0.7);
+   }
+
+   table.audit-table tbody tr:nth-child(even) {
+     background: rgba(15, 23, 42, 0.4);
+   }
+
+   .audit-strip {
+     margin-top: 6px;
+     padding: 6px 8px;
+     border-radius: 999px;
+     background: linear-gradient(to right, rgba(34, 197, 94, 0.15), rgba(59, 130, 246, 0.18));
+     display: flex;
+     align-items: center;
+     justify-content: space-between;
+     gap: 10px;
+     font-size: 11px;
+     color: var(--text-muted);
+   }
+
+   .audit-strip-left {
+     display: flex;
+     align-items: center;
+     gap: 6px;
+   }
+
+   .strip-dot {
+     width: 7px;
+     height: 7px;
+     border-radius: 999px;
+     background: var(--accent);
+     box-shadow: 0 0 8px rgba(34, 197, 94, 0.9);
+   }
+
+   .strip-value {
+     font-weight: 600;
+     color: var(--text-main);
+   }
+
+   .btn-mini {
+     padding: 6px 10px;
+     border-radius: 999px;
+     border: 1px solid rgba(148, 163, 184, 0.6);
+     background: rgba(15, 23, 42, 0.6);
+     color: var(--text-main);
+     font-size: 11px;
+     cursor: pointer;
+     display: inline-flex;
+     align-items: center;
+     gap: 6px;
+   }
+
+   .btn-mini span.dot {
+     width: 6px;
+     height: 6px;
+     border-radius: 999px;
+     background: var(--blue-light);
+     box-shadow: 0 0 8px rgba(79, 163, 255, 0.9);
+   }
+
+   /* MULTI-SIG BLOK – ROLE & OPRÁVNĚNÍ */
+   .multisig-roles {
+     margin-top: 4px;
+     margin-bottom: 10px;
+     display: grid;
+     grid-template-columns: 1fr;
+     gap: 6px;
+   }
+
+   .role-row {
+     display: flex;
+     align-items: center;
+     justify-content: space-between;
+     gap: 10px;
+     padding: 6px 8px;
+     border-radius: 9px;
+     background: rgba(15, 23, 42, 0.75);
+     border: 1px solid rgba(55, 65, 81, 0.9);
+     font-size: 11px;
+   }
+
+   .role-left {
+     display: flex;
+     align-items: center;
+     gap: 8px;
+   }
+
+   .role-led {
+     width: 10px;
+     height: 10px;
+     border-radius: 999px;
+     box-shadow: 0 0 10px rgba(34, 197, 94, 0.9);
+   }
+
+   .role-led.active {
+     background: #22c55e;
+   }
+
+   .role-led.review {
+     background: #eab308;
+     box-shadow: 0 0 10px rgba(234, 179, 8, 0.9);
+   }
+
+   .role-led.view {
+     background: #4b5563;
+     box-shadow: 0 0 10px rgba(75, 85, 99, 0.8);
+   }
+
+   .role-name {
+     font-weight: 500;
+   }
+
+   .role-desc {
+     color: var(--text-muted);
+   }
+
+   .role-tag {
+     padding: 1px 8px;
+     border-radius: 999px;
+     border: 1px solid rgba(148, 163, 184, 0.6);
+     font-size: 10px;
+     color: var(--text-muted);
+     white-space: nowrap;
+   }
+
+   .perm-table-wrap {
+     margin-top: 8px;
+   }
+
+   table.perm-xtable {
+     width: 100%;
+     border-collapse: collapse;
+     font-size: 11px;
+     color: var(--text-main);
+   }
+
+   table.perm-table th,
+   table.perm-table td {
+     border: 1px solid rgba(55, 65, 81, 0.9);
+     padding: 4px 6px;
+     text-align: center;
+   }
+
+   table.perm-table th {
+     background: rgba(15, 23, 42, 0.9);
+     font-weight: 500;
+     color: var(--text-muted);
+   }
+
+   table.perm-table td:first-child,
+   table.perm-table th:first-child {
+     text-align: left;
+   }
+
+   .perm-ok {
+     color: #22c55e;
+     font-weight: 600;
+   }
+
+   .perm-no {
+     color: #6b7280;
+   }
+
+   /* INFO POD BLOKY */
+   .info-panel {
+     margin-top: 8px;
+     padding-top: 16px;
+     border-top: 1px solid rgba(31, 41, 55, 0.85);
+     display: grid;
+     grid-template-columns: 1.5fr 1.5fr;
+     gap: 18px;
+   }
+
+   .info-block-title {
+     font-size: 14px;
+     font-weight: 600;
+     margin-bottom: 6px;
+   }
+
+   .info-block-text {
+     font-size: 12px;
+     color: var(--text-muted);
+     line-height: 1.6;
+   }
+
+   .info-list {
+     margin-top: 4px;
+     padding-left: 18px;
+     font-size: 12px;
+     color: var(--text-muted);
+   }
+
+   .info-list li {
+     margin-bottom: 4px;
+   }
+
+   footer {
+     text-align: center;
+     padding: 10px 16px 16px;
+     font-size: 11px;
+     color: var(--text-muted);
+   }
+
+   /* RESPONSIVE */
+   @media (max-width: 1024px) {
+     .audit-grid {
+       grid-template-columns: 1fr;
+     }
+   }
+
+   @media (max-width: 800px) {
+     nav.main-nav {
+       justify-content: flex-start;
+     }
+     .nav-list {
+       flex-wrap: wrap;
+       row-gap: 4px;
+     }
+     .info-panel {
+       grid-template-columns: 1fr;
+     }
+   }
+
+   @media (max-width: 640px) {
+     .topbar-inner {
+       flex-direction: column;
+       align-items: flex-start;
+       row-gap: 8px;
+     }
+     .topbar-right {
+       align-self: stretch;
+       justify-content: space-between;
+       width: 100%;
+     }
+     .brand-text-main {
+       font-size: 16px;
+     }
+   }
+ </style>
+</head>
+<body>
+
+ 
+ <header class="topbar">
+   <div class="topbar-inner">
+
+     <div class="brand-text-wrap">
+       <div class="brand-text-main">AYAS-7 Engine</div>
+       <div class="brand-text-sub">WIN-WIN COOPERATIVE</div>
+     </div>
+
+     <nav class="main-nav" aria-label="Hlavní menu">
+       <ul class="nav-list">
+         <li><a href="dashboard.html" class="nav-link">Home</a></li>
+         <li><a href="members.html" class="nav-link">Členové</a></li>
+         <li><a href="payments.html" class="nav-link">Platby</a></li>
+         <li><a href="performance.html" class="nav-link">Výkon &amp; výnos</a></li>
+         <li><a href="fintech.html" class="nav-link active">FinTech / Audit</a></li>
+       </ul>
+     </nav>
+
+     <div class="topbar-right">
+       <div class="lang-switch" aria-label="Přepnutí jazyka">
+         <span class="active">CZ</span>
+         <span class="lang-sep">|</span>
+         <span>EN</span>
+       </div>
+       <a href="login.html">
+         <button type="button" class="btn-login">
+           <span class="dot"></span>
+           <span>Login</span>
+         </button>
+       </a>
+     </div>
+
+   </div>
+ </header>
+
+ <main>
+   <section class="page-wrap">
+     <div class="page-header">
+       <div class="page-eyebrow">
+         <span class="page-eyebrow-dot"></span>
+         Audit &amp; Governance Layer – AYAS-7
+       </div>
+       <h1 class="page-title">Denní audit vkladů &amp; multi-sig řízení</h1>
+       <p class="page-subtitle">
+         Přehled, který má rád auditor i investor: vklady, WW-KEY, přidělené výnosy a podpisy multi-sig peněženky.
+       </p>
+     </div>
+
+     
+     <div class="audit-grid">
+
+       
+       <article class="audit-card">
+         <div class="audit-header">
+           <div class="audit-title">Denní audit &amp; report vkladů</div>
+           <div class="audit-pill">
+             <span class="pill-dot"></span>
+             Dnes / týden / měsíc
+           </div>
+         </div>
+
+         <p class="audit-text">
+           Tento panel shrnuje příchozí platby z FIAT účtu i krypto peněženek. Po spárování s WW-KEY
+           se data ukládají do <b>members_data</b> a <b>members_rewards</b> a jsou připravena pro audit.
+         </p>
+
+         <table class="audit-table">
+           <thead>
+             <tr>
+               <th>Datum</th>
+               <th>Noví členové</th>
+               <th>Vklad celkem (CZK)</th>
+               <th>Přidělené WW-KEY</th>
+             </tr>
+           </thead>
+           <tbody>
+             <tr>
+               <td>2025-11-29</td>
+               <td>7</td>
+               <td>105&nbsp;000</td>
+               <td>4&nbsp;200</td>
+             </tr>
+             <tr>
+               <td>2025-11-28</td>
+               <td>5</td>
+               <td>75&nbsp;000</td>
+               <td>3&nbsp;000</td>
+             </tr>
+             <tr>
+               <td>2025-11-27</td>
+               <td>3</td>
+               <td>45&nbsp;000</td>
+               <td>1&nbsp;800</td>
+             </tr>
+           </tbody>
+         </table>
+
+         <div class="audit-strip">
+           <div class="audit-strip-left">
+             <span class="strip-dot"></span>
+             <span>Integrita dat (hash / kontrolní součty)</span>
+           </div>
+           <div class="strip-value">99,98&nbsp;% bez nesouladu</div>
+         </div>
+
+         <div style="margin-top:10px; display:flex; gap:8px; flex-wrap:wrap;">
+           <button class="btn-mini" type="button">
+             <span class="dot"></span>
+             Stáhnout denní audit (CSV)
+           </button>
+           <button class="btn-mini" type="button">
+             <span class="dot"></span>
+             Export měsíčního reportu (PDF)
+           </button>
+         </div>
+       </article>
+
+       
+       <article class="audit-card">
+         <div class="audit-header">
+           <div class="audit-title">Multi-sig peněženka &amp; role</div>
+           <div class="audit-pill">
+             <span class="pill-dot"></span>
+             3-of-5 podpisový režim
+           </div>
+         </div>
+
+         <p class="audit-text">
+           Kapitál družstva je uložen na <b>multi-sig peněžence</b>. Výběry, přesuny mezi pooly a změny
+           strategií vyžadují souhlas minimálně 3 z 5 oprávněných osob.
+         </p>
+
+         <div class="multisig-roles">
+           <div class="role-row">
+             <div class="role-left">
+               <span class="role-led active"></span>
+               <div>
+                 <div class="role-name">Hlavní správce družstva</div>
+                 <div class="role-desc">Strategie, schválení velkých přesunů.</div>
+               </div>
+             </div>
+             <div class="role-tag">Podpis povinný</div>
+           </div>
+
+           <div class="role-row">
+             <div class="role-left">
+               <span class="role-led active"></span>
+               <div>
+                 <div class="role-name">Risk &amp; Compliance</div>
+                 <div class="role-desc">Limity rizik, AML, regulace.</div>
+               </div>
+             </div>
+             <div class="role-tag">Podpis povinný</div>
+           </div>
+
+           <div class="role-row">
+             <div class="role-left">
+               <span class="role-led review"></span>
+               <div>
+                 <div class="role-name">On-chain auditor</div>
+                 <div class="role-desc">Kontrola on-chain transakcí.</div>
+               </div>
+             </div>
+             <div class="role-tag">Podpis doporučený</div>
+           </div>
+
+           <div class="role-row">
+             <div class="role-left">
+               <span class="role-led view"></span>
+               <div>
+                 <div class="role-name">Tech / DevOps</div>
+                 <div class="role-desc">Nasazení smart kontraktů, upgrady.</div>
+               </div>
+             </div>
+             <div class="role-tag">Technický dohled</div>
+           </div>
+
+           <div class="role-row">
+             <div class="role-left">
+               <span class="role-led view"></span>
+               <div>
+                 <div class="role-name">Rezervní správce</div>
+                 <div class="role-desc">Záložní přístup, krizové scénáře.</div>
+               </div>
+             </div>
+             <div class="role-tag">Backup role</div>
+           </div>
+         </div>
+
+         <div class="perm-table-wrap">
+           <table class="perm-table">
+             <thead>
+               <tr>
+                 <th>Akce</th>
+                 <th>Správce</th>
+                 <th>Risk</th>
+                 <th>Auditor</th>
+                 <th>Tech</th>
+                 <th>Rezerva</th>
+               </tr>
+             </thead>
+             <tbody>
+               <tr>
+                 <td>Výběr nad 100&nbsp;000&nbsp;EUR</td>
+                 <td class="perm-ok">✔</td>
+                 <td class="perm-ok">✔</td>
+                 <td class="perm-ok">✔</td>
+                 <td class="perm-no">·</td>
+                 <td class="perm-no">·</td>
+               </tr>
+               <tr>
+                 <td>Přesun mezi pooly</td>
+                 <td class="perm-ok">✔</td>
+                 <td class="perm-ok">✔</td>
+                 <td class="perm-no">·</td>
+                 <td class="perm-ok">✔</td>
+                 <td class="perm-no">·</td>
+               </tr>
+               <tr>
+                 <td>Nasazení nové strategie</td>
+                 <td class="perm-ok">✔</td>
+                 <td class="perm-ok">✔</td>
+                 <td class="perm-ok">✔</td>
+                 <td class="perm-ok">✔</td>
+                 <td class="perm-no">·</td>
+               </tr>
+               <tr>
+                 <td>Nouzové pozastavení</td>
+                 <td class="perm-ok">✔</td>
+                 <td class="perm-ok">✔</td>
+                 <td class="perm-ok">✔</td>
+                 <td class="perm-ok">✔</td>
+                 <td class="perm-ok">✔</td>
+               </tr>
+             </tbody>
+           </table>
+         </div>
+
+         <div style="margin-top:10px;">
+           <button class="btn-mini" type="button">
+             <span class="dot"></span>
+             Zobrazit historii multi-sig transakcí (brzy)
+           </button>
+         </div>
+       </article>
+
+     </div>
+
+     
+     <div class="info-panel">
+       <div>
+         <div class="info-block-title">Od vkladu po auditovaný výnos</div>
+         <p class="info-block-text">
+           AYAS-7 uchovává u každého vkladu <b>čas, částku, zdroj (FIAT / krypto), přidělené WW-KEY</b>
+           a mapu, přes kterou vrstvu motoru procházejí výnosy. V případě kontroly lze pro každý WW-KEY
+           dohledat, kolik procent výnosu vzniklo na které vrstvě (Liquidity Engine, Yield Routing, atd.).
+         </p>
+         <ul class="info-list">
+           <li>Auditní stopy navázané na <b>members_data</b> a <b>members_rewards</b>.</li>
+           <li>Možnost exportu pro externí auditory a banky (CSV / PDF).</li>
+           <li>Připravené pro Švýcarsko / Lichtenštejnsko – důraz na transparentnost a dohled.</li>
+         </ul>
+       </div>
+
+       <div>
+         <div class="info-block-title">Role, oprávnění a důvěra členů</div>
+         <p class="info-block-text">
+           Multi-sig architektura je klíčová pro důvěru členů družstva. Nikdo nemá sám kontrolu nad prostředky –
+           <b>rozhoduje kolektivní podpis</b> podle předem daných pravidel. Tato stránka to vizuálně ukazuje
+           velmi jednoduše: kdo podepisuje, co se sleduje a jak se kontrolují výnosy.
+         </p>
+         <ul class="info-list">
+           <li>Minimálně 3 podpisy z 5 rolí pro zásadní operace.</li>
+           <li>Možnost pozvat externího auditora jako read-only roli.</li>
+           <li>Napojení na reporting v sekci „Výkon &amp; výnos“ a DEX data.</li>
+         </ul>
+       </div>
+     </div>
+
+   </section>
+ </main>
+
+ <footer>
+   © 2025 Win-Win Družstvo · AYAS-7 Engine · Audit &amp; Governance Layer
+ </footer>
+
+</body>
+</html>
