@@ -3,221 +3,125 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>AYAS-7 Dashboard</title>
+<title>Login – AYAS-7</title>
 
 <style>
-/* ------------------------------- */
-/* GLOBAL FINTECH MENU STYLING */
-/* ------------------------------- */
-:root {
- --blue-main:#003063;
- --blue-light:#0d6efd;
- --font-main:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
+ #msg_body {
+   margin: 0;
+   padding: 0;
+   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+   background: #f4f5f7;
+ }
 
-#msg_body {
- margin:0;
- padding:0;
- font-family:var(--font-main);
- background:#f4f6f9;
-}
+ /* HLAVNÍ MODRÝ PRUHY */
+ header {
+   width: 100%;
+   background: #003063; /* corporate blue */
+   padding: 0;
+   height: 70px;
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+ }
 
-/* TOP NAV WRAPPER */
-.navbar {
- width:100%;
- background:var(--blue-main);
- color:#fff;
- display:flex;
- justify-content:space-between;
- align-items:center;
- padding:14px 28px;
- box-sizing:border-box;
- position:fixed;
- top:0;
- left:0;
- z-index:999;
-}
+ /* LEVÁ ČÁST – LOGO + TEXT */
+ .nav-left {
+   display: flex;
+   align-items: center;
+   gap: 14px;
+   margin-left: 20px;
+ }
 
-/* LOGO LEFT */
-.nav-left {
- display:flex;
- align-items:center;
- gap:14px;
-}
+ .nav-left img {
+   height: 48px;     /* ZVĚTŠENÉ LOGO */
+   width: auto;
+ }
 
-.nav-left img {
- height:48px;        /* zvětšené logo */
- width:auto;
-}
+ .brand-name {
+   color: white;
+   font-size: 1.45rem;   /* VĚTŠÍ – FINTECH PREMIUM */
+   font-weight: 600;
+   letter-spacing: 0.5px;
+ }
 
-.nav-title {
- font-size:1.45rem;     /* AYAS-7 větší */
- font-weight:700;
- letter-spacing:0.5px;
-}
-
-/* MENU LINKS */
-.nav-center {
- display:flex;
- gap:28px;
-}
-
-.nav-center a {
- color:#fff;
- text-decoration:none;
- font-size:1rem;
- font-weight:500;
- transition:opacity .2s;
-}
-
-.nav-center a:hover {
- opacity:0.7;
-}
-
-/* RIGHT SECTION (jazyk + login) */
-.nav-right {
- display:flex;
- align-items:center;
- gap:18px;
-}
-
-.lang-switch {
- font-size:0.92rem;
- opacity:0.85;
- cursor:pointer;
-}
-
-.btn-login {
- padding:6px 16px;
- border:1px solid #ffffffaa;
- border-radius:6px;
- background:transparent;
- color:#fff;
- font-weight:500;
- cursor:pointer;
- font-family:var(--font-main);
- transition:0.2s;
-}
-
-.btn-login:hover {
- background:#ffffff22;
-}
-
-/* ------------------------------- */
-/*   MOBILE MENU / HAMBURGER       */
-/* ------------------------------- */
-.hamburger {
- display:none;
- flex-direction:column;
- gap:5px;
- cursor:pointer;
-}
-
-.hamburger div {
- width:22px;
- height:3px;
- background:white;
-}
-
-/* MOBILE MENU PANEL */
-.mobile-menu {
- display:none;
- flex-direction:column;
- background:var(--blue-main);
- padding:14px;
-}
-
-.mobile-menu a {
- color:white;
- text-decoration:none;
- padding:8px 0;
- border-bottom:1px solid #ffffff33;
-}
-
-/* RESPONSIVE */
-@media (max-width:900px){
-
- .nav-center,
+ /* PRAVÁ ČÁST – MENU ODKAZY */
  .nav-right {
-   display:none;
+   display: flex;
+   align-items: center;
+   gap: 24px;
+   margin-right: 20px;
  }
 
- .hamburger {
-   display:flex;
+ .nav-right a {
+   color: white;
+   text-decoration: none;
+   font-size: 0.95rem;
+   font-weight: 500;
+   transition: 0.2s ease;
  }
 
- .mobile-menu {
-   display:flex;
+ .nav-right a:hover {
+   opacity: 0.7;
  }
-}
 
-/* PADDING FOR PAGE (MENU FIXED TOP) */
-.main-content {
- padding-top:90px;
-}
+ /* LOGIN BUTTON */
+ .btn-login {
+   padding: 8px 16px;
+   border: 1px solid #ffffff;
+   border-radius: 6px;
+   color: white;
+   text-decoration: none;
+   font-size: 0.95rem;
+   transition: 0.25s;
+ }
+
+ .btn-login:hover {
+   background: white;
+   color: #003063;
+ }
+
+ /* CZ/EN přepínač */
+ .lang-switch {
+   color: #ffffffd0;
+   font-size: 0.9rem;
+ }
+
+ .lang-switch span {
+   cursor: pointer;
+   padding: 0 4px;
+ }
+
+ .lang-switch span:hover {
+   color: #ffffff;
+ }
 </style>
 
-<script>
-/* Jednoduché mobilní otevírání menu */
-function toggleMenu(){
- const mm = document.getElementById("mobileMenu");
- mm.style.display = (mm.style.display === "flex" ? "none" : "flex");
-}
-</script>
-
 </head>
-
 <body>
 
-
-
-
-<nav class="navbar">
- 
- 
+<header>
  <div class="nav-left">
-   <a href="dashboard.html">
-     <img src="assets/img/logo-ayas7.png" alt="AYAS-7">
-   </a>
-   <div class="nav-title">AYAS-7 Engine</div>
+   <img src="assets/img/logo-ayas7.png" alt="AYAS-7 logo" />
+   <div class="brand-name">AYAS-7 Engine</div>
  </div>
 
- 
- <div class="nav-center">
-   <a href="dashboard.html">Home</a>
-   <a href="token-layer.html">Tokenizace</a>
-   <a href="economy.html">Ekonomika</a>
-   <a href="members.html">Členové</a>
-   <a href="contact.html">Kontakt</a>
- </div>
-
- 
  <div class="nav-right">
-   <div class="lang-switch">CZ | EN</div>
-   <a href="login.html"><button class="btn-login">Přihlásit</button></a>
+   <a href="dashboard.html">Home</a>
+   <a href="members.html">Členové</a>
+   <a href="finance.html">Finance</a>
+   <a href="layers.html">AYAS-7</a>
+
+   <a class="btn-login" href="login.html">Přihlásit</a>
+
+   <div class="lang-switch">
+     <span>CZ</span> | <span>EN</span>
+   </div>
  </div>
-
- 
- <div class="hamburger" onclick="toggleMenu()">
-   <div></div><div></div><div></div>
- </div>
-</nav>
+</header>
 
 
-
-<div id="mobileMenu" class="mobile-menu" style="display:none;">
- <a href="dashboard.html">Home</a>
- <a href="token-layer.html">Tokenizace</a>
- <a href="economy.html">Ekonomika</a>
- <a href="members.html">Členové</a>
- <a href="contact.html">Kontakt</a>
- <a href="login.html">Přihlásit</a>
-</div>
-
-
-
-<div class="main-content">
- 
+<div style="padding: 40px;">
+ Sem přijde přihlašovací formulář.
 </div>
 
 </body>
