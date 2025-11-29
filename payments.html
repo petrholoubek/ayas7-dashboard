@@ -30,6 +30,11 @@ html, #msg_body {
      --text-muted: #9ca3af;
      --accent: #22c55e;
    }
+  /* OPRAVA ČERNÝCH TEXTŮ – VŠECHNY NADPISY A TEXTY BUDEME NUTIT DO BÍLÉ */
+h1, h2, h3, h4, h5, h6,
+p, span, label, td, th, li, a, div {
+ color: var(--text-main) !important;
+}
 
    /* RESET – žádné bílé pozadí */
    * {
