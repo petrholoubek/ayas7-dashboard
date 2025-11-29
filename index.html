@@ -2,18 +2,20 @@
 <html lang="cs">
 <head>
  <meta charset="UTF-8" />
- <title>AYAS-7 Engine – Win-Win Cooperative</title>
+ <title>AYAS-7 – Vítejte</title>
  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
  <style>
    :root {
-     --blue-dark: #0a1a33;
-     --blue-mid: #124c99;
-     --blue-light: #4fa3ff;
-     --neon: #4dabff;
+     --bg-main: #0a0f1c;
+     --bg-card: #0f172a;
      --text-main: #e5e7eb;
-     --text-muted: #9ca3af;
-     --card-bg: #0d1628;
+     --text-muted: #94a3b8;
+     --accent: #22c55e;
+     --accent-glow: rgba(34, 197, 94, 0.85);
+     --blue-strong: #1e3a8a;
+     --blue-soft: #3b82f6;
+     --border-soft: rgba(148,163,184,0.35);
    }
 
    * { box-sizing: border-box; }
@@ -22,174 +24,131 @@
      margin: 0;
      padding: 0;
      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-     background: radial-gradient(circle at 40% 0%, #0f172a, #020617 60%, #000 100%);
+     background: radial-gradient(circle at 40% 0%, #16213d 0%, #0a0f1c 60%, #000 100%);
      color: var(--text-main);
-     overflow-x: hidden;
+     height: 100vh;
+     display: flex;
+     flex-direction: column;
    }
 
-   /* HERO WRAPPER */
+   /* Hlavní sekce */
    .hero {
-     min-height: 100vh;
+     flex: 1;
      display: flex;
      align-items: center;
      justify-content: center;
-     padding: 40px 16px;
-     position: relative;
-   }
-
-   /* Modré ambient světlo */
-   .hero::before {
-     content: "";
-     position: absolute;
-     width: 520px;
-     height: 520px;
-     background: radial-gradient(circle, rgba(76, 162, 255, 0.25), transparent 70%);
-     top: -140px;
-     left: 50%;
-     transform: translateX(-50%);
-     filter: blur(70px);
-     z-index: 0;
-   }
-
-   /* HERO BOX */
-   .hero-box {
-     max-width: 560px;
-     width: 100%;
-     background: radial-gradient(circle at top left, #0c1424, #0a0f1a 70%);
-     border: 1px solid rgba(148, 163, 184, 0.4);
-     border-radius: 22px;
-     padding: 40px 32px 36px;
+     flex-direction: column;
      text-align: center;
-     box-shadow:
-       0 30px 80px rgba(15, 23, 42, 0.7),
-       0 0 0 1px rgba(15, 23, 42, 0.9);
-     position: relative;
-     z-index: 2;
+     padding: 30px 16px;
    }
 
-   /* NEON BADGE */
-   .hero-badge {
-     display: inline-flex;
-     align-items: center;
-     gap: 6px;
-     padding: 3px 12px;
-     border-radius: 999px;
-     border: 1px solid rgba(148, 163, 184, 0.45);
-     background: rgba(10, 20, 40, 0.5);
-     font-size: 12px;
-     color: var(--text-muted);
-     margin-bottom: 14px;
+   /* Logo */
+   .hero-logo {
+     width: 110px;
+     height: 110px;
+     object-fit: cover;
+     border-radius: 50%;
+     background: #020617;
+     box-shadow: 0 0 0 4px rgba(255,255,255,0.07),
+                 0 0 40px rgba(59,130,246,0.35);
+     margin-bottom: 26px;
    }
 
-   .hero-badge-dot {
-     width: 8px;
-     height: 8px;
-     border-radius: 999px;
-     background: var(--blue-light);
-     box-shadow: 0 0 12px rgba(79, 163, 255, 1);
-   }
-
-   /* TITLES */
+   /* Titulek */
    .hero-title {
      font-size: 42px;
      font-weight: 700;
      letter-spacing: 0.03em;
-     margin: 0 0 10px;
-     background: linear-gradient(to right, #74b7ff, #d7e9ff);
-     -webkit-background-clip: text;
-     color: transparent;
+     margin-bottom: 10px;
+     text-shadow: 0 0 14px rgba(0,0,0,0.8);
    }
 
    .hero-sub {
-     font-size: 15px;
-     line-height: 1.6;
+     font-size: 18px;
+     font-weight: 300;
      color: var(--text-muted);
-     margin-bottom: 26px;
+     max-width: 620px;
+     margin: 0 auto 32px;
+     line-height: 1.6;
    }
 
-   /* BUTTONS */
-   .btn-main {
-     display: block;
-     width: 100%;
-     padding: 12px 18px;
-     margin-bottom: 12px;
-     border-radius: 12px;
-     background: linear-gradient(to right, #4fa3ff, #70c3ff);
-     color: #0a0f1a;
+   /* CTA tlačítka */
+   .cta-wrap {
+     display: flex;
+     gap: 18px;
+     flex-wrap: wrap;
+     justify-content: center;
+     margin-top: 8px;
+   }
+
+   .cta-btn {
+     padding: 12px 28px;
+     border-radius: 999px;
      font-size: 15px;
      font-weight: 600;
-     border: none;
+     text-decoration: none;
      cursor: pointer;
-     transition: transform 0.15s ease, filter 0.15s ease;
-     box-shadow: 0 20px 40px rgba(79, 163, 255, 0.5);
+     transition: 0.2s;
+     border: 1px solid rgba(255,255,255,0.18);
+     background: rgba(15,23,42,0.55);
+     color: #fff;
+     backdrop-filter: blur(6px);
    }
 
-   .btn-main:hover {
+   .cta-btn:hover {
+     background: rgba(15,23,42,0.8);
      transform: translateY(-2px);
+     border-color: #fff;
+   }
+
+   .cta-login {
+     background: linear-gradient(to right, #22c55e, #4ade80);
+     color: #020617;
+     box-shadow: 0 8px 22px rgba(34,197,94,0.45);
+     border: none;
+   }
+
+   .cta-login:hover {
      filter: brightness(1.05);
+     transform: translateY(-2px);
+     box-shadow: 0 10px 30px rgba(34,197,94,0.60);
    }
 
-   .btn-secondary {
-     display: block;
-     width: 100%;
-     padding: 12px 18px;
-     border-radius: 12px;
-     border: 1px solid rgba(148, 163, 184, 0.4);
-     background: rgba(15, 23, 42, 0.4);
-     color: var(--text-main);
-     font-size: 15px;
-     font-weight: 500;
-     cursor: pointer;
-     transition: background 0.2s ease, border-color 0.2s ease;
+   /* Footer */
+   footer {
+     padding: 12px;
+     text-align: center;
+     font-size: 13px;
+     color: var(--text-muted);
+     border-top: 1px solid rgba(255,255,255,0.06);
+     background: rgba(0,0,0,0.35);
+     backdrop-filter: blur(8px);
    }
 
-   .btn-secondary:hover {
-     background: rgba(15, 23, 42, 0.65);
-     border-color: rgba(209, 213, 219, 0.6);
-   }
-
-   /* RESPONSIVE */
-   @media (max-width: 600px) {
-     .hero-box {
-       padding: 32px 22px 30px;
-     }
-     .hero-title {
-       font-size: 32px;
-     }
-     .hero-sub {
-       font-size: 14px;
-     }
-   }
  </style>
 </head>
 
 <body>
 
-<div class="hero">
- <div class="hero-box">
+ <div class="hero">
+   <img src="assets/img/logo-ayas7.png" alt="AYAS-7 Logo" class="hero-logo">
 
-   <div class="hero-badge">
-     <span class="hero-badge-dot"></span>
-     Next-Generation Financial Engine
+   <div class="hero-title">AYAS-7 Engine</div>
+
+   <div class="hero-sub">
+     Revoluční sedmivrstvý motor pro stabilní růst, výkon, bezpečí a finanční
+     budoucnost členů družstva Win-Win.
    </div>
 
-   <h1 class="hero-title">AYAS-7 Engine</h1>
-
-   <p class="hero-sub">
-     Revoluční sedmivrstvý finanční systém pro družstvo Win-Win.<br />
-     Bezpečný. Auditovatelný. Výkonný.
-   </p>
-
-   <a href="login.html">
-     <button class="btn-main">Vstoupit do systému</button>
-   </a>
-
-   <a href="about.html">
-     <button class="btn-secondary">O družstvu Win-Win</button>
-   </a>
-
+   <div class="cta-wrap">
+     <a href="login.html" class="cta-btn cta-login">Vstoupit do systému</a>
+     <a href="members.html" class="cta-btn">Požádat o členství</a>
+   </div>
  </div>
-</div>
+
+ <footer>
+   © 2025 Win-Win Družstvo · AYAS-7 Engine – Všechny práva vyhrazena
+ </footer>
 
 </body>
 </html>
