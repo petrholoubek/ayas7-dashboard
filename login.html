@@ -1,142 +1,224 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AYAS-7 Dashboard</title>
+
 <style>
- :root{
-   --font-main:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-   --blue:#003063;
-   --blue-light:#0b4fa3;
-   --menu-height:70px;
+/* ------------------------------- */
+/* GLOBAL FINTECH MENU STYLING */
+/* ------------------------------- */
+:root {
+ --blue-main:#003063;
+ --blue-light:#0d6efd;
+ --font-main:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+#msg_body {
+ margin:0;
+ padding:0;
+ font-family:var(--font-main);
+ background:#f4f6f9;
+}
+
+/* TOP NAV WRAPPER */
+.navbar {
+ width:100%;
+ background:var(--blue-main);
+ color:#fff;
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ padding:14px 28px;
+ box-sizing:border-box;
+ position:fixed;
+ top:0;
+ left:0;
+ z-index:999;
+}
+
+/* LOGO LEFT */
+.nav-left {
+ display:flex;
+ align-items:center;
+ gap:14px;
+}
+
+.nav-left img {
+ height:48px;        /* zvětšené logo */
+ width:auto;
+}
+
+.nav-title {
+ font-size:1.45rem;     /* AYAS-7 větší */
+ font-weight:700;
+ letter-spacing:0.5px;
+}
+
+/* MENU LINKS */
+.nav-center {
+ display:flex;
+ gap:28px;
+}
+
+.nav-center a {
+ color:#fff;
+ text-decoration:none;
+ font-size:1rem;
+ font-weight:500;
+ transition:opacity .2s;
+}
+
+.nav-center a:hover {
+ opacity:0.7;
+}
+
+/* RIGHT SECTION (jazyk + login) */
+.nav-right {
+ display:flex;
+ align-items:center;
+ gap:18px;
+}
+
+.lang-switch {
+ font-size:0.92rem;
+ opacity:0.85;
+ cursor:pointer;
+}
+
+.btn-login {
+ padding:6px 16px;
+ border:1px solid #ffffffaa;
+ border-radius:6px;
+ background:transparent;
+ color:#fff;
+ font-weight:500;
+ cursor:pointer;
+ font-family:var(--font-main);
+ transition:0.2s;
+}
+
+.btn-login:hover {
+ background:#ffffff22;
+}
+
+/* ------------------------------- */
+/*   MOBILE MENU / HAMBURGER       */
+/* ------------------------------- */
+.hamburger {
+ display:none;
+ flex-direction:column;
+ gap:5px;
+ cursor:pointer;
+}
+
+.hamburger div {
+ width:22px;
+ height:3px;
+ background:white;
+}
+
+/* MOBILE MENU PANEL */
+.mobile-menu {
+ display:none;
+ flex-direction:column;
+ background:var(--blue-main);
+ padding:14px;
+}
+
+.mobile-menu a {
+ color:white;
+ text-decoration:none;
+ padding:8px 0;
+ border-bottom:1px solid #ffffff33;
+}
+
+/* RESPONSIVE */
+@media (max-width:900px){
+
+ .nav-center,
+ .nav-right {
+   display:none;
  }
 
- #msg_body {
-   margin:0;
-   padding:0;
-   font-family:var(--font-main);
- }
-
- /* ===== MENU WRAPPER ===== */
- header {
-   width:100%;
-   height:var(--menu-height);
-   background:var(--blue);
+ .hamburger {
    display:flex;
-   align-items:center;
-   justify-content:space-between;
-   padding:0 30px;
-   box-sizing:border-box;
  }
 
- /* LOGO */
- .menu-left {
+ .mobile-menu {
    display:flex;
-   align-items:center;
-   gap:14px;
  }
+}
 
- .menu-left img {
-   height:46px;
-   width:46px;
-   border-radius:50%;
- }
-
- .menu-title {
-   font-size:20px;
-   color:white;
-   font-weight:600;
-   letter-spacing:0.5px;
- }
-
- /* ===== LINKS ===== */
- .menu-links {
-   display:flex;
-   align-items:center;
-   gap:26px;
- }
-
- .menu-links a {
-   color:white;
-   text-decoration:none;
-   font-size:16px;
-   opacity:0.9;
-   font-weight:500;
- }
-
- .menu-links a:hover {
-   opacity:1;
-   text-decoration:underline;
- }
-
- /* ===== RIGHT SIDE ===== */
- .menu-right {
-   display:flex;
-   align-items:center;
-   gap:20px;
- }
-
- .lang-switch {
-   color:#fff;
-   font-size:14px;
-   opacity:0.85;
-   cursor:pointer;
- }
- .lang-switch:hover {
-   opacity:1;
- }
-
- .login-btn {
-   padding:6px 16px;
-   border:1px solid white;
-   border-radius:5px;
-   color:white;
-   font-size:15px;
-   text-decoration:none;
-   transition:0.2s;
- }
-
- .login-btn:hover {
-   background:white;
-   color:var(--blue);
- }
-
- /* ===== RESPONSIVE ===== */
- @media (max-width:860px){
-   header{
-     flex-wrap:wrap;
-     height:auto;
-     padding:12px 20px;
-     gap:10px;
-   }
-   .menu-links{
-     flex-wrap:wrap;
-     gap:14px;
-     justify-content:center;
-     width:100%;
-   }
-   .menu-right{
-     width:100%;
-     justify-content:center;
-     margin-bottom:8px;
-   }
- }
+/* PADDING FOR PAGE (MENU FIXED TOP) */
+.main-content {
+ padding-top:90px;
+}
 </style>
 
+<script>
+/* Jednoduché mobilní otevírání menu */
+function toggleMenu(){
+ const mm = document.getElementById("mobileMenu");
+ mm.style.display = (mm.style.display === "flex" ? "none" : "flex");
+}
+</script>
 
-<header>
- <div class="menu-left">
+</head>
+
+<body>
+
+
+
+
+<nav class="navbar">
+ 
+ 
+ <div class="nav-left">
    <a href="dashboard.html">
      <img src="assets/img/logo-ayas7.png" alt="AYAS-7">
    </a>
-   <span class="menu-title">AYAS-7 Engine</span>
+   <div class="nav-title">AYAS-7 Engine</div>
  </div>
 
- <nav class="menu-links">
+ 
+ <div class="nav-center">
    <a href="dashboard.html">Home</a>
-   <a href="dashboard.html">Dashboard</a>
-   <a href="members.html">Členská sekce</a>
-   <a href="project.html">O projektu</a>
+   <a href="token-layer.html">Tokenizace</a>
+   <a href="economy.html">Ekonomika</a>
+   <a href="members.html">Členové</a>
    <a href="contact.html">Kontakt</a>
- </nav>
-
- <div class="menu-right">
-   <span class="lang-switch">CZ | EN</span>
-   <a class="login-btn" href="login.html">Login</a>
  </div>
-</header>
+
+ 
+ <div class="nav-right">
+   <div class="lang-switch">CZ | EN</div>
+   <a href="login.html"><button class="btn-login">Přihlásit</button></a>
+ </div>
+
+ 
+ <div class="hamburger" onclick="toggleMenu()">
+   <div></div><div></div><div></div>
+ </div>
+</nav>
+
+
+
+<div id="mobileMenu" class="mobile-menu" style="display:none;">
+ <a href="dashboard.html">Home</a>
+ <a href="token-layer.html">Tokenizace</a>
+ <a href="economy.html">Ekonomika</a>
+ <a href="members.html">Členové</a>
+ <a href="contact.html">Kontakt</a>
+ <a href="login.html">Přihlásit</a>
+</div>
+
+
+
+<div class="main-content">
+ 
+</div>
+
+</body>
+</html>
