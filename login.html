@@ -1,211 +1,198 @@
 <!DOCTYPE html>
 <html lang="cs">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AYAS-7 Login</title>
+ <meta charset="UTF-8">
+ <title>AYAS-7 – Přihlášení</title>
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<style>
-/* -------------------------------------------------
-  GLOBAL FIXED FINTECH DESIGN
-------------------------------------------------- */
-:root {
-   --font-main: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-   --blue-main: #003063;
-   --dark-bg: rgba(0,0,0,0.94);
-}
+ <style>
+   :root {
+     --font: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+     --black: #000000;
+     --dark: #0f0f0f;
+     --dark2: #1a1a1a;
+     --gray-line: #2b2b2b;
+     --white: #ffffff;
+     --accent: #0d6efd;
+   }
 
-/* Reset */
-* { margin:0; padding:0; box-sizing:border-box; }
+   * {
+     margin: 0;
+     padding: 0;
+     box-sizing: border-box;
+     font-family: var(--font);
+   }
 
-/* Struktura */
-#msg_body {
-   font-family: var(--font-main);
-   background: #000;
-   color: #fff;
-}
+   #msg_body {
+     background: #161616;
+     overflow-x: hidden;
+   }
 
-/* -------------------------------------------------
-  TOP MENU — FINTECH / PREMIUM
-------------------------------------------------- */
-header {
-   width: 100%;
-   background: var(--blue-main);
-   padding: 14px 40px;
-   display:flex;
-   justify-content:space-between;
-   align-items:center;
-}
+   /* HORNÍ ČERNÁ LIŠTA */
+   header {
+     width: 100%;
+     background: var(--black);
+     padding: 14px 0;
+     display: flex;
+     justify-content: center;
+     border-bottom: 1px solid #222;
+   }
 
-.menu-left {
-   display:flex;
-   align-items:center;
-   gap:18px;
-}
+   .menu {
+     width: 1200px;
+     display: flex;
+     align-items: center;
+     justify-content: space-between;
+     padding: 0 20px;
+   }
 
-.menu-left img {
-   height:48px;
-}
+   .menu-left {
+     display: flex;
+     align-items: center;
+     gap: 12px;
+   }
 
-.menu-title {
-   font-size: 28px;
-   font-weight: 700;
-   letter-spacing: 0.5px;
-   color:white;
-}
+   .menu-left img {
+     height: 42px;
+     width: 42px;
+     object-fit: contain;
+   }
 
-/* MENU LINKS */
-nav a {
-   margin-left:22px;
-   text-decoration:none;
-   color:white;
-   font-size:17px;
-   font-weight:500;
-   transition:0.25s;
-}
+   .menu-left span {
+     color: white;
+     font-size: 20px;
+     font-weight: 600;
+   }
 
-nav a:hover { opacity:0.65; }
+   nav a {
+     color: white;
+     text-decoration: none;
+     margin: 0 14px;
+     font-size: 15px;
+   }
 
-/* RIGHT SIDE (CZ/EN + LOGIN) */
-.menu-right {
-   display:flex;
-   align-items:center;
-   gap:25px;
-}
+   nav a:hover {
+     opacity: 0.75;
+   }
 
-.lang-switch {
-   font-size:15px;
-   opacity:0.85;
-   cursor:pointer;
-}
+   .lang {
+     color: white;
+     font-size: 14px;
+   }
 
-.lang-switch:hover { opacity:1; }
+   /* LOGIN BOX */
+   .login-wrap {
+     margin: 120px auto;
+     width: 380px;
+     padding: 30px 32px;
+     background: #1d1d1d;
+     border: 1px solid var(--gray-line);
+     border-radius: 10px;
+   }
 
-.login-btn {
-   padding:6px 18px;
-   border:2px solid white;
-   border-radius:4px;
-   color:white;
-   text-decoration:none;
-   font-size:15px;
-   transition:0.25s;
-}
+   .login-wrap h2 {
+     color: white;
+     font-size: 22px;
+     margin-bottom: 25px;
+     text-align: center;
+   }
 
-.login-btn:hover {
-   background:white;
-   color:black;
-}
+   .login-wrap label {
+     color: #cfcfcf;
+     font-size: 14px;
+   }
 
-/* -------------------------------------------------
-  LOGIN BOX – high-end fintech design
-------------------------------------------------- */
-.main-wrap {
-   width:100%;
-   display:flex;
-   justify-content:center;
-   margin-top:120px;
-}
+   .login-wrap input {
+     width: 100%;
+     padding: 10px 12px;
+     margin-top: 6px;
+     margin-bottom: 18px;
+     border-radius: 6px;
+     border: 1px solid #444;
+     background: #0f0f0f;
+     color: white;
+     font-size: 15px;
+   }
 
-.login-box {
-   width:420px;
-   background: var(--dark-bg);
-   padding:35px 40px;
-   border-radius:12px;
-}
+   .login-wrap button {
+     width: 100%;
+     padding: 12px 0;
+     background: var(--accent);
+     color: white;
+     font-size: 16px;
+     font-weight: 600;
+     border-radius: 6px;
+     border: none;
+     cursor: pointer;
+     transition: 0.2s;
+   }
 
-.login-box h2 {
-   font-size:26px;
-   font-weight:700;
-   margin-bottom:25px;
-   text-align:center;
-}
+   .login-wrap button:hover {
+     opacity: 0.85;
+   }
 
-/* Form */
-.login-box label {
-   font-size:14px;
-   opacity:0.9;
-}
+   /* SPODNÍ ČERNÁ LIŠTA */
+   footer {
+     margin-top: 120px;
+     background: var(--black);
+     padding: 25px 0;
+     border-top: 1px solid #222;
+     text-align: center;
+     color: #b6b6b6;
+     font-size: 14px;
+   }
 
-.login-box input {
-   width:100%;
-   padding:10px 12px;
-   margin-top:6px;
-   margin-bottom:18px;
-   border-radius:6px;
-   border:none;
-   background:#1a1a1a;
-   color:white;
-   font-size:15px;
-}
+   footer a {
+     color: #d1d1d1;
+     text-decoration: none;
+   }
 
-.login-submit {
-   width:100%;
-   padding:12px 0;
-   margin-top:10px;
-   background:white;
-   color:black;
-   font-size:17px;
-   font-weight:600;
-   border:none;
-   border-radius:6px;
-   cursor:pointer;
-   transition:0.25s;
-}
+   footer a:hover {
+     text-decoration: underline;
+   }
 
-.login-submit:hover {
-   background:#d8d8d8;
-}
-
-footer {
-   text-align:center;
-   margin-top:80px;
-   opacity:0.5;
-   font-size:14px;
-}
-</style>
-
+ </style>
 </head>
 <body>
 
+ 
+ <header>
+   <div class="menu">
+     <div class="menu-left">
+       <img src="assets/img/logo-ayas7.png" alt="AYAS-7 logo">
+       <span>AYAS-7 Engine</span>
+     </div>
 
-<header>
-   <div class="menu-left">
-       <img src="assets/img/logo-ayas7.png" alt="AYAS-7 Logo">
-       <div class="menu-title">AYAS-7 Engine</div>
-   </div>
-
-   <nav>
-       <a href="dashboard.html">Home</a>
+     <nav>
+       <a href="index.html">Home</a>
        <a href="clenove.html">Členové</a>
        <a href="platby.html">Platby</a>
-       <a href="vykon.html">Výkon & Výnos</a>
-   </nav>
+       <a href="vykon-vynos.html">Výkon & Výnos</a>
+       <a href="login.html" style="font-weight:600;">Login</a>
+     </nav>
 
-   <div class="menu-right">
-       <div class="lang-switch">CZ | EN</div>
-       <a class="login-btn" href="login.html">Login</a>
+     <div class="lang">CZ | EN</div>
    </div>
-</header>
+ </header>
 
+ 
+ <div class="login-wrap">
+   <h2>Přihlášení člena</h2>
 
+   <label>Email</label>
+   <input type="email" placeholder="vložit email">
 
-<div class="main-wrap">
-   <div class="login-box">
-       <h2>Přihlášení člena</h2>
+   <label>Heslo</label>
+   <input type="password" placeholder="vložit heslo">
 
-       <label>E-mail</label>
-       <input type="email" placeholder="Zadejte e-mail">
+   <button>Přihlásit</button>
+ </div>
 
-       <label>Heslo</label>
-       <input type="password" placeholder="Zadejte heslo">
-
-       <button class="login-submit">Přihlásit</button>
-   </div>
-</div>
-
-<footer>
-   © 2025 Win-Win Družstvo · AYAS-7 Engine
-</footer>
+ 
+ <footer>
+   Win-Win Družstvo • Kontakt:  
+   <a href="mailto:info@win-win.cz">info@win-win.cz</a>
+ </footer>
 
 </body>
 </html>
