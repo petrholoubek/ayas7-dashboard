@@ -1,1 +1,1009 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+ <meta charset="UTF-8" />
+ <title>AYAS-7 – Layer 3: Yield Routing</title>
+ <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+ 
+ <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+ <style>
+* {
+ margin: 0;
+ padding: 0;
+ box-sizing: border-box;
+}
+
+html, #msg_body {
+ width: 100%;
+ height: 100%;
+ background: radial-gradient(circle at 40% 0%, #0f172a 0%, #020617 55%, #000 100%) !important;
+ font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+ overflow-x: hidden;
+}
+   :root {
+     --blue-dark: #003063;
+     --blue-mid:  #0053a6;
+     --blue-light:#4f8edc;
+
+     --bg-page:   #020617;
+     --card-bg:   #0b1120;
+     --border-soft: rgba(148,163,184,0.45);
+
+     --text-main:  #e5e7eb;
+     --text-muted: #9ca3af;
+     --accent:     #22c55e;
+   }
+/* OPRAVA ČERNÝCH TEXTŮ – VŠECHNY NADPISY A TEXTY BUDEME NUTIT DO BÍLÉ */
+h1, h2, h3, h4, h5, h6,
+p, span, label, td, th, li, a, div {
+ color: var(--text-main) !important;
+}
+
+   /* RESET */
+   * {
+     box-sizing: border-box;
+     margin: 0;
+     padding: 0;
+   }
+
+   html, #msg_body {
+     width: 100%;
+     height: 100%;
+   }
+
+   #msg_body {
+     font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+     background: radial-gradient(circle at 40% 0%, #0f172a 0%, #020617 55%, #000 100%);
+     color: var(--text-main);
+     overflow-x: hidden;
+   }
+
+   a {
+     text-decoration: none;
+     color: inherit;
+   }
+
+   /* TOP BAR / MENU – stejný základ jako login / payments */
+   header.topbar {
+     background: linear-gradient(to right, var(--blue-dark), var(--blue-mid));
+     color: #fff;
+     padding: 10px 0;
+     box-shadow: 0 10px 30px rgba(15, 23, 42, 0.7);
+     position: sticky;
+     top: 0;
+     z-index: 50;
+   }
+
+   .topbar-inner {
+     max-width: 1200px;
+     margin: 0 auto;
+     padding: 0 16px;
+     display: flex;
+     align-items: center;
+     justify-content: space-between;
+     gap: 24px;
+   }
+
+   .brand-text-wrap {
+     display: flex;
+     flex-direction: column;
+     align-items: flex-start;
+     gap: 2px;
+   }
+
+   .brand-text-main {
+     font-size: 18px;
+     font-weight: 600;
+     letter-spacing: 0.06em;
+     text-transform: uppercase;
+     white-space: nowrap;
+   }
+
+   .brand-text-sub {
+     font-size: 11px;
+     text-transform: uppercase;
+     letter-spacing: 0.18em;
+     color: rgba(226, 232, 240, 0.75);
+   }
+
+   nav.main-nav {
+     display: flex;
+     align-items: center;
+     justify-content: center;
+     flex: 1;
+     min-width: 0;
+   }
+
+   .nav-list {
+     display: flex;
+     align-items: center;
+     gap: 18px;
+     list-style: none;
+     margin: 0;
+     padding: 0;
+     font-size: 14px;
+   }
+
+   .nav-link {
+     position: relative;
+     padding: 4px 0;
+     color: rgba(226, 232, 240, 0.86);
+     transition: color 0.18s ease;
+     white-space: nowrap;
+   }
+
+   .nav-link::after {
+     content: "";
+     position: absolute;
+     left: 0;
+     bottom: -3px;
+     width: 0;
+     height: 2px;
+     border-radius: 999px;
+     background: linear-gradient(to right, #22c55e, #4ade80);
+     transition: width 0.22s ease;
+   }
+
+   .nav-link:hover {
+     color: #ffffff;
+   }
+
+   .nav-link:hover::after {
+     width: 100%;
+   }
+
+   .nav-link.active {
+     color: #ffffff;
+     font-weight: 600;
+   }
+
+   .nav-link.active::after {
+     width: 100%;
+   }
+
+   .topbar-right {
+     display: flex;
+     align-items: center;
+     gap: 16px;
+     flex-shrink: 0;
+   }
+
+   .lang-switch {
+     font-size: 12px;
+     letter-spacing: 0.12em;
+     text-transform: uppercase;
+     color: rgba(226, 232, 240, 0.8);
+     display: flex;
+     align-items: center;
+     gap: 6px;
+     white-space: nowrap;
+   }
+
+   .lang-switch span {
+     cursor: pointer;
+     opacity: 0.65;
+   }
+
+   .lang-switch span.active {
+     opacity: 1;
+     font-weight: 600;
+     text-decoration: underline;
+     text-underline-offset: 3px;
+   }
+
+   .lang-sep {
+     opacity: 0.4;
+   }
+
+   .btn-login {
+     padding: 6px 16px;
+     border-radius: 999px;
+     border: 1px solid rgba(226, 232, 240, 0.6);
+     background: rgba(15, 23, 42, 0.18);
+     color: #f9fafb;
+     font-size: 13px;
+     font-weight: 500;
+     cursor: pointer;
+     display: inline-flex;
+     align-items: center;
+     gap: 8px;
+     transition: background 0.18s ease, border-color 0.18s ease, transform 0.12s ease;
+     white-space: nowrap;
+   }
+
+   .btn-login span.dot {
+     width: 8px;
+     height: 8px;
+     border-radius: 999px;
+     background: var(--accent);
+     box-shadow: 0 0 8px rgba(34, 197, 94, 0.9);
+   }
+
+   .btn-login:hover {
+     background: rgba(15, 23, 42, 0.35);
+     border-color: #ffffff;
+     transform: translateY(-1px);
+   }
+
+   .btn-login:active {
+     transform: translateY(0);
+   }
+
+   /* MAIN */
+   main {
+     min-height: calc(100vh - 72px - 60px);
+     padding: 32px 16px 40px;
+     display: flex;
+     justify-content: center;
+   }
+
+   .page-wrap {
+     max-width: 1200px;
+     width: 100%;
+   }
+
+   .page-header {
+     margin-bottom: 20px;
+   }
+
+   .page-eyebrow {
+     display: inline-flex;
+     align-items: center;
+     gap: 6px;
+     padding: 2px 10px;
+     border-radius: 999px;
+     border: 1px solid rgba(148, 163, 184, 0.55);
+     font-size: 11px;
+     color: var(--text-muted);
+     background: rgba(15, 23, 42, 0.7);
+     margin-bottom: 8px;
+   }
+
+   .page-eyebrow-dot {
+     width: 7px;
+     height: 7px;
+     border-radius: 999px;
+     background: var(--blue-light);
+     box-shadow: 0 0 10px rgba(79, 163, 255, 0.9);
+   }
+
+   .page-title {
+     font-size: 22px;
+     font-weight: 600;
+     margin-bottom: 4px;
+   }
+
+   .page-subtitle {
+     font-size: 13px;
+     color: var(--text-muted);
+   }
+
+   /* GRID – horní tři boxy */
+   .cards-grid {
+     display: grid;
+     grid-template-columns: 2fr 3fr;
+     gap: 18px;
+     margin-top: 24px;
+     margin-bottom: 20px;
+   }
+
+   .cards-grid-right {
+     display: grid;
+     grid-template-rows: auto auto;
+     gap: 18px;
+   }
+
+   .card {
+     background: radial-gradient(circle at top left, #111827, #020617 75%);
+     border-radius: 18px;
+     border: 1px solid var(--border-soft);
+     padding: 16px 16px 14px;
+     position: relative;
+     overflow: hidden;
+     box-shadow: 0 18px 40px rgba(15, 23, 42, 0.7);
+   }
+
+   .card::before {
+     content: "";
+     position: absolute;
+     top: 0;
+     left: 0;
+     width: 100%;
+     height: 3px;
+     background: linear-gradient(to right, #4fa3ff, #22c55e);
+     opacity: 0.9;
+   }
+
+   .card-header {
+     display: flex;
+     align-items: center;
+     justify-content: space-between;
+     gap: 8px;
+     margin-bottom: 8px;
+   }
+
+   .card-title {
+     font-size: 15px;
+     font-weight: 600;
+   }
+
+   .card-pill {
+     font-size: 11px;
+     padding: 3px 10px;
+     border-radius: 999px;
+     border: 1px solid rgba(148, 163, 184, 0.6);
+     color: var(--text-muted);
+     display: inline-flex;
+     align-items: center;
+     gap: 5px;
+     white-space: nowrap;
+   }
+
+   .pill-dot-green {
+     width: 6px;
+     height: 6px;
+     border-radius: 999px;
+     background: var(--accent);
+     box-shadow: 0 0 8px rgba(34, 197, 94, 0.9);
+   }
+
+   .pill-dot-blue {
+     width: 6px;
+     height: 6px;
+     border-radius: 999px;
+     background: var(--blue-light);
+     box-shadow: 0 0 8px rgba(79, 163, 255, 0.9);
+   }
+
+   .card-text {
+     font-size: 12px;
+     color: var(--text-muted);
+     margin-bottom: 10px;
+     line-height: 1.5;
+   }
+
+   /* PROFILOVÉ CHIPY */
+   .profile-chips {
+     display: flex;
+     flex-wrap: wrap;
+     gap: 8px;
+     margin-bottom: 10px;
+   }
+
+   .profile-chip {
+     padding: 5px 10px;
+     border-radius: 999px;
+     border: 1px solid rgba(148, 163, 184, 0.7);
+     font-size: 11px;
+     color: var(--text-muted);
+     display: inline-flex;
+     align-items: center;
+     gap: 6px;
+     cursor: pointer;
+     background: rgba(15, 23, 42, 0.4);
+   }
+
+   .profile-chip-dot {
+     width: 6px;
+     height: 6px;
+     border-radius: 999px;
+     background: var(--blue-light);
+   }
+
+   .profile-chip.active {
+     border-color: #4ade80;
+     color: var(--text-main);
+     background: rgba(22, 163, 74, 0.12);
+   }
+
+   .profile-chip.active .profile-chip-dot {
+     background: var(--accent);
+     box-shadow: 0 0 8px rgba(34, 197, 94, 0.9);
+   }
+
+   .profile-stats {
+     display: grid;
+     grid-template-columns: repeat(3, minmax(0,1fr));
+     gap: 10px;
+     margin-bottom: 8px;
+   }
+
+   .stat-box {
+     background: rgba(15, 23, 42, 0.7);
+     border-radius: 10px;
+     border: 1px solid rgba(31,41,55,0.8);
+     padding: 6px 8px;
+     font-size: 11px;
+   }
+
+   .stat-label {
+     color: var(--text-muted);
+     margin-bottom: 2px;
+   }
+
+   .stat-value {
+     font-size: 13px;
+     font-weight: 600;
+   }
+
+   .stat-hint {
+     font-size: 11px;
+     color: var(--text-muted);
+     margin-top: 4px;
+   }
+
+   /* ALLOKAČNÍ STRIPY */
+   .alloc-bars {
+     margin-top: 8px;
+     background: rgba(15, 23, 42, 0.8);
+     border-radius: 10px;
+     padding: 6px 8px;
+     font-size: 11px;
+   }
+
+   .alloc-label-row {
+     display: flex;
+     justify-content: space-between;
+     margin-bottom: 4px;
+     color: var(--text-muted);
+   }
+
+   .alloc-bar-wrap {
+     width: 100%;
+     height: 8px;
+     border-radius: 999px;
+     overflow: hidden;
+     background: rgba(15,23,42,0.9);
+     display: flex;
+   }
+
+   .alloc-seg-sxtable {
+     background: #22c55e;
+   }
+   .alloc-seg-lp {
+     background: #4f8edc;
+   }
+   .alloc-seg-defi {
+     background: #eab308;
+   }
+
+   /* ROUTING GRAF */
+   .routing-chart-wrap {
+     margin-top: 8px;
+     background: rgba(15, 23, 42, 0.8);
+     border-radius: 12px;
+     padding: 8px 10px 4px;
+   }
+
+   .routing-chart-wrap canvas {
+     width: 100%;
+     height: 180px;
+   }
+
+   /* STRATEGIE A/B/C BOX */
+   .strategy-list {
+     font-size: 12px;
+     color: var(--text-muted);
+     margin-top: 6px;
+   }
+
+   .strategy-row {
+     display: flex;
+     align-items: center;
+     justify-content: space-between;
+     gap: 10px;
+     margin-bottom: 6px;
+   }
+
+   .strategy-label {
+     display: flex;
+     align-items: center;
+     gap: 6px;
+   }
+
+   .strategy-dot-a {
+     width: 8px;
+     height: 8px;
+     border-radius: 999px;
+     background: #4ade80;
+     box-shadow: 0 0 10px rgba(74,222,128,0.9);
+   }
+
+   .strategy-dot-b {
+     width: 8px;
+     height: 8px;
+     border-radius: 999px;
+     background: #60a5fa;
+     box-shadow: 0 0 10px rgba(96,165,250,0.9);
+   }
+
+   .strategy-dot-c {
+     width: 8px;
+     height: 8px;
+     border-radius: 999px;
+     background: #fbbf24;
+     box-shadow: 0 0 10px rgba(251,191,36,0.9);
+   }
+
+   .strategy-pct {
+     font-weight: 600;
+     font-size: 12px;
+   }
+
+   .strategy-desc {
+     font-size: 11px;
+     margin-top: 2px;
+   }
+
+   /* SPODNÍ INFO PANEL – tok kapitálu */
+   .info-panel {
+     margin-top: 16px;
+     padding-top: 16px;
+     border-top: 1px solid rgba(31, 41, 55, 0.9);
+     display: grid;
+     grid-template-columns: 2.2fr 1.4fr;
+     gap: 18px;
+   }
+
+   .info-title {
+     font-size: 14px;
+     font-weight: 600;
+     margin-bottom: 6px;
+   }
+
+   .info-text {
+     font-size: 12px;
+     color: var(--text-muted);
+     line-height: 1.6;
+   }
+
+   .info-list {
+     margin-top: 6px;
+     padding-left: 18px;
+     font-size: 12px;
+     color: var(--text-muted);
+   }
+
+   .info-list li {
+     margin-bottom: 4px;
+   }
+
+   .info-badge {
+     display: inline-flex;
+     align-items: center;
+     gap: 6px;
+     padding: 3px 9px;
+     border-radius: 999px;
+     border: 1px solid rgba(148, 163, 184, 0.6);
+     font-size: 11px;
+     color: var(--text-muted);
+     margin-bottom: 6px;
+   }
+
+   .info-badge-dot {
+     width: 7px;
+     height: 7px;
+     border-radius: 999px;
+     background: var(--accent);
+     box-shadow: 0 0 8px rgba(34, 197, 94, 0.9);
+   }
+
+   footer {
+     text-align: center;
+     padding: 10px 16px 16px;
+     font-size: 11px;
+     color: var(--text-muted);
+   }
+
+   /* RESPONSIVE */
+   @media (max-width: 1024px) {
+     .cards-grid {
+       grid-template-columns: 1fr;
+     }
+   }
+
+   @media (max-width: 800px) {
+     nav.main-nav {
+       justify-content: flex-start;
+     }
+     .nav-list {
+       flex-wrap: wrap;
+       row-gap: 4px;
+     }
+     .info-panel {
+       grid-template-columns: 1fr;
+     }
+   }
+
+   @media (max-width: 640px) {
+     .topbar-inner {
+       flex-direction: column;
+       align-items: flex-start;
+       row-gap: 8px;
+     }
+     .topbar-right {
+       align-self: stretch;
+       justify-content: space-between;
+       width: 100%;
+     }
+     .brand-text-main {
+       font-size: 16px;
+     }
+   }
+ </style>
+</head>
+<body>
+
+ 
+ <header class="topbar">
+   <div class="topbar-inner">
+
+     <div class="brand-text-wrap">
+       <div class="brand-text-main">AYAS-7 Engine</div>
+       <div class="brand-text-sub">WIN-WIN COOPERATIVE</div>
+     </div>
+
+     <nav class="main-nav" aria-label="Hlavní menu">
+       <ul class="nav-list">
+         <li><a href="dashboard.html" class="nav-link">Home</a></li>
+         <li><a href="members.html" class="nav-link">Členové</a></li>
+         <li><a href="payments.html" class="nav-link">Platby</a></li>
+         <li><a href="performance.html" class="nav-link">Výkon &amp; výnos</a></li>
+         <li><a href="fintech.html" class="nav-link active">FinTech</a></li>
+       </ul>
+     </nav>
+
+     <div class="topbar-right">
+       <div class="lang-switch" aria-label="Přepnutí jazyka">
+         <span class="active">CZ</span>
+         <span class="lang-sep">|</span>
+         <span>EN</span>
+       </div>
+       <a href="login.html">
+         <button type="button" class="btn-login">
+           <span class="dot"></span>
+           <span>Login</span>
+         </button>
+       </a>
+     </div>
+
+   </div>
+ </header>
+
+ 
+ <main>
+   <section class="page-wrap">
+     <div class="page-header">
+       <div class="page-eyebrow">
+         <span class="page-eyebrow-dot"></span>
+         Layer 3 · Yield Routing
+       </div>
+       <h1 class="page-title">Směrování výnosů v motoru AYAS-7</h1>
+       <p class="page-subtitle">
+         Inteligentní rozdělení výnosů z WW-KEY mezi stabilní, likvidní a dynamické strategie.
+         Tato vrstva rozhoduje, jak rychle a jak bezpečně roste majetek členů družstva Win-Win.
+       </p>
+     </div>
+
+     
+     <div class="cards-grid">
+
+       
+       <article class="card">
+         <div class="card-header">
+           <div class="card-title">Routing profil člena</div>
+           <div class="card-pill">
+             <span class="pill-dot-green"></span>
+             WW-KEY → strategie
+           </div>
+         </div>
+
+         <p class="card-text">
+           Vyber investiční profil člena. AYAS-7 automaticky přerozdělí WW-KEY mezi vrstvy
+           podle tolerance rizika a cíle zhodnocení.
+         </p>
+
+         <div class="profile-chips">
+           <button class="profile-chip active" data-profile="conservative" type="button">
+             <span class="profile-chip-dot"></span>
+             Konzervativní
+           </button>
+           <button class="profile-chip" data-profile="balanced" type="button">
+             <span class="profile-chip-dot"></span>
+             Vyvážený
+           </button>
+           <button class="profile-chip" data-profile="dynamic" type="button">
+             <span class="profile-chip-dot"></span>
+             Dynamický
+           </button>
+         </div>
+
+         <div class="profile-stats">
+           <div class="stat-box">
+             <div class="stat-label">Cílový roční výnos</div>
+             <div class="stat-value" id="stat-yield">4,8&nbsp;% – 6,2&nbsp;%</div>
+           </div>
+           <div class="stat-box">
+             <div class="stat-label">Max. pokles (drawdown)</div>
+             <div class="stat-value" id="stat-dd">-8&nbsp;%</div>
+           </div>
+           <div class="stat-box">
+             <div class="stat-label">Horizont</div>
+             <div class="stat-value" id="stat-horizon">24+ měsíců</div>
+           </div>
+         </div>
+
+         <p class="stat-hint" id="stat-hint">
+           Profil vhodný pro členy, kteří chtějí stabilní výnos a nižší kolísání.
+         </p>
+
+         <div class="alloc-bars">
+           <div class="alloc-label-row">
+             <span>Rozdělení WW-KEY mezi strategie</span>
+             <span id="alloc-label">60&nbsp;% stabilní · 25&nbsp;% LP · 15&nbsp;% DeFi</span>
+           </div>
+           <div class="alloc-bar-wrap">
+             <div class="alloc-seg-stable" id="seg-stable" style="width:60%;"></div>
+             <div class="alloc-seg-lp"     id="seg-lp"     style="width:25%;"></div>
+             <div class="alloc-seg-defi"   id="seg-defi"   style="width:15%;"></div>
+           </div>
+         </div>
+       </article>
+
+       
+       <div class="cards-grid-right">
+
+         
+         <article class="card">
+           <div class="card-header">
+             <div class="card-title">Simulace růstu kapitálu</div>
+             <div class="card-pill">
+               <span class="pill-dot-blue"></span>
+               10&nbsp;000 CZK → 36 měsíců
+             </div>
+           </div>
+
+           <p class="card-text">
+             Křivka ukazuje modelovaný růst kapitálu při zvoleném profilu.
+             V ostré verzi se zde zobrazí reálná historická výkonnost motoru AYAS-7.
+           </p>
+
+           <div class="routing-chart-wrap">
+             <canvas id="routingChart"></canvas>
+           </div>
+         </article>
+
+         
+         <article class="card">
+           <div class="card-header">
+             <div class="card-title">Strategie A · B · C</div>
+             <div class="card-pill">
+               <span class="pill-dot-green"></span>
+               Interní routing engine
+             </div>
+           </div>
+
+           <p class="card-text">
+             Výnosy jsou rozdělovány mezi tři základní koše. Poměry se mění podle
+             profilu člena i aktuálních tržních podmínek.
+           </p>
+
+           <div class="strategy-list">
+             <div class="strategy-row">
+               <div class="strategy-label">
+                 <span class="strategy-dot-a"></span>
+                 <span>Strategie A – Stabilní / cashflow</span>
+               </div>
+               <span class="strategy-pct" id="pct-a">60&nbsp;%</span>
+             </div>
+             <div class="strategy-desc">
+               Krátkodobé produkty, staking, nízká volatilita, pravidelné výnosy.
+             </div>
+
+             <div class="strategy-row" style="margin-top:8px;">
+               <div class="strategy-label">
+                 <span class="strategy-dot-b"></span>
+                 <span>Strategie B – LP a likvidita</span>
+               </div>
+               <span class="strategy-pct" id="pct-b">25&nbsp;%</span>
+             </div>
+             <div class="strategy-desc">
+               LP pozice, párování tokenů, podpora likvidity USDt.z / GUSD poolů.
+             </div>
+
+             <div class="strategy-row" style="margin-top:8px;">
+               <div class="strategy-label">
+                 <span class="strategy-dot-c"></span>
+                 <span>Strategie C – DeFi / alfa</span>
+               </div>
+               <span class="strategy-pct" id="pct-c">15&nbsp;%</span>
+             </div>
+             <div class="strategy-desc">
+               Dynamické DeFi strategie, řízené limity a risk managementem AYAS-7.
+             </div>
+           </div>
+         </article>
+
+       </div>
+     </div>
+
+     
+     <div class="info-panel">
+       <div>
+         <div class="info-title">Tok kapitálu přes 7 vrstev AYAS-7</div>
+         <p class="info-text">
+           Layer 3 je mozek směrování výnosů. Přijímá informace z tokenové vrstvy (Layer&nbsp;1),
+           likvidity (Layer&nbsp;2), rizik (Layer&nbsp;4) a jádra motoru (Layer&nbsp;6) a podle nich
+           rozhoduje, kam poslat další jednotku WW-KEY.
+         </p>
+         <ul class="info-list">
+           <li><b>Krok 1:</b> WW-KEY jsou připsané na členský účet (Layer 1).</li>
+           <li><b>Krok 2:</b> Routing engine vyhodnotí profil, limity a stav trhu.</li>
+           <li><b>Krok 3:</b> Kapitál se rozdělí mezi A / B / C strategie.</li>
+           <li><b>Krok 4:</b> Layer 7 vše zobrazuje v dashboardu pro člena i audit.</li>
+         </ul>
+       </div>
+
+       <div>
+         <div class="info-badge">
+           <span class="info-badge-dot"></span>
+           Transparentní a auditovatelné
+         </div>
+         <div class="info-title">Proč je Yield Routing unikátní</div>
+         <p class="info-text">
+           AYAS-7 nepracuje jen s jednou strategií „všechno nebo nic“. Místo toho dělí
+           každé WW-KEY na mikro-podíly, které proudí do více vrstev současně. Díky tomu
+           může mít člen stabilní základ, podporovat likviditu družstva a zároveň se
+           podílet na růstových strategiích.
+         </p>
+         <p class="info-text" style="margin-top:6px;">
+           V budoucnu sem lze doplnit:
+         </p>
+         <ul class="info-list">
+           <li>živé napojení na reálné pooly a strategie,</li>
+           <li>zobrazení reálného drawdownu a Sharpe ratio,</li>
+           <li>export routing logu pro nezávislý audit.</li>
+         </ul>
+       </div>
+     </div>
+
+   </section>
+ </main>
+
+ <footer>
+   © 2025 Win-Win Družstvo · AYAS-7 Engine · Layer 3 – Yield Routing
+ </footer>
+
+ <script>
+   // PROFILY – nastavení pro každou variantu
+   const profiles = {
+     conservative: {
+       yield: "4,8 % – 6,2 %",
+       dd: "-8 %",
+       horizon: "24+ měsíců",
+       hint: "Profil vhodný pro členy, kteří chtějí stabilní výnos a nižší kolísání.",
+       alloc: { stable: 60, lp: 25, defi: 15 },
+       data: [10000, 10200, 10450, 10750, 11100, 11550, 12000],
+     },
+     balanced: {
+       yield: "6,5 % – 8,5 %",
+       dd: "-14 %",
+       horizon: "36+ měsíců",
+       hint: "Vyvážený poměr mezi stabilitou a růstem – vhodný pro většinu členů.",
+       alloc: { stable: 40, lp: 35, defi: 25 },
+       data: [10000, 10300, 10700, 11250, 11850, 12550, 13350],
+     },
+     dynamic: {
+       yield: "8,5 % – 12+ %",
+       dd: "-22 %",
+       horizon: "48+ měsíců",
+       hint: "Dynamický profil pro členy, kteří akceptují vyšší volatilitu za vyšší potenciál výnosu.",
+       alloc: { stable: 25, lp: 35, defi: 40 },
+       data: [10000, 10400, 11050, 11950, 13050, 14350, 15850],
+     }
+   };
+
+   const statYield   = document.getElementById("stat-yield");
+   const statDD      = document.getElementById("stat-dd");
+   const statHoriz   = document.getElementById("stat-horizon");
+   const statHint    = document.getElementById("stat-hint");
+   const allocLabel  = document.getElementById("alloc-label");
+   const segStable   = document.getElementById("seg-stable");
+   const segLP       = document.getElementById("seg-lp");
+   const segDeFi     = document.getElementById("seg-defi");
+   const pctA        = document.getElementById("pct-a");
+   const pctB        = document.getElementById("pct-b");
+   const pctC        = document.getElementById("pct-c");
+
+   const chipButtons = Array.from(document.querySelectorAll(".profile-chip"));
+
+   let currentProfileKey = "conservative";
+
+   // Chart.js – základní graf
+   const ctx = document.getElementById("routingChart").getContext("2d");
+   const routingChart = new Chart(ctx, {
+     type: "line",
+     data: {
+       labels: ["0 měs.", "6 měs.", "12 měs.", "18 měs.", "24 měs.", "30 měs.", "36 měs."],
+       datasets: [{
+         label: "Růst kapitálu",
+         data: profiles[currentProfileKey].data,
+         borderColor: "#4ade80",
+         backgroundColor: "rgba(34,197,94,0.12)",
+         borderWidth: 2,
+         pointRadius: 0,
+         tension: 0.35,
+         fill: true
+       }]
+     },
+     options: {
+       responsive: true,
+       maintainAspectRatio: false,
+       plugins: {
+         legend: {
+           display: false
+         }
+       },
+       scales: {
+         x: {
+           grid: { color: "rgba(148,163,184,0.25)" },
+           ticks: {
+             color: "#9ca3af",
+             font: { size: 11, family: "Segoe UI" }
+           }
+         },
+         y: {
+           grid: { color: "rgba(148,163,184,0.25)" },
+           ticks: {
+             color: "#9ca3af",
+             font: { size: 11, family: "Segoe UI" },
+             callback: (v) => v.toLocaleString("cs-CZ") + " Kč"
+           }
+         }
+       }
+     }
+   });
+
+   function applyProfile(key) {
+     currentProfileKey = key;
+     const p = profiles[key];
+
+     statYield.textContent = p.yield;
+     statDD.textContent    = p.dd;
+     statHoriz.textContent = p.horizon;
+     statHint.textContent  = p.hint;
+
+     segStable.style.width = p.alloc.stable + "%";
+     segLP.style.width     = p.alloc.lp + "%";
+     segDeFi.style.width   = p.alloc.defi + "%";
+
+     allocLabel.innerHTML  =
+       p.alloc.stable + "&nbsp;% stabilní · " +
+       p.alloc.lp     + "&nbsp;% LP · " +
+       p.alloc.defi   + "&nbsp;% DeFi";
+
+     pctA.textContent = p.alloc.stable + " %";
+     pctB.textContent = p.alloc.lp     + " %";
+     pctC.textContent = p.alloc.defi   + " %";
+
+     routingChart.data.datasets[0].data = p.data;
+     routingChart.update();
+   }
+
+   chipButtons.forEach(btn => {
+     btn.addEventListener("click", () => {
+       chipButtons.forEach(b => b.classList.remove("active"));
+       btn.classList.add("active");
+       const key = btn.getAttribute("data-profile");
+       applyProfile(key);
+     });
+   });
+
+   // Startovací profil
+   applyProfile("conservative");
+ </script>
+
+</body>
+</html>
