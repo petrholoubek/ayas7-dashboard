@@ -1,286 +1,132 @@
-<!DOCTYPE html>
-<html lang="cs">
-<head>
- <meta charset="UTF-8" />
- <title>AYAS-7 – Přihlášení</title>
- <meta name="viewport" content="width=device-width, initial-scale=1.0" />
- <style>
-   :root {
-     --bg-page: #0b1220;
-     --menu-bg: #000000;
-     --card-bg: #111827;
-     --card-border: rgba(255,255,255,0.10);
-     --text-main: #e5e7eb;
-     --text-muted: #9ca3af;
-     --accent: #22c55e;
-   }
+<main style="
+ min-height: calc(100vh - 80px);
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ padding: 40px 16px;
+ background: radial-gradient(circle at top left, #0b1120 0, #020617 55%, #000 100%);
+ font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+">
 
-   * { box-sizing: border-box; }
+ <section style="
+   width: 100%;
+   max-width: 420px;
+   background: #0f172a;
+   border-radius: 18px;
+   border: 1px solid rgba(148, 163, 184, 0.35);
+   padding: 26px 24px 22px;
+ ">
 
-   #msg_body {
-     margin: 0;
-     padding: 0;
-     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-     background: #0b1220;
-     color: var(--text-main);
-   }
-
-   /* 🔵 HORNÍ ČERNÉ MENU */
-   header.topbar {
-     width: 100%;
-     background: var(--menu-bg);
-     padding: 12px 0;
-     display: flex;
-     justify-content: center;
-     border-bottom: 1px solid rgba(255,255,255,0.09);
-   }
-
-   .topbar-inner {
-     width: 100%;
-     max-width: 1200px;
-     padding: 0 20px;
-     display: flex;
+   
+   <div style="
+     display: inline-flex;
      align-items: center;
-     justify-content: space-between;
-   }
-
-   /* logo + název */
-   .brand {
-     display: flex;
-     align-items: center;
-     gap: 14px;
-   }
-
-   .brand-logo {
-     width: 60px;              /* 🔥 zvětšené logo */
-     height: 60px;
-     border-radius: 50%;
-     object-fit: cover;
-   }
-
-   .brand-text-main {
-     font-size: 20px;
-     font-weight: 700;
-     letter-spacing: 0.06em;
-   }
-
-   .brand-text-sub {
+     gap: 6px;
+     padding: 2px 10px;
+     border-radius: 999px;
+     border: 1px solid rgba(148, 163, 184, 0.45);
      font-size: 11px;
-     letter-spacing: 0.18em;
-     opacity: 0.7;
-     margin-top: 2px;
-   }
-
-   /* MENU */
-   .nav-list {
-     display: flex;
-     gap: 24px;
-     list-style: none;
-   }
-
-   .nav-link {
-     color: #d1d5db;
-     font-size: 14px;
-     text-decoration: none;
-     padding-bottom: 4px;
-     position: relative;
-   }
-
-   .nav-link:hover {
-     color: #fff;
-   }
-
-   .nav-link::after {
-     content: "";
-     position: absolute;
-     bottom: -4px;
-     left: 0;
-     width: 0;
-     height: 2px;
-     background: var(--accent);
-     transition: width 0.2s ease;
-     border-radius: 2px;
-   }
-
-   .nav-link:hover::after {
-     width: 100%;
-   }
-
-   /* pravá strana */
-   .topbar-right {
-     display: flex;
-     align-items: center;
-     gap: 18px;
-   }
-
-   .lang-switch span {
-     cursor: pointer;
-     opacity: 0.6;
-     font-size: 12px;
-   }
-
-   .lang-switch span.active {
-     opacity: 1;
-     text-decoration: underline;
-   }
-
-   /* login button */
-   .btn-login {
-     background: #1a1a1a;
-     border: 1px solid rgba(255,255,255,0.25);
-     padding: 7px 16px;
-     border-radius: 50px;
-     color: #fff;
-     font-size: 13px;
-     display: flex;
-     align-items: center;
-     gap: 8px;
-     cursor: pointer;
-   }
-
-   .btn-login:hover {
-     border-color: #fff;
-     background: #222;
-   }
-
-   .btn-login .dot {
-     width: 8px;
-     height: 8px;
-     border-radius: 50%;
-     background: var(--accent);
-     box-shadow: 0 0 6px var(--accent);
-   }
-
-   /* 🔷 LOGIN BOX */
-   main {
-     display: flex;
-     justify-content: center;
-     padding: 60px 16px;
-   }
-
-   .login-wrapper {
-     width: 100%;
-     max-width: 420px;
-     background: var(--card-bg); /* 🔥 tmavě šedá karta */
-     padding: 26px 24px;
-     border-radius: 14px;
-
-     /* 🔥 jemná linka, žádný hnusný stín */
-     border: 1px solid var(--card-border);
-   }
-
-   .login-title {
-     font-size: 24px;
-     margin: 0 0 6px;
-     font-weight: 600;
-   }
-
-   .login-subtitle {
-     font-size: 13px;
-     opacity: 0.7;
-     margin-bottom: 20px;
-   }
-
-   .form-label { font-size: 12px; opacity: 0.7; }
-
-   .form-input {
-     width: 100%;
-     padding: 9px 12px;
-     border-radius: 8px;
-     border: 1px solid rgba(255,255,255,0.18);
-     background: #0d1425;
-     color: #fff;
-     font-size: 13px;
-     margin-bottom: 14px;
-   }
-
-   .form-input:focus {
-     border-color: var(--accent);
-   }
-
-   .btn-submit {
-     width: 100%;
-     padding: 10px 14px;
-     border-radius: 50px;
-     background: linear-gradient(to right, #22c55e, #4ade80);
-     border: none;
-     color: #020617;
-     font-weight: 600;
-     cursor: pointer;
-     margin-top: 6px;
-   }
-
-   footer {
-     padding: 22px;
-     background: #000;
-     color: #6b7280;
-     text-align: center;
-     font-size: 12px;
-     border-top: 1px solid rgba(255,255,255,0.12);
-     margin-top: 60px;
-   }
- </style>
-</head>
-
-<body>
-
- 
- <header class="topbar">
-   <div class="topbar-inner">
-
-     <div class="brand">
-       <a href="dashboard.html">
-         <img src="assets/img/logo-ayas7.png" class="brand-logo" />
-       </a>
-       <div>
-         <div class="brand-text-main">AYAS-7 Engine</div>
-         <div class="brand-text-sub">WIN-WIN COOPERATIVE</div>
-       </div>
-     </div>
-
-     <nav>
-       <ul class="nav-list">
-         <li><a href="dashboard.html" class="nav-link">Home</a></li>
-         <li><a href="members.html" class="nav-link">Členové</a></li>
-         <li><a href="payments.html" class="nav-link">Platby</a></li>
-         <li><a href="performance.html" class="nav-link">Výkon & výnos</a></li>
-         <li><a href="fintech.html" class="nav-link">FinTech</a></li>
-       </ul>
-     </nav>
-
-     <div class="topbar-right">
-       <div class="lang-switch">
-         <span class="active">CZ</span><span>|</span><span>EN</span>
-       </div>
-       <a href="login.html" class="btn-login">
-         <span class="dot"></span> Login
-       </a>
-     </div>
-
+     color: #9ca3af;
+     margin-bottom: 10px;
+   ">
+     <span style="
+       width: 7px;
+       height: 7px;
+       border-radius: 999px;
+       background: #22c55e;
+       box-shadow: 0 0 10px rgba(34,197,94,1);
+     "></span>
+     Zabezpečený přístup · Win-Win
    </div>
- </header>
 
- 
- <main>
-   <section class="login-wrapper">
-     <h1 class="login-title">Přihlášení člena</h1>
-     <p class="login-subtitle">Zadej své přihlašovací údaje.</p>
+   
+   <h1 style="
+     margin: 0 0 6px;
+     font-size: 22px;
+     font-weight: 600;
+     color: #e5e7eb;
+   ">
+     Přihlášení člena
+   </h1>
 
-     <form>
-       <label class="form-label">E-mail nebo uživatelské jméno</label>
-       <input class="form-input" type="text" placeholder="například: petr.holoubek@example.com"/>
+   <p style="font-size: 13px; color:#9ca3af; margin:0 0 18px;">
+     Zadej své přihlašovací údaje. Přístup je určen členům družstva Win-Win.
+   </p>
 
-       <label class="form-label">Heslo</label>
-       <input class="form-input" type="password" placeholder="Zadej heslo"/>
+   
+   <form>
 
-       <button class="btn-submit">Přihlásit se</button>
-     </form>
-   </section>
- </main>
+     <div style="margin-bottom: 12px;">
+       <label style="display:block;font-size:12px;color:#9ca3af;margin-bottom:4px;">
+         E-mail nebo uživatelské jméno
+       </label>
+       <input type="text" placeholder="např. petr.holoubek@example.com" style="
+         width:100%;
+         padding: 8px 10px;
+         border-radius: 8px;
+         border: 1px solid rgba(148,163,184,0.35);
+         background: rgba(15,23,42,0.7);
+         color: #e5e7eb;
+         font-size: 13px;
+         outline: none;
+       ">
+     </div>
 
- <footer>
-   © 2025 Win-Win Družstvo • AYAS-7 Engine • Kontakt: info@win-win.cz
- </footer>
+     <div style="margin-bottom: 12px;">
+       <label style="display:block;font-size:12px;color:#9ca3af;margin-bottom:4px;">
+         Heslo
+       </label>
+       <input type="password" placeholder="Zadej heslo" style="
+         width:100%;
+         padding: 8px 10px;
+         border-radius: 8px;
+         border: 1px solid rgba(148,163,184,0.35);
+         background: rgba(15,23,42,0.7);
+         color: #e5e7eb;
+         font-size: 13px;
+         outline: none;
+       ">
+     </div>
 
-</body>
-</html>
+     <div style="
+       display:flex;
+       align-items:center;
+       justify-content:space-between;
+       margin-bottom: 16px;
+       font-size:12px;
+       color:#9ca3af;
+     ">
+       <label style="display:flex;align-items:center;gap:6px;">
+         <input type="checkbox" style="accent-color:#22c55e;">
+         Zapamatovat přihlášení
+       </label>
+
+       <span style="color:#4f8edc;cursor:pointer;">Zapomněl jsem heslo</span>
+     </div>
+
+     
+     <button type="submit" style="
+       width:100%;
+       padding:10px 14px;
+       border-radius:999px;
+       border:none;
+       background:linear-gradient(to right, #22c55e, #4ade80);
+       color:#020617;
+       font-weight:600;
+       font-size:14px;
+       cursor:pointer;
+       margin-bottom:10px;
+       box-shadow:0 18px 40px rgba(22,163,74,0.4);
+     ">
+       Přihlásit se
+     </button>
+
+     <p style="text-align:center;font-size:12px;color:#9ca3af;">
+       Ještě nejsi členem? <a href="members.html" style="color:#4f8edc;">Požádej o vstup</a>
+     </p>
+
+   </form>
+
+ </section>
+
+</main>
