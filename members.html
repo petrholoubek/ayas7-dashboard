@@ -9,7 +9,7 @@
  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
  <style>
-  * {
+* {
  margin: 0;
  padding: 0;
  box-sizing: border-box;
@@ -24,19 +24,20 @@ html, #msg_body {
 }
    :root {
      --blue-dark: #0a1a33;
-     --blue-mid:  #124c99;
-     --blue-light:#4fa3ff;
-     --accent:    #22c55e;
+     --blue-mid: #124c99;
+     --blue-light: #4fa3ff;
+     --accent: #22c55e;
      --text-main: #e5e7eb;
-     --text-muted:#9ca3af;
-     --card-bg:   #0b1220;
+     --text-muted: #9ca3af;
+     --card-bg: #0b1220;
      --border-soft: rgba(148,163,184,0.45);
    }
 
+   /* RESET */
    * {
-     box-sizing: border-box;
      margin: 0;
      padding: 0;
+     box-sizing: border-box;
    }
 
    html, #msg_body {
@@ -58,7 +59,7 @@ html, #msg_body {
      text-decoration: none;
    }
 
-   /* TOPBAR – stejné menu jako na loginu */
+   /* TOPBAR – stejné menu jako ostatní interní stránky */
    header.topbar {
      background: linear-gradient(to right, #020617, #020617);
      border-bottom: 1px solid rgba(15,23,42,0.9);
@@ -249,7 +250,12 @@ html, #msg_body {
    .page-subtitle {
      font-size: 13px;
      color: var(--text-muted);
-     max-width: 640px;
+     max-width: 780px;
+     line-height: 1.6;
+   }
+
+   .page-subtitle b {
+     color: #e5e7eb;
    }
 
    .columns {
@@ -257,6 +263,7 @@ html, #msg_body {
      gap: 20px;
      align-items: flex-start;
      flex-wrap: wrap;
+     margin-top: 22px;
    }
 
    .col {
@@ -322,6 +329,7 @@ html, #msg_body {
      font-size: 12px;
      color: var(--text-muted);
      margin-bottom: 14px;
+     line-height: 1.6;
    }
 
    /* FORMULÁŘ */
@@ -393,6 +401,12 @@ html, #msg_body {
      color: #bbf7d0;
    }
 
+   .muted {
+     font-size: 11px;
+     color: var(--text-muted);
+     margin-top: 8px;
+   }
+
    /* TABULKA ČLENŮ */
    .members-table-wrap {
      margin-top: 6px;
@@ -433,10 +447,112 @@ html, #msg_body {
      background: rgba(15,23,42,0.9);
    }
 
-   .muted {
+   /* INFO BLOKY POD FORMULÁŘEM A TABULKOU */
+   .info-row {
+     margin-top: 26px;
+     display: grid;
+     grid-template-columns: 1.6fr 1.4fr;
+     gap: 18px;
+   }
+
+   .info-card {
+     background: radial-gradient(circle at top left, #020617, #020617 70%);
+     border-radius: 16px;
+     border: 1px solid rgba(51,65,85,0.9);
+     padding: 14px 16px 12px;
+     position: relative;
+     overflow: hidden;
+   }
+
+   .info-card::before {
+     content: "";
+     position: absolute;
+     inset: 0;
+     background: radial-gradient(circle at top right, rgba(79,172,255,0.18), transparent 70%);
+     opacity: 0.9;
+     pointer-events: none;
+   }
+
+   .info-inner {
+     position: relative;
+     z-index: 2;
+   }
+
+   .info-badge {
+     display: inline-flex;
+     align-items: center;
+     gap: 6px;
+     padding: 2px 9px;
+     border-radius: 999px;
+     border: 1px solid rgba(148,163,184,0.6);
      font-size: 11px;
      color: var(--text-muted);
-     margin-top: 8px;
+     margin-bottom: 8px;
+     background: rgba(15,23,42,0.8);
+   }
+
+   .info-badge-dot {
+     width: 7px;
+     height: 7px;
+     border-radius: 999px;
+     background: var(--accent);
+     box-shadow: 0 0 8px rgba(34,197,94,0.9);
+   }
+
+   .info-heading {
+     font-size: 14px;
+     font-weight: 600;
+     margin-bottom: 6px;
+   }
+
+   .info-text {
+     font-size: 12px;
+     color: var(--text-muted);
+     line-height: 1.6;
+   }
+
+   .info-text b {
+     color: #e5e7eb;
+   }
+
+   .info-list {
+     margin-top: 6px;
+     padding-left: 18px;
+     font-size: 12px;
+     color: var(--text-muted);
+   }
+
+   .info-list li {
+     margin-bottom: 4px;
+   }
+
+   .btn-investor {
+     margin-top: 10px;
+     padding: 8px 14px;
+     border-radius: 999px;
+     border: 1px solid rgba(148,163,184,0.8);
+     background: rgba(15,23,42,0.85);
+     color: #e5e7eb;
+     font-size: 13px;
+     display: inline-flex;
+     align-items: center;
+     gap: 8px;
+     cursor: pointer;
+     transition: background 0.18s ease, border-color 0.18s ease, transform 0.12s ease;
+   }
+
+   .btn-investor-dot {
+     width: 7px;
+     height: 7px;
+     border-radius: 999px;
+     background: #4fa3ff;
+     box-shadow: 0 0 10px rgba(79,163,255,0.9);
+   }
+
+   .btn-investor:hover {
+     background: rgba(15,23,42,0.95);
+     border-color: #e5e7eb;
+     transform: translateY(-1px);
    }
 
    footer {
@@ -449,6 +565,9 @@ html, #msg_body {
    @media (max-width: 900px) {
      .columns {
        flex-direction: column;
+     }
+     .info-row {
+       grid-template-columns: 1fr;
      }
    }
 
@@ -486,11 +605,11 @@ html, #msg_body {
 
    <nav class="main-nav" aria-label="Hlavní menu">
      <ul class="nav-list">
-       <li><a href="dashboard.html" class="nav-link">Home</a></li>
-       <li><a href="members.html"   class="nav-link active">Členové</a></li>
-       <li><a href="payments.html"  class="nav-link">Platby</a></li>
+       <li><a href="dashboard.html"   class="nav-link">Home</a></li>
+       <li><a href="members.html"     class="nav-link active">Členové</a></li>
+       <li><a href="payments.html"    class="nav-link">Platby</a></li>
        <li><a href="performance.html" class="nav-link">Výkon &amp; výnos</a></li>
-       <li><a href="fintech.html"   class="nav-link">FinTech</a></li>
+       <li><a href="fintech.html"     class="nav-link">FinTech</a></li>
      </ul>
    </nav>
 
@@ -519,10 +638,11 @@ html, #msg_body {
        <span class="page-kicker-dot"></span>
        Členská databáze · AYAS-7
      </div>
-     <div class="page-title">Členové družstva Win-Win</div>
+     <div class="page-title">Členové &amp; WW-KEY</div>
      <div class="page-subtitle">
-       Zde spravuješ členy družstva, jejich vklady a přidělené WW-KEY.
-       Levý panel slouží pro vytvoření nového člena, pravý panel ukazuje poslední záznamy z databáze.
+       Tato sekce kombinuje <b>registraci člena</b>, výpočet jeho <b>WW-KEY</b> a náhled do
+       aktuální databáze. Cílem je, aby měl člen i investor jistotu, že každý vklad je
+       <b>evidovaný, spárovaný a auditovatelný</b> v rámci motoru AYAS-7.
      </div>
    </div>
 
@@ -538,7 +658,9 @@ html, #msg_body {
            <div class="card-title">Přidání nového člena</div>
            <div class="card-sub">
              Vyplň základní údaje a částku v CZK. AYAS-7 spočítá počet WW-KEY
-             (1 WW-KEY = 25 CZK) a zapíše záznam do tabulky <b>members_data</b> v Supabase.
+             (aktuálně <b>1 WW-KEY = 25&nbsp;CZK</b>) a uloží záznam do tabulky
+             <b>members_data</b> v Supabase. V další fázi se zde bude zobrazovat i stav platby
+             (FIAT / krypto) a napojení na platební stránku.
            </div>
 
            <form id="memberForm">
@@ -569,8 +691,9 @@ html, #msg_body {
            </div>
 
            <p class="muted">
-             Pozn.: v této fázi je výpočet WW-KEY fixní (1 WW-KEY = 25 CZK).
-             Později jej můžeme napojit na živý kurz z Dashboardu.
+             Pozn.: v této fázi je výpočet WW-KEY fixní (<b>1 WW-KEY = 25 CZK</b>).
+             Později jej lze napojit na živý kurz a další pravidla z Dashboardu a sekce
+             <b>Výkon &amp; výnos</b>.
            </p>
          </div>
        </section>
@@ -586,8 +709,8 @@ html, #msg_body {
            </div>
            <div class="card-title">Poslední přidaní členové</div>
            <div class="card-sub">
-             Náhled do tabulky <b>members_data</b>. V produkci zde může být i filtr podle data,
-             statusu platby nebo rozsah podle WW-KEY.
+             Náhled do tabulky <b>members_data</b>. V produkční verzi zde může být
+             filtrování podle data, výše vkladu, stavu platby nebo rozsahu WW-KEY.
            </div>
 
            <div class="members-table-wrap">
@@ -610,11 +733,62 @@ html, #msg_body {
            </div>
 
            <p class="muted">
-             Data se načítají přímo ze Supabase (public.members_data).  
-             Pokud se nic nezobrazí, zkontroluj RLS policy a API klíč.
+             Data se načítají přímo ze Supabase (<b>public.members_data</b>).
+             Pokud se nic nezobrazí, je potřeba zkontrolovat RLS policy a API klíč.
            </p>
          </div>
        </section>
+     </div>
+   </div>
+
+   
+   <div class="info-row">
+     <div class="info-card">
+       <div class="info-inner">
+         <div class="info-badge">
+           <span class="info-badge-dot"></span>
+           Pro nového člena
+         </div>
+         <div class="info-heading">Proč vstoupit do AYAS-7 / Win-Win</div>
+         <div class="info-text">
+           Členský vklad se v systému AYAS-7 promění na <b>WW-KEY</b>. Ty určují tvůj
+           podíl na výnosech, které jsou generovány napříč <b>7 vrstvami motoru</b>
+           (likvidita, routing, risk &amp; compliance, core engine…).
+         </div>
+         <ul class="info-list">
+           <li><b>Transparentní evidence</b> – každý člen má svůj záznam v databázi.</li>
+           <li><b>Auditovatelné výnosy</b> – návaznost na sekci „Výkon &amp; výnos“.</li>
+           <li><b>Bezpečnost</b> – směřujeme k multi-sig peněžence a oddělení klientských vkladů.</li>
+           <li><b>2035-ready</b> – celý systém je navržen jako next-generation finanční engine.</li>
+         </ul>
+       </div>
+     </div>
+
+     <div class="info-card">
+       <div class="info-inner">
+         <div class="info-badge">
+           <span class="info-badge-dot"></span>
+           Pro investory &amp; partnery
+         </div>
+         <div class="info-heading">Investiční logika AYAS-7</div>
+         <div class="info-text">
+           Členská databáze je první vrstva <b>due diligence</b> pro každého investora:
+           ukazuje, že kapitál není anonymní a že každý vstup prochází jasným procesem
+           vkladu → WW-KEY → výnos.
+         </div>
+         <ul class="info-list">
+           <li>Jasně definovaná tokenizace členských podílů (WW-KEY).</li>
+           <li>Napojení na platební vrstvu (FIAT + krypto) a auditní reporty.</li>
+           <li>Možnost agregace dat pro banky, fondy a regulované partnery.</li>
+         </ul>
+
+         <a href="investor-deck.html">
+           <button type="button" class="btn-investor">
+             <span class="btn-investor-dot"></span>
+             Otevřít stránku pro investory
+           </button>
+         </a>
+       </div>
      </div>
    </div>
 
@@ -636,9 +810,9 @@ html, #msg_body {
  }
 
  // === Přidání člena ===
- const memberForm   = document.getElementById('memberForm');
- const memberResult = document.getElementById('memberResult');
- const memberResultText = document.getElementById('memberResultText');
+ const memberForm        = document.getElementById('memberForm');
+ const memberResult      = document.getElementById('memberResult');
+ const memberResultText  = document.getElementById('memberResultText');
 
  memberForm.addEventListener('submit', async (e) => {
    e.preventDefault();
@@ -684,7 +858,6 @@ html, #msg_body {
        console.error('Supabase insert error:', error);
        alert('Zápis do databáze selhal: ' + error.message);
      } else {
-       // po úspěchu načteme tabulku znovu
        await loadMembersTable();
        memberForm.reset();
      }
@@ -745,7 +918,7 @@ html, #msg_body {
    }
  }
 
- // načti tabulku při otevření stránky
+ // načtení při otevření stránky
  loadMembersTable();
 </script>
 
