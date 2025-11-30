@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+ <meta charset="UTF-8" />
+ <title>AYAS-7 Engine – Technická dokumentace</title>
+ <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+ <style>
+   :root {
+     --blue-dark: #0a1a33;
+     --blue-mid:  #124c99;
+     --blue-light:#4fa3ff;
+     --accent:    #22c55e;
+     --accent-soft:#4ade80;
+     --text-main: #e5e7eb;
+     --text-muted:#9ca3af;
+     --card-bg:   #0b1220;
+     --border-soft: rgba(148,163,184,0.45);
+   }
+
+   * {
+     box-sizing: border-box;
+     margin: 0;
+     padding: 0;
+   }
+
+   html, #msg_body {
+     width: 100%;
+     min-height: 100%;
+     font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+     background: radial-gradient(circle at 40% 0%, #0f172a 0%, #020617 55%, #000 100%);
+     color: var(--text-main);
+     overflow-x: hidden;
+   }
+
+   a {
+     color: inherit;
+     text-decoration: none;
+   }
+
+   /* WRAP CELÉHO „PDF“ */
+   .doc-wrap {
+     max-width: 1000px;
+     margin: 32px auto 40px;
+     padding: 0 16px 40px;
+   }
+
+   /* HLAVIČKA DOKUMENTU (bez klasického menu) */
+   .doc-header {
+     display: flex;
+     justify-content: space-between;
+     align-items: center;
+     gap: 16px;
+     margin-bottom: 24px;
+     border-bottom: 1px solid rgba(15,23,42,0.9);
+     padding-bottom: 10px;
+   }
+
+   .brand-block {
+     display: flex;
+     flex-direction: column;
+     gap: 2px;
+   }
+
+   .brand-main {
+     font-size: 18px;
+     font-weight: 600;
+     letter-spacing: 0.10em;
+     text-transform: uppercase;
+     color: #e5e7eb;
+   }
+
+   .brand-sub {
+     font-size: 11px;
+     text-transform: uppercase;
+     letter-spacing: 0.18em;
+     color: rgba(148,163,184,0.9);
+   }
+
+   .doc-label {
+     display: inline-flex;
+     align-items: center;
+     gap: 8px;
+     padding: 4px 12px;
+     border-radius: 999px;
+     border: 1px solid rgba(148,163,184,0.55);
+     font-size: 11px;
+     color: var(--text-muted);
+     background: rgba(15,23,42,0.8);
+     text-transform: uppercase;
+     letter-spacing: 0.12em;
+   }
+
+   .doc-label-dot {
+     width: 8px;
+     height: 8px;
+     border-radius: 999px;
+     background: var(--accent);
+     box-shadow: 0 0 10px rgba(34,197,94,1);
+   }
+
+   /* HERO KARTA – titul dokumentu */
+   .hero-section {
+     margin-top: 24px;
+     margin-bottom: 28px;
+     position: relative;
+   }
+
+   .hero-glow {
+     position: absolute;
+     inset: -80px -40px auto;
+     background: radial-gradient(circle at top right, rgba(79,163,255,0.30), transparent 70%);
+     filter: blur(42px);
+     opacity: 0.9;
+     pointer-events: none;
+     z-index: 0;
+   }
+
+   .hero-card {
+     position: relative;
+     z-index: 1;
+     background: radial-gradient(circle at top left, #0b1120, #020617 65%);
+     border-radius: 22px;
+     border: 1px solid rgba(51,65,85,0.9);
+     box-shadow:
+       0 26px 70px rgba(15,23,42,0.9),
+       0 0 0 1px rgba(15,23,42,1);
+     padding: 26px 26px 22px;
+     overflow: hidden;
+   }
+
+   .hero-card::before {
+     content: "";
+     position: absolute;
+     inset: 0;
+     background: radial-gradient(circle at 12% 0%, rgba(79,163,255,0.18), transparent 65%);
+     opacity: 0.9;
+     pointer-events: none;
+   }
+
+   .hero-inner {
+     position: relative;
+     z-index: 2;
+   }
+
+   .hero-badge {
+     display: inline-flex;
+     align-items: center;
+     gap: 6px;
+     padding: 3px 11px;
+     border-radius: 999px;
+     border: 1px solid rgba(148,163,184,0.6);
+     font-size: 11px;
+     color: var(--text-muted);
+     background: rgba(15,23,42,0.8);
+     margin-bottom: 12px;
+   }
+
+   .hero-badge-dot {
+     width: 7px;
+     height: 7px;
+     border-radius: 999px;
+     background: var(--blue-light);
+     box-shadow: 0 0 10px rgba(79,163,255,1);
+   }
+
+   .hero-title {
+     font-size: 28px;
+     font-weight: 700;
+     margin-bottom: 6px;
+     background: linear-gradient(to right, #74b7ff, #d7e9ff);
+     -webkit-background-clip: text;
+     color: transparent;
+     letter-spacing: 0.02em;
+   }
+
+   .hero-subline {
+     font-size: 15px;
+     color: var(--text-main);
+     margin-bottom: 10px;
+   }
+
+   .hero-desc {
+     font-size: 13px;
+     color: var(--text-muted);
+     line-height: 1.7;
+     max-width: 760px;
+   }
+
+   /* MALÝ „TOC“ – co PDF obsahuje */
+   .toc-row {
+     display: flex;
+     flex-wrap: wrap;
+     gap: 14px;
+     margin-top: 18px;
+   }
+
+   .toc-pill {
+     flex: 1;
+     min-width: 180px;
+     border-radius: 14px;
+     border: 1px solid rgba(148,163,184,0.55);
+     background: rgba(15,23,42,0.7);
+     padding: 8px 12px 9px;
+     font-size: 12px;
+     color: var(--text-muted);
+     display: flex;
+     align-items: flex-start;
+     gap: 8px;
+   }
+
+   .toc-pill-led {
+     width: 7px;
+     height: 7px;
+     border-radius: 999px;
+     margin-top: 3px;
+     background: var(--accent);
+     box-shadow: 0 0 9px rgba(34,197,94,1);
+     flex-shrink: 0;
+   }
+
+   .toc-pill-title {
+     font-weight: 600;
+     color: var(--text-main);
+     margin-bottom: 2px;
+   }
+
+   /* SEKCÍ KARTY */
+   .section {
+     margin-top: 28px;
+   }
+
+   .section-header {
+     display: flex;
+     align-items: center;
+     justify-content: space-between;
+     gap: 12px;
+     margin-bottom: 14px;
+   }
+
+   .section-title-block {
+     display: flex;
+     align-items: center;
+     gap: 8px;
+     font-size: 15px;
+     font-weight: 600;
+   }
+
+   .section-dot {
+     width: 8px;
+     height: 8px;
+     border-radius: 999px;
+     background: var(--accent);
+     box-shadow: 0 0 10px rgba(34,197,94,1);
+     flex-shrink: 0;
+   }
+
+   .section-tag {
+     font-size: 11px;
+     color: var(--text-muted);
+     text-transform: uppercase;
+     letter-spacing: 0.12em;
+   }
+
+   .cards-grid {
+     display: grid;
+     grid-template-columns: repeat(2, minmax(0,1fr));
+     gap: 18px;
+   }
+
+   .card {
+     position: relative;
+     background: radial-gradient(circle at top left, #0b1120, #020617 70%);
+     border-radius: 18px;
+     border: 1px solid rgba(51,65,85,0.9);
+     box-shadow:
+       0 22px 60px rgba(15,23,42,0.9),
+       0 0 0 1px rgba(15,23,42,1);
+     padding: 16px 16px 14px;
+     overflow: hidden;
+   }
+
+   .card::before {
+     content: "";
+     position: absolute;
+     inset: 0;
+     background: radial-gradient(circle at top right, rgba(79,163,255,0.18), transparent 65%);
+     opacity: 0.9;
+     pointer-events: none;
+   }
+
+   .card-top-led {
+     position: absolute;
+     top: 0;
+     left: 0;
+     right: 0;
+     height: 3px;
+     background: linear-gradient(to right, #4fa3ff, #22c55e);
+     opacity: 0.95;
+   }
+
+   .card-inner {
+     position: relative;
+     z-index: 2;
+   }
+
+   .card-eyebrow {
+     display: inline-flex;
+     align-items: center;
+     gap: 5px;
+     padding: 2px 8px;
+     border-radius: 999px;
+     border: 1px solid rgba(148,163,184,0.5);
+     font-size: 10px;
+     color: var(--text-muted);
+     background: rgba(15,23,42,0.75);
+     margin-bottom: 8px;
+     text-transform: uppercase;
+     letter-spacing: 0.12em;
+   }
+
+   .card-eyebrow-dot {
+     width: 6px;
+     height: 6px;
+     border-radius: 999px;
+     background: var(--blue-light);
+     box-shadow: 0 0 8px rgba(79,163,255,1);
+   }
+
+   .card-title {
+     font-size: 15px;
+     font-weight: 600;
+     margin-bottom: 6px;
+   }
+
+   .card-text {
+     font-size: 12px;
+     color: var(--text-muted);
+     line-height: 1.7;
+   }
+
+   .card-list {
+     margin-top: 8px;
+     padding-left: 18px;
+     font-size: 12px;
+     color: var(--text-muted);
+     line-height: 1.6;
+   }
+
+   .card-list li {
+     margin-bottom: 4px;
+   }
+
+   .mini-pills-row {
+     margin-top: 10px;
+     display: flex;
+     flex-wrap: wrap;
+     gap: 6px;
+   }
+
+   .mini-pill {
+     font-size: 10px;
+     padding: 3px 7px;
+     border-radius: 999px;
+     border: 1px solid rgba(148,163,184,0.5);
+     color: var(--text-muted);
+     background: rgba(15,23,42,0.7);
+     text-transform: uppercase;
+     letter-spacing: 0.11em;
+   }
+
+   /* ZVÝRAZNĚNÝ „FLOW“ BLOK VE 3. SEKCI */
+   .flow-box {
+     margin-top: 12px;
+     border-radius: 14px;
+     border: 1px dashed rgba(148,163,184,0.6);
+     padding: 8px 10px;
+     font-size: 11px;
+     color: var(--text-muted);
+   }
+
+   .flow-steps {
+     margin-top: 4px;
+     padding-left: 18px;
+     line-height: 1.5;
+   }
+
+   /* FOOTER */
+   footer {
+     margin-top: 28px;
+     font-size: 11px;
+     color: var(--text-muted);
+     text-align: center;
+   }
+
+   /* RESPONSIVE */
+   @media (max-width: 800px) {
+     .cards-grid {
+       grid-template-columns: 1fr;
+     }
+   }
+
+   @media (max-width: 640px) {
+     .doc-header {
+       flex-direction: column;
+       align-items: flex-start;
+     }
+     .doc-label {
+       align-self: flex-start;
+     }
+   }
+
+   /* PRINT – aby to v PDF drželo rozumnou šířku */
+   @media print {
+     #msg_body {
+       background: #020617;
+       -webkit-print-color-adjust: exact;
+       print-color-adjust: exact;
+     }
+     .doc-wrap {
+       margin: 10mm auto;
+       padding: 0;
+       max-width: 180mm;
+     }
+     .hero-card,
+     .card {
+       box-shadow: none;
+     }
+   }
+ </style>
+</head>
+<body>
+
+<div class="doc-wrap">
+
+ 
+ <header class="doc-header">
+   <div class="brand-block">
+     <div class="brand-main">AYAS-7 ENGINE</div>
+     <div class="brand-sub">WIN-WIN COOPERATIVE</div>
+   </div>
+   <div class="doc-label">
+     <span class="doc-label-dot"></span>
+     TECHNICKÁ DOKUMENTACE · DEMO VERZE
+   </div>
+ </header>
+
+ 
+ <section class="hero-section">
+   <div class="hero-glow"></div>
+
+   <article class="hero-card">
+     <div class="hero-inner">
+       <div class="hero-badge">
+         <span class="hero-badge-dot"></span>
+         Next-Generation Cooperative Finance · AYAS-7
+       </div>
+
+       <h1 class="hero-title">AYAS-7 Engine – Technické a UX shrnutí</h1>
+
+       <p class="hero-subline">
+         Jednotné webové prostředí, které propojuje členskou databázi, platební vrstvu,
+         výpočetní motor AYAS-7 a prezentaci tokenů USDt.z / GUSD.
+       </p>
+
+       <p class="hero-desc">
+         Tato dokumentace popisuje, jak je postaveno uživatelské rozhraní, jak jsou
+         jednotlivé stránky navázané na databázi a API a jak jsou řešeny bezpečnostní
+         prvky (multi-sig, role, audit). Struktura odpovídá produkčnímu webu, aby bylo
+         možné PDF i HTML používat jako jednotný referenční materiál pro členy,
+         administrátory i investory.
+       </p>
+
+       <div class="toc-row">
+         <div class="toc-pill">
+           <span class="toc-pill-led"></span>
+           <div>
+             <div class="toc-pill-title">1. UX &amp; vizuální identita</div>
+             Jednotné modré pozadí, neonové LED tečky a LED pásky, high-tech boxy,
+             konzistentní top bar AYAS-7 ENGINE.
+           </div>
+         </div>
+         <div class="toc-pill">
+           <span class="toc-pill-led"></span>
+           <div>
+             <div class="toc-pill-title">2. Architektura &amp; data</div>
+             Napojení na Supabase (members_data), logika WW-KEY, struktura hlavních
+             stránek a jejich role v ekosystému.
+           </div>
+         </div>
+         <div class="toc-pill">
+           <span class="toc-pill-led"></span>
+           <div>
+             <div class="toc-pill-title">3. Bezpečnost &amp; role</div>
+             Multi-sig peněženky, přístupová práva, členská vs. investorská vrstva,
+             auditní stopa a export reportů.
+           </div>
+         </div>
+       </div>
+     </div>
+   </article>
+ </section>
+
+ 
+ <section class="section" id="sec-ux">
+   <div class="section-header">
+     <div class="section-title-block">
+       <span class="section-dot"></span>
+       <span>1. UX &amp; vizuální identita rozhraní</span>
+     </div>
+     <div class="section-tag">AYAS-7 · FRONTEND / DESIGN</div>
+   </div>
+
+   <div class="cards-grid">
+     
+     <article class="card">
+       <div class="card-top-led"></div>
+       <div class="card-inner">
+         <div class="card-eyebrow">
+           <span class="card-eyebrow-dot"></span>
+           Uvítací obrazovka &amp; login
+         </div>
+         <h2 class="card-title">Hero box + přihlášení člena</h2>
+         <p class="card-text">
+           Úvodní stránka a login používají identický vizuální základ:
+           modré fintech pozadí, hero box se světelným nádechem a LED tečkami
+           a jasnou typografii v Segoe UI. Tím vzniká okamžitý „wow efekt“
+           a vysoká důvěra, že jde o produkt roku 2035, ne o běžný web roku 2025.
+         </p>
+         <ul class="card-list">
+           <li>Hero box s gradientním textem <b>AYAS-7 Engine</b>.</li>
+           <li>Neonová badge „Next-Generation Financial Engine“.</li>
+           <li>Velké primární tlačítko „Vstoupit do systému“ + sekundární
+               odkaz „O družstvu Win-Win“.</li>
+           <li>Login karta s LED tečkou stavu a elegantním formulářem.</li>
+         </ul>
+         <div class="mini-pills-row">
+           <div class="mini-pill">Segoe UI only</div>
+           <div class="mini-pill">Dark fintech</div>
+           <div class="mini-pill">LED badges</div>
+         </div>
+       </div>
+     </article>
+
+     
+     <article class="card">
+       <div class="card-top-led"></div>
+       <div class="card-inner">
+         <div class="card-eyebrow">
+           <span class="card-eyebrow-dot"></span>
+           Dashboard &amp; 7 vrstev
+         </div>
+         <h2 class="card-title">AYAS-7 Dashboard &amp; boxy vrstev</h2>
+         <p class="card-text">
+           Dashboard a jednotlivé stránky vrstev (Token Layer, Liquidity Engine,
+           Yield Routing, Risk &amp; Compliance, FinTech Interaction,
+           Core Engine, Dashboard Analytics) využívají stejné high-tech prvky:
+           LED pásky, svítící tečky, karty a křivkové grafy.
+         </p>
+         <ul class="card-list">
+           <li>Boxy vrstev s barevným pásem nahoře (LED výkon AYAS-7).</li>
+           <li>Křivkové grafy výnosu a simulací (4–6&nbsp;% p.a. / 36&nbsp;měsíců).</li>
+           <li>Speciální sekce pro USDt.z a GUSD s vlastními kartami.</li>
+           <li>Jednotné menu AYAS-7 ENGINE + CZ|EN + Login.</li>
+         </ul>
+         <div class="mini-pills-row">
+           <div class="mini-pill">7-Layer Engine</div>
+           <div class="mini-pill">Token pages</div>
+           <div class="mini-pill">Performance UI</div>
+         </div>
+       </div>
+     </article>
+   </div>
+ </section>
+
+ 
+ <section class="section" id="sec-architecture">
+   <div class="section-header">
+     <div class="section-title-block">
+       <span class="section-dot"></span>
+       <span>2. Architektura, data &amp; napojení na Supabase</span>
+     </div>
+     <div class="section-tag">AYAS-7 · DATA / API</div>
+   </div>
+
+   <div class="cards-grid">
+     
+     <article class="card">
+       <div class="card-top-led"></div>
+       <div class="card-inner">
+         <div class="card-eyebrow">
+           <span class="card-eyebrow-dot"></span>
+           Členská databáze
+         </div>
+         <h2 class="card-title">Members.html – přidání člena &amp; WW-KEY</h2>
+         <p class="card-text">
+           Stránka <b>members.html</b> kombinuje prémiový design s reálným
+           napojením na Supabase. Formulář pro nového člena zapisuje data
+           do tabulky <b>members_data</b>, včetně výpočtu WW-KEY z CZK vkladu.
+         </p>
+         <ul class="card-list">
+           <li>Výpočet: 1 WW-KEY = 25 CZK (aktuálně fixní demo kurz).</li>
+           <li>Zápis do <b>members_data</b> (name, email, phone, deposit, ww_key, paid).</li>
+           <li>Náhled výpočtu v zeleném LED panelu (vklad, WW-KEY, přepočet na USDT).</li>
+           <li>Tabulka posledních členů pro rychlou kontrolu a audit.</li>
+         </ul>
+         <div class="mini-pills-row">
+           <div class="mini-pill">Supabase</div>
+           <div class="mini-pill">members_data</div>
+           <div class="mini-pill">WW-KEY engine</div>
+         </div>
+       </div>
+     </article>
+
+     
+     <article class="card">
+       <div class="card-top-led"></div>
+       <div class="card-inner">
+         <div class="card-eyebrow">
+           <span class="card-eyebrow-dot"></span>
+           Platební vrstva &amp; reporting
+         </div>
+         <h2 class="card-title">Payments, Performance &amp; Dashboard Analytics</h2>
+         <p class="card-text">
+           Platební sekce (<b>payments.html</b>) popisuje FIAT a krypto vklady a
+           jejich mapování na WW-KEY. Výkonová sekce (<b>performance.html</b>)
+           a analytická vrstva (<b>dashboard-analytics.html</b>) vizuálně
+           ukazují, co AYAS-7 umí generovat.
+         </p>
+         <ul class="card-list">
+           <li>Boxy pro FIAT účet, krypto peněženku a stav plateb.</li>
+           <li>Modelované výnosy 4–6&nbsp;% p.a. / 36&nbsp;měsíců pro konzervativní scénáře.</li>
+           <li>Přehled výnosu po vrstvách AYAS-7 (Token, Liquidity, Yield...).</li>
+           <li>Prostor pro napojení živých on-chain dat (DEX, GeckoTerminal, API bank).</li>
+         </ul>
+         <div class="mini-pills-row">
+           <div class="mini-pill">Payments layer</div>
+           <div class="mini-pill">Yield models</div>
+           <div class="mini-pill">On-chain ready</div>
+         </div>
+       </div>
+     </article>
+   </div>
+ </section>
+
+ 
+ <section class="section" id="sec-security">
+   <div class="section-header">
+     <div class="section-title-block">
+       <span class="section-dot"></span>
+       <span>3. Bezpečnost, multi-sig &amp; role uživatelů</span>
+     </div>
+     <div class="section-tag">AYAS-7 · SECURITY / GOVERNANCE</div>
+   </div>
+
+   <div class="cards-grid">
+     
+     <article class="card">
+       <div class="card-top-led"></div>
+       <div class="card-inner">
+         <div class="card-eyebrow">
+           <span class="card-eyebrow-dot"></span>
+           Multi-sig &amp; peněženky
+         </div>
+         <h2 class="card-title">Custody, multi-sig a oddělení vkladů</h2>
+         <p class="card-text">
+           Web a dokumentace počítají s tím, že reálné prostředky družstva
+           jsou držené na multi-sig peněženkách a na oddělených účtech pro
+           klientské vklady. Platby jsou mapovány do WW-KEY, ale samotný custody
+           probíhá vždy pod kontrolou více podpisů.
+         </p>
+         <ul class="card-list">
+           <li>FIAT účet družstva (oddělený, auditovatelný).</li>
+           <li>Krypto custody peněženka družstva (multi-sig, on-chain historie).</li>
+           <li>On-chain viditelnost pro tokeny USDt.z a GUSD (GeckoTerminal, DEX).</li>
+           <li>Možnost nezávislého auditu transakcí i výnosů.</li>
+         </ul>
+
+         <div class="flow-box">
+           <b>Tok peněz a tokenů (zjednodušeně):</b>
+           <ol class="flow-steps">
+             <li>Člen odešle FIAT / krypto vklad na účet / peněženku družstva.</li>
+             <li>Vklad se spáruje s WW-KEY v members_data.</li>
+             <li>AYAS-7 směruje část prostředků do výnosových strategií.</li>
+             <li>Výnos se periodicky přepočítává a zapisuje k WW-KEY / členovi.</li>
+           </ol>
+         </div>
+       </div>
+     </article>
+
+     
+     <article class="card">
+       <div class="card-top-led"></div>
+       <div class="card-inner">
+         <div class="card-eyebrow">
+           <span class="card-eyebrow-dot"></span>
+           Role &amp; přístupy
+         </div>
+         <h2 class="card-title">Člen, administrátor, družstvo, investor</h2>
+         <p class="card-text">
+           AYAS-7 rozlišuje několik pohledů na stejné prostředí. Stejný frontend
+           pracuje s různými rolemi tak, aby člen viděl vše potřebné pro důvěru
+           a orientaci, ale zároveň nedostal k dispozici administrativní funkce.
+         </p>
+         <ul class="card-list">
+           <li><b>Člen</b> – vidí svůj WW-KEY, vklady, výnosy, základní grafy.</li>
+           <li><b>Administrátor</b> – správa členů, potvrzení plateb, ruční korekce.</li>
+           <li><b>Družstvo</b> – strategie, reporting, export auditních reportů.</li>
+           <li><b>Investor</b> – stránka Investor-deck, přehled konceptu a potenciálu.</li>
+         </ul>
+         <div class="mini-pills-row">
+           <div class="mini-pill">Role-based access</div>
+           <div class="mini-pill">Investor view</div>
+           <div class="mini-pill">Audit ready</div>
+         </div>
+       </div>
+     </article>
+   </div>
+ </section>
+
+ <footer>
+   AYAS-7 Engine · Win-Win Cooperative · Technické shrnutí webového prostředí a
+   demo architektury · Verze dokumentu / HTML: 1.0
+ </footer>
+
+</div>
+
+</body>
+</html>
