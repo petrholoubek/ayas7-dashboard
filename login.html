@@ -255,7 +255,44 @@
    .login-subtitle {
      font-size: 13px;
      color: var(--text-muted);
-     margin: 0 0 18px;
+     margin: 0 0 14px;
+   }
+
+   /* NOVÝ INFO BLOK PRO NOVÉHO ČLENA */
+   .login-intro {
+     margin-bottom: 16px;
+     padding: 10px 10px 8px;
+     border-radius: 12px;
+     border: 1px solid rgba(148, 163, 184, 0.45);
+     background: radial-gradient(circle at top left, rgba(15,23,42,0.95), rgba(15,23,42,0.75));
+   }
+
+   .login-intro-header {
+     display: flex;
+     align-items: center;
+     gap: 8px;
+     font-size: 12px;
+     margin-bottom: 6px;
+     color: var(--text-main);
+   }
+
+   .login-intro-dot {
+     width: 7px;
+     height: 7px;
+     border-radius: 999px;
+     background: var(--blue-light);
+     box-shadow: 0 0 10px rgba(79, 163, 255, 1);
+   }
+
+   .login-intro-text {
+     font-size: 12px;
+     color: var(--text-muted);
+     line-height: 1.55;
+   }
+
+   .login-intro-text b {
+     color: var(--text-main);
+     font-weight: 600;
    }
 
    .form-group {
@@ -476,8 +513,22 @@
 
      <h1 class="login-title">Přihlášení člena</h1>
      <p class="login-subtitle">
-       Zadej své přihlašovací údaje. Přístup je určen členům družstva Win-Win a administrátorům AYAS-7.
+       Přístup je určen členům družstva Win-Win a administrátorům AYAS&#8209;7.
      </p>
+
+     
+     <div class="login-intro">
+       <div class="login-intro-header">
+         <span class="login-intro-dot"></span>
+         <span>Proč se přihlásit do systému AYAS&#8209;7?</span>
+       </div>
+       <p class="login-intro-text">
+         Po přihlášení uvidíš <b>své WW-KEY</b>, historii vkladů a podíl na výnosech
+         napříč <b>7 vrstvami motoru AYAS&#8209;7</b>.  
+         Připravujeme také přímé napojení na <b>on-chain data</b>, denní reporty
+         a přehled výkonu tvého členství.
+       </p>
+     </div>
 
      <form>
        <div class="form-group">
@@ -486,7 +537,7 @@
            id="login-identity"
            type="text"
            class="form-input"
-           placeholder="např. petr.holoubek@example.com"
+           placeholder="např. jan.novy@example.com"
          />
        </div>
 
