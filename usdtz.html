@@ -2,8 +2,11 @@
 <html lang="cs">
 <head>
  <meta charset="UTF-8" />
- <title>USDt.z – On-chain token družstva Win-Win</title>
+ <title>USDt.z – Stabilní výnosový token AYAS-7</title>
  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+ 
+ <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
  <style>
 * {
@@ -21,14 +24,14 @@ html, #msg_body {
 }
    :root {
      --blue-dark: #003063;
-     --blue-mid:  #0053a6;
-     --blue-light:#4f8edc;
-     --bg-page:   #020617;
-     --card-bg:   #0b1120;
+     --blue-mid: #0053a6;
+     --blue-light: #4f8edc;
+     --bg-page: #020617;
+     --card-bg: #0b1120;
      --border-soft: rgba(148, 163, 184, 0.4);
      --text-main: #e5e7eb;
-     --text-muted:#9ca3af;
-     --accent:    #22c55e;
+     --text-muted: #9ca3af;
+     --accent: #22c55e;
    }
 /* OPRAVA ČERNÝCH TEXTŮ – VŠECHNY NADPISY A TEXTY BUDEME NUTIT DO BÍLÉ */
 h1, h2, h3, h4, h5, h6,
@@ -59,7 +62,7 @@ p, span, label, td, th, li, a, div {
      color: inherit;
    }
 
-   /* TOP BAR / MENU – jako login / payments */
+   /* TOP BAR / MENU – stejný základ jako na ostatních stránkách */
    header.topbar {
      background: linear-gradient(to right, var(--blue-dark), var(--blue-mid));
      color: #fff;
@@ -80,7 +83,6 @@ p, span, label, td, th, li, a, div {
      gap: 24px;
    }
 
-   /* LEVÁ ČÁST – brand text */
    .brand-text-wrap {
      display: flex;
      flex-direction: column;
@@ -150,11 +152,11 @@ p, span, label, td, th, li, a, div {
      width: 100%;
    }
 
-   /* Tady klidně můžeme brát stránku jako součást FinTech sekce */
    .nav-link.active {
      color: #ffffff;
      font-weight: 600;
    }
+
    .nav-link.active::after {
      width: 100%;
    }
@@ -241,16 +243,15 @@ p, span, label, td, th, li, a, div {
      width: 100%;
    }
 
-   /* Hlavička stránky */
    .page-header {
-     margin-bottom: 22px;
+     margin-bottom: 20px;
    }
 
    .page-eyebrow {
      display: inline-flex;
      align-items: center;
      gap: 6px;
-     padding: 3px 11px;
+     padding: 2px 10px;
      border-radius: 999px;
      border: 1px solid rgba(148, 163, 184, 0.55);
      font-size: 11px;
@@ -278,37 +279,37 @@ p, span, label, td, th, li, a, div {
      color: var(--text-muted);
    }
 
-   /* GRID – 2 sloupce nahoře */
-   .top-grid {
+   /* HORNÍ GRID – info + QR */
+   .token-top-grid {
      display: grid;
-     grid-template-columns: 2fr 1.3fr;
+     grid-template-columns: 1.5fr 1fr;
      gap: 18px;
-     margin-top: 24px;
+     margin-top: 22px;
      margin-bottom: 22px;
    }
 
-   .card {
+   .token-card {
      background: radial-gradient(circle at top left, #111827, #020617 75%);
      border-radius: 20px;
      border: 1px solid var(--border-soft);
-     padding: 16px 16px 14px;
+     padding: 16px 18px 14px;
      position: relative;
      overflow: hidden;
-     box-shadow: 0 22px 50px rgba(15, 23, 42, 0.8);
+     box-shadow: 0 20px 45px rgba(15, 23, 42, 0.75);
    }
 
-   .card::before {
+   .token-card::before {
      content: "";
      position: absolute;
      top: 0;
      left: 0;
-     width: 100%;
      height: 3px;
+     width: 100%;
      background: linear-gradient(to right, #4fa3ff, #22c55e);
-     opacity: 0.9;
+     opacity: 0.95;
    }
 
-   .card-header {
+   .token-header {
      display: flex;
      align-items: center;
      justify-content: space-between;
@@ -316,16 +317,21 @@ p, span, label, td, th, li, a, div {
      margin-bottom: 10px;
    }
 
-   .card-title {
-     font-size: 16px;
+   .token-title {
+     font-size: 18px;
      font-weight: 600;
    }
 
-   .card-pill {
+   .token-sub {
+     font-size: 12px;
+     color: var(--text-muted);
+   }
+
+   .badge-pill {
      font-size: 11px;
      padding: 3px 10px;
      border-radius: 999px;
-     border: 1px solid rgba(148, 163, 184, 0.6);
+     border: 1px solid rgba(148, 163, 184, 0.65);
      color: var(--text-muted);
      display: inline-flex;
      align-items: center;
@@ -333,193 +339,185 @@ p, span, label, td, th, li, a, div {
      white-space: nowrap;
    }
 
-   .pill-dot {
+   .dot-led {
      width: 6px;
      height: 6px;
      border-radius: 999px;
      background: var(--accent);
-     box-shadow: 0 0 8px rgba(34, 197, 94, 0.9);
+     box-shadow: 0 0 10px rgba(34, 197, 94, 0.95);
    }
 
-   .card-text {
-     font-size: 12px;
-     color: var(--text-muted);
-     margin-bottom: 10px;
-     line-height: 1.6;
-   }
-
-   /* Token metrics */
-   .metrics-row {
-     display: grid;
-     grid-template-columns: repeat(3, minmax(0, 1fr));
-     gap: 10px;
-     margin-top: 6px;
+   .token-row {
+     display: flex;
+     justify-content: space-between;
+     align-items: center;
+     gap: 8px;
+     font-size: 13px;
      margin-bottom: 4px;
    }
 
-   .metric-pill {
-     border-radius: 12px;
-     background: rgba(15, 23, 42, 0.7);
-     border: 1px solid rgba(148, 163, 184, 0.45);
-     padding: 7px 8px;
-     font-size: 11px;
-     display: flex;
-     flex-direction: column;
-     gap: 2px;
-   }
-
-   .metric-label {
+   .token-label {
      color: var(--text-muted);
    }
 
-   .metric-value {
-     font-size: 13px;
-     font-weight: 600;
+   .token-value {
+     font-weight: 500;
+   }
+
+   .token-value.highlight {
+     color: var(--text-main);
      letter-spacing: 0.02em;
    }
 
-   .metric-sub {
-     font-size: 10px;
+   .token-hint {
+     font-size: 11px;
      color: var(--text-muted);
+     margin-top: 6px;
    }
 
-   /* QR + kontrakt */
+   /* QR CARD */
    .qr-wrap {
      display: flex;
      flex-direction: column;
-     gap: 10px;
      align-items: center;
      text-align: center;
+     gap: 8px;
    }
 
-   .qr-frame {
-     padding: 10px;
-     border-radius: 18px;
-     background: radial-gradient(circle at top, #111827, #020617 80%);
-     border: 1px solid rgba(148, 163, 184, 0.5);
-     box-shadow: 0 14px 36px rgba(15, 23, 42, 0.8);
-     max-width: 220px;
-     width: 100%;
-   }
-
-   .qr-frame img {
-     display: block;
-     width: 100%;
+   .qr-img {
+     width: 150px;
+     height: 150px;
      border-radius: 14px;
+     border: 1px solid rgba(148, 163, 184, 0.7);
+     box-shadow:
+       0 0 0 1px rgba(15, 23, 42, 0.9),
+       0 16px 45px rgba(15, 23, 42, 0.9);
+     object-fit: cover;
+     background: #020617;
    }
 
-   .contract-box {
-     font-size: 11px;
-     background: rgba(15, 23, 42, 0.75);
-     border-radius: 12px;
-     padding: 8px 10px;
-     border: 1px solid rgba(148, 163, 184, 0.5);
-     text-align: left;
-     width: 100%;
-     max-width: 320px;
-   }
-
-   .contract-label {
+   .qr-caption {
+     font-size: 12px;
      color: var(--text-muted);
-     margin-bottom: 3px;
+     line-height: 1.5;
    }
 
-   .contract-value {
-     font-family: "Segoe UI", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+   .address-box {
+     margin-top: 4px;
      font-size: 11px;
      word-break: break-all;
+     padding: 6px 8px;
+     border-radius: 8px;
+     background: rgba(15, 23, 42, 0.8);
+     border: 1px solid rgba(148, 163, 184, 0.6);
    }
 
-   .contract-row {
-     display: flex;
-     align-items: center;
-     justify-content: space-between;
-     gap: 8px;
-     margin-top: 4px;
-   }
-
-   .copy-btn {
-     padding: 5px 10px;
-     border-radius: 999px;
-     border: 1px solid rgba(148, 163, 184, 0.7);
-     background: rgba(15, 23, 42, 0.85);
-     color: var(--text-main);
-     font-size: 11px;
-     cursor: pointer;
-     display: inline-flex;
-     align-items: center;
-     gap: 6px;
-     white-space: nowrap;
-   }
-
-   .copy-btn-dot {
-     width: 6px;
-     height: 6px;
-     border-radius: 999px;
-     background: var(--blue-light);
-     box-shadow: 0 0 8px rgba(79, 163, 255, 0.9);
-   }
-
-   .copy-msg {
-     font-size: 10px;
-     color: var(--text-muted);
-     margin-top: 4px;
-   }
-
-   /* Dolní panel – texty o utilitě / směrování výnosů */
-   .info-panel {
-     margin-top: 10px;
-     padding-top: 16px;
-     border-top: 1px solid rgba(31, 41, 55, 0.9);
+   /* TŘI BOXY – tokenomics atd. */
+   .token-grid-3 {
      display: grid;
-     grid-template-columns: 1.7fr 1.3fr;
-     gap: 20px;
+     grid-template-columns: repeat(3, minmax(0, 1fr));
+     gap: 18px;
+     margin-bottom: 24px;
    }
 
-   .info-block-title {
+   .info-card {
+     background: radial-gradient(circle at top left, #111827, #020617 80%);
+     border-radius: 18px;
+     border: 1px solid var(--border-soft);
+     padding: 14px 14px 12px;
+     position: relative;
+     overflow: hidden;
+   }
+
+   .info-card::before {
+     content: "";
+     position: absolute;
+     top: 0;
+     left: 0;
+     height: 3px;
+     width: 100%;
+     background: linear-gradient(to right, #4fa3ff, #38bdf8);
+     opacity: 0.8;
+   }
+
+   .info-title {
      font-size: 14px;
      font-weight: 600;
      margin-bottom: 6px;
    }
 
-   .info-block-text {
+   .info-text {
      font-size: 12px;
      color: var(--text-muted);
-     line-height: 1.7;
+     line-height: 1.6;
    }
 
    .info-list {
-     margin-top: 6px;
+     margin-top: 4px;
      padding-left: 18px;
      font-size: 12px;
      color: var(--text-muted);
    }
 
    .info-list li {
-     margin-bottom: 4px;
+     margin-bottom: 3px;
    }
 
-   .info-badge {
+   /* GRAF – historie ceny / výkonu */
+   .chart-card {
+     background: radial-gradient(circle at top left, #111827, #020617 80%);
+     border-radius: 20px;
+     border: 1px solid var(--border-soft);
+     padding: 16px 16px 14px;
+     margin-top: 4px;
+     box-shadow: 0 22px 55px rgba(15, 23, 42, 0.9);
+   }
+
+   .chart-header {
+     display: flex;
+     align-items: center;
+     justify-content: space-between;
+     gap: 10px;
+     margin-bottom: 10px;
+   }
+
+   .chart-title {
+     font-size: 15px;
+     font-weight: 600;
+   }
+
+   .chart-sub {
+     font-size: 12px;
+     color: var(--text-muted);
+   }
+
+   .chart-pill {
+     font-size: 11px;
+     padding: 3px 10px;
+     border-radius: 999px;
+     border: 1px solid rgba(148, 163, 184, 0.65);
+     color: var(--text-muted);
      display: inline-flex;
      align-items: center;
-     gap: 6px;
-     padding: 3px 9px;
-     border-radius: 999px;
-     border: 1px solid rgba(148, 163, 184, 0.6);
+     gap: 5px;
+   }
+
+   .chart-wrap {
+     width: 100%;
+     height: 260px;
+   }
+
+   .chart-wrap canvas {
+     width: 100%;
+     height: 100%;
+   }
+
+   .chart-hint {
      font-size: 11px;
      color: var(--text-muted);
-     margin-bottom: 6px;
+     margin-top: 6px;
    }
 
-   .info-badge-dot {
-     width: 7px;
-     height: 7px;
-     border-radius: 999px;
-     background: var(--accent);
-     box-shadow: 0 0 8px rgba(34, 197, 94, 0.9);
-   }
-
-   /* FOOTER */
    footer {
      text-align: center;
      padding: 10px 16px 16px;
@@ -529,23 +527,16 @@ p, span, label, td, th, li, a, div {
 
    /* RESPONSIVE */
    @media (max-width: 1024px) {
-     .top-grid {
+     .token-top-grid {
        grid-template-columns: 1fr;
      }
-     .qr-wrap {
-       align-items: flex-start;
+     .token-grid-3 {
+       grid-template-columns: repeat(2, minmax(0, 1fr));
      }
    }
 
    @media (max-width: 800px) {
-     nav.main-nav {
-       justify-content: flex-start;
-     }
-     .nav-list {
-       flex-wrap: wrap;
-       row-gap: 4px;
-     }
-     .info-panel {
+     .token-grid-3 {
        grid-template-columns: 1fr;
      }
    }
@@ -581,11 +572,11 @@ p, span, label, td, th, li, a, div {
 
      <nav class="main-nav" aria-label="Hlavní menu">
        <ul class="nav-list">
-         <li><a href="dashboard.html"  class="nav-link">Home</a></li>
-         <li><a href="members.html"    class="nav-link">Členové</a></li>
-         <li><a href="payments.html"   class="nav-link">Platby</a></li>
+         <li><a href="dashboard.html" class="nav-link">Home</a></li>
+         <li><a href="members.html" class="nav-link">Členové</a></li>
+         <li><a href="payments.html" class="nav-link">Platby</a></li>
          <li><a href="performance.html" class="nav-link">Výkon &amp; výnos</a></li>
-         <li><a href="fintech.html"    class="nav-link active">FinTech</a></li>
+         <li><a href="fintech.html" class="nav-link active">FinTech</a></li>
        </ul>
      </nav>
 
@@ -612,166 +603,226 @@ p, span, label, td, th, li, a, div {
      <div class="page-header">
        <div class="page-eyebrow">
          <span class="page-eyebrow-dot"></span>
-         On-chain asset · BSC Network
+         Stabilní výnosový token ekosystému AYAS-7
        </div>
-       <h1 class="page-title">USDt.z – Stabilní token družstva Win-Win</h1>
+       <h1 class="page-title">USDt.z – hlavní motor výnosu</h1>
        <p class="page-subtitle">
-         Token USDt.z reprezentuje on-chain majetek družstva Win-Win a je napojen na výnosový motor AYAS-7.
-         Slouží jako základní stavební kámen pro zhodnocení a auditovatelný reporting.
+         Token <b>USDt.z</b> reprezentuje stabilní výnosový pilíř AYAS-7. Je napojen na výkonný engine,
+         likviditu na DEXu a distribuční logiku WW-KEY.
        </p>
      </div>
 
-     <div class="top-grid">
+     
+     <div class="token-top-grid">
 
        
-       <article class="card">
-         <div class="card-header">
-           <div class="card-title">Tokenový profil &amp; metriky</div>
-           <div class="card-pill">
-             <span class="pill-dot"></span>
-             Stable-like asset
+       <article class="token-card">
+         <div class="token-header">
+           <div>
+             <div class="token-title">USDt.z (AYAS-7 Yield Token)</div>
+             <div class="token-sub">Hlavní stabilní výnosový token družstva Win-Win</div>
+           </div>
+           <div class="badge-pill">
+             <span class="dot-led"></span>
+             On-chain výnos
            </div>
          </div>
 
-         <p class="card-text">
-           USDt.z je interní stabilní token navázaný na <b>USD</b>. Z pohledu družstva slouží jako
-           účetní jednotka pro výnosy AYAS-7, vyplácení benefitů členům a tvorbu rezerv GUSD.
-         </p>
-
-         <div class="metrics-row">
-           <div class="metric-pill">
-             <div class="metric-label">Celková emise</div>
-             <div class="metric-value">1 000 000 000</div>
-             <div class="metric-sub">max supply USDt.z</div>
-           </div>
-           <div class="metric-pill">
-             <div class="metric-label">Kolaterál</div>
-             <div class="metric-value">Fiat + krypto</div>
-             <div class="metric-sub">multi-asset backing</div>
-           </div>
-           <div class="metric-pill">
-             <div class="metric-label">Úloha v AYAS-7</div>
-             <div class="metric-value">Výnos &amp; benefity</div>
-             <div class="metric-sub">rozdělení přes 7 vrstev</div>
-           </div>
+         <div class="token-row">
+           <span class="token-label">Aktuální cena</span>
+           <span class="token-value highlight">0.91 USD</span>
+         </div>
+         <div class="token-row">
+           <span class="token-label">Síť</span>
+           <span class="token-value">BSC · BEP-20</span>
+         </div>
+         <div class="token-row">
+           <span class="token-label">Smart kontrakt</span>
+           <span class="token-value">0xFFD2...9717</span>
+         </div>
+         <div class="token-row">
+           <span class="token-label">Celková nabídka</span>
+           <span class="token-value">1 000 000 000 USDt.z</span>
+         </div>
+         <div class="token-row">
+           <span class="token-label">Primární použití</span>
+           <span class="token-value">výnos, LP, kolateral</span>
          </div>
 
-         <p class="card-text" style="margin-top:10px;">
-           Ve výchozím nastavení se výnosy motoru AYAS-7 počítají právě v USDt.z. Podle počtu
-           přidělených <b>WW-KEY</b> je tokenový výnos směrován k jednotlivým členům družstva.
+         <p class="token-hint">
+           Parametry jsou modelové / prezentace. V ostrém provozu lze napojit přímo na chain a DEX (GeckoTerminal, BSCScan).
          </p>
        </article>
 
        
-       <article class="card">
-         <div class="card-header">
-           <div class="card-title">On-chain kontrakt &amp; QR</div>
-           <div class="card-pill">
-             <span class="pill-dot"></span>
-             BSC · BEP-20
+       <article class="token-card">
+         <div class="token-header">
+           <div>
+             <div class="token-title">QR &amp; adresa kontraktu</div>
+             <div class="token-sub">Pro ruční přidání tokenu do peněženky</div>
+           </div>
+           <div class="badge-pill">
+             <span class="dot-led"></span>
+             Scan &amp; import
            </div>
          </div>
 
          <div class="qr-wrap">
-           <div class="qr-frame">
-             
-             <img src="assets/img/usdtz-qr.png" alt="USDt.z – QR kód kontraktu" />
+           
+           <img src="assets/img/qr-usdtz.png" alt="QR USDt.z" class="qr-img" />
+           <div class="qr-caption">
+             Naskenuj QR kód a přidej USDt.z<br />
+             do své peněženky (např. MetaMask).
            </div>
-
-           <div class="contract-box">
-             <div class="contract-label">Smart kontrakt (BSC):</div>
-             <div id="contractAddress" class="contract-value">
-               0xFFD225737d0607bAaf330C0550A5D6BbB0Ab9717
-             </div>
-
-             <div class="contract-row">
-               <div class="contract-label">Síť:</div>
-               <div class="contract-value">Binance Smart Chain (BEP-20)</div>
-             </div>
-
-             <div class="contract-row" style="margin-top:6px;">
-               <button type="button" class="copy-btn" id="copyBtn">
-                 <span class="copy-btn-dot"></span>
-                 Zkopírovat adresu
-               </button>
-             </div>
-
-             <div id="copyMsg" class="copy-msg">
-               Kliknutím zkopíruješ adresu kontraktu do schránky.
-             </div>
+           <div class="address-box">
+             0xFFD225737d0607bAaf330C0550A5D6BbB0Ab9717
            </div>
          </div>
        </article>
+
      </div>
 
      
-     <div class="info-panel">
+     <div class="token-grid-3">
 
-       <div>
-         <div class="info-block-title">Jak USDt.z funguje v rámci AYAS-7</div>
-         <p class="info-block-text">
-           Vklady členů (FIAT i krypto) jsou po zpracování v platební vrstvě převedeny na interní
-           jednotku <b>USDt.z</b>. Tato jednotka je následně:
+       
+       <article class="info-card">
+         <div class="info-title">Tokenomics USDt.z</div>
+         <p class="info-text">
+           USDt.z je navržen jako stabilní výnosový token s jasnou a auditovatelnou strukturou rozdělení.
          </p>
          <ul class="info-list">
-           <li>směrována do výnosového motoru (DeFi / trhy / další strategie),</li>
-           <li>účtována vůči členům přes <b>WW-KEY</b> jako „podíl na motoru“,</li>
-           <li>využívána pro budování rezerv v <b>GUSD</b>,</li>
-           <li>sledovatelná on-chain přes uvedený smart kontrakt.</li>
+           <li><b>60 %</b> – výnos pro členy družstva přes WW-KEY</li>
+           <li><b>20 %</b> – likvidita na DEX / LP pozice</li>
+           <li><b>10 %</b> – rezervy a řízení rizik</li>
+           <li><b>10 %</b> – rozvoj ekosystému AYAS-7</li>
          </ul>
-         <p class="info-block-text" style="margin-top:6px;">
-           Díky tomu může mít družstvo i investor jasný a auditovatelný přehled o tom, kolik
-           kapitálu do systému vstoupilo, jaký výnos generuje a jak jsou benefity rozdělovány.
-         </p>
-       </div>
+       </article>
 
-       <div>
-         <div class="info-badge">
-           <span class="info-badge-dot"></span>
-           Tok: vklad → USDt.z → výnos
-         </div>
-         <div class="info-block-title">Směrování výnosů k členům</div>
-         <p class="info-block-text">
-           Výnos motoru AYAS-7 je počítán v USDt.z a následně rozdělen podle počtu
-           držených WW-KEY. Čím více WW-KEY, tím větší podíl na výnosech.
+       
+       <article class="info-card">
+         <div class="info-title">Likvidita &amp; DEX</div>
+         <p class="info-text">
+           USDt.z je párován s USDT / BUSD na DEXu. Pool funguje jako srdce likvidity pro engine.
          </p>
          <ul class="info-list">
-           <li>Výnos se sčítá v USDt.z na úrovni motoru,</li>
-           <li>přes 7 vrstev se rozdělí mezi družstvo a jednotlivé členy,</li>
-           <li>v členské sekci lze zobrazit „Můj tokenový výnos v USDt.z“.</li>
+           <li>Primární pool: USDt.z / USDT (BSC)</li>
+           <li>Možnost multi-poolů pro různé páry</li>
+           <li>On-chain sledování objemu a TVL</li>
+           <li>Napojení do dashboardu &amp; reportingu</li>
          </ul>
-         <p class="info-block-text" style="margin-top:6px;">
-           Stránka USDt.z je tak vizitkou toho, že ekosystém Win-Win stojí na reálném
-           on-chain aktivu, které lze kdykoliv zkontrolovat přes kontrakt a blockchain explorer.
+       </article>
+
+       
+       <article class="info-card">
+         <div class="info-title">Use-case &amp; výnosový tok</div>
+         <p class="info-text">
+           USDt.z je vstupní „palivo“ pro AYAS-7 – z vkladů se generuje výkon, který se přepočítává
+           na WW-KEY a následně rozděluje mezi členy.
          </p>
-       </div>
+         <ul class="info-list">
+           <li>Vklad → nákup USDt.z → LP / strategie</li>
+           <li>Výnos → přepočet na WW-KEY → člen</li>
+           <li>Možnost reinvestice a compounding</li>
+         </ul>
+       </article>
 
      </div>
+
+     
+     <article class="chart-card">
+       <div class="chart-header">
+         <div>
+           <div class="chart-title">Modelovaná cena &amp; výkon USDt.z</div>
+           <div class="chart-sub">
+             Ukázková křivka vývoje ceny kolem 0.91 USD – pro prezentaci investorům.
+           </div>
+         </div>
+         <div class="chart-pill">
+           <span class="dot-led"></span>
+           Stabilita &amp; kontrola volatility
+         </div>
+       </div>
+
+       <div class="chart-wrap">
+         <canvas id="usdtzChart"></canvas>
+       </div>
+
+       <p class="chart-hint">
+         V ostré verzi se graf napojí na reálná data z DEXu / CEXu. Pro účely prezentace jde
+         o modelovaný, jemně rostoucí průběh ceny.
+       </p>
+     </article>
+
    </section>
  </main>
 
  <footer>
-   © 2025 Win-Win Družstvo · AYAS-7 Engine · USDt.z on-chain asset
+   © 2025 Win-Win Družstvo · AYAS-7 Engine · USDt.z – výnosový pilíř ekosystému
  </footer>
 
+ 
  <script>
-   // Kopírování adresy kontraktu
-   const copyBtn   = document.getElementById('copyBtn');
-   const copyMsg   = document.getElementById('copyMsg');
-   const contractEl= document.getElementById('contractAddress');
+   const ctx = document.getElementById('usdtzChart').getContext('2d');
 
-   if (copyBtn && copyMsg && contractEl) {
-     copyBtn.addEventListener('click', async () => {
-       const addr = contractEl.textContent.trim();
-       try {
-         await navigator.clipboard.writeText(addr);
-         copyMsg.textContent = 'Adresa kontraktu byla zkopírována do schránky.';
-       } catch (e) {
-         console.error(e);
-         copyMsg.textContent = 'Kopírování se nepodařilo, zkopíruj adresu ručně.';
+   // Pevná modelová data – STATICKÁ, žádný setInterval, žádné náhodné kroky
+   const labels = ['M-6', 'M-5', 'M-4', 'M-3', 'M-2', 'M-1', 'Teď'];
+   const data = [0.82, 0.85, 0.87, 0.89, 0.90, 0.905, 0.91];
+
+   new Chart(ctx, {
+     type: 'line',
+     data: {
+       labels,
+       datasets: [{
+         label: 'Modelovaná cena (USD)',
+         data,
+         borderColor: '#4fa3ff',
+         backgroundColor: 'rgba(79,163,255,0.08)',
+         borderWidth: 2,
+         pointRadius: 3,
+         pointBackgroundColor: '#4fa3ff',
+         tension: 0.35,
+         fill: true
+       }]
+     },
+     options: {
+       responsive: true,
+       maintainAspectRatio: false,
+       plugins: {
+         legend: {
+           display: false
+         },
+         tooltip: {
+           callbacks: {
+             label: (ctx) => ' ' + ctx.parsed.y.toFixed(3) + ' USD'
+           }
+         }
+       },
+       scales: {
+         x: {
+           grid: {
+             color: 'rgba(148,163,184,0.25)'
+           },
+           ticks: {
+             color: '#9ca3af',
+             font: { size: 11 }
+           }
+         },
+         y: {
+           grid: {
+             color: 'rgba(148,163,184,0.25)'
+           },
+           ticks: {
+             color: '#9ca3af',
+             font: { size: 11 },
+             callback: (v) => v.toFixed(2) + ' USD'
+           },
+           suggestedMin: 0.8,
+           suggestedMax: 0.94
+         }
        }
-     });
-   }
+     }
+   });
  </script>
 
 </body>
