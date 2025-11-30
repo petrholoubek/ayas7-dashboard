@@ -1,0 +1,1031 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+ <meta charset="UTF-8" />
+ <title>AYAS-7 – Whitepaper (Executive Overview)</title>
+ <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+ <style>
+   :root {
+     --blue-dark: #0a1a33;
+     --blue-mid:  #124c99;
+     --blue-light:#4fa3ff;
+     --accent:    #22c55e;
+     --accent-soft:#4ade80;
+     --text-main: #e5e7eb;
+     --text-muted:#9ca3af;
+     --card-bg:   #0b1220;
+     --border-soft: rgba(148,163,184,0.45);
+   }
+
+   /* RESET */
+   * {
+     margin: 0;
+     padding: 0;
+     box-sizing: border-box;
+   }
+
+   html, #msg_body {
+     width: 100%;
+     height: 100%;
+     font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+     color: var(--text-main);
+     background: #000;
+     overflow-x: hidden;
+   }
+
+   #msg_body {
+     background:
+       radial-gradient(circle at 40% 0%, #0f172a 0%, #020617 55%, #000 100%);
+   }
+
+   a {
+     color: inherit;
+     text-decoration: none;
+   }
+
+   /* TOPBAR – stejné menu jako ostatní prémiové stránky, přidán Whitepaper */
+   header.topbar {
+     background: linear-gradient(to right, #020617, #020617);
+     border-bottom: 1px solid rgba(15,23,42,0.9);
+     box-shadow: 0 12px 30px rgba(15,23,42,0.9);
+     position: sticky;
+     top: 0;
+     z-index: 50;
+   }
+
+   .topbar-inner {
+     max-width: 1200px;
+     margin: 0 auto;
+     padding: 10px 16px;
+     display: flex;
+     align-items: center;
+     justify-content: space-between;
+     gap: 24px;
+   }
+
+   .brand {
+     display: flex;
+     flex-direction: column;
+     gap: 2px;
+   }
+
+   .brand-text-main {
+     font-size: 18px;
+     font-weight: 600;
+     letter-spacing: 0.08em;
+     text-transform: uppercase;
+     color: #e5e7eb;
+   }
+
+   .brand-text-sub {
+     font-size: 11px;
+     letter-spacing: 0.18em;
+     text-transform: uppercase;
+     color: rgba(148,163,184,0.9);
+   }
+
+   nav.main-nav {
+     flex: 1;
+     display: flex;
+     justify-content: center;
+   }
+
+   .nav-list {
+     list-style: none;
+     display: flex;
+     gap: 18px;
+     font-size: 14px;
+     flex-wrap: wrap;
+   }
+
+   .nav-link {
+     position: relative;
+     padding: 4px 0;
+     color: rgba(226,232,240,0.9);
+     white-space: nowrap;
+     transition: color 0.18s ease;
+   }
+
+   .nav-link::after {
+     content: "";
+     position: absolute;
+     left: 0;
+     bottom: -3px;
+     width: 0;
+     height: 2px;
+     border-radius: 999px;
+     background: linear-gradient(to right, var(--accent), var(--accent-soft));
+     transition: width 0.22s ease;
+   }
+
+   .nav-link:hover {
+     color: #ffffff;
+   }
+
+   .nav-link:hover::after {
+     width: 100%;
+   }
+
+   .nav-link.active {
+     color: #ffffff;
+     font-weight: 600;
+   }
+
+   .nav-link.active::after {
+     width: 100%;
+   }
+
+   .topbar-right {
+     display: flex;
+     align-items: center;
+     gap: 16px;
+     flex-shrink: 0;
+   }
+
+   .lang-switch {
+     font-size: 12px;
+     letter-spacing: 0.12em;
+     text-transform: uppercase;
+     color: rgba(226,232,240,0.8);
+     display: flex;
+     gap: 6px;
+   }
+
+   .lang-switch span {
+     cursor: pointer;
+     opacity: 0.65;
+   }
+
+   .lang-switch span.active {
+     opacity: 1;
+     font-weight: 600;
+     text-decoration: underline;
+     text-underline-offset: 3px;
+   }
+
+   .lang-sep { opacity: 0.4; }
+
+   .btn-login {
+     padding: 6px 16px;
+     border-radius: 999px;
+     border: 1px solid rgba(226,232,240,0.6);
+     background: radial-gradient(circle at top left, #0b1120, #020617);
+     color: #f9fafb;
+     font-size: 13px;
+     font-weight: 500;
+     cursor: pointer;
+     display: inline-flex;
+     align-items: center;
+     gap: 8px;
+     transition: background 0.18s ease, border-color 0.18s ease, transform 0.12s ease;
+   }
+
+   .btn-login span.dot {
+     width: 8px;
+     height: 8px;
+     border-radius: 999px;
+     background: var(--accent);
+     box-shadow: 0 0 10px rgba(34,197,94,0.9);
+   }
+
+   .btn-login:hover {
+     background: rgba(15,23,42,0.9);
+     border-color: #ffffff;
+     transform: translateY(-1px);
+   }
+
+   /* PAGE LAYOUT */
+   main {
+     min-height: calc(100vh - 80px - 50px);
+     padding: 30px 16px 40px;
+     display: flex;
+     justify-content: center;
+   }
+
+   .page-inner {
+     max-width: 1100px;
+     width: 100%;
+     position: relative;
+   }
+
+   /* Ambient glow */
+   .page-inner::before {
+     content: "";
+     position: fixed;
+     width: 520px;
+     height: 520px;
+     background: radial-gradient(circle, rgba(79,163,255,0.25), transparent 70%);
+     top: -160px;
+     left: 50%;
+     transform: translateX(-50%);
+     filter: blur(70px);
+     z-index: -1;
+     pointer-events: none;
+   }
+
+   /* HERO CARD (executive summary) */
+   .hero-card {
+     background: radial-gradient(circle at top left, #0b1120, #020617 65%);
+     border-radius: 22px;
+     border: 1px solid rgba(51,65,85,0.9);
+     box-shadow:
+       0 30px 80px rgba(15,23,42,0.9),
+       0 0 0 1px rgba(15,23,42,1);
+     padding: 22px 22px 18px;
+     margin-bottom: 22px;
+     position: relative;
+     overflow: hidden;
+   }
+
+   .hero-card::after {
+     content: "";
+     position: absolute;
+     inset: 0;
+     background: radial-gradient(circle at top right, rgba(79,163,255,0.18), transparent 65%);
+     opacity: 0.9;
+     pointer-events: none;
+   }
+
+   .hero-inner {
+     position: relative;
+     z-index: 2;
+     display: grid;
+     grid-template-columns: minmax(0, 2.1fr) minmax(0, 1.3fr);
+     gap: 20px;
+     align-items: flex-start;
+   }
+
+   .hero-badge {
+     display: inline-flex;
+     align-items: center;
+     gap: 6px;
+     padding: 3px 12px;
+     border-radius: 999px;
+     border: 1px solid rgba(148,163,184,0.5);
+     font-size: 11px;
+     color: var(--text-muted);
+     background: rgba(15,23,42,0.7);
+     margin-bottom: 10px;
+   }
+
+   .hero-badge-dot {
+     width: 8px;
+     height: 8px;
+     border-radius: 999px;
+     background: var(--blue-light);
+     box-shadow: 0 0 12px rgba(79,163,255,1);
+   }
+
+   .hero-title {
+     font-size: 26px;
+     font-weight: 700;
+     margin-bottom: 6px;
+     background: linear-gradient(to right, #74b7ff, #d7e9ff);
+     -webkit-background-clip: text;
+     color: transparent;
+     letter-spacing: 0.03em;
+   }
+
+   .hero-subtitle {
+     font-size: 14px;
+     color: var(--text-muted);
+     line-height: 1.6;
+     margin-bottom: 10px;
+   }
+
+   .hero-meta {
+     font-size: 12px;
+     color: var(--text-muted);
+   }
+
+   .hero-meta b {
+     color: #e5e7eb;
+   }
+
+   .hero-stats {
+     display: grid;
+     grid-template-columns: repeat(2, minmax(0,1fr));
+     gap: 10px;
+     font-size: 12px;
+     margin-top: 8px;
+   }
+
+   .hero-stat-block {
+     padding: 8px 10px;
+     border-radius: 12px;
+     border: 1px solid rgba(37,99,235,0.8);
+     background: radial-gradient(circle at top left, #020617, #020617 80%);
+   }
+
+   .hero-stat-label {
+     font-size: 11px;
+     color: var(--text-muted);
+     margin-bottom: 2px;
+   }
+
+   .hero-stat-value {
+     font-size: 13px;
+     font-weight: 600;
+   }
+
+   .hero-stat-note {
+     font-size: 11px;
+     color: var(--text-muted);
+     margin-top: 3px;
+   }
+
+   /* SECTION NAV (interní obsah whitepaperu) */
+   .section-nav {
+     margin: 18px 2px 22px;
+     display: flex;
+     flex-wrap: wrap;
+     gap: 8px;
+     font-size: 12px;
+   }
+
+   .section-pill {
+     display: inline-flex;
+     align-items: center;
+     gap: 6px;
+     padding: 4px 10px;
+     border-radius: 999px;
+     border: 1px solid rgba(148,163,184,0.6);
+     background: rgba(15,23,42,0.8);
+     color: var(--text-muted);
+     cursor: pointer;
+     transition: background 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+   }
+
+   .section-pill-dot {
+     width: 6px;
+     height: 6px;
+     border-radius: 999px;
+     background: var(--blue-light);
+     box-shadow: 0 0 8px rgba(79,163,255,0.9);
+   }
+
+   .section-pill:hover {
+     background: rgba(15,23,42,1);
+     border-color: rgba(209,213,219,0.8);
+     transform: translateY(-1px);
+   }
+
+   /* WHITEPAPER SEKCÍ KARTY */
+   .wp-grid {
+     display: grid;
+     grid-template-columns: minmax(0, 1.6fr) minmax(0, 1.4fr);
+     gap: 18px;
+     margin-bottom: 22px;
+     flex-wrap: wrap;
+   }
+
+   .wp-section {
+     background: radial-gradient(circle at top left, #0b1120, #020617 70%);
+     border-radius: 18px;
+     border: 1px solid rgba(51,65,85,0.9);
+     box-shadow:
+       0 24px 60px rgba(15,23,42,0.9),
+       0 0 0 1px rgba(15,23,42,1);
+     padding: 16px 16px 14px;
+     position: relative;
+     overflow: hidden;
+   }
+
+   .wp-section::before {
+     content: "";
+     position: absolute;
+     top: 0;
+     left: 0;
+     width: 100%;
+     height: 3px;
+     background: linear-gradient(to right, var(--blue-light), var(--accent));
+     opacity: 0.9;
+   }
+
+   .wp-section-inner {
+     position: relative;
+     z-index: 2;
+   }
+
+   .wp-section-kicker {
+     display: inline-flex;
+     align-items: center;
+     gap: 6px;
+     font-size: 11px;
+     color: var(--text-muted);
+     margin-bottom: 6px;
+     text-transform: uppercase;
+     letter-spacing: 0.12em;
+   }
+
+   .wp-section-dot {
+     width: 7px;
+     height: 7px;
+     border-radius: 999px;
+     background: var(--accent);
+     box-shadow: 0 0 10px rgba(34,197,94,1);
+   }
+
+   .wp-section-title {
+     font-size: 16px;
+     font-weight: 600;
+     margin-bottom: 6px;
+   }
+
+   .wp-section-text {
+     font-size: 13px;
+     color: var(--text-muted);
+     line-height: 1.7;
+   }
+
+   .wp-section-text b {
+     color: #e5e7eb;
+   }
+
+   .wp-list {
+     margin-top: 6px;
+     padding-left: 16px;
+     font-size: 12px;
+     color: var(--text-muted);
+     line-height: 1.6;
+   }
+
+   .wp-list li {
+     margin-bottom: 4px;
+   }
+
+   .wp-tagline {
+     font-size: 11px;
+     color: var(--text-muted);
+     margin-top: 8px;
+     font-style: italic;
+   }
+
+   /* 7-layer architecture mini layout */
+   .layers-grid {
+     display: grid;
+     grid-template-columns: repeat(2, minmax(0,1fr));
+     gap: 8px;
+     margin-top: 6px;
+     font-size: 12px;
+   }
+
+   .layer-chip {
+     padding: 6px 8px;
+     border-radius: 10px;
+     border: 1px solid rgba(37,99,235,0.8);
+     background: rgba(15,23,42,0.9);
+   }
+
+   .layer-name {
+     font-weight: 500;
+     margin-bottom: 1px;
+   }
+
+   .layer-desc {
+     font-size: 11px;
+     color: var(--text-muted);
+   }
+
+   /* Token box mini KPIs */
+   .token-kpis {
+     display: grid;
+     grid-template-columns: minmax(0,1fr) minmax(0,1fr);
+     gap: 10px;
+     margin-top: 8px;
+     font-size: 12px;
+   }
+
+   .token-kpi {
+     padding: 7px 9px;
+     border-radius: 10px;
+     border: 1px solid rgba(56,189,248,0.7);
+     background: radial-gradient(circle at top left, #020617, #020617 80%);
+   }
+
+   .token-kpi-label {
+     font-size: 11px;
+     color: var(--text-muted);
+     margin-bottom: 2px;
+   }
+
+   .token-kpi-value {
+     font-weight: 600;
+   }
+
+   /* FULL-WIDTH SECTION */
+   .wp-full {
+     margin-top: 10px;
+     margin-bottom: 10px;
+   }
+
+   .wp-full .wp-section {
+     margin-bottom: 14px;
+   }
+
+   .wp-cta-row {
+     margin-top: 10px;
+     display: flex;
+     flex-wrap: wrap;
+     gap: 10px;
+     font-size: 12px;
+   }
+
+   .btn-ghost {
+     padding: 7px 14px;
+     border-radius: 999px;
+     border: 1px solid rgba(148,163,184,0.7);
+     background: rgba(15,23,42,0.8);
+     color: var(--text-main);
+     cursor: pointer;
+     display: inline-flex;
+     align-items: center;
+     gap: 8px;
+     transition: background 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+   }
+
+   .btn-ghost-dot {
+     width: 7px;
+     height: 7px;
+     border-radius: 999px;
+     background: var(--blue-light);
+     box-shadow: 0 0 10px rgba(79,163,255,0.9);
+   }
+
+   .btn-ghost:hover {
+     background: rgba(15,23,42,1);
+     border-color: #e5e7eb;
+     transform: translateY(-1px);
+   }
+
+   footer {
+     text-align: center;
+     padding: 10px 16px 18px;
+     font-size: 11px;
+     color: var(--text-muted);
+   }
+
+   /* RESPONSIVE */
+   @media (max-width: 960px) {
+     .hero-inner {
+       grid-template-columns: minmax(0,1fr);
+     }
+     .wp-grid {
+       grid-template-columns: minmax(0,1fr);
+     }
+   }
+
+   @media (max-width: 640px) {
+     .topbar-inner {
+       flex-direction: column;
+       align-items: flex-start;
+       gap: 8px;
+     }
+     nav.main-nav {
+       width: 100%;
+       justify-content: flex-start;
+     }
+     .nav-list {
+       flex-wrap: wrap;
+       row-gap: 4px;
+       font-size: 13px;
+     }
+     .topbar-right {
+       width: 100%;
+       justify-content: space-between;
+     }
+     .hero-card {
+       padding: 20px 16px 16px;
+     }
+   }
+
+   /* PRINT – snaží se zachovat barvy (uživatel ale musí povolit print background) */
+   @media print {
+     * {
+       -webkit-print-color-adjust: exact;
+       print-color-adjust: exact;
+     }
+     header.topbar {
+       position: static;
+       box-shadow: none;
+     }
+     .page-inner::before {
+       display: none;
+     }
+   }
+ </style>
+</head>
+<body>
+
+<header class="topbar">
+ <div class="topbar-inner">
+
+   <div class="brand">
+     <div class="brand-text-main">AYAS-7 ENGINE</div>
+     <div class="brand-text-sub">WIN-WIN COOPERATIVE</div>
+   </div>
+
+   <nav class="main-nav" aria-label="Hlavní menu">
+     <ul class="nav-list">
+       <li><a href="dashboard.html"   class="nav-link">Home</a></li>
+       <li><a href="members.html"     class="nav-link">Členové</a></li>
+       <li><a href="payments.html"    class="nav-link">Platby</a></li>
+       <li><a href="performance.html" class="nav-link">Výkon &amp; výnos</a></li>
+       <li><a href="fintech.html"     class="nav-link">FinTech</a></li>
+       <li><a href="whitepaper.html"  class="nav-link active">Whitepaper</a></li>
+     </ul>
+   </nav>
+
+   <div class="topbar-right">
+     <div class="lang-switch">
+       <span class="active">CZ</span>
+       <span class="lang-sep">|</span>
+       <span>EN</span>
+     </div>
+     <a href="login.html">
+       <button type="button" class="btn-login">
+         <span class="dot"></span>
+         <span>Login</span>
+       </button>
+     </a>
+   </div>
+
+ </div>
+</header>
+
+<main>
+ <div class="page-inner">
+
+   
+   <section class="hero-card" id="top">
+     <div class="hero-inner">
+       <div>
+         <div class="hero-badge">
+           <span class="hero-badge-dot"></span>
+           AYAS-7 · Next-Generation Financial Engine
+         </div>
+
+         <h1 class="hero-title">AYAS-7 Whitepaper (Executive Overview)</h1>
+
+         <p class="hero-subtitle">
+           AYAS-7 je sedmivrstvý výkonnostní engine pro družstvo Win-Win.
+           Kombinuje řízenou likviditu, tokenizované jednotky <b>WW-KEY</b> a
+           stabilní páteřní tokeny <b>USDt.z</b> a <b>GUSD</b> do jednoho
+           řízeného systému výnosu, auditu a kontroly rizik.
+         </p>
+
+         <div class="hero-meta">
+           <b>Účel dokumentu:</b> Stručně vysvětlit architekturu, tokenomiku a
+           bezpečnostní rámec AYAS-7 pro vedení družstva a investory.
+         </div>
+       </div>
+
+       <div>
+         <div class="hero-stats">
+           <div class="hero-stat-block">
+             <div class="hero-stat-label">Základní jednotka systému</div>
+             <div class="hero-stat-value">WW-KEY</div>
+             <div class="hero-stat-note">
+               Interní účetní jednotka, ke které se váže výnos a rozdělení zisku.
+             </div>
+           </div>
+           <div class="hero-stat-block">
+             <div class="hero-stat-label">Cílový režim výnosu</div>
+             <div class="hero-stat-value">4–6 % měsíčně*</div>
+             <div class="hero-stat-note">
+               *Bez garance, plánovaný cílový režim při plném nasazení motoru AYAS-7.
+             </div>
+           </div>
+         </div>
+       </div>
+     </div>
+   </section>
+
+   
+   <nav class="section-nav" aria-label="Obsah whitepaperu">
+     <a href="#vision" class="section-pill">
+       <span class="section-pill-dot"></span>
+       Vize &amp; problém
+     </a>
+     <a href="#architecture" class="section-pill">
+       <span class="section-pill-dot"></span>
+       7vrstvá architektura
+     </a>
+     <a href="#tokens" class="section-pill">
+       <span class="section-pill-dot"></span>
+       Tokenomika &amp; WW-KEY
+     </a>
+     <a href="#coop" class="section-pill">
+       <span class="section-pill-dot"></span>
+       Role družstva Win-Win
+     </a>
+     <a href="#risk" class="section-pill">
+       <span class="section-pill-dot"></span>
+       Risk &amp; compliance
+     </a>
+     <a href="#roadmap" class="section-pill">
+       <span class="section-pill-dot"></span>
+       Roadmapa &amp; nasazení
+     </a>
+     <a href="#investor" class="section-pill">
+       <span class="section-pill-dot"></span>
+       Investor deck
+     </a>
+   </nav>
+
+   
+   <section class="wp-grid">
+     
+     <article class="wp-section" id="vision">
+       <div class="wp-section-inner">
+         <div class="wp-section-kicker">
+           <span class="wp-section-dot"></span>
+           Vize &amp; problém, který řešíme
+         </div>
+         <h2 class="wp-section-title">Proč AYAS-7 vznikl</h2>
+         <p class="wp-section-text">
+           Tradiční investiční produkty jsou pro malé investory neprůhledné,
+           pomalé a často jednostranně výhodné pro poskytovatele. Družstvo
+           <b>Win-Win</b> potřebuje engine, který:
+         </p>
+         <ul class="wp-list">
+           <li>
+             umožní <b>kolektivní správu likvidity</b> s jasnými pravidly,
+           </li>
+           <li>
+             propojí <b>reálné výnosy</b> z trhů s <b>transparentním účetnictvím</b>,
+           </li>
+           <li>
+             rozdělí výnos <b>spravedlivě podle WW-KEY</b> a vrstvy rizika,
+           </li>
+           <li>
+             nabídne <b>auditovatelnost v reálném čase</b> – nejen roční report.
+           </li>
+         </ul>
+         <p class="wp-section-text" style="margin-top:6px;">
+           AYAS-7 proto kombinuje výkonnostní motor, tokenizované jednotky a
+           kooperativní model družstva tak, aby každý člen přesně viděl:
+           <b>kolik vložil, kolik WW-KEY drží a jaký výnos se k nim váže</b>.
+         </p>
+       </div>
+     </article>
+
+     
+     <article class="wp-section" id="architecture">
+       <div class="wp-section-inner">
+         <div class="wp-section-kicker">
+           <span class="wp-section-dot"></span>
+           Architektura · 7 vrstev AYAS-7
+         </div>
+         <h2 class="wp-section-title">Sedm vrstev finančního motoru</h2>
+         <p class="wp-section-text">
+           AYAS-7 je navržen jako <b>modulární 7vrstvý engine</b>. Každá vrstva
+           plní jasnou funkci – od vkladu člena až po finální reporting.
+         </p>
+
+         <div class="layers-grid" style="margin-top:6px;">
+           <div class="layer-chip">
+             <div class="layer-name">1. Member Onboarding</div>
+             <div class="layer-desc">Registrace člena, výpočet WW-KEY, zápis do databáze.</div>
+           </div>
+           <div class="layer-chip">
+             <div class="layer-name">2. Payments Layer</div>
+             <div class="layer-desc">FIAT účet + krypto peněženky, párování plateb.</div>
+           </div>
+           <div class="layer-chip">
+             <div class="layer-name">3. Token &amp; WW-KEY Layer</div>
+             <div class="layer-desc">USDt.z, GUSD a interní WW-KEY jako účetní páteř.</div>
+           </div>
+           <div class="layer-chip">
+             <div class="layer-name">4. Liquidity Engine</div>
+             <div class="layer-desc">Práce s likviditou, LP pozice, řízení alokací.</div>
+           </div>
+           <div class="layer-chip">
+             <div class="layer-name">5. Yield Routing</div>
+             <div class="layer-desc">Směřování výnosu podle profilů a strategií.</div>
+           </div>
+           <div class="layer-chip">
+             <div class="layer-name">6. Risk &amp; Compliance</div>
+             <div class="layer-desc">Limity, multi-sig, auditní stopa a reporting.</div>
+           </div>
+           <div class="layer-chip">
+             <div class="layer-name">7. Analytics &amp; Dashboards</div>
+             <div class="layer-desc">Dashboard, token-layer výpočty, investor deck.</div>
+           </div>
+         </div>
+
+         <p class="wp-tagline">
+           Každá webová stránka AYAS-7 odpovídá jedné nebo více vrstvám – celý frontend je tak
+           “živým whitepaperem” systému.
+         </p>
+       </div>
+     </article>
+   </section>
+
+   
+   <section class="wp-grid">
+     
+     <article class="wp-section" id="tokens">
+       <div class="wp-section-inner">
+         <div class="wp-section-kicker">
+           <span class="wp-section-dot"></span>
+           Tokenomika &amp; WW-KEY
+         </div>
+         <h2 class="wp-section-title">WW-KEY, USDt.z a GUSD</h2>
+         <p class="wp-section-text">
+           Systém pracuje se třemi klíčovými jednotkami:
+         </p>
+         <ul class="wp-list">
+           <li>
+             <b>WW-KEY</b> – interní účetní jednotka družstva, ke které se váže
+             nárok na výnos. Slouží k evidenci podílů a rozdělení výnosů.
+           </li>
+           <li>
+             <b>USDt.z</b> – tokenizovaný stabilní token ekosystému s cílem
+             reprezentovat konzervativní výnosové strategie a přístup do systému.
+           </li>
+           <li>
+             <b>GUSD</b> – výkonnostní token pro agresivnější výnosové strategie
+             a řízení rizika v rámci engine.
+           </li>
+         </ul>
+
+         <div class="token-kpis">
+           <div class="token-kpi">
+             <div class="token-kpi-label">WW-KEY · výpočet (demo)</div>
+             <div class="token-kpi-value">1 WW-KEY = 25 CZK</div>
+             <div class="token-kpi-label" style="margin-top:3px;">
+               (lze napojit na živý kurz v Dashboardu)
+             </div>
+           </div>
+           <div class="token-kpi">
+             <div class="token-kpi-label">USDt.z · páteřní token</div>
+             <div class="token-kpi-value">přístupový &amp; výnosový token</div>
+             <div class="token-kpi-label" style="margin-top:3px;">
+               hlavní výrobní artikl pro investory ekosystému AYAS-7
+             </div>
+           </div>
+         </div>
+
+         <p class="wp-section-text" style="margin-top:8px;">
+           Všechny tři jednotky propojuje <b>Liquidity Engine</b> a stránka
+           <b>token-layer</b>, kde lze simulovat výnosy a chování motoru.
+         </p>
+       </div>
+     </article>
+
+     
+     <article class="wp-section" id="coop">
+       <div class="wp-section-inner">
+         <div class="wp-section-kicker">
+           <span class="wp-section-dot"></span>
+           Governance model · Win-Win
+         </div>
+         <h2 class="wp-section-title">Role družstva Win-Win</h2>
+         <p class="wp-section-text">
+           Družstvo Win-Win je právním a organizačním rámcem systému AYAS-7:
+         </p>
+         <ul class="wp-list">
+           <li>
+             drží a spravuje <b>klientské vklady</b> (FIAT + krypto),
+           </li>
+           <li>
+             rozhoduje o <b>alokaci likvidity</b> v jednotlivých strategiích,
+           </li>
+           <li>
+             schvaluje <b>parametry výnosu</b> a rozdělení podle WW-KEY,
+           </li>
+           <li>
+             zajišťuje <b>compliance, audit a multi-sig řízení</b>.
+           </li>
+         </ul>
+         <p class="wp-section-text" style="margin-top:6px;">
+           AYAS-7 frontend (Dashboard, Members, Payments, Performance…) je navržen
+           tak, aby člen i investor viděl to, co potřebuje:
+           <b>přehled, důvěru a jasnou logiku toku peněz</b>.
+         </p>
+       </div>
+     </article>
+   </section>
+
+   
+   <section class="wp-full">
+     
+     <article class="wp-section" id="risk">
+       <div class="wp-section-inner">
+         <div class="wp-section-kicker">
+           <span class="wp-section-dot"></span>
+           Risk &amp; compliance framework
+         </div>
+         <h2 class="wp-section-title">Bezpečnost, multi-sig a auditní stopa</h2>
+         <p class="wp-section-text">
+           Vrstva <b>risk-compliance</b> definuje pravidla, bez kterých engine AYAS-7 nesmí běžet:
+         </p>
+         <ul class="wp-list">
+           <li>
+             <b>Multi-sig peněženky</b> – výběry a přesuny likvidity vyžadují
+             kombinaci podpisů (např. družstvo + správce výnosu).
+           </li>
+           <li>
+             <b>Oddělení klientských vkladů</b> – jasné oddělení od provozních prostředků.
+           </li>
+           <li>
+             <b>Denní reporting</b> – možnost exportu CSV/PDF z platební vrstvy a Dashboardu.
+           </li>
+           <li>
+             <b>Limity expozic</b> – definované maximální alokace na jednu strategii nebo trh.
+           </li>
+         </ul>
+         <p class="wp-section-text" style="margin-top:6px;">
+           Samostatná stránka <b>audit.html</b> prezentuje tyto principy tak, aby i externí
+           partner (např. banka či auditor) okamžitě viděl strukturu řízení rizik.
+         </p>
+       </div>
+     </article>
+
+     
+     <article class="wp-section" id="roadmap">
+       <div class="wp-section-inner">
+         <div class="wp-section-kicker">
+           <span class="wp-section-dot"></span>
+           Roadmapa nasazení
+         </div>
+         <h2 class="wp-section-title">Fáze spuštění AYAS-7</h2>
+         <p class="wp-section-text">
+           Cílem je postupné, řízené spuštění, které buduje důvěru i track-record:
+         </p>
+         <ul class="wp-list">
+           <li>
+             <b>Fáze 1 – Demo &amp; interní testy</b><br>
+             Frontend prostředí (Dashboard, Members, Payments…) běží v demo režimu
+             s testovacími daty a simulací výnosu.
+           </li>
+           <li>
+             <b>Fáze 2 – Omezený reálný provoz</b><br>
+             Připojení vybraných strategií, reálné vklady prvních členů, kontrolovaný
+             objem a ruční audit každého kroku.
+           </li>
+           <li>
+             <b>Fáze 3 – Škálování &amp; partnerství</b><br>
+             Zapojení bankovních účtů, rozšíření tokenů, spolupráce se zahraničními
+             partnery (např. CH/LI) a příprava plného whitepaperu.
+           </li>
+         </ul>
+         <p class="wp-tagline">
+           Celý web AYAS-7 slouží zároveň jako technický demo-prototyp budoucího
+           produkčního prostředí.
+         </p>
+       </div>
+     </article>
+
+     
+     <article class="wp-section" id="investor">
+       <div class="wp-section-inner">
+         <div class="wp-section-kicker">
+           <span class="wp-section-dot"></span>
+           Investor deck · Executive summary
+         </div>
+         <h2 class="wp-section-title">Materiály pro investory &amp; partnery</h2>
+         <p class="wp-section-text">
+           Pro investory a strategické partnery je připravena samostatná stránka
+           <b>investor-deck.html</b>, která shrnuje:
+         </p>
+         <ul class="wp-list">
+           <li>obchodní model družstva Win-Win,</li>
+           <li>vztah mezi WW-KEY, USDt.z a GUSD,</li>
+           <li>výkonnostní scénáře (4–6&nbsp;% měsíčně jako cílový režim),</li>
+           <li>roadmapu rozvoje ekosystému a globální ambici AYAS-7.</li>
+         </ul>
+
+         <div class="wp-cta-row">
+           <a href="investor-deck.html">
+             <button type="button" class="btn-ghost">
+               <span class="btn-ghost-dot"></span>
+               Otevřít Investor Deck
+             </button>
+           </a>
+           <button type="button" class="btn-ghost" onclick="window.print()">
+             <span class="btn-ghost-dot"></span>
+             Vytisknout / uložit tento whitepaper
+           </button>
+         </div>
+
+         <p class="wp-tagline">
+           Tento dokument je základní exekutivní vrstva. Plný whitepaper (včetně
+           matematických modelů a detailní tokenomiky) je připraven k rozšíření
+           na základě požadavků bank, auditorů nebo investorů.
+         </p>
+       </div>
+     </article>
+   </section>
+
+ </div>
+</main>
+
+<footer>
+ © 2025 Win-Win Družstvo · AYAS-7 Engine · Executive Whitepaper (demo verze)
+</footer>
+
+</body>
+</html>
