@@ -1,1 +1,335 @@
+<!DOCTYPE html>
+<html lang="cs">
 
+<head>
+ <meta charset="UTF-8" />
+ <title>O projektu · AYAS-7 Engine</title>
+ <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+ <style>
+   :root {
+     --blue-dark: #003063;
+     --blue-mid: #0053a6;
+     --blue-light: #4fa3ff;
+     --bg-page: #020617;
+     --card-bg: #0b1120;
+     --text-main: #e5e7eb;
+     --text-muted: #9ca3af;
+     --border-soft: rgba(148, 163, 184, 0.4);
+     --accent: #22c55e;
+   }
+
+   /* RESET */
+   * { margin: 0; padding: 0; box-sizing: border-box; }
+
+   html, #msg_body {
+     width: 100%;
+     height: 100%;
+     background: radial-gradient(circle at 40% 0%, #0f172a 0%, #020617 55%, #000 100%);
+     font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+     color: var(--text-main);
+     overflow-x: hidden;
+   }
+
+   a { text-decoration: none; color: inherit; }
+
+   /* TOPBAR */
+   header.topbar {
+     background: linear-gradient(to right, var(--blue-dark), var(--blue-mid));
+     padding: 10px 0;
+     color: #fff;
+     box-shadow: 0 12px 32px rgba(0,0,0,0.55);
+     position: sticky;
+     top: 0;
+     z-index: 40;
+   }
+
+   .topbar-inner {
+     max-width: 1200px;
+     margin: 0 auto;
+     padding: 0 16px;
+     display: flex;
+     justify-content: space-between;
+     align-items: center;
+   }
+
+   .brand-text-wrap {
+     display: flex;
+     flex-direction: column;
+     gap: 2px;
+   }
+
+   .brand-text-main {
+     font-size: 18px;
+     font-weight: 600;
+     letter-spacing: 0.08em;
+     text-transform: uppercase;
+   }
+
+   .brand-text-sub {
+     font-size: 11px;
+     opacity: 0.85;
+     letter-spacing: 0.18em;
+   }
+
+   nav.main-nav ul {
+     display: flex;
+     list-style: none;
+     gap: 18px;
+     font-size: 14px;
+   }
+
+   .nav-link {
+     position: relative;
+     padding: 4px 0;
+     color: rgba(226,232,240,0.85);
+   }
+
+   .nav-link:hover { color:#fff; }
+   .nav-link::after {
+     content:"";
+     position:absolute;
+     bottom:-3px; left:0;
+     width:0; height:2px;
+     background:linear-gradient(to right,#22c55e,#4ade80);
+     border-radius:999px;
+     transition:0.25s;
+   }
+
+   .nav-link:hover::after { width:100%; }
+
+   .topbar-right {
+     display: flex;
+     gap: 16px;
+     align-items: center;
+   }
+
+   .lang-switch {
+     font-size: 12px;
+     display: flex;
+     gap: 6px;
+     letter-spacing: .12em;
+   }
+
+   .lang-switch span.active {
+     font-weight: 600;
+     text-decoration: underline;
+     text-underline-offset: 3px;
+   }
+
+   .btn-login {
+     padding: 6px 16px;
+     border-radius: 999px;
+     border: 1px solid rgba(255,255,255,0.6);
+     background: rgba(15,23,42,0.25);
+     color: #fff;
+     display: flex;
+     gap: 8px;
+     align-items: center;
+     cursor: pointer;
+   }
+
+   .btn-login .dot {
+     width: 8px; height: 8px;
+     background: var(--accent);
+     border-radius: 999px;
+     box-shadow:0 0 8px rgba(34,197,94,0.9);
+   }
+
+   /* PAGE WRAP */
+   main {
+     max-width: 1100px;
+     margin: 40px auto 60px;
+     padding: 0 16px;
+   }
+
+   /* SECTION CARD */
+   .section {
+     background: var(--card-bg);
+     border: 1px solid var(--border-soft);
+     border-radius: 22px;
+     padding: 32px 28px;
+     margin-bottom: 28px;
+     box-shadow: 0 24px 60px rgba(0,0,0,0.55);
+     position: relative;
+     overflow: hidden;
+   }
+
+   .section::before {
+     content: "";
+     position: absolute;
+     top:0; left:0;
+     width:100%; height:3px;
+     background: linear-gradient(to right, var(--blue-light), var(--accent));
+     opacity: 0.9;
+   }
+
+   .led-dot {
+     width: 8px;
+     height: 8px;
+     background: var(--accent);
+     border-radius: 999px;
+     box-shadow: 0 0 12px rgba(34,197,94,1);
+     margin-right: 6px;
+     display: inline-block;
+   }
+
+   h2 {
+     font-size: 22px;
+     margin-bottom: 8px;
+     font-weight: 600;
+   }
+
+   p {
+     font-size: 14px;
+     color: var(--text-muted);
+     line-height: 1.6;
+     margin-bottom: 12px;
+   }
+
+   ul {
+     padding-left: 18px;
+     font-size: 14px;
+     color: var(--text-muted);
+   }
+
+   ul li { margin-bottom: 6px; }
+
+   /* INVESTOR CTA */
+   .cta-box {
+     background: rgba(15,23,42,0.55);
+     border: 1px solid rgba(148,163,184,0.4);
+     border-radius: 18px;
+     padding: 24px;
+     margin-top: 32px;
+     text-align: center;
+     box-shadow: 0 0 40px rgba(0,0,0,0.5);
+   }
+
+   .cta-btn {
+     margin-top: 16px;
+     display: inline-block;
+     padding: 12px 26px;
+     border-radius: 12px;
+     background: linear-gradient(to right, #4fa3ff, #70c3ff);
+     color: #000;
+     font-weight: 600;
+     cursor: pointer;
+     box-shadow:0 20px 40px rgba(79,163,255,0.55);
+   }
+
+   .cta-btn:hover {
+     transform: translateY(-2px);
+     filter: brightness(1.05);
+   }
+
+   footer {
+     text-align: center;
+     padding: 20px 0 40px;
+     color: var(--text-muted);
+     font-size: 12px;
+   }
+ </style>
+</head>
+
+<body>
+
+ 
+ <header class="topbar">
+   <div class="topbar-inner">
+
+     <div class="brand-text-wrap">
+       <div class="brand-text-main">AYAS-7 Engine</div>
+       <div class="brand-text-sub">WIN-WIN COOPERATIVE</div>
+     </div>
+
+     <nav class="main-nav">
+       <ul>
+         <li><a class="nav-link" href="dashboard.html">Home</a></li>
+         <li><a class="nav-link" href="members.html">Členové</a></li>
+         <li><a class="nav-link" href="payments.html">Platby</a></li>
+         <li><a class="nav-link" href="performance.html">Výkon&nbsp;&amp;&nbsp;výnos</a></li>
+         <li><a class="nav-link" href="fintech.html">FinTech</a></li>
+         <li><a class="nav-link active" href="about.html">O projektu</a></li>
+       </ul>
+     </nav>
+
+     <div class="topbar-right">
+       <div class="lang-switch">
+         <span class="active">CZ</span>
+         <span>|</span>
+         <span>EN</span>
+       </div>
+       <a href="login.html" class="btn-login">
+         <span class="dot"></span>
+         Login
+       </a>
+     </div>
+
+   </div>
+ </header>
+
+ 
+ <main>
+
+   
+   <section class="section">
+     <h2><span class="led-dot"></span>Co je AYAS-7 Engine</h2>
+     <p>
+       AYAS-7 je sedmivrstvý finanční motor vyvinutý ex-URN PČR / SOG specialistou Petrem Holoubkem.
+       Spojuje stabilitu tradičních finančních modelů, auditovatelnost blockchainu a výkonnost
+       algoritmických strategií. Cílem je vytvořit stabilní, předvídatelný a škálovatelný systém
+       pro družstvo Win-Win a jeho investory.
+     </p>
+   </section>
+
+   
+   <section class="section">
+     <h2><span class="led-dot"></span>7 vrstev AYAS-7</h2>
+
+     <ul>
+       <li><b>VRSTVA 1 –</b> Stabilizační kotvy a rezervy</li>
+       <li><b>VRSTVA 2 –</b> Multi-sig bezpečnostní brána</li>
+       <li><b>VRSTVA 3 –</b> Fiat vstupy / párování plateb</li>
+       <li><b>VRSTVA 4 –</b> Tokenové modely (USDt.z / GUSD)</li>
+       <li><b>VRSTVA 5 –</b> Výkonové algoritmy AYAS-7</li>
+       <li><b>VRSTVA 6 –</b> Výnosové routingové tabulky</li>
+       <li><b>VRSTVA 7 –</b> Distribuce výnosů přes WW-KEY</li>
+     </ul>
+   </section>
+
+   
+   <section class="section">
+     <h2><span class="led-dot"></span>Důvěra, audit a bezpečnost</h2>
+     <p>
+       Projekt AYAS-7 staví na naprosté transparentnosti:
+     </p>
+     <ul>
+       <li>každá vrstva systému je auditovatelná,</li>
+       <li>každý člen vidí své WW-KEY a výnosy,</li>
+       <li>každá transakce prochází multi-sig kontrolou,</li>
+       <li>možnost napojení na bankovní API a chain-explorery.</li>
+     </ul>
+   </section>
+
+   
+   <div class="cta-box">
+     <h2>Investor Deck · 2025</h2>
+     <p>
+       Kompletní prezentace projektu AYAS-7, výnosové tabulky, rizikové scénáře,
+       technologické schéma motoru a tokenová ekonomika.
+     </p>
+
+     <a href="investor-deck.html" class="cta-btn">
+       Otevřít Investor Deck
+     </a>
+   </div>
+
+ </main>
+
+ <footer>
+   © 2025 · Win-Win Cooperative · AYAS-7 Engine
+ </footer>
+
+</body>
+</html>
