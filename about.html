@@ -6,6 +6,20 @@
  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
  <style>
+* {
+ margin: 0;
+ padding: 0;
+ box-sizing: border-box;
+}
+
+html, #msg_body {
+ width: 100%;
+ height: 100%;
+ background: radial-gradient(circle at 40% 0%, #0f172a 0%, #020617 55%, #000 100%) !important;
+ font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+ overflow-x: hidden;
+}
+
    :root {
      --blue-dark: #0a1a33;
      --blue-mid:  #124c99;
@@ -658,7 +672,49 @@
              <span class="card-badge-dot"></span>
              Strategický dokument
            </div>
-           <div class="card-title">Whitepaper AYAS-7</div>
+<section class="card">
+ <div class="card-led-bar"></div>
+ <div class="card-inner">
+   <div class="card-badge">
+     <span class="card-badge-dot"></span>
+     Prezentace výnosů
+   </div>
+   <div class="card-title">Výnosy · Model · 4–6 % měsíčně</div>
+   <div class="card-sub">
+     Grafická prezentace výnosů sedmivrstvého enginu AYAS-7.
+     Obsahuje modelové scénáře, růst kapitálu, křivky, LED efekt a interpretaci výkonnosti.
+     Tato prezentace není investiční doporučení, nepodléhá regulaci a slouží pro edukaci členů.
+   </div>
+
+   <ul class="card-list">
+     <li>
+       <span class="card-list-dot"></span>
+       <span>Modelové výnosy 4–6 % měsíčně</span>
+     </li>
+     <li>
+       <span class="card-list-dot"></span>
+       <span>Simulace růstu kapitálu</span>
+     </li>
+     <li>
+       <span class="card-list-dot"></span>
+       <span>Rizika · limity · vysvětlení neregulované povahy</span>
+     </li>
+   </ul>
+
+   <a href="presentation.html" target="_blank" rel="noopener">
+     <button type="button" class="btn-secondary">
+       <span class="dot"></span>
+       <span>Otevřít prezentaci výnosů</span>
+     </button>
+   </a>
+
+   <div class="doc-meta">
+     Soubor: <code>presentation.html</code> – dynamická vizualizace výnosů AYAS-7.
+   </div>
+ </div>
+</section>           
+
+<div class="card-title">Whitepaper AYAS-7</div>
            <div class="card-sub">
              Whitepaper shrnuje ekonomický model, tokenomiku, scénáře výnosu
              a dlouhodobou vizi systému AYAS-7 v rámci družstva Win-Win.
