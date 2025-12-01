@@ -15,7 +15,7 @@
  box-sizing: border-box;
 }
 
-html, #msg_body {
+html, #msg_#msg_body {
  width: 100%;
  height: 100%;
  background: radial-gradient(circle at 40% 0%, #0f172a 0%, #020617 55%, #000 100%) !important;
@@ -40,7 +40,7 @@ html, #msg_body {
      box-sizing: border-box;
    }
 
-   html, #msg_body {
+   html, #msg_#msg_body {
      width: 100%;
      height: 100%;
      background: #000;
@@ -49,7 +49,7 @@ html, #msg_body {
      overflow-x: hidden;
    }
 
-   #msg_body {
+   #msg_#msg_body {
      background:
        radial-gradient(circle at 40% 0%, #0f172a 0%, #020617 55%, #000 100%);
    }
@@ -416,7 +416,7 @@ html, #msg_body {
      overflow: hidden;
    }
 
-   table.members-xtable {
+   table.members-xxtable {
      width: 100%;
      border-collapse: collapse;
      font-size: 12px;
@@ -551,6 +551,121 @@ html, #msg_body {
 
    .btn-investor:hover {
      background: rgba(15,23,42,0.95);
+     border-color: #e5e7eb;
+     transform: translateY(-1px);
+   }
+
+   /* NOVÉ: LINK KARTY POD SEKCÍ INFO – JEDEN POD DRUHÝM */
+   .link-section {
+     margin-top: 26px;
+     display: flex;
+     flex-direction: column;
+     gap: 14px;
+   }
+
+   .link-card {
+     background: radial-gradient(circle at top left, #020617, #020617 75%);
+     border-radius: 16px;
+     border: 1px solid rgba(37,99,235,0.9);
+     padding: 12px 16px 12px;
+     position: relative;
+     overflow: hidden;
+   }
+
+   .link-card::before {
+     content: "";
+     position: absolute;
+     inset: 0;
+     background: radial-gradient(circle at top right, rgba(59,130,246,0.26), transparent 70%);
+     opacity: 0.85;
+     pointer-events: none;
+   }
+
+   .link-inner {
+     position: relative;
+     z-index: 2;
+   }
+
+   .link-led-bar {
+     position: absolute;
+     top: 0;
+     left: 0;
+     right: 0;
+     height: 3px;
+     background: linear-gradient(to right, #4fa3ff, #22c55e);
+     opacity: 0.95;
+   }
+
+   .link-heading-row {
+     display: flex;
+     align-items: center;
+     justify-content: space-between;
+     gap: 8px;
+     margin-bottom: 4px;
+   }
+
+   .link-title {
+     font-size: 14px;
+     font-weight: 600;
+   }
+
+   .link-pill {
+     font-size: 11px;
+     padding: 2px 9px;
+     border-radius: 999px;
+     border: 1px solid rgba(148,163,184,0.7);
+     display: inline-flex;
+     align-items: center;
+     gap: 5px;
+     color: var(--text-muted);
+     background: rgba(15,23,42,0.9);
+   }
+
+   .link-pill-dot {
+     width: 6px;
+     height: 6px;
+     border-radius: 999px;
+     background: #4fa3ff;
+     box-shadow: 0 0 8px rgba(79,163,255,1);
+   }
+
+   .link-text {
+     font-size: 12px;
+     color: var(--text-muted);
+     line-height: 1.6;
+     margin-top: 2px;
+   }
+
+   .link-actions {
+     margin-top: 8px;
+     display: flex;
+     justify-content: flex-start;
+   }
+
+   .btn-link {
+     padding: 7px 14px;
+     border-radius: 999px;
+     border: 1px solid rgba(148,163,184,0.8);
+     background: rgba(15,23,42,0.85);
+     color: #e5e7eb;
+     font-size: 12px;
+     display: inline-flex;
+     align-items: center;
+     gap: 7px;
+     cursor: pointer;
+     transition: background 0.18s ease, border-color 0.18s ease, transform 0.12s ease;
+   }
+
+   .btn-link-dot {
+     width: 6px;
+     height: 6px;
+     border-radius: 999px;
+     background: #22c55e;
+     box-shadow: 0 0 8px rgba(34,197,94,0.9);
+   }
+
+   .btn-link:hover {
+     background: rgba(15,23,42,0.96);
      border-color: #e5e7eb;
      transform: translateY(-1px);
    }
@@ -790,6 +905,90 @@ html, #msg_body {
          </a>
        </div>
      </div>
+   </div>
+
+   
+   <div class="link-section">
+     
+     <section class="link-card">
+       <div class="link-led-bar"></div>
+       <div class="link-inner">
+         <div class="link-heading-row">
+           <div class="link-title">AI výpočetní logika výnosů</div>
+           <div class="link-pill">
+             <span class="link-pill-dot"></span>
+             AI-Yield-Logic
+           </div>
+         </div>
+         <div class="link-text">
+           Tato stránka ukazuje, <b>jak přesně vzniká výnos</b> v AYAS-7: matematické rovnice,
+           scénáře a AI logika, která dokáže řídit LP pozice a rozdělovat měsíční výnosy
+           mezi družstvo a členy bez nutnosti manuálních zásahů.
+         </div>
+         <div class="link-actions">
+           <a href="AI-Yield-Logic.html">
+             <button type="button" class="btn-link">
+               <span class="btn-link-dot"></span>
+               Otevřít AI výpočetní logiku
+             </button>
+           </a>
+         </div>
+       </div>
+     </section>
+
+     
+     <section class="link-card">
+       <div class="link-led-bar"></div>
+       <div class="link-inner">
+         <div class="link-heading-row">
+           <div class="link-title">Routing &amp; výnosové trasy</div>
+           <div class="link-pill">
+             <span class="link-pill-dot"></span>
+             Yield-Routing
+           </div>
+         </div>
+         <div class="link-text">
+           Routing vrstva ukazuje, <b>kudy protéká kapitál</b> mezi jednotlivými pooly,
+           trhy a vrstvami enginu. Člen i investor vidí, jak se USDt.z a GUSD
+           pohybují v ekosystému a jak se z LP výnosu stává reálný podíl pro WW-KEY.
+         </div>
+         <div class="link-actions">
+           <a href="yield-routing.html">
+             <button type="button" class="btn-link">
+               <span class="btn-link-dot"></span>
+               Otevřít routing &amp; výnosové trasy
+             </button>
+           </a>
+         </div>
+       </div>
+     </section>
+
+     
+     <section class="link-card">
+       <div class="link-led-bar"></div>
+       <div class="link-inner">
+         <div class="link-heading-row">
+           <div class="link-title">Tokenizace TVL &amp; bilanční vrstva</div>
+           <div class="link-pill">
+             <span class="link-pill-dot"></span>
+             TVL / Tokenization
+           </div>
+         </div>
+         <div class="link-text">
+           Připravená sekce pro budoucí stránku, kde bude <b>tokenizovaný pohled na TVL</b>
+           (Total Value Locked): kolik kapitálu pracuje v enginu, jak je rozdělený mezi
+           tokeny, vrstvy a jak se z toho odvíjí dlouhodobá stabilita systému.
+         </div>
+         <div class="link-actions">
+           <a href="tvl-tokenization.html">
+             <button type="button" class="btn-link">
+               <span class="btn-link-dot"></span>
+               Připravovaná sekce: Tokenizace TVL
+             </button>
+           </a>
+         </div>
+       </div>
+     </section>
    </div>
 
  </div>
