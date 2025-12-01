@@ -2,1124 +2,509 @@
 <html lang="cs">
 <head>
  <meta charset="UTF-8" />
- <title>AYAS-7 – Členská sekce</title>
+ <title>AYAS-7 – Členská sekce (Premium)</title>
  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
- 
  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
  <style>
-* {
- margin: 0;
- padding: 0;
- box-sizing: border-box;
-}
+   /* ========== RESET & BASE ========== */
+   * { box-sizing: border-box; margin:0; padding:0; }
+   html, #msg_body { height:100%; width:100%; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; background: radial-gradient(circle at 40% 0%, #0f172a 0%, #020617 55%, #000 100%); color:#e5e7eb; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
+   a { color:inherit; text-decoration:none; }
 
-html, #msg_#msg_body {
- width: 100%;
- height: 100%;
- background: radial-gradient(circle at 40% 0%, #0f172a 0%, #020617 55%, #000 100%) !important;
- font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
- overflow-x: hidden;
-}
-   :root {
-     --blue-dark: #0a1a33;
-     --blue-mid: #124c99;
-     --blue-light: #4fa3ff;
+   :root{
      --accent: #22c55e;
-     --text-main: #e5e7eb;
-     --text-muted: #9ca3af;
-     --card-bg: #0b1220;
-     --border-soft: rgba(148,163,184,0.45);
-   }
-
-   /* RESET */
-   * {
-     margin: 0;
-     padding: 0;
-     box-sizing: border-box;
-   }
-
-   html, #msg_#msg_body {
-     width: 100%;
-     height: 100%;
-     background: #000;
-     font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-     color: var(--text-main);
-     overflow-x: hidden;
-   }
-
-   #msg_#msg_body {
-     background:
-       radial-gradient(circle at 40% 0%, #0f172a 0%, #020617 55%, #000 100%);
-   }
-
-   a {
-     color: inherit;
-     text-decoration: none;
-   }
-
-   /* TOPBAR – stejné menu jako ostatní interní stránky */
-   header.topbar {
-     background: linear-gradient(to right, #020617, #020617);
-     border-bottom: 1px solid rgba(15,23,42,0.9);
-   }
-
-   .topbar-inner {
-     max-width: 1200px;
-     margin: 0 auto;
-     padding: 10px 16px;
-     display: flex;
-     align-items: center;
-     justify-content: space-between;
-     gap: 24px;
-   }
-
-   .brand {
-     display: flex;
-     flex-direction: column;
-     gap: 2px;
-   }
-
-   .brand-text-main {
-     font-size: 18px;
-     font-weight: 600;
-     letter-spacing: 0.08em;
-     text-transform: uppercase;
-     color: #e5e7eb;
-   }
-
-   .brand-text-sub {
-     font-size: 11px;
-     letter-spacing: 0.18em;
-     text-transform: uppercase;
-     color: rgba(148,163,184,0.9);
-   }
-
-   nav.main-nav {
-     flex: 1;
-     display: flex;
-     justify-content: center;
-   }
-
-   .nav-list {
-     list-style: none;
-     display: flex;
-     gap: 18px;
-     font-size: 14px;
-   }
-
-   .nav-link {
-     position: relative;
-     padding: 4px 0;
-     color: rgba(226,232,240,0.9);
-     white-space: nowrap;
-     transition: color 0.18s ease;
-   }
-
-   .nav-link::after {
-     content: "";
-     position: absolute;
-     left: 0;
-     bottom: -3px;
-     width: 0;
-     height: 2px;
-     border-radius: 999px;
-     background: linear-gradient(to right, var(--accent), #4ade80);
-     transition: width 0.22s ease;
-   }
-
-   .nav-link:hover {
-     color: #ffffff;
-   }
-
-   .nav-link:hover::after {
-     width: 100%;
-   }
-
-   .nav-link.active {
-     color: #ffffff;
-     font-weight: 600;
-   }
-
-   .nav-link.active::after {
-     width: 100%;
-   }
-
-   .topbar-right {
-     display: flex;
-     align-items: center;
-     gap: 16px;
-     flex-shrink: 0;
-   }
-
-   .lang-switch {
-     font-size: 12px;
-     letter-spacing: 0.12em;
-     text-transform: uppercase;
-     color: rgba(226,232,240,0.8);
-     display: flex;
-     gap: 6px;
-   }
-
-   .lang-switch span {
-     cursor: pointer;
-     opacity: 0.65;
-   }
-
-   .lang-switch span.active {
-     opacity: 1;
-     font-weight: 600;
-     text-decoration: underline;
-     text-underline-offset: 3px;
-   }
-
-   .lang-sep { opacity: 0.4; }
-
-   .btn-login {
-     padding: 6px 16px;
-     border-radius: 999px;
-     border: 1px solid rgba(226,232,240,0.6);
-     background: radial-gradient(circle at top left, #0b1120, #020617);
-     color: #f9fafb;
-     font-size: 13px;
-     font-weight: 500;
-     cursor: pointer;
-     display: inline-flex;
-     align-items: center;
-     gap: 8px;
-     transition: background 0.18s ease, border-color 0.18s ease, transform 0.12s ease;
-   }
-
-   .btn-login span.dot {
-     width: 8px;
-     height: 8px;
-     border-radius: 999px;
-     background: var(--accent);
-     box-shadow: 0 0 10px rgba(34,197,94,0.9);
-   }
-
-   .btn-login:hover {
-     background: rgba(15,23,42,0.9);
-     border-color: #ffffff;
-     transform: translateY(-1px);
-   }
-
-   /* MAIN LAYOUT */
-   main {
-     min-height: calc(100vh - 80px - 50px);
-     padding: 28px 16px 32px;
-     display: flex;
-     justify-content: center;
-   }
-
-   .page-inner {
-     max-width: 1200px;
-     width: 100%;
-   }
-
-   .page-header {
-     margin-bottom: 20px;
-   }
-
-   .page-kicker {
-     font-size: 12px;
-     text-transform: uppercase;
-     letter-spacing: 0.14em;
-     color: var(--text-muted);
-     margin-bottom: 4px;
-     display: inline-flex;
-     align-items: center;
-     gap: 6px;
-   }
-
-   .page-kicker-dot {
-     width: 7px;
-     height: 7px;
-     border-radius: 999px;
-     background: var(--accent);
-     box-shadow: 0 0 8px rgba(34,197,94,1);
-   }
-
-   .page-title {
-     font-size: 24px;
-     font-weight: 600;
-     margin-bottom: 6px;
-   }
-
-   .page-subtitle {
-     font-size: 13px;
-     color: var(--text-muted);
-     max-width: 780px;
-     line-height: 1.6;
-   }
-
-   .page-subtitle b {
-     color: #e5e7eb;
-   }
-
-   .columns {
-     display: flex;
-     gap: 20px;
-     align-items: flex-start;
-     flex-wrap: wrap;
-     margin-top: 22px;
-   }
-
-   .col {
-     flex: 1;
-     min-width: 0;
-   }
-
-   /* KARTY */
-   .card {
-     background: radial-gradient(circle at top left, #0b1120, #020617 70%);
-     border-radius: 18px;
-     border: 1px solid rgba(51,65,85,0.9);
-     box-shadow:
-       0 24px 60px rgba(15,23,42,0.9),
-       0 0 0 1px rgba(15,23,42,1);
-     padding: 18px 18px 16px;
-     position: relative;
-     overflow: hidden;
-   }
-
-   .card::before {
-     content: "";
-     position: absolute;
-     inset: 0;
-     background: radial-gradient(circle at top right, rgba(79,172,255,0.14), transparent 65%);
-     opacity: 0.9;
-     pointer-events: none;
-   }
-
-   .card-inner {
-     position: relative;
-     z-index: 2;
-   }
-
-   .card-badge {
-     display: inline-flex;
-     align-items: center;
-     gap: 6px;
-     padding: 2px 10px;
-     border-radius: 999px;
-     border: 1px solid rgba(148,163,184,0.5);
-     font-size: 11px;
-     color: var(--text-muted);
-     margin-bottom: 10px;
-     background: rgba(15,23,42,0.7);
-   }
-
-   .card-badge-dot {
-     width: 7px;
-     height: 7px;
-     border-radius: 999px;
-     background: var(--accent);
-     box-shadow: 0 0 10px rgba(34,197,94,1);
-   }
-
-   .card-title {
-     font-size: 18px;
-     font-weight: 600;
-     margin-bottom: 6px;
-   }
-
-   .card-sub {
-     font-size: 12px;
-     color: var(--text-muted);
-     margin-bottom: 14px;
-     line-height: 1.6;
-   }
-
-   /* FORMULÁŘ */
-   .form-group {
-     margin-bottom: 10px;
-   }
-
-   .form-label {
-     display: block;
-     font-size: 12px;
-     color: var(--text-muted);
-     margin-bottom: 4px;
-   }
-
-   .form-input {
-     width: 100%;
-     padding: 8px 10px;
-     border-radius: 8px;
-     border: 1px solid var(--border-soft);
-     background: rgba(15,23,42,0.75);
-     color: var(--text-main);
-     font-size: 13px;
-     outline: none;
-     transition: border-color 0.16s ease, box-shadow 0.16s ease, background 0.16s ease;
-   }
-
-   .form-input::placeholder {
-     color: rgba(148,163,184,0.7);
-   }
-
-   .form-input:focus {
-     border-color: var(--blue-light);
-     box-shadow: 0 0 0 1px rgba(79,163,255,0.7);
-     background: rgba(15,23,42,0.95);
-   }
-
-   .btn-primary {
-     width: 100%;
-     padding: 9px 14px;
-     border-radius: 999px;
-     border: none;
-     background: linear-gradient(to right, #4fa3ff, #70c3ff);
-     color: #020617;
-     font-weight: 600;
-     font-size: 14px;
-     cursor: pointer;
-     margin-top: 4px;
-     box-shadow: 0 18px 40px rgba(79,163,255,0.55);
-     transition: transform 0.12s ease, box-shadow 0.12s ease, filter 0.12s ease;
-   }
-
-   .btn-primary:hover {
-     transform: translateY(-1px);
-     filter: brightness(1.04);
-     box-shadow: 0 22px 52px rgba(79,163,255,0.7);
-   }
-
-   .result-panel {
-     margin-top: 10px;
-     padding: 8px 10px;
-     border-radius: 10px;
-     background: rgba(22,163,74,0.1);
-     border: 1px solid rgba(34,197,94,0.5);
-     font-size: 12px;
-     color: #bbf7d0;
-   }
-
-   .result-panel b {
-     color: #bbf7d0;
-   }
-
-   .muted {
-     font-size: 11px;
-     color: var(--text-muted);
-     margin-top: 8px;
-   }
-
-   /* TABULKA ČLENŮ */
-   .members-table-wrap {
-     margin-top: 6px;
-     border-radius: 12px;
-     border: 1px solid rgba(30,64,175,0.7);
-     background: radial-gradient(circle at top left, #020617, #020617 75%);
-     overflow: hidden;
-   }
-
-   table.members-xxtable {
-     width: 100%;
-     border-collapse: collapse;
-     font-size: 12px;
-   }
-
-   table.members-table thead {
-     background: linear-gradient(to right, #0b1120, #111827);
-   }
-
-   table.members-table th,
-   table.members-table td {
-     padding: 7px 8px;
-     border-bottom: 1px solid rgba(30,64,175,0.5);
-     text-align: left;
-     color: #e5e7eb;
-   }
-
-   table.members-table th {
-     font-weight: 500;
-     color: #cbd5f5;
-   }
-
-   table.members-table tbody tr:nth-child(even) {
-     background: rgba(15,23,42,0.8);
-   }
-
-   table.members-table tbody tr:nth-child(odd) {
-     background: rgba(15,23,42,0.9);
-   }
-
-   /* INFO BLOKY POD FORMULÁŘEM A TABULKOU */
-   .info-row {
-     margin-top: 26px;
-     display: grid;
-     grid-template-columns: 1.6fr 1.4fr;
-     gap: 18px;
-   }
-
-   .info-card {
-     background: radial-gradient(circle at top left, #020617, #020617 70%);
-     border-radius: 16px;
-     border: 1px solid rgba(51,65,85,0.9);
-     padding: 14px 16px 12px;
-     position: relative;
-     overflow: hidden;
-   }
-
-   .info-card::before {
-     content: "";
-     position: absolute;
-     inset: 0;
-     background: radial-gradient(circle at top right, rgba(79,172,255,0.18), transparent 70%);
-     opacity: 0.9;
-     pointer-events: none;
-   }
-
-   .info-inner {
-     position: relative;
-     z-index: 2;
-   }
-
-   .info-badge {
-     display: inline-flex;
-     align-items: center;
-     gap: 6px;
-     padding: 2px 9px;
-     border-radius: 999px;
-     border: 1px solid rgba(148,163,184,0.6);
-     font-size: 11px;
-     color: var(--text-muted);
-     margin-bottom: 8px;
-     background: rgba(15,23,42,0.8);
-   }
-
-   .info-badge-dot {
-     width: 7px;
-     height: 7px;
-     border-radius: 999px;
-     background: var(--accent);
-     box-shadow: 0 0 8px rgba(34,197,94,0.9);
-   }
-
-   .info-heading {
-     font-size: 14px;
-     font-weight: 600;
-     margin-bottom: 6px;
-   }
-
-   .info-text {
-     font-size: 12px;
-     color: var(--text-muted);
-     line-height: 1.6;
-   }
-
-   .info-text b {
-     color: #e5e7eb;
-   }
-
-   .info-list {
-     margin-top: 6px;
-     padding-left: 18px;
-     font-size: 12px;
-     color: var(--text-muted);
-   }
-
-   .info-list li {
-     margin-bottom: 4px;
-   }
-
-   .btn-investor {
-     margin-top: 10px;
-     padding: 8px 14px;
-     border-radius: 999px;
-     border: 1px solid rgba(148,163,184,0.8);
-     background: rgba(15,23,42,0.85);
-     color: #e5e7eb;
-     font-size: 13px;
-     display: inline-flex;
-     align-items: center;
-     gap: 8px;
-     cursor: pointer;
-     transition: background 0.18s ease, border-color 0.18s ease, transform 0.12s ease;
-   }
-
-   .btn-investor-dot {
-     width: 7px;
-     height: 7px;
-     border-radius: 999px;
-     background: #4fa3ff;
-     box-shadow: 0 0 10px rgba(79,163,255,0.9);
-   }
-
-   .btn-investor:hover {
-     background: rgba(15,23,42,0.95);
-     border-color: #e5e7eb;
-     transform: translateY(-1px);
-   }
-
-   /* NOVÉ: LINK KARTY POD SEKCÍ INFO – JEDEN POD DRUHÝM */
-   .link-section {
-     margin-top: 26px;
-     display: flex;
-     flex-direction: column;
-     gap: 14px;
-   }
-
-   .link-card {
-     background: radial-gradient(circle at top left, #020617, #020617 75%);
-     border-radius: 16px;
-     border: 1px solid rgba(37,99,235,0.9);
-     padding: 12px 16px 12px;
-     position: relative;
-     overflow: hidden;
-   }
-
-   .link-card::before {
-     content: "";
-     position: absolute;
-     inset: 0;
-     background: radial-gradient(circle at top right, rgba(59,130,246,0.26), transparent 70%);
-     opacity: 0.85;
-     pointer-events: none;
-   }
-
-   .link-inner {
-     position: relative;
-     z-index: 2;
-   }
-
-   .link-led-bar {
-     position: absolute;
-     top: 0;
-     left: 0;
-     right: 0;
-     height: 3px;
-     background: linear-gradient(to right, #4fa3ff, #22c55e);
-     opacity: 0.95;
-   }
-
-   .link-heading-row {
-     display: flex;
-     align-items: center;
-     justify-content: space-between;
-     gap: 8px;
-     margin-bottom: 4px;
-   }
-
-   .link-title {
-     font-size: 14px;
-     font-weight: 600;
-   }
-
-   .link-pill {
-     font-size: 11px;
-     padding: 2px 9px;
-     border-radius: 999px;
-     border: 1px solid rgba(148,163,184,0.7);
-     display: inline-flex;
-     align-items: center;
-     gap: 5px;
-     color: var(--text-muted);
-     background: rgba(15,23,42,0.9);
-   }
-
-   .link-pill-dot {
-     width: 6px;
-     height: 6px;
-     border-radius: 999px;
-     background: #4fa3ff;
-     box-shadow: 0 0 8px rgba(79,163,255,1);
-   }
-
-   .link-text {
-     font-size: 12px;
-     color: var(--text-muted);
-     line-height: 1.6;
-     margin-top: 2px;
-   }
-
-   .link-actions {
-     margin-top: 8px;
-     display: flex;
-     justify-content: flex-start;
-   }
-
-   .btn-link {
-     padding: 7px 14px;
-     border-radius: 999px;
-     border: 1px solid rgba(148,163,184,0.8);
-     background: rgba(15,23,42,0.85);
-     color: #e5e7eb;
-     font-size: 12px;
-     display: inline-flex;
-     align-items: center;
-     gap: 7px;
-     cursor: pointer;
-     transition: background 0.18s ease, border-color 0.18s ease, transform 0.12s ease;
-   }
-
-   .btn-link-dot {
-     width: 6px;
-     height: 6px;
-     border-radius: 999px;
-     background: #22c55e;
-     box-shadow: 0 0 8px rgba(34,197,94,0.9);
-   }
-
-   .btn-link:hover {
-     background: rgba(15,23,42,0.96);
-     border-color: #e5e7eb;
-     transform: translateY(-1px);
-   }
-
-   footer {
-     text-align: center;
-     padding: 10px 16px 16px;
-     font-size: 11px;
-     color: var(--text-muted);
-   }
-
-   @media (max-width: 900px) {
-     .columns {
-       flex-direction: column;
-     }
-     .info-row {
-       grid-template-columns: 1fr;
-     }
-   }
-
-   @media (max-width: 640px) {
-     .topbar-inner {
-       flex-direction: column;
-       align-items: flex-start;
-       gap: 8px;
-     }
-     nav.main-nav {
-       width: 100%;
-       justify-content: flex-start;
-     }
-     .nav-list {
-       flex-wrap: wrap;
-       row-gap: 4px;
-       font-size: 13px;
-     }
-     .topbar-right {
-       width: 100%;
-       justify-content: space-between;
-     }
+     --blue-light: #4fa3ff;
+     --card-bg-start: #0b1120;
+     --card-bg-end: #020617;
+     --card-border: rgba(51,65,85,0.9);
+     --muted: #9ca3af;
+     --glass: rgba(15,23,42,0.75);
+   }
+
+   /* ===== TOPBAR ===== */
+   header.topbar { background: linear-gradient(to right,#020617,#020617); border-bottom:1px solid rgba(15,23,42,0.9); }
+   .topbar-inner { max-width:1200px; margin:0 auto; padding:10px 16px; display:flex; align-items:center; justify-content:space-between; gap:24px; }
+   .brand { display:flex; flex-direction:column; gap:2px; }
+   .brand-text-main { font-size:18px; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; color:#e5e7eb; }
+   .brand-text-sub { font-size:11px; letter-spacing:0.18em; text-transform:uppercase; color:rgba(148,163,184,0.9); }
+
+   nav.main-nav { flex:1; display:flex; justify-content:center; }
+   .nav-list { list-style:none; display:flex; gap:18px; font-size:14px; }
+   .nav-link { position:relative; padding:4px 0; color:rgba(226,232,240,0.9); white-space:nowrap; transition:color .18s; }
+   .nav-link::after { content:""; position:absolute; left:0; bottom:-3px; width:0; height:2px; border-radius:999px; background:linear-gradient(to right,var(--accent),#4ade80); transition:width .22s; }
+   .nav-link:hover{ color:#fff; } .nav-link:hover::after{ width:100%; }
+   .nav-link.active{ color:#fff; font-weight:600; } .nav-link.active::after{ width:100%; }
+
+   .topbar-right{ display:flex; align-items:center; gap:16px; flex-shrink:0; }
+   .lang-switch{ font-size:12px; letter-spacing:0.12em; text-transform:uppercase; color:rgba(226,232,240,0.8); display:flex; gap:6px; }
+   .btn-login{ padding:6px 16px; border-radius:999px; border:1px solid rgba(226,232,240,0.6); background: radial-gradient(circle at top left,#0b1120,#020617); color:#f9fafb; font-size:13px; font-weight:500; cursor:pointer; display:inline-flex; align-items:center; gap:8px; transition:transform .12s; }
+   .btn-login .dot{ width:8px; height:8px; border-radius:999px; background:var(--accent); box-shadow:0 0 10px rgba(34,197,94,0.9); display:inline-block; }
+
+   /* ===== MAIN LAYOUT ===== */
+   main{ min-height:calc(100vh - 80px - 60px); padding:28px 16px 32px; display:flex; justify-content:center; }
+   .page-inner{ max-width:1200px; width:100%; }
+   .page-header{ margin-bottom:20px; }
+   .page-kicker{ font-size:12px; text-transform:uppercase; letter-spacing:0.14em; color:var(--muted); margin-bottom:4px; display:inline-flex; align-items:center; gap:6px; }
+   .page-kicker-dot{ width:7px; height:7px; border-radius:999px; background:var(--accent); box-shadow:0 0 8px rgba(34,197,94,1); }
+   .page-title{ font-size:24px; font-weight:600; margin-bottom:6px; }
+   .page-subtitle{ font-size:13px; color:var(--muted); max-width:780px; line-height:1.6; }
+
+   .columns{ display:flex; gap:20px; align-items:flex-start; flex-wrap:wrap; margin-top:22px; }
+   .col{ flex:1; min-width:0; }
+
+   /* ===== CARDS (UNIFORM) ===== */
+   .card, .link-card, .info-card { background: radial-gradient(circle at top left, var(--card-bg-start), var(--card-bg-end) 70%); border-radius:18px; border:1px solid var(--card-border); box-shadow:0 24px 60px rgba(15,23,42,0.9); padding:18px 18px 16px; position:relative; overflow:hidden; }
+   .card::before, .link-card::before, .info-card::before { content:""; position:absolute; inset:0; background:radial-gradient(circle at top right, rgba(79,172,255,0.08), transparent 65%); pointer-events:none; opacity:0.95; }
+   .card-inner, .link-inner, .info-inner { position:relative; z-index:2; }
+
+   .card-badge, .info-badge{ display:inline-flex; align-items:center; gap:6px; padding:2px 10px; border-radius:999px; border:1px solid rgba(148,163,184,0.5); font-size:11px; color:var(--muted); margin-bottom:10px; background:rgba(15,23,42,0.7); }
+   .card-badge-dot, .info-badge-dot{ width:7px; height:7px; border-radius:999px; background:var(--accent); box-shadow:0 0 8px rgba(34,197,94,0.9); display:inline-block; }
+
+   .card-title{ font-size:18px; font-weight:600; margin-bottom:6px; }
+   .card-sub{ font-size:12px; color:var(--muted); margin-bottom:14px; line-height:1.6; }
+   .form-group{ margin-bottom:10px; }
+   .form-label{ display:block; font-size:12px; color:var(--muted); margin-bottom:4px; }
+   .form-input{ width:100%; padding:8px 10px; border-radius:8px; border:1px solid rgba(148,163,184,0.15); background:var(--glass); color:var(--text-main); font-size:13px; outline:none; transition:box-shadow .16s, border-color .16s; }
+   .form-input::placeholder{ color: rgba(148,163,184,0.6); }
+   .form-input:focus{ box-shadow: 0 0 0 2px rgba(79,163,255,0.06); border-color: rgba(79,163,255,0.2); }
+
+   .btn-primary{ width:100%; padding:9px 14px; border-radius:999px; border:none; background: linear-gradient(to right,#4fa3ff,#70c3ff); color:#020617; font-weight:600; font-size:14px; cursor:pointer; margin-top:4px; box-shadow:0 18px 40px rgba(79,163,255,0.45); transition:transform .12s, filter .12s; }
+   .btn-primary:hover{ transform:translateY(-1px); filter:brightness(1.04); box-shadow:0 22px 52px rgba(79,163,255,0.7); }
+
+   .result-panel{ margin-top:10px; padding:8px 10px; border-radius:10px; background: rgba(22,163,74,0.08); border:1px solid rgba(34,197,94,0.18); font-size:12px; color:#bbf7d0; }
+
+   .muted{ font-size:11px; color:var(--muted); margin-top:8px; }
+
+   /* ===== MEMBERS TABLE ===== */
+   .members-table-wrap{ margin-top:6px; border-radius:12px; border:1px solid rgba(30,64,175,0.07); background: radial-gradient(circle at top left,#020617,#020617 75%); overflow:hidden; }
+   table.members-xtable { width:100%; border-collapse:collapse; font-size:12px; }
+   table.members-table th, table.members-table td{ padding:7px 8px; border-bottom:1px solid rgba(30,64,175,0.05); text-align:left; color:#e5e7eb; }
+   table.members-table thead{ background:linear-gradient(to right,#0b1120,#111827); }
+   table.members-table tbody tr:nth-child(even){ background: rgba(15,23,42,0.82); }
+   table.members-table tbody tr:nth-child(odd){ background: rgba(15,23,42,0.88); }
+
+   /* ===== INFO ROW ===== */
+   .info-row{ margin-top:26px; display:grid; grid-template-columns:1.6fr 1.4fr; gap:18px; }
+   .info-heading{ font-size:14px; font-weight:600; margin-bottom:6px; }
+   .info-text{ font-size:12px; color:var(--muted); line-height:1.6; }
+   .info-list{ margin-top:6px; padding-left:18px; font-size:12px; color:var(--muted); }
+   .btn-investor{ margin-top:10px; padding:8px 14px; border-radius:999px; border:1px solid rgba(148,163,184,0.8); background:rgba(15,23,42,0.85); color:#e5e7eb; font-size:13px; display:inline-flex; align-items:center; gap:8px; cursor:pointer; transition:transform .12s; }
+   .btn-investor-dot{ width:7px; height:7px; border-radius:999px; background:var(--blue-light); box-shadow:0 0 10px rgba(79,163,255,0.9); }
+
+   /* ===== LINK SECTION (uniform border fixed) ===== */
+   .link-section{ margin-top:26px; display:flex; flex-direction:column; gap:14px; }
+   .link-card{ /* unified with card styles above via shared classes */ border:1px solid var(--card-border); }
+   .link-led-bar{ position:absolute; top:0; left:0; right:0; height:3px; background: linear-gradient(to right, #4fa3ff, var(--accent)); opacity:0.95; }
+   .link-heading-row{ display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:4px; }
+   .link-title{ font-size:14px; font-weight:600; }
+   .link-pill{ font-size:11px; padding:2px 9px; border-radius:999px; border:1px solid rgba(148,163,184,0.7); display:inline-flex; align-items:center; gap:5px; color:var(--muted); background:rgba(15,23,42,0.9); }
+   .link-pill-dot{ width:6px; height:6px; border-radius:999px; background:var(--blue-light); box-shadow:0 0 8px rgba(79,163,255,1); }
+
+   .link-text{ font-size:12px; color:var(--muted); line-height:1.6; margin-top:2px; }
+   .link-actions{ margin-top:8px; display:flex; justify-content:flex-start; gap:10px; }
+
+   .btn-link{ padding:7px 14px; border-radius:999px; border:1px solid rgba(148,163,184,0.8); background:rgba(15,23,42,0.85); color:#e5e7eb; font-size:12px; display:inline-flex; align-items:center; gap:7px; cursor:pointer; transition:transform .12s; }
+   .btn-link-dot{ width:6px; height:6px; border-radius:999px; background:var(--accent); box-shadow:0 0 8px rgba(34,197,94,0.9); }
+   .btn-link:hover{ transform:translateY(-1px); }
+
+   /* ===== TOKENOMIKA small ===== */
+   .tokenomika{ margin-top:10px; font-size:0.9em; background:rgba(232,244,255,0.02); padding:10px; border-radius:5px; color:var(--muted); border:1px solid rgba(148,163,184,0.06); }
+
+   /* ===== FOOTER ===== */
+   footer{ text-align:center; padding:10px 16px 16px; font-size:11px; color:var(--muted); }
+
+   /* ===== LED / DOT ANIMATIONS (subtle premium) ===== */
+   @keyframes pulse {
+     0% { transform: scale(1); opacity:1; }
+     50% { transform: scale(1.35); opacity:0.7; }
+     100% { transform: scale(1); opacity:1; }
+   }
+   .card-badge-dot, .info-badge-dot, .btn-investor-dot, .btn-link-dot { animation: pulse 2.4s infinite; }
+   .link-led-bar { animation: shift 6s linear infinite; background-size:200% 100%; }
+   @keyframes shift { 0% { background-position:0% 0%; } 50% { background-position:100% 0%; } 100% { background-position:0% 0%; } }
+
+   /* RESPONSIVE */
+   @media(max-width:900px){ .columns{ flex-direction:column; } .info-row{ grid-template-columns:1fr; } }
+   @media(max-width:640px){
+     .topbar-inner{ flex-direction:column; align-items:flex-start; gap:8px; }
+     nav.main-nav{ width:100%; justify-content:flex-start; }
+     .nav-list{ flex-wrap:wrap; row-gap:4px; font-size:13px; }
    }
  </style>
 </head>
 <body>
 
-<header class="topbar">
- <div class="topbar-inner">
-
-   <div class="brand">
-     <div class="brand-text-main">AYAS-7 ENGINE</div>
-     <div class="brand-text-sub">WIN-WIN COOPERATIVE</div>
-   </div>
-
-   <nav class="main-nav" aria-label="Hlavní menu">
-     <ul class="nav-list">
-       <li><a href="dashboard.html"   class="nav-link">Home</a></li>
-       <li><a href="members.html"     class="nav-link active">Členové</a></li>
-       <li><a href="payments.html"    class="nav-link">Platby</a></li>
-       <li><a href="performance.html" class="nav-link">Výkon &amp; výnos</a></li>
-       <li><a href="fintech.html"     class="nav-link">FinTech</a></li>
-     </ul>
-   </nav>
-
-   <div class="topbar-right">
-     <div class="lang-switch">
-       <span class="active">CZ</span>
-       <span class="lang-sep">|</span>
-       <span>EN</span>
+ 
+ <header class="topbar">
+   <div class="topbar-inner">
+     <div class="brand">
+       <div class="brand-text-main">AYAS-7 ENGINE</div>
+       <div class="brand-text-sub">WIN-WIN COOPERATIVE</div>
      </div>
-     <a href="login.html">
-       <button type="button" class="btn-login">
-         <span class="dot"></span>
-         <span>Login</span>
-       </button>
-     </a>
-   </div>
 
- </div>
-</header>
+     <nav class="main-nav" aria-label="Hlavní menu">
+       <ul class="nav-list">
+         <li><a href="dashboard.html" class="nav-link">Home</a></li>
+         <li><a href="members.html" class="nav-link active">Členové</a></li>
+         <li><a href="payments.html" class="nav-link">Platby</a></li>
+         <li><a href="performance.html" class="nav-link">Výkon &amp; výnos</a></li>
+         <li><a href="fintech.html" class="nav-link">FinTech</a></li>
+       </ul>
+     </nav>
 
-<main>
- <div class="page-inner">
-
-   <div class="page-header">
-     <div class="page-kicker">
-       <span class="page-kicker-dot"></span>
-       Členská databáze · AYAS-7
-     </div>
-     <div class="page-title">Členové &amp; WW-KEY</div>
-     <div class="page-subtitle">
-       Tato sekce kombinuje <b>registraci člena</b>, výpočet jeho <b>WW-KEY</b> a náhled do
-       aktuální databáze. Cílem je, aby měl člen i investor jistotu, že každý vklad je
-       <b>evidovaný, spárovaný a auditovatelný</b> v rámci motoru AYAS-7.
+     <div class="topbar-right">
+       <div class="lang-switch">
+         <span class="active">CZ</span>
+         <span class="lang-sep">|</span>
+         <span>EN</span>
+       </div>
+       <a href="login.html">
+         <button type="button" class="btn-login">
+           <span class="dot"></span>
+           <span>Login</span>
+         </button>
+       </a>
      </div>
    </div>
+ </header>
 
-   <div class="columns">
+ 
+ <main>
+   <div class="page-inner">
+
+     <div class="page-header">
+       <div class="page-kicker"><span class="page-kicker-dot"></span> Členská databáze · AYAS-7</div>
+       <div class="page-title">Členové &amp; WW-KEY</div>
+       <div class="page-subtitle">
+         Tato sekce kombinuje <b>registraci člena</b>, výpočet jeho <b>WW-KEY</b> a náhled do
+         aktuální databáze. Cílem je, aby měl člen i investor jistotu, že každý vklad je
+         <b>evidovaný, spárovaný a auditovatelný</b> v rámci motoru AYAS-7.
+       </div>
+     </div>
+
+     <div class="columns">
+
+       
+       <div class="col">
+         <section class="card">
+           <div class="card-inner">
+             <div class="card-badge"><span class="card-badge-dot"></span> Nový člen · registrace & WW-KEY</div>
+             <div class="card-title">Přidání nového člena</div>
+             <div class="card-sub">
+               Vyplň základní údaje a částku v CZK. AYAS-7 spočítá počet WW-KEY
+               (aktuálně <b>1 WW-KEY = 25&nbsp;CZK</b>) a uloží záznam do tabulky
+               <b>members_data</b> v Supabase. V další fázi se zde bude zobrazovat i stav platby
+               (FIAT / krypto) a napojení na platební stránku.
+             </div>
+
+             <form id="memberForm">
+               <div class="form-group">
+                 <label class="form-label" for="memberName">Jméno a příjmení</label>
+                 <input id="memberName" class="form-input" placeholder="Jan Novák" required />
+               </div>
+               <div class="form-group">
+                 <label class="form-label" for="memberEmail">E-mail</label>
+                 <input id="memberEmail" type="email" class="form-input" placeholder="email@domain.cz" required />
+               </div>
+               <div class="form-group">
+                 <label class="form-label" for="memberPhone">Telefon</label>
+                 <input id="memberPhone" class="form-input" placeholder="+420 123 456 789" required />
+               </div>
+               <div class="form-group">
+                 <label class="form-label" for="investmentAmount">Investice (CZK)</label>
+                 <input id="investmentAmount" type="number" min="0" class="form-input" placeholder="15000" required />
+               </div>
+
+               <button type="submit" class="btn-primary">Vytvořit člena a přidělit WW-KEY</button>
+             </form>
+
+             <div id="memberResult" class="result-panel" style="display:none;">
+               <div id="memberResultText"></div>
+             </div>
+
+             <p class="muted">
+               Pozn.: v této fázi je výpočet WW-KEY fixní (<b>1 WW-KEY = 25 CZK</b>).
+             </p>
+           </div>
+         </section>
+       </div>
+
+       
+       <div class="col">
+         <section class="card">
+           <div class="card-inner">
+             <div class="card-badge"><span class="card-badge-dot"></span> Databáze · poslední záznamy</div>
+             <div class="card-title">Poslední přidaní členové</div>
+             <div class="card-sub">
+               Náhled do tabulky <b>members_data</b>. V produkční verzi zde může být
+               filtrování podle data, výše vkladu, stavu platby nebo rozsahu WW-KEY.
+             </div>
+
+             <div class="members-table-wrap">
+               <table class="members-table">
+                 <thead>
+                   <tr>
+                     <th>Datum</th>
+                     <th>Jméno</th>
+                     <th>E-mail</th>
+                     <th>Vklad (CZK)</th>
+                     <th>WW-KEY</th>
+                   </tr>
+                 </thead>
+                 <tbody id="membersTableBody">
+                   <tr><td colspan="5">Načítám data z databáze…</td></tr>
+                 </tbody>
+               </table>
+             </div>
+
+             <p class="muted">Data se načítají přímo ze Supabase (<b>public.members_data</b>).</p>
+           </div>
+         </section>
+       </div>
+
+     </div>
+
      
-     <div class="col">
-       <section class="card">
-         <div class="card-inner">
-           <div class="card-badge">
-             <span class="card-badge-dot"></span>
-             Nový člen · registrace & WW-KEY
+     <div class="info-row">
+       <div class="info-card">
+         <div class="info-inner">
+           <div class="info-badge"><span class="info-badge-dot"></span> Pro nového člena</div>
+           <div class="info-heading">Proč vstoupit do AYAS-7 / Win-Win</div>
+           <div class="info-text">
+             Členský vklad se v systému AYAS-7 promění na <b>WW-KEY</b>. Ty určují tvůj
+             podíl na výnosech, které jsou generovány napříč <b>7 vrstvami motoru</b>.
            </div>
-           <div class="card-title">Přidání nového člena</div>
-           <div class="card-sub">
-             Vyplň základní údaje a částku v CZK. AYAS-7 spočítá počet WW-KEY
-             (aktuálně <b>1 WW-KEY = 25&nbsp;CZK</b>) a uloží záznam do tabulky
-             <b>members_data</b> v Supabase. V další fázi se zde bude zobrazovat i stav platby
-             (FIAT / krypto) a napojení na platební stránku.
-           </div>
+           <ul class="info-list">
+             <li><b>Transparentní evidence</b> – každý člen má svůj záznam v databázi.</li>
+             <li><b>Auditovatelné výnosy</b> – návaznost na sekci „Výkon &amp; výnos“.</li>
+             <li><b>Bezpečnost</b> – směřujeme k multi-sig peněžence a oddělení klientských vkladů.</li>
+             <li><b>2035-ready</b> – celý systém je navržen jako next-generation finanční engine.</li>
+           </ul>
+         </div>
+       </div>
 
-           <form id="memberForm">
-             <div class="form-group">
-               <label class="form-label" for="memberName">Jméno a příjmení</label>
-               <input id="memberName" class="form-input" required />
-             </div>
-             <div class="form-group">
-               <label class="form-label" for="memberEmail">E-mail</label>
-               <input id="memberEmail" type="email" class="form-input" required />
-             </div>
-             <div class="form-group">
-               <label class="form-label" for="memberPhone">Telefon</label>
-               <input id="memberPhone" class="form-input" required />
-             </div>
-             <div class="form-group">
-               <label class="form-label" for="investmentAmount">Investice (CZK)</label>
-               <input id="investmentAmount" type="number" min="0" class="form-input" required />
-             </div>
-
-             <button type="submit" class="btn-primary">
-               Vytvořit člena a přidělit WW-KEY
-             </button>
-           </form>
-
-           <div id="memberResult" class="result-panel" style="display:none;">
-             <div id="memberResultText"></div>
+       <div class="info-card">
+         <div class="info-inner">
+           <div class="info-badge"><span class="info-badge-dot"></span> Pro investory &amp; partnery</div>
+           <div class="info-heading">Investiční logika AYAS-7</div>
+           <div class="info-text">
+             Členská databáze je první vrstva <b>due diligence</b> pro každého investora:
+             ukazuje, že kapitál není anonymní a že každý vstup prochází jasným procesem.
            </div>
 
-           <p class="muted">
-             Pozn.: v této fázi je výpočet WW-KEY fixní (<b>1 WW-KEY = 25 CZK</b>).
-             Později jej lze napojit na živý kurz a další pravidla z Dashboardu a sekce
-             <b>Výkon &amp; výnos</b>.
-           </p>
+           <a href="investor-deck.html">
+             <button type="button" class="btn-investor"><span class="btn-investor-dot"></span> Otevřít stránku pro investory</button>
+           </a>
+         </div>
+       </div>
+     </div>
+
+     
+     <div class="link-section">
+
+       <section class="link-card">
+         <div class="link-led-bar"></div>
+         <div class="link-inner">
+           <div class="link-heading-row">
+             <div class="link-title">AI výpočetní logika výnosů</div>
+             <div class="link-pill"><span class="link-pill-dot"></span> AI-Yield-Logic</div>
+           </div>
+           <div class="link-text">
+             Tato stránka ukazuje, <b>jak přesně vzniká výnos</b> v AYAS-7: matematické rovnice,
+             scénáře a AI logika, která dokáže řídit LP pozice a rozdělovat měsíční výnosy.
+           </div>
+           <div class="link-actions">
+             <a href="AI-Yield-Logic.html"><button class="btn-link"><span class="btn-link-dot"></span> Otevřít AI výpočetní logiku</button></a>
+           </div>
          </div>
        </section>
-     </div>
 
-     
-     <div class="col">
-       <section class="card">
-         <div class="card-inner">
-           <div class="card-badge">
-             <span class="card-badge-dot"></span>
-             Databáze · poslední záznamy
+       <section class="link-card">
+         <div class="link-led-bar"></div>
+         <div class="link-inner">
+           <div class="link-heading-row">
+             <div class="link-title">Routing &amp; výnosové trasy</div>
+             <div class="link-pill"><span class="link-pill-dot"></span> Yield-Routing</div>
            </div>
-           <div class="card-title">Poslední přidaní členové</div>
-           <div class="card-sub">
-             Náhled do tabulky <b>members_data</b>. V produkční verzi zde může být
-             filtrování podle data, výše vkladu, stavu platby nebo rozsahu WW-KEY.
+           <div class="link-text">
+             Routing vrstva ukazuje, <b>kudy protéká kapitál</b> mezi jednotlivými pooly,
+             trhy a vrstvami enginu. Člen i investor vidí, jak se USDt.z a GUSD pohybují v ekosystému.
            </div>
-
-           <div class="members-table-wrap">
-             <table class="members-table">
-               <thead>
-                 <tr>
-                   <th>Datum</th>
-                   <th>Jméno</th>
-                   <th>E-mail</th>
-                   <th>Vklad (CZK)</th>
-                   <th>WW-KEY</th>
-                 </tr>
-               </thead>
-               <tbody id="membersTableBody">
-                 <tr>
-                   <td colspan="5">Načítám data z databáze…</td>
-                 </tr>
-               </tbody>
-             </table>
+           <div class="link-actions">
+             <a href="yield-routing.html"><button class="btn-link"><span class="btn-link-dot"></span> Otevřít routing &amp; výnosové trasy</button></a>
            </div>
-
-           <p class="muted">
-             Data se načítají přímo ze Supabase (<b>public.members_data</b>).
-             Pokud se nic nezobrazí, je potřeba zkontrolovat RLS policy a API klíč.
-           </p>
          </div>
        </section>
-     </div>
-   </div>
 
-   
-   <div class="info-row">
-     <div class="info-card">
-       <div class="info-inner">
-         <div class="info-badge">
-           <span class="info-badge-dot"></span>
-           Pro nového člena
-         </div>
-         <div class="info-heading">Proč vstoupit do AYAS-7 / Win-Win</div>
-         <div class="info-text">
-           Členský vklad se v systému AYAS-7 promění na <b>WW-KEY</b>. Ty určují tvůj
-           podíl na výnosech, které jsou generovány napříč <b>7 vrstvami motoru</b>
-           (likvidita, routing, risk &amp; compliance, core engine…).
-         </div>
-         <ul class="info-list">
-           <li><b>Transparentní evidence</b> – každý člen má svůj záznam v databázi.</li>
-           <li><b>Auditovatelné výnosy</b> – návaznost na sekci „Výkon &amp; výnos“.</li>
-           <li><b>Bezpečnost</b> – směřujeme k multi-sig peněžence a oddělení klientských vkladů.</li>
-           <li><b>2035-ready</b> – celý systém je navržen jako next-generation finanční engine.</li>
-         </ul>
-       </div>
-     </div>
-
-     <div class="info-card">
-       <div class="info-inner">
-         <div class="info-badge">
-           <span class="info-badge-dot"></span>
-           Pro investory &amp; partnery
-         </div>
-         <div class="info-heading">Investiční logika AYAS-7</div>
-         <div class="info-text">
-           Členská databáze je první vrstva <b>due diligence</b> pro každého investora:
-           ukazuje, že kapitál není anonymní a že každý vstup prochází jasným procesem
-           vkladu → WW-KEY → výnos.
-         </div>
-         <ul class="info-list">
-           <li>Jasně definovaná tokenizace členských podílů (WW-KEY).</li>
-           <li>Napojení na platební vrstvu (FIAT + krypto) a auditní reporty.</li>
-           <li>Možnost agregace dat pro banky, fondy a regulované partnery.</li>
-         </ul>
-
-         <a href="investor-deck.html">
-           <button type="button" class="btn-investor">
-             <span class="btn-investor-dot"></span>
-             Otevřít stránku pro investory
-           </button>
-         </a>
-       </div>
-     </div>
-   </div>
-
-   
-   <div class="link-section">
-     
-     <section class="link-card">
-       <div class="link-led-bar"></div>
-       <div class="link-inner">
-         <div class="link-heading-row">
-           <div class="link-title">AI výpočetní logika výnosů</div>
-           <div class="link-pill">
-             <span class="link-pill-dot"></span>
-             AI-Yield-Logic
+       
+       <section class="link-card">
+         <div class="link-led-bar"></div>
+         <div class="link-inner">
+           <div class="link-heading-row">
+             <div class="link-title">Routing (detail)</div>
+             <div class="link-pill"><span class="link-pill-dot"></span> Routing</div>
+           </div>
+           <div class="link-text">
+             Detailní stránka <b>routing.html</b> — obsahuje popis routing logiky, mapu tras kapitálu,
+             ukázky, jak se vyhodnocují cesty s nejvyšším výnosem a jak probíhá optimalizace přes AYAS-7.
+           </div>
+           <div class="link-actions">
+             <a href="routing.html"><button class="btn-link"><span class="btn-link-dot"></span> Otevřít routing (detail)</button></a>
            </div>
          </div>
-         <div class="link-text">
-           Tato stránka ukazuje, <b>jak přesně vzniká výnos</b> v AYAS-7: matematické rovnice,
-           scénáře a AI logika, která dokáže řídit LP pozice a rozdělovat měsíční výnosy
-           mezi družstvo a členy bez nutnosti manuálních zásahů.
-         </div>
-         <div class="link-actions">
-           <a href="AI-Yield-Logic.html">
-             <button type="button" class="btn-link">
-               <span class="btn-link-dot"></span>
-               Otevřít AI výpočetní logiku
-             </button>
-           </a>
-         </div>
-       </div>
-     </section>
+       </section>
 
-     
-     <section class="link-card">
-       <div class="link-led-bar"></div>
-       <div class="link-inner">
-         <div class="link-heading-row">
-           <div class="link-title">Routing &amp; výnosové trasy</div>
-           <div class="link-pill">
-             <span class="link-pill-dot"></span>
-             Yield-Routing
+       <section class="link-card">
+         <div class="link-led-bar"></div>
+         <div class="link-inner">
+           <div class="link-heading-row">
+             <div class="link-title">Tokenizace TVL &amp; bilanční vrstva</div>
+             <div class="link-pill"><span class="link-pill-dot"></span> TVL / Tokenization</div>
+           </div>
+           <div class="link-text">
+             Připravená sekce pro budoucí stránku, kde bude <b>tokenizovaný pohled na TVL</b> (Total Value Locked)
+             a další bilanční pohledy na stav kapitálu v enginu.
+           </div>
+           <div class="link-actions">
+             <a href="tvl-tokenization.html"><button class="btn-link"><span class="btn-link-dot"></span> Připravovaná sekce: Tokenizace TVL</button></a>
            </div>
          </div>
-         <div class="link-text">
-           Routing vrstva ukazuje, <b>kudy protéká kapitál</b> mezi jednotlivými pooly,
-           trhy a vrstvami enginu. Člen i investor vidí, jak se USDt.z a GUSD
-           pohybují v ekosystému a jak se z LP výnosu stává reálný podíl pro WW-KEY.
-         </div>
-         <div class="link-actions">
-           <a href="yield-routing.html">
-             <button type="button" class="btn-link">
-               <span class="btn-link-dot"></span>
-               Otevřít routing &amp; výnosové trasy
-             </button>
-           </a>
-         </div>
-       </div>
-     </section>
+       </section>
 
-     
-     <section class="link-card">
-       <div class="link-led-bar"></div>
-       <div class="link-inner">
-         <div class="link-heading-row">
-           <div class="link-title">Tokenizace TVL &amp; bilanční vrstva</div>
-           <div class="link-pill">
-             <span class="link-pill-dot"></span>
-             TVL / Tokenization
-           </div>
-         </div>
-         <div class="link-text">
-           Připravená sekce pro budoucí stránku, kde bude <b>tokenizovaný pohled na TVL</b>
-           (Total Value Locked): kolik kapitálu pracuje v enginu, jak je rozdělený mezi
-           tokeny, vrstvy a jak se z toho odvíjí dlouhodobá stabilita systému.
-         </div>
-         <div class="link-actions">
-           <a href="tvl-tokenization.html">
-             <button type="button" class="btn-link">
-               <span class="btn-link-dot"></span>
-               Připravovaná sekce: Tokenizace TVL
-             </button>
-           </a>
-         </div>
-       </div>
-     </section>
+     </div>
+
    </div>
+ </main>
 
- </div>
-</main>
+ <footer>© 2025 Win-Win Družstvo · AYAS-7 Engine · Všechna práva vyhrazena</footer>
 
-<footer>
- © 2025 Win-Win Družstvo · AYAS-7 Engine · Všechna práva vyhrazena
-</footer>
+ 
+ <script>
+   // Supabase client – vložil jsi v původním kódu, nechávám stejné hodnoty
+   const supabaseUrl = 'https://hurayrwshmsvsylhwlbj.supabase.co';
+   const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh1cmF5cndzaG1zdnN5bGh3bGJqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQyMTk4MzEsImV4cCI6MjA3OTc5NTgzMX0.Q0KpZX_Dln9_9OwZcCty-bbyw8drX84ax098Uy03VUI';
 
-<script>
- // === Supabase klient – stejné údaje jako máš v projektu ===
- const supabaseUrl = 'https://hurayrwshmsvsylhwlbj.supabase.co';
- const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh1cmF5cndzaG1zdnN5bGh3bGJqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQyMTk4MzEsImV4cCI6MjA3OTc5NTgzMX0.Q0KpZX_Dln9_9OwZcCty-bbyw8drX84ax098Uy03VUI';
-
- let supabaseClient = null;
- if (window.supabase && window.supabase.createClient) {
-   supabaseClient = window.supabase.createClient(supabaseUrl, supabaseAnonKey);
- }
-
- // === Přidání člena ===
- const memberForm        = document.getElementById('memberForm');
- const memberResult      = document.getElementById('memberResult');
- const memberResultText  = document.getElementById('memberResultText');
-
- memberForm.addEventListener('submit', async (e) => {
-   e.preventDefault();
-
-   const name   = document.getElementById('memberName').value.trim();
-   const email  = document.getElementById('memberEmail').value.trim();
-   const phone  = document.getElementById('memberPhone').value.trim();
-   const amount = Number(document.getElementById('investmentAmount').value);
-
-   if (!name || !email || !phone || !amount || amount <= 0) {
-     alert('Vyplň prosím všechny údaje a částku > 0 CZK.');
-     return;
+   let supabaseClient = null;
+   if (window.supabase && window.supabase.createClient) {
+     supabaseClient = window.supabase.createClient(supabaseUrl, supabaseAnonKey);
    }
 
-   // Výpočet WW-KEY (1 WW-KEY = 25 CZK)
-   const wwKeyCount = Math.floor(amount / 25);
-   const usdtAmount = (amount / 25).toFixed(2);
+   // DOM refs
+   const memberForm        = document.getElementById('memberForm');
+   const memberResult      = document.getElementById('memberResult');
+   const memberResultText  = document.getElementById('memberResultText');
 
-   memberResultText.innerHTML =
-     `Člen <b>${name}</b> s vkladem <b>${amount.toLocaleString('cs-CZ')} CZK</b> ` +
-     `získá <b>${wwKeyCount} WW-KEY</b> (cca <b>${usdtAmount} USDT</b>).`;
-   memberResult.style.display = 'block';
+   memberForm.addEventListener('submit', async (e) => {
+     e.preventDefault();
 
-   if (!supabaseClient) {
-     console.warn('Supabase klient není k dispozici – lokální simulace.');
-     memberForm.reset();
-     return;
-   }
+     const name  = document.getElementById('memberName').value.trim();
+     const email = document.getElementById('memberEmail').value.trim();
+     const phone = document.getElementById('memberPhone').value.trim();
+     const amount = Number(document.getElementById('investmentAmount').value);
 
-   try {
-     const { error } = await supabaseClient
-       .from('members_data')
-       .insert({
-         name: name,
-         email: email,
-         phone: phone,
-         deposit: amount,
-         ww_key: wwKeyCount,
-         paid: false
+     if (!name || !email || !phone || !amount || amount <= 0) {
+       alert('Vyplň prosím všechny údaje a částku > 0 CZK.');
+       return;
+     }
+
+     // Výpočet WW-KEY (1 WW-KEY = 25 CZK)
+     const wwKeyCount = Math.floor(amount / 25);
+     const usdtAmount = (amount / 25).toFixed(2);
+
+     memberResultText.innerHTML =
+       `Člen <b>${name}</b> s vkladem <b>${amount.toLocaleString('cs-CZ')} CZK</b> ` +
+       `získá <b>${wwKeyCount} WW-KEY</b> (cca <b>${usdtAmount} USDT</b>).`;
+     memberResult.style.display = 'block';
+
+     if (!supabaseClient) {
+       console.warn('Supabase klient není k dispozici – lokální simulace.');
+       memberForm.reset();
+       return;
+     }
+
+     try {
+       const { error } = await supabaseClient
+         .from('members_data')
+         .insert({
+           name: name,
+           email: email,
+           phone: phone,
+           deposit: amount,
+           ww_key: wwKeyCount,
+           paid: false
+         });
+
+       if (error) {
+         console.error('Supabase insert error:', error);
+         alert('Zápis do databáze selhal: ' + error.message);
+       } else {
+         await loadMembersTable();
+         memberForm.reset();
+       }
+     } catch (err) {
+       console.error('Supabase insert exception:', err);
+     }
+   });
+
+   // Načtení posledních členů
+   async function loadMembersTable() {
+     const tbody = document.getElementById('membersTableBody');
+     if (!supabaseClient) {
+       tbody.innerHTML = '<tr><td colspan="5">Supabase klient není k dispozici.</td></tr>';
+       return;
+     }
+
+     try {
+       const { data, error } = await supabaseClient
+         .from('members_data')
+         .select('*')
+         .order('created_at', { ascending: false })
+         .limit(10);
+
+       if (error) {
+         console.error('Supabase select error:', error);
+         tbody.innerHTML =
+           '<tr><td colspan="5">Chyba při načítání dat: ' + error.message + '</td></tr>';
+         return;
+       }
+
+       if (!data || data.length === 0) {
+         tbody.innerHTML = '<tr><td colspan="5">Zatím zde nejsou žádné záznamy.</td></tr>';
+         return;
+       }
+
+       tbody.innerHTML = '';
+       data.forEach(row => {
+         const tr = document.createElement('tr');
+
+         const created = row.created_at
+           ? new Date(row.created_at).toLocaleDateString('cs-CZ')
+           : '-';
+
+         tr.innerHTML = `
+           <td>${created}</td>
+           <td>${row.name ?? ''}</td>
+           <td>${row.email ?? ''}</td>
+           <td>${(row.deposit ?? 0).toLocaleString('cs-CZ')}</td>
+           <td>${row.ww_key ?? 0}</td>
+         `;
+         tbody.appendChild(tr);
        });
 
-     if (error) {
-       console.error('Supabase insert error:', error);
-       alert('Zápis do databáze selhal: ' + error.message);
-     } else {
-       await loadMembersTable();
-       memberForm.reset();
-     }
-   } catch (err) {
-     console.error('Supabase insert exception:', err);
-   }
- });
-
- // === Načtení posledních členů ===
- async function loadMembersTable() {
-   const tbody = document.getElementById('membersTableBody');
-   if (!supabaseClient) {
-     tbody.innerHTML = '<tr><td colspan="5">Supabase klient není k dispozici.</td></tr>';
-     return;
-   }
-
-   try {
-     const { data, error } = await supabaseClient
-       .from('members_data')
-       .select('*')
-       .order('created_at', { ascending: false })
-       .limit(10);
-
-     if (error) {
-       console.error('Supabase select error:', error);
+     } catch (err) {
+       console.error('Supabase select exception:', err);
        tbody.innerHTML =
-         '<tr><td colspan="5">Chyba při načítání dat: ' + error.message + '</td></tr>';
-       return;
+         '<tr><td colspan="5">Neočekávaná chyba při načítání dat.</td></tr>';
      }
-
-     if (!data || data.length === 0) {
-       tbody.innerHTML = '<tr><td colspan="5">Zatím zde nejsou žádné záznamy.</td></tr>';
-       return;
-     }
-
-     tbody.innerHTML = '';
-     data.forEach(row => {
-       const tr = document.createElement('tr');
-
-       const created = row.created_at
-         ? new Date(row.created_at).toLocaleDateString('cs-CZ')
-         : '-';
-
-       tr.innerHTML = `
-         <td>${created}</td>
-         <td>${row.name ?? ''}</td>
-         <td>${row.email ?? ''}</td>
-         <td>${(row.deposit ?? 0).toLocaleString('cs-CZ')}</td>
-         <td>${row.ww_key ?? 0}</td>
-       `;
-       tbody.appendChild(tr);
-     });
-
-   } catch (err) {
-     console.error('Supabase select exception:', err);
-     tbody.innerHTML =
-       '<tr><td colspan="5">Neočekávaná chyba při načítání dat.</td></tr>';
    }
- }
 
- // načtení při otevření stránky
- loadMembersTable();
-</script>
+   // načtení při otevření stránky
+   loadMembersTable();
+
+   // Small UX: refresh table every 30s (so admin sees new regs)
+   setInterval(loadMembersTable, 30000);
+ </script>
 
 </body>
 </html>
