@@ -323,7 +323,7 @@ html, #msg_body {
      height: 7px;
      border-radius: 999px;
      background: var(--accent);
-     box-shadow: 0 0 10px rgba(34,197,94,1);
+     box-shadow: 0 0 8px rgba(34,197,94,1);
    }
 
    .card-title {
@@ -438,6 +438,104 @@ html, #msg_body {
        justify-content: space-between;
      }
    }
+
+   /* ================================
+      AYAS-7 CHIP CORE HERO BLOK
+      (prémiový, integrovaný styl)
+      ================================= */
+
+.chip-core-card {
+  margin-bottom: 28px;
+}
+
+.chip-core-layout {
+  display: flex;
+  gap: 26px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+/* ČIP */
+.chip-core-visual {
+  width: 180px;
+  height: 180px;
+  border-radius: 18px;
+  background: radial-gradient(circle at 50% 40%, #0b1120, #020617 80%);
+  border: 1px solid rgba(148,163,184,0.4);
+  position: relative;
+  box-shadow: 0 22px 40px rgba(0,0,0,0.55);
+  overflow: visible;
+}
+
+.chip-core-center {
+  width: 94px;
+  height: 94px;
+  border-radius: 12px;
+  background: radial-gradient(circle, #0f172a, #020617);
+  border: 1px solid rgba(34,197,94,0.4);
+  box-shadow: 0 0 16px rgba(34,197,94,0.45);
+  color: #22c55e;
+  font-size: 12px;
+  text-align: center;
+  padding-top: 22px;
+  letter-spacing: 0.08em;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  user-select: none;
+}
+
+/* LED vrstvy kolem čipu */
+.chip-core-layer {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  position: absolute;
+  background: #4fa3ff;
+  box-shadow: 0 0 12px rgba(79,163,255,0.9);
+  transition: transform 0.28s ease, opacity 0.28s ease, box-shadow 0.28s ease;
+  opacity: 0.95;
+}
+
+/* precise placement */
+.chip-core-layer.led1 { top: 8px; left: 50%; transform: translateX(-50%); }
+.chip-core-layer.led2 { top: 34px; right: 18px; }
+.chip-core-layer.led3 { top: 50%; right: 6px; transform: translateY(-50%); }
+.chip-core-layer.led4 { bottom: 34px; right: 18px; }
+.chip-core-layer.led5 { bottom: 8px; left: 50%; transform: translateX(-50%); }
+.chip-core-layer.led6 { bottom: 34px; left: 18px; }
+.chip-core-layer.led7 { top: 34px; left: 18px; }
+
+/* small pulse animation */
+@keyframes chipPulse {
+  0% { transform: scale(1); box-shadow: 0 0 12px rgba(79,163,255,0.9); }
+  50% { transform: scale(1.06); box-shadow: 0 0 20px rgba(79,163,255,0.15); }
+  100% { transform: scale(1); box-shadow: 0 0 12px rgba(79,163,255,0.9); }
+}
+
+/* slight glow when active */
+.chip-core-visual.active { animation: chipPulse 2.2s infinite ease-in-out; }
+
+/* small hover micro-interaction */
+.chip-core-visual:hover .chip-core-center { transform: translate(-50%, -50%) scale(1.02); }
+
+/* Pravý sloupec */
+.chip-core-stats {
+  flex: 1;
+  min-width: 240px;
+}
+
+/* boxed numeric values (match UI) */
+.chip-core-stats .card-list li span b { color: #ffffff; }
+.chip-core-stats .card-list li span { color: var(--text-muted); }
+
+/* responsive adjustments */
+@media (max-width: 640px) {
+  .chip-core-visual { width: 140px; height: 140px; }
+  .chip-core-center { width: 78px; height: 78px; padding-top: 18px; font-size: 11px; }
+}
  </style>
 </head>
 <body>
@@ -492,6 +590,63 @@ html, #msg_body {
        hlubší dokumentaci – včetně technického dokumentu a investor decku.
      </div>
    </div>
+
+   <!-- ========== INSERTED: AYAS-7 CHIP CORE HERO BLOCK (PRÉMIOVÝ) ========== -->
+   <section class="card chip-core-card">
+     <div class="card-led-bar"></div>
+     <div class="card-inner">
+
+       <div class="card-badge">
+         <span class="card-badge-dot"></span>
+         AYAS-7 Chip Core · Řídicí jednotka systému
+       </div>
+
+       <div class="card-title">Technologické srdce celého enginu AYAS-7</div>
+       <div class="card-sub">
+         Chip Core řídí všech sedm vrstev systému, vyhodnocuje tok dat, sleduje stabilitu,
+         kontroluje výnosové modely a vytváří základní rozhodovací signály pro autonomii enginu.
+         Je to centrální procesor celého systému.
+       </div>
+
+       <div class="chip-core-layout">
+
+         <!-- Vizualizace čipu -->
+         <div class="chip-core-visual" id="chipVisual">
+           <div class="chip-core-center">AYAS-7<br>CORE</div>
+
+           <!-- Sedm LED výstupů kolem čipu -->
+           <div class="chip-core-layer led1" data-layer="1" title="Layer 1"></div>
+           <div class="chip-core-layer led2" data-layer="2" title="Layer 2"></div>
+           <div class="chip-core-layer led3" data-layer="3" title="Layer 3"></div>
+           <div class="chip-core-layer led4" data-layer="4" title="Layer 4"></div>
+           <div class="chip-core-layer led5" data-layer="5" title="Layer 5"></div>
+           <div class="chip-core-layer led6" data-layer="6" title="Layer 6"></div>
+           <div class="chip-core-layer led7" data-layer="7" title="Layer 7"></div>
+         </div>
+
+         <!-- Pravý část s hodnotami -->
+         <div class="chip-core-stats">
+
+           <div class="card-section-title">Parametry jádra</div>
+           <ul class="card-list">
+             <li><span class="card-list-dot"></span><span><b>Výpočetní výkon:</b> <span id="corePerf">92 144 kFLOP/s</span></span></li>
+             <li><span class="card-list-dot"></span><span><b>Stabilita systému:</b> <span id="coreStab">0.9921</span></span></li>
+             <li><span class="card-list-dot"></span><span><b>Latence reakce:</b> <span id="coreLat">3.14 ms</span></span></li>
+             <li><span class="card-list-dot"></span><span><b>AI přesnost:</b> <span id="corePrec">99.23 %</span></span></li>
+           </ul>
+
+           <div class="card-section-title" style="margin-top: 12px;">Role v architektuře</div>
+           <div class="card-sub" style="margin-top: 4px;">
+             Koordinuje vrstvy, zajišťuje konzistenci dat, provádí vyhodnocení rizik, sleduje entropii
+             a tvoří auditní stopu. Je to skutečný „decision engine“ platformy AYAS-7.
+           </div>
+
+         </div>
+       </div>
+
+     </div>
+   </section>
+   <!-- ========== END INSERT ========== -->
 
    <div class="columns">
 
@@ -801,6 +956,56 @@ html, #msg_body {
 <footer>
  © 2025 Win-Win Družstvo · AYAS-7 Engine · Všechna práva vyhrazena
 </footer>
+
+<!-- SMALL JS: pulse & subtle LED animation for the chip core (client-side only, safe) -->
+<script>
+(function(){
+  const visual = document.getElementById('chipVisual');
+  if(!visual) return;
+
+  // animate active pulse
+  visual.classList.add('active');
+
+  // animate layer LEDs with soft stagger
+  const leds = visual.querySelectorAll('.chip-core-layer');
+  leds.forEach((led, idx) => {
+    // color mapping for visual variety
+    const colors = ['#4fa3ff','#22c55e','#4fa3ff','#22c55e','#4fa3ff','#22c55e','#4fa3ff'];
+    led.style.background = colors[idx % colors.length];
+    led.style.boxShadow = '0 0 14px ' + colors[idx % colors.length];
+    // random gentle pulse
+    let scale = 1;
+    setInterval(() => {
+      const r = 0.98 + Math.random()*0.06;
+      led.style.transform = (led.classList.contains('led1') || led.classList.contains('led5')) ? 'translateX(-50%) scale(' + r + ')' :
+                             (led.classList.contains('led3') ? 'translateY(-50%) scale(' + r + ')' : 'scale(' + r + ')');
+      led.style.opacity = 0.7 + Math.random()*0.3;
+    }, 900 + idx*120);
+  });
+
+  // small accessibility: toggle visual scale on click (demo)
+  visual.addEventListener('click', ()=> {
+    visual.classList.toggle('active');
+  });
+
+  // demo update of numeric values (soft randomization) — purely cosmetic
+  function softRandomize(){
+    const perf = document.getElementById('corePerf');
+    const stab = document.getElementById('coreStab');
+    const lat = document.getElementById('coreLat');
+    const prec = document.getElementById('corePrec');
+    if(!perf) return;
+    const basePerf = 92144;
+    const p = Math.round(basePerf + (Math.random()-0.5)*3000);
+    perf.textContent = p.toLocaleString() + ' kFLOP/s';
+    stab.textContent = (0.9920 + (Math.random()-0.5)*0.0006).toFixed(4);
+    lat.textContent = (3.00 + (Math.random()-0.5)*0.5).toFixed(2) + ' ms';
+    prec.textContent = (99.0 + (Math.random()-0.5)*0.8).toFixed(2) + ' %';
+  }
+  setInterval(softRandomize, 2200);
+
+})();
+</script>
 
 </body>
 </html>
