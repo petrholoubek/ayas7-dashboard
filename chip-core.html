@@ -1,0 +1,571 @@
+<!doctype html>
+<html lang="cs">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>AYAS-7 · Chip Core — Control Room</title>
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+/* === Root === */
+:root{
+ --max-w:1200px;
+ --bg-a:#0f172a;
+ --bg-b:#020617;
+ --accent-blue:#4fa3ff;
+ --accent-green:#22c55e;
+ --accent-cyan:#7de2ff;
+ --accent-yellow:#f59e0b;
+ --accent-red:#ef4444;
+ --muted:#9ca3af;
+ --text:#e5e7eb;
+ --card-border: rgba(148,163,184,0.45);
+ --card-border-soft: rgba(148,163,184,0.08);
+ --card-radius:18px;
+ --led-dot-size:7px; /* EXACT 7px */
+ --chip-size:220px;
+ --panel-title-size:20px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,#msg_body {height:100%;font-family:"Segoe UI",Tahoma,Geneva,Verdana,sans-serif;background:radial-gradient(circle at 40% 0%,var(--bg-a),var(--bg-b));color:var(--text);-webkit-font-smoothing:antialiased}
+a{color:inherit}
+.container{max-width:var(--max-w);margin:26px auto;padding:0 18px}
+
+/* header / kicker */
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.kicker{color:var(--muted);font-size:12px;letter-spacing:.12em;text-transform:uppercase}
+.brand{font-weight:700;letter-spacing:.06em;font-size:15px}
+
+/* layout */
+.layout { display: grid; grid-template-columns: 1fr 360px; gap:18px; align-items: start; }
+
+/* cards */
+.dash-card {
+ background: radial-gradient(circle at top left, #0b1120, #020617 70%);
+ border-radius: var(--card-radius);
+ border: 1px solid var(--card-border);
+ box-shadow: 0 24px 60px rgba(15,23,42,0.9);
+ padding: 16px;
+ position: relative;
+ overflow: hidden;
+}
+.card-badge {
+ display:inline-flex;align-items:center;gap:8px;padding:4px 10px;border-radius:999px;border:1px solid rgba(148,163,184,0.45);background:rgba(15,23,42,0.6);font-size:12px;color:var(--muted);margin-bottom:10px;
+}
+.card-dot { width: var(--led-dot-size); height: var(--led-dot-size); border-radius:999px; background:var(--accent-blue); box-shadow:0 0 8px rgba(79,163,255,0.9); flex-shrink:0; }
+
+/* panel title above chip */
+.panel-title {
+ display:flex;align-items:center;gap:10px;margin-bottom:10px;
+}
+.panel-title .lead-dot { width:var(--led-dot-size); height:var(--led-dot-size); border-radius:999px; background: linear-gradient(90deg,var(--accent-cyan),var(--accent-green)); box-shadow:0 0 10px rgba(79,163,255,0.85); }
+.panel-title h1 { font-size:var(--panel-title-size); font-weight:900; letter-spacing:0.04em; margin:0; color:#fff; }
+
+/* chip area */
+.chip-area { display:flex; gap:16px; align-items:flex-start; }
+
+/* chip shell */
+.chip-shell {
+ width: var(--chip-size); min-width: var(--chip-size); height: var(--chip-size); border-radius:16px;
+ background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0.20));
+ border: 1px solid rgba(255,255,255,0.02);
+ display:flex;align-items:center;justify-content:center;position:relative; box-shadow: 0 20px 80px rgba(2,6,23,0.8);
+ overflow:visible;
+}
+/* energetic chip look */
+.chip-core {
+ width:160px;height:160px;border-radius:12px;background:linear-gradient(180deg,#072233,#021016);display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:900;color:var(--accent-cyan);letter-spacing:.06em;position:relative;
+ box-shadow: inset 0 2px 8px rgba(255,255,255,0.02), 0 12px 40px rgba(2,6,23,0.6);
+ transition: transform .18s ease, box-shadow .18s ease;
+}
+.chip-core .title { font-size:22px; font-weight:900; color:var(--accent-cyan); text-shadow:0 2px 14px rgba(34,197,255,0.08); }
+.chip-core .subtitle { font-size:11px; color:var(--muted); margin-top:6px; font-weight:700; }
+
+/* inner energy lines & glow */
+.chip-energy {
+ position:absolute; inset:6px; border-radius:10px; pointer-events:none; overflow:hidden;
+}
+.chip-energy::before, .chip-energy::after {
+ content:""; position:absolute; inset:0; border-radius:inherit; mix-blend-mode:screen;
+}
+.chip-energy::before {
+ background: radial-gradient(circle at 30% 30%, rgba(79,163,255,0.09), transparent 35%);
+ filter: blur(12px);
+}
+.chip-energy::after {
+ background: linear-gradient(90deg, rgba(34,197,94,0.04), rgba(79,163,255,0.06));
+ transform: rotate(-8deg);
+ opacity:0.95;
+ filter: blur(6px);
+}
+
+/* micro-lines inside chip */
+.chip-lines {
+ position:absolute; width:120px; height:120px; border-radius:8px; pointer-events:none; opacity:0.85;
+ display:grid; place-items:center;
+}
+.chip-lines svg { width:120px; height:120px; transform:scale(0.98); opacity:0.95; }
+
+/* pulse halo */
+.chip-pulse {
+ position:absolute; width:320px; height:320px; left:50%; top:50%; transform:translate(-50%,-50%); border-radius:50%;
+ background: radial-gradient(circle, rgba(79,163,255,0.12), rgba(34,197,94,0.03), transparent 60%); filter: blur(28px); opacity:0.9; transition:all .22s;
+}
+
+/* mode badge top-left (chip) */
+.mode-badge { position:absolute; top:12px; left:12px; display:inline-flex; align-items:center; gap:8px; padding:6px 10px; border-radius:999px; background:rgba(0,0,0,0.35); border:1px solid rgba(255,255,255,0.03); cursor:pointer; font-weight:700; font-size:12px; color:var(--muted); z-index:5; }
+.mode-led { width: var(--led-dot-size); height: var(--led-dot-size); border-radius:999px; box-shadow:0 0 8px rgba(0,0,0,0.6); }
+
+/* performance area */
+.perf-area { flex:1; display:flex; flex-direction:column; gap:8px; min-width:320px; }
+
+/* bars */
+.card-bar-wrap { margin-bottom:8px; }
+.card-bar-label { font-size:12px; color:var(--muted); display:flex; justify-content:space-between; margin-bottom:6px; }
+.card-bar { width:100%; height:8px; border-radius:999px; background: rgba(15,23,42,0.85); overflow:hidden; border:1px solid rgba(51,65,85,0.9); }
+.card-bar-fill { height:100%; width:0%; border-radius:999px; background: linear-gradient(90deg, var(--accent-cyan), var(--accent-green)); box-shadow:0 0 12px rgba(34,197,94,0.9); transition: width .5s ease-out; }
+
+/* chart */
+.card-chart-wrap { margin-top:6px; background: rgba(15,23,42,0.85); border-radius:10px; border:1px solid rgba(51,65,85,0.9); padding:6px; height:100px; }
+.card-chart-wrap canvas { width:100%; height:100%; display:block; }
+
+/* metrics */
+.metrics { display:flex; gap:8px; margin-top:8px; flex-wrap:wrap; }
+.metric { background: rgba(255,255,255,0.01); border:1px solid rgba(255,255,255,0.02); padding:6px 8px; border-radius:8px; font-size:12px; color:var(--muted); }
+.metric strong{display:block;color:var(--text);font-weight:700}
+
+/* driver console */
+.driver-console { margin-top:12px; display:flex; gap:12px; align-items:center; justify-content:space-between; padding:12px; border-radius:12px; border:1px solid var(--card-border-soft); background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0.03)); }
+.driver-console .title { display:flex;align-items:center;gap:8px;font-weight:700 }
+.driver-console .title .dot { width:var(--led-dot-size); height:var(--led-dot-size); border-radius:999px; box-shadow:0 0 8px rgba(0,0,0,0.6); background:var(--accent-blue); }
+.mode-controls { display:flex; gap:10px; align-items:center; }
+.mode-btn { display:inline-flex; align-items:center; gap:8px; padding:8px 12px; border-radius:12px; background:rgba(255,255,255,0.01); border:1px solid rgba(255,255,255,0.03); cursor:pointer; font-weight:700; color:var(--muted); }
+.mode-btn.active { box-shadow:0 10px 30px rgba(0,0,0,0.6); color:var(--text); background:linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); transform:translateY(-2px); }
+
+/* multisig */
+.multisig { display:flex; gap:8px; align-items:center; }
+.ms-dot { width:var(--led-dot-size); height:var(--led-dot-size); border-radius:999px; box-shadow:0 0 8px rgba(0,0,0,0.6); background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.02); }
+
+/* tech row */
+.tech-row { display:flex; gap:12px; margin-top:12px; }
+.tech-card { flex:1; padding:12px; border-radius:12px; background: radial-gradient(circle at top left, #0b1120, #020617 65%); border:1px solid var(--card-border); }
+
+/* tech detail (fix dot overflow) */
+.tech-detail { margin-top:12px; padding:12px; border-radius:12px; border:1px solid var(--card-border); background: radial-gradient(circle at top left, #071427, #020617 65%); color:var(--muted); font-size:13px; line-height:1.45; position:relative; overflow:hidden; }
+
+/* right column cards */
+.right-col { display:flex; flex-direction:column; gap:12px; position:relative; top:0; }
+.right-card { padding:14px; border-radius:14px; background: radial-gradient(circle at top left, #0b1120, #020617 65%); border:1px solid var(--card-border); box-shadow:0 18px 40px rgba(2,6,23,0.7); }
+
+/* download button */
+.btn-download { padding:8px 12px; border-radius:10px; background:linear-gradient(90deg,var(--accent-blue),var(--accent-cyan)); color:#02121a; font-weight:800; border:none; cursor:pointer; }
+
+/* subtle grid background in tech-detail */
+.tech-detail::before {
+ content:"";
+ position:absolute;
+ inset:0;
+ background-image: linear-gradient(rgba(255,255,255,0.01) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.01) 1px, transparent 1px);
+ background-size: 28px 28px, 28px 28px;
+ opacity:0.08;
+ pointer-events:none;
+}
+
+/* responsive */
+@media (max-width:1000px){
+ .layout { grid-template-columns: 1fr; }
+ .chip-shell { margin: 0 auto; }
+ .perf-area { min-width:0; width:100%; }
+ .tech-row { flex-direction:column; }
+ .driver-console { flex-direction:column; align-items:flex-start; gap:10px; }
+ .right-col { flex-direction:row; overflow-x:auto; gap:10px; }
+}
+</style>
+</head>
+<body>
+ <div class="container">
+   <div class="top">
+     <div>
+       <div class="kicker">Řídicí panel · AYAS-7</div>
+       <div class="brand">WIN-WIN · AYAS-7 ENGINE</div>
+     </div>
+     <div style="color:var(--muted);font-size:13px">Chip Core — Prezentace</div>
+   </div>
+
+   
+   <div class="panel-title" aria-hidden="false">
+     <div class="lead-dot" aria-hidden="true"></div>
+     <h1>AYAS-7 CHIP CORE — CONTROL SYSTEM</h1>
+   </div>
+
+   
+   <div class="layout">
+     
+     <div>
+       <div class="dash-card" id="chipCard" aria-labelledby="chipHeading">
+         <div class="card-badge"><span class="card-dot" style="width:var(--led-dot-size);height:var(--led-dot-size)"></span>&nbsp;AYAS-7 · Chip Core</div>
+
+         <div class="chip-area">
+           
+           <div class="chip-shell" role="region" aria-label="AYAS-7 chip">
+             <div class="chip-pulse" id="chipPulse"></div>
+
+             <div class="chip-core" id="chipCore" aria-hidden="false">
+               <div class="title">AYAS-7</div>
+               <div class="subtitle">Chip Core</div>
+
+               <div class="chip-lines" aria-hidden="true">
+                 
+                 <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                   <g stroke="rgba(127,191,255,0.14)" stroke-width="1.2" fill="none" stroke-linecap="round">
+                     <path d="M12 30h20M12 50h30M12 70h40M12 90h50" stroke-opacity="0.9"/>
+                     <path d="M108 30h-18M108 50h-28M108 70h-38M108 90h-48" stroke-opacity="0.55"/>
+                   </g>
+                 </svg>
+               </div>
+
+               <div class="chip-energy" aria-hidden="true"></div>
+             </div>
+
+             
+             <button id="modeBtn" class="mode-badge" aria-pressed="false" title="Toggle mode">
+               <span class="mode-led" id="modeLed" style="background:var(--accent-green);box-shadow:0 0 8px rgba(34,197,94,0.9)"></span>
+               <span id="modeLabel" style="color:var(--muted);font-weight:800;margin-left:4px">AI</span>
+             </button>
+           </div>
+
+           
+           <div class="perf-area" aria-live="polite">
+             <div style="display:flex;justify-content:space-between;align-items:center">
+               <div style="font-weight:800;font-size:15px">Chip Performance · 7 layers</div>
+               <div style="color:var(--muted);font-size:13px">Simulace (demo)</div>
+             </div>
+
+             <div id="barsContainer" style="margin-top:10px"></div>
+
+             <div class="card-chart-wrap" style="margin-top:8px">
+               <canvas id="miniChart"></canvas>
+             </div>
+
+             <div class="metrics" style="margin-top:8px">
+               <div class="metric"><strong id="mLoad">--%</strong> CPU Load</div>
+               <div class="metric"><strong id="mLat">-- ms</strong> Latency</div>
+               <div class="metric"><strong id="mOps">--</strong> Ops/s</div>
+               <div class="metric"><strong id="mLP">-- ms</strong> LP Reaction</div>
+             </div>
+           </div>
+         </div>
+
+         
+         <div class="driver-console" aria-label="Driver console">
+           <div style="flex:1">
+             <div class="title"><span class="dot"></span> <span style="font-size:13px">Řidičské centrum</span></div>
+             <div style="color:var(--muted);font-size:13px;margin-top:6px">Autopilot (AI) řídí běžné operace. Manual umožňuje zásah operátora. Brake okamžitě pozastaví exekuce (multi-sig lock).</div>
+           </div>
+
+           <div class="mode-controls" role="tablist" aria-label="Control modes">
+             <button class="mode-btn active" id="aiBtn" aria-pressed="true"><span class="ms-dot" id="ledAi" style="background:var(--accent-green)"></span> AI</button>
+             <button class="mode-btn" id="manualBtn" aria-pressed="false"><span class="ms-dot" id="ledManual" style="background:var(--accent-blue);opacity:0.45"></span> MANUAL</button>
+             <button class="mode-btn" id="brakeBtn" aria-pressed="false"><span class="ms-dot" id="ledBrake" style="background:var(--accent-red);opacity:0.45"></span> BRAKE</button>
+           </div>
+
+           <div style="width:8px"></div>
+
+           <div class="multisig" aria-live="polite" style="align-items:center;">
+             <div style="font-size:12px;color:var(--muted);margin-right:6px">Multi-sig:</div>
+             <div class="ms-dot" id="msGreen" title="Ready" style="background:var(--accent-green)"></div>
+             <div class="ms-dot" id="msYellow" title="Pending"></div>
+             <div class="ms-dot" id="msRed" title="Attention"></div>
+           </div>
+         </div>
+
+         
+         <div style="margin-top:12px;color:var(--muted);font-size:13px;line-height:1.45">
+           AYAS-7 Chip Core orchestruje L1–L7, provádí deterministické přepočty WW-KEY, rebalancuje LP pooly a generuje auditovatelné snapshoty. Režimy ovládání jsou synchronizovány s multi-sig politikou.
+         </div>
+       </div>
+
+       
+       <div class="tech-row">
+         <div class="tech-card">
+           <div class="card-badge"><span class="card-dot" style="width:var(--led-dot-size);height:var(--led-dot-size);background:var(--accent-blue)"></span>&nbsp;AYAS-Math Engine</div>
+           <div style="font-weight:800;margin-bottom:6px">Výpočetní logika</div>
+           <div style="color:var(--muted);font-size:13px;line-height:1.45">
+             Deterministické jádro: AYAS-Alloc pro auditovatelné přerozdělení a paralelní přepočty.
+           </div>
+         </div>
+
+         <div class="tech-card">
+           <div class="card-badge"><span class="card-dot" style="width:var(--led-dot-size);height:var(--led-dot-size);background:var(--accent-green)"></span>&nbsp;Control Logic</div>
+           <div style="font-weight:800;margin-bottom:6px">Řízení motoru</div>
+           <div style="color:var(--muted);font-size:13px;line-height:1.45">
+             Orchestrace, prioritizace, predictive routing a reaktivní bezpečnostní pravidla s možností manuálního zásahu.
+           </div>
+         </div>
+
+         <div class="tech-card">
+           <div class="card-badge"><span class="card-dot" style="width:var(--led-dot-size);height:var(--led-dot-size);background:var(--accent-cyan)"></span>&nbsp;LP Intelligence</div>
+           <div style="font-weight:800;margin-bottom:6px">Likvidita & Multi-sig</div>
+           <div style="color:var(--muted);font-size:13px;line-height:1.45">
+             Prediktivní rebalancování, kontrola TVL a multi-sig autorizace pro kritické operace.
+           </div>
+         </div>
+       </div>
+
+       
+       <div class="tech-detail" role="region" aria-label="Technical specification">
+         <div style="font-weight:800;margin-bottom:8px;color:var(--text);font-size:15px">Technická specifikace · AYAS-7 Chip Core</div>
+         <div>
+           <strong>Moduly:</strong>
+           <ul style="margin-top:6px;color:var(--muted);">
+             <li><b>AYAS-Alloc:</b> deterministická alokace (linear programming + constraints) — opakovatelná a auditovatelná.</li>
+             <li><b>Convex Optimizer:</b> konvexní optimalizace pro alokaci kapitálu s ochranou rezerv.</li>
+             <li><b>RL Router:</b> online agent (actor-critic) pro dynamické rebalancování LP.</li>
+             <li><b>Predictive Filter:</b> Kalman-like filter pro odhad volatility.</li>
+             <li><b>Anomaly Detector:</b> statistická detekce odchylek → automatické přepnutí do MANUAL/BRAKE.</li>
+           </ul>
+         </div>
+
+         <div style="margin-top:8px;color:var(--muted)">
+           <strong>Performance:</strong> latency 0.5–5 ms (kritické), throughput: škálovatelné paralelní kanály, audit & replay.
+         </div>
+       </div>
+     </div>
+
+     
+     <aside class="right-col" aria-label="Right controls">
+       
+       <div class="right-card dash-card" role="region" aria-labelledby="sysStatusTitle" style="padding:14px;">
+         <div class="card-badge"><span class="card-dot" style="width:var(--led-dot-size);height:var(--led-dot-size);background:var(--accent-blue)"></span>&nbsp;System Status</div>
+         <div id="sysStatusTitle" style="font-weight:800">Control Room · Status</div>
+         <div style="color:var(--muted);font-size:13px;margin-top:8px">Live telemetry, multi-sig readiness, quick actions. Demo simulation only.</div>
+
+         <div style="margin-top:12px;display:flex;flex-direction:column;gap:8px">
+           <div style="display:flex;justify-content:space-between"><div style="color:var(--muted)">Mode</div><div id="rightMode" style="font-weight:800">AI</div></div>
+           <div style="display:flex;justify-content:space-between"><div style="color:var(--muted)">Multi-sig</div><div id="msStatus" style="font-weight:800;color:var(--muted)">Ready</div></div>
+           <div style="display:flex;justify-content:space-between"><div style="color:var(--muted)">Active Pools</div><div id="poolsCount" style="font-weight:800">3</div></div>
+           <div style="display:flex;justify-content:space-between"><div style="color:var(--muted)">TVL</div><div id="rightTvl" style="font-weight:800">2.4M USD</div></div>
+         </div>
+       </div>
+
+       
+       <div class="right-card dash-card" role="region" aria-labelledby="chainTitle" style="padding:14px;">
+         <div class="card-badge"><span class="card-dot" style="width:var(--led-dot-size);height:var(--led-dot-size);background:var(--accent-green)"></span>&nbsp;Blockchain Telemetry</div>
+         <div id="chainTitle" style="font-weight:800">On-chain health</div>
+         <div style="color:var(--muted);font-size:13px;margin-top:8px">Mempool / Gas / Confirmation latencies — indikátory provozu a congestion.</div>
+
+         <div style="margin-top:12px;display:flex;flex-direction:column;gap:8px">
+           <div style="display:flex;justify-content:space-between"><div style="color:var(--muted)">Mempool</div><div id="mempool" style="font-weight:800">Normal</div></div>
+           <div style="display:flex;justify-content:space-between"><div style="color:var(--muted)">Avg Confirm</div><div id="avgConfirm" style="font-weight:800">12s</div></div>
+           <div style="display:flex;justify-content:space-between"><div style="color:var(--muted)">Gas</div><div id="gasPrice" style="font-weight:800">35 Gwei</div></div>
+         </div>
+       </div>
+
+       
+       <div class="right-card dash-card" role="region" aria-labelledby="dataTitle" style="padding:14px;">
+         <div class="card-badge"><span class="card-dot" style="width:var(--led-dot-size);height:var(--led-dot-size);background:var(--accent-cyan)"></span>&nbsp;Data Access</div>
+         <div id="dataTitle" style="font-weight:800">Database & Reports</div>
+         <div style="color:var(--muted);font-size:13px;margin-top:8px">Přímý přístup k datům AYAS-7 (read-only demo). Stáhni export nebo vygeneruj auditní report.</div>
+
+         <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+           <button class="btn-download" id="btnDownload">Stáhnout data</button>
+           <button class="mode-btn" id="btnReport">Vygenerovat report</button>
+         </div>
+
+         <div id="downloadMsg" style="color:var(--muted);font-size:12px;margin-top:8px"></div>
+       </div>
+     </aside>
+   </div>
+
+   <div style="height:14px"></div>
+   <div style="text-align:center;color:var(--muted);font-size:12px">© 2035 Win-Win Družstvo · AYAS-7 Engine — Demo presentation</div>
+ </div>
+
+<script>
+/* === Simulation & Interactions === */
+// Layers
+const LAYERS = ['Token Layer','Liquidity Engine','Yield Routing','Risk & Compliance','FinTech Interaction','Core Engine','Analytics & KPI'];
+
+// build bars
+const barsContainer = document.getElementById('barsContainer');
+const bars = [];
+LAYERS.forEach((name, idx) => {
+ const wrap = document.createElement('div');
+ wrap.className = 'card-bar-wrap';
+ const labelRow = document.createElement('div');
+ labelRow.className = 'card-bar-label';
+ const left = document.createElement('div'); left.textContent = name;
+ const right = document.createElement('div'); right.textContent = '0 %';
+ labelRow.appendChild(left); labelRow.appendChild(right);
+ const bar = document.createElement('div'); bar.className = 'card-bar';
+ const fill = document.createElement('div'); fill.className = 'card-bar-fill';
+ fill.style.width = '0%';
+ bar.appendChild(fill);
+ wrap.appendChild(labelRow); wrap.appendChild(bar);
+ barsContainer.appendChild(wrap);
+ bars.push({fill, valueEl:right, val: Math.round(30 + Math.random()*40)});
+});
+
+// mini chart
+const ctx = document.getElementById('miniChart').getContext('2d');
+const chartData = { labels: Array.from({length:12},(_,i)=>'T'+(i+1)), datasets: [{ data: Array.from({length:12}, ()=> 3 + Math.random()*3), borderColor: 'rgba(79,163,255,0.95)', backgroundColor: 'rgba(79,163,255,0.06)', borderWidth: 2, tension: 0.35, pointRadius: 0 }]};
+const miniChart = new Chart(ctx, { type: 'line', data: chartData, options: { responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{ x:{grid:{color:'rgba(148,163,184,0.08)'}, ticks:{display:false}}, y:{grid:{color:'rgba(148,163,184,0.08)'}, ticks:{display:false}} } } });
+
+// metrics
+const mLoad = document.getElementById('mLoad'), mLat = document.getElementById('mLat'), mOps = document.getElementById('mOps'), mLP = document.getElementById('mLP');
+const rightMode = document.getElementById('rightMode'), msStatus = document.getElementById('msStatus'), poolsCount = document.getElementById('poolsCount'), rightTvl = document.getElementById('rightTvl');
+
+// chip visual & controls
+const chipCore = document.getElementById('chipCore'), chipPulse = document.getElementById('chipPulse');
+const modeBtn = document.getElementById('modeBtn'), modeLed = document.getElementById('modeLed'), modeLabel = document.getElementById('modeLabel');
+const aiBtn = document.getElementById('aiBtn'), manualBtn = document.getElementById('manualBtn'), brakeBtn = document.getElementById('brakeBtn');
+const ledAi = document.getElementById('ledAi'), ledManual = document.getElementById('ledManual'), ledBrake = document.getElementById('ledBrake');
+const msGreen = document.getElementById('msGreen'), msYellow = document.getElementById('msYellow'), msRed = document.getElementById('msRed');
+
+let mode = 'AI';
+let simOn = true;
+
+// init
+function setActiveButton(btn){
+ [aiBtn,manualBtn,brakeBtn].forEach(b => b.classList.remove('active'));
+ btn.classList.add('active');
+}
+setActiveButton(aiBtn);
+bars.forEach(b => { b.fill.style.width = b.val + '%'; b.valueEl.textContent = b.val + ' %'; });
+
+function randStep(v, vol=8, min=2, max=98){ const d=(Math.random()-0.5)*vol; return Math.max(min, Math.min(max, Math.round(v + d))); }
+function chooseColor(v){
+ if (v < 30) return 'linear-gradient(90deg, var(--accent-blue), var(--accent-cyan))';
+ if (v < 60) return 'linear-gradient(90deg, var(--accent-cyan), var(--accent-green))';
+ if (v < 80) return 'linear-gradient(90deg, var(--accent-green), #a7f37a)';
+ if (v < 90) return 'linear-gradient(90deg, var(--accent-yellow), #ffd27a)';
+ return 'linear-gradient(90deg, var(--accent-red), #ff8a8a)';
+}
+
+function updateSim(){
+ bars.forEach(b => {
+   if(mode === 'BRAKE'){
+     b.fill.style.width = b.val + '%';
+     b.valueEl.textContent = b.val + ' %';
+     b.fill.style.filter = 'grayscale(40%) brightness(0.85)';
+   } else {
+     const t = randStep(b.val, 10, 2, 98);
+     b.val = Math.round(b.val + (t - b.val) * (0.2 + Math.random()*0.5));
+     b.fill.style.width = b.val + '%';
+     b.valueEl.textContent = b.val + ' %';
+     b.fill.style.filter = '';
+   }
+   b.fill.style.background = chooseColor(b.val);
+   b.fill.style.boxShadow = '0 0 12px rgba(34,197,94,0.85)';
+ });
+
+ const load = Math.round(bars.reduce((s,b)=>s+b.val,0)/bars.length);
+ mLoad.textContent = load + '%';
+ mLat.textContent = (6 + Math.round(Math.random()*14)) + ' ms';
+ mOps.textContent = (5 + (Math.random()*5)).toFixed(1);
+ mLP.textContent = (2 + (Math.random()*3)).toFixed(1) + ' ms';
+
+ if(simOn && mode !== 'BRAKE'){
+   const nextVal = Math.max(1, Math.min(12, 3 + (load/20) + (Math.random()-0.5)));
+   chartData.datasets[0].data.shift();
+   chartData.datasets[0].data.push(Number(nextVal.toFixed(2)));
+   miniChart.update();
+ }
+
+ poolsCount.textContent = Math.max(1, Math.round(2 + Math.random()*3));
+ rightTvl.textContent = (2 + Math.round(Math.random()*7)/10).toFixed(1) + 'M USD';
+
+ // multisig dots
+ const r = Math.random();
+ const msState = (r < 0.86) ? 'ready' : (r < 0.96 ? 'pending' : 'attention');
+ if(msState === 'ready'){
+   msStatus.textContent = 'Ready';
+   msGreen.style.background = getComputedStyle(document.documentElement).getPropertyValue('--accent-green');
+   msYellow.style.background = 'rgba(255,255,255,0.02)';
+   msRed.style.background = 'rgba(255,255,255,0.02)';
+   msGreen.style.boxShadow='0 0 8px rgba(34,197,94,0.9)'; msYellow.style.boxShadow=''; msRed.style.boxShadow='';
+ } else if(msState === 'pending'){
+   msStatus.textContent = 'Pending';
+   msGreen.style.background = 'rgba(255,255,255,0.02)';
+   msYellow.style.background = getComputedStyle(document.documentElement).getPropertyValue('--accent-yellow');
+   msRed.style.background = 'rgba(255,255,255,0.02)';
+   msGreen.style.boxShadow=''; msYellow.style.boxShadow='0 0 8px rgba(245,158,11,0.9)'; msRed.style.boxShadow='';
+ } else {
+   msStatus.textContent = 'Attention';
+   msGreen.style.background = 'rgba(255,255,255,0.02)';
+   msYellow.style.background = 'rgba(255,255,255,0.02)';
+   msRed.style.background = getComputedStyle(document.documentElement).getPropertyValue('--accent-red');
+   msRed.style.boxShadow='0 0 8px rgba(239,68,68,0.95)';
+   msGreen.style.boxShadow=''; msYellow.style.boxShadow='';
+ }
+
+ chipCore.style.boxShadow = `inset 0 2px 14px rgba(34,197,255,${Math.min(0.22, load/400)}) , 0 14px ${20 + Math.round(load/6)}px rgba(2,6,23,0.7)`;
+ const scale = 1 + (load/4000);
+ chipCore.style.transform = `scale(${scale})`;
+ rightMode.textContent = mode;
+}
+
+updateSim();
+setInterval(()=>{ if(simOn) updateSim(); }, 420);
+
+// mode controls
+modeBtn.addEventListener('click', ()=>{
+ if(mode === 'AI') setMode('MANUAL');
+ else if(mode === 'MANUAL') setMode('BRAKE');
+ else setMode('AI');
+});
+aiBtn.addEventListener('click', ()=> setMode('AI'));
+manualBtn.addEventListener('click', ()=> setMode('MANUAL'));
+brakeBtn.addEventListener('click', ()=> setMode('BRAKE'));
+
+function setMode(newMode){
+ mode = newMode;
+ if(mode === 'AI'){ modeLed.style.background = 'var(--accent-green)'; modeLed.style.boxShadow='0 0 8px rgba(34,197,94,0.9)'; modeLabel.textContent='AI'; setActiveButton(aiBtn); ledAi.style.opacity=1; ledManual.style.opacity=0.45; ledBrake.style.opacity=0.45; }
+ if(mode === 'MANUAL'){ modeLed.style.background = 'var(--accent-blue)'; modeLed.style.boxShadow='0 0 8px rgba(79,163,255,0.9)'; modeLabel.textContent='MANUAL'; setActiveButton(manualBtn); ledAi.style.opacity=0.45; ledManual.style.opacity=1; ledBrake.style.opacity=0.45; }
+ if(mode === 'BRAKE'){ modeLed.style.background = 'var(--accent-red)'; modeLed.style.boxShadow='0 0 10px rgba(239,68,68,0.95)'; modeLabel.textContent='BRAKE'; setActiveButton(brakeBtn); ledAi.style.opacity=0.45; ledManual.style.opacity=0.45; ledBrake.style.opacity=1; }
+ chipCore.style.transform = 'scale(1.02)'; setTimeout(()=>{ chipCore.style.transform = ''; }, 260);
+ updateSim();
+}
+
+// keyboard toggles
+document.addEventListener('keydown', (e)=>{
+ if(e.key === 'm') { setMode(mode === 'AI' ? 'MANUAL' : 'AI'); }
+ if(e.key === ' ') { simOn = !simOn; }
+});
+
+// download data (simulated)
+const btnDownload = document.getElementById('btnDownload');
+const downloadMsg = document.getElementById('downloadMsg');
+btnDownload.addEventListener('click', ()=>{
+ downloadMsg.textContent = 'Generuji export...';
+ // simulate API call -> create CSV and trigger download
+ setTimeout(()=>{
+   const csv = [
+     ['timestamp','layer','value'],
+     ...Array.from({length:12}).map((_,i)=>[new Date().toISOString(), LAYERS[i%LAYERS.length], Math.round(20+Math.random()*80)])
+   ];
+   const csvStr = csv.map(r=>r.join(',')).join('\n');
+   const blob = new Blob([csvStr], {type:'text/csv'});
+   const url = URL.createObjectURL(blob);
+   const a = document.createElement('a');
+   a.href = url;
+   a.download = 'ayas7_export_demo.csv';
+   document.body.appendChild(a);
+   a.click();
+   a.remove();
+   URL.revokeObjectURL(url);
+   downloadMsg.textContent = 'Export stažen: ayas7_export_demo.csv';
+ }, 900);
+});
+
+// report button (simulated)
+document.getElementById('btnReport').addEventListener('click', ()=>{
+ downloadMsg.textContent = 'Vygenerován auditní report (demo).';
+ setTimeout(()=>{ downloadMsg.textContent = 'Report připraven ke stažení.'; }, 900);
+});
+
+</script>
+</body>
+</html>
