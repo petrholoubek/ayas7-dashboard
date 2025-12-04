@@ -1,909 +1,997 @@
-<style>
-/* HARD RESET – FinTech permanentní tma */
-* {
- margin: 0;
- padding: 0;
- box-sizing: border-box;
-}
-
-html, #msg_body {
- width: 100%;
- height: 100%;
- background: #000 !important;     /* TOTO JE KLÍČ */
- color: #e5e7eb;
- font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
- overflow-x: hidden;
-}
-</style>
-
 <!DOCTYPE html>
 <html lang="cs">
 <head>
- <meta charset="UTF-8" />
- <title>AYAS-7 – Výkon & výnos motoru</title>
- <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
- <!-- Chart.js pro grafy -->
- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
- <style>
-* {
- margin: 0;
- padding: 0;
- box-sizing: border-box;
-}
-
-html, #msg_body {
- width: 100%;
- height: 100%;
- background: radial-gradient(circle at 40% 0%, #0f172a 0%, #020617 55%, #000 100%) !important;
- font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
- overflow-x: hidden;
-}
-
-   :root {
-     --blue-dark: #003063;
-     --blue-mid: #0053a6;
-     --blue-light: #4f8edc;
-     --bg-page: #020617;
-     --card-bg: #0b1120;
-     --border-soft: rgba(148, 163, 184, 0.4);
-     --text-main: #e5e7eb;
-     --text-muted: #9ca3af;
-     --accent: #22c55e;
-   }
-
-   * {
-     box-sizing: border-box;
-     margin: 0;
-     padding: 0;
-   }
-
-   html, #msg_body {
-     width: 100%;
-     height: 100%;
-   }
-
-   #msg_body {
-     font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-     background: radial-gradient(circle at 40% 0%, #0f172a 0%, #020617 55%, #000 100%);
-     color: var(--text-main);
-     overflow-x: hidden;
-   }
-
-   a {
-     text-decoration: none;
-     color: inherit;
-   }
-
-   /* TOP BAR / MENU – stejný základ jako login/payments */
-   header.topbar {
-     background: linear-gradient(to right, var(--blue-dark), var(--blue-mid));
-     color: #fff;
-     padding: 10px 0;
-     box-shadow: 0 10px 30px rgba(15, 23, 42, 0.7);
-     position: sticky;
-     top: 0;
-     z-index: 50;
-   }
-
-   .topbar-inner {
-     max-width: 1200px;
-     margin: 0 auto;
-     padding: 0 16px;
-     display: flex;
-     align-items: center;
-     justify-content: space-between;
-     gap: 24px;
-   }
-
-   .brand-text-wrap {
-     display: flex;
-     flex-direction: column;
-     align-items: flex-start;
-     gap: 2px;
-   }
-
-   .brand-text-main {
-     font-size: 18px;
-     font-weight: 600;
-     letter-spacing: 0.06em;
-     text-transform: uppercase;
-     white-space: nowrap;
-   }
-
-   .brand-text-sub {
-     font-size: 11px;
-     text-transform: uppercase;
-     letter-spacing: 0.18em;
-     color: rgba(226, 232, 240, 0.75);
-   }
-
-   nav.main-nav {
-     display: flex;
-     align-items: center;
-     justify-content: center;
-     flex: 1;
-     min-width: 0;
-   }
-
-   .nav-list {
-     display: flex;
-     align-items: center;
-     gap: 18px;
-     list-style: none;
-     margin: 0;
-     padding: 0;
-     font-size: 14px;
-   }
-
-   .nav-link {
-     position: relative;
-     padding: 4px 0;
-     color: rgba(226, 232, 240, 0.86);
-     transition: color 0.18s ease;
-     white-space: nowrap;
-   }
-
-   .nav-link::after {
-     content: "";
-     position: absolute;
-     left: 0;
-     bottom: -3px;
-     width: 0;
-     height: 2px;
-     border-radius: 999px;
-     background: linear-gradient(to right, #22c55e, #4ade80);
-     transition: width 0.22s ease;
-   }
-
-   .nav-link:hover {
-     color: #ffffff;
-   }
-
-   .nav-link:hover::after {
-     width: 100%;
-   }
-
-   .nav-link.active {
-     color: #ffffff;
-     font-weight: 600;
-   }
-
-   .nav-link.active::after {
-     width: 100%;
-   }
-
-   .topbar-right {
-     display: flex;
-     align-items: center;
-     gap: 16px;
-     flex-shrink: 0;
-   }
-
-   .lang-switch {
-     font-size: 12px;
-     letter-spacing: 0.12em;
-     text-transform: uppercase;
-     color: rgba(226, 232, 240, 0.8);
-     display: flex;
-     align-items: center;
-     gap: 6px;
-     white-space: nowrap;
-   }
-
-   .lang-switch span {
-     cursor: pointer;
-     opacity: 0.65;
-   }
-
-   .lang-switch span.active {
-     opacity: 1;
-     font-weight: 600;
-     text-decoration: underline;
-     text-underline-offset: 3px;
-   }
-
-   .lang-sep {
-     opacity: 0.4;
-   }
-
-   .btn-login {
-     padding: 6px 16px;
-     border-radius: 999px;
-     border: 1px solid rgba(226, 232, 240, 0.6);
-     background: rgba(15, 23, 42, 0.18);
-     color: #f9fafb;
-     font-size: 13px;
-     font-weight: 500;
-     cursor: pointer;
-     display: inline-flex;
-     align-items: center;
-     gap: 8px;
-     transition: background 0.18s ease, border-color 0.18s ease, transform 0.12s ease;
-     white-space: nowrap;
-   }
-
-   .btn-login span.dot {
-     width: 8px;
-     height: 8px;
-     border-radius: 999px;
-     background: var(--accent);
-     box-shadow: 0 0 8px rgba(34, 197, 94, 0.9);
-   }
-
-   .btn-login:hover {
-     background: rgba(15, 23, 42, 0.35);
-     border-color: #ffffff;
-     transform: translateY(-1px);
-   }
-
-   .btn-login:active {
-     transform: translateY(0);
-   }
-
-   /* HLAVNÍ OBSAH */
-   main {
-     min-height: calc(100vh - 72px - 60px);
-     padding: 32px 16px 40px;
-     display: flex;
-     justify-content: center;
-   }
-
-   .page-wrap {
-     max-width: 1200px;
-     width: 100%;
-   }
-
-   .page-header {
-     margin-bottom: 22px;
-   }
-
-   .page-eyebrow {
-     display: inline-flex;
-     align-items: center;
-     gap: 6px;
-     padding: 2px 10px;
-     border-radius: 999px;
-     border: 1px solid rgba(148, 163, 184, 0.55);
-     font-size: 11px;
-     color: var(--text-muted);
-     background: rgba(15, 23, 42, 0.6);
-     margin-bottom: 8px;
-   }
-
-   .page-eyebrow-dot {
-     width: 7px;
-     height: 7px;
-     border-radius: 999px;
-     background: var(--blue-light);
-     box-shadow: 0 0 10px rgba(79, 163, 255, 0.9);
-   }
-
-   .page-title {
-     font-size: 22px;
-     font-weight: 600;
-     margin-bottom: 4px;
-   }
-
-   .page-subtitle {
-     font-size: 13px;
-     color: var(--text-muted);
-   }
-
-   /* GRID – horní sekce: velký graf + KPI */
-   .top-grid {
-     margin-top: 24px;
-     display: grid;
-     grid-template-columns: 2.1fr 1.2fr;
-     gap: 18px;
-     margin-bottom: 22px;
-   }
-
-   .card {
-     background: radial-gradient(circle at top left, #111827, #020617 75%);
-     border-radius: 18px;
-     border: 1px solid var(--border-soft);
-     padding: 16px 18px 14px;
-     position: relative;
-     overflow: hidden;
-     box-shadow: 0 18px 40px rgba(15, 23, 42, 0.7);
-   }
-
-   .card::before {
-     content: "";
-     position: absolute;
-     top: 0;
-     left: 0;
-     width: 100%;
-     height: 3px;
-     background: linear-gradient(to right, #4fa3ff, #22c55e);
-     opacity: 0.9;
-   }
-
-   .card-header {
-     display: flex;
-     align-items: center;
-     justify-content: space-between;
-     gap: 10px;
-     margin-bottom: 10px;
-   }
-
-   .card-title {
-     font-size: 15px;
-     font-weight: 600;
-   }
-
-   .card-pill {
-     font-size: 11px;
-     padding: 3px 10px;
-     border-radius: 999px;
-     border: 1px solid rgba(148, 163, 184, 0.6);
-     color: var(--text-muted);
-     display: inline-flex;
-     align-items: center;
-     gap: 5px;
-   }
-
-   .pill-dot {
-     width: 6px;
-     height: 6px;
-     border-radius: 999px;
-     background: var(--accent);
-     box-shadow: 0 0 8px rgba(34, 197, 94, 0.9);
-   }
-
-   .card-text {
-     font-size: 12px;
-     color: var(--text-muted);
-     margin-bottom: 10px;
-     line-height: 1.55;
-   }
-
-   .chart-wrap {
-     margin-top: 4px;
-     background: rgba(15, 23, 42, 0.8);
-     border-radius: 10px;
-     padding: 8px 10px 6px;
-   }
-
-   .chart-wrap canvas {
-     width: 100%;
-     height: 180px;
-   }
-
-   .kpi-grid {
-     display: grid;
-     grid-template-columns: 1fr;
-     gap: 10px;
-   }
-
-   .kpi-row {
-     display: flex;
-     justify-content: space-between;
-     align-items: baseline;
-     font-size: 12px;
-     padding: 6px 0;
-     border-bottom: 1px solid rgba(30, 64, 175, 0.5);
-   }
-
-   .kpi-label {
-     color: var(--text-muted);
-   }
-
-   .kpi-value {
-     font-weight: 600;
-     font-size: 13px;
-   }
-
-   .kpi-tag {
-     font-size: 10px;
-     text-transform: uppercase;
-     letter-spacing: 0.12em;
-     color: var(--text-muted);
-     margin-top: 6px;
-   }
-
-   /* GRID – střední sekce: 3 boxy pro vrstvy / tokeny */
-   .mid-grid {
-     margin-top: 6px;
-     display: grid;
-     grid-template-columns: repeat(3, minmax(0, 1fr));
-     gap: 18px;
-     margin-bottom: 24px;
-   }
-
-   .mini-card-title {
-     font-size: 14px;
-     font-weight: 600;
-     margin-bottom: 6px;
-   }
-
-   .mini-card-text {
-     font-size: 12px;
-     color: var(--text-muted);
-     margin-bottom: 8px;
-   }
-
-   .mini-stat-row {
-     display: flex;
-     justify-content: space-between;
-     font-size: 12px;
-     margin-bottom: 3px;
-   }
-
-   .mini-label {
-     color: var(--text-muted);
-   }
-
-   .mini-value {
-     font-weight: 500;
-   }
-
-   .trend-up {
-     color: #4ade80;
-   }
-
-   .trend-down {
-     color: #f97373;
-   }
-
-   /* SPODNÍ INFO PANEL */
-   .info-panel {
-     margin-top: 6px;
-     padding-top: 16px;
-     border-top: 1px solid rgba(31, 41, 55, 0.8);
-     display: grid;
-     grid-template-columns: 2.1fr 1.4fr;
-     gap: 22px;
-   }
-
-   .info-block-title {
-     font-size: 14px;
-     font-weight: 600;
-     margin-bottom: 6px;
-   }
-
-   .info-block-text {
-     font-size: 12px;
-     color: var(--text-muted);
-     line-height: 1.6;
-   }
-
-   .info-list {
-     margin-top: 4px;
-     padding-left: 18px;
-     font-size: 12px;
-     color: var(--text-muted);
-   }
-
-   .info-list li {
-     margin-bottom: 4px;
-   }
-
-   .info-badge {
-     display: inline-flex;
-     align-items: center;
-     gap: 6px;
-     padding: 3px 9px;
-     border-radius: 999px;
-     border: 1px solid rgba(148, 163, 184, 0.6);
-     font-size: 11px;
-     color: var(--text-muted);
-     margin-bottom: 6px;
-   }
-
-   .info-badge-dot {
-     width: 7px;
-     height: 7px;
-     border-radius: 999px;
-     background: var(--blue-light);
-     box-shadow: 0 0 8px rgba(79, 163, 255, 0.9);
-   }
-
-   footer {
-     text-align: center;
-     padding: 10px 16px 16px;
-     font-size: 11px;
-     color: var(--text-muted);
-   }
-
-   /* RESPONSIVE */
-   @media (max-width: 1024px) {
-     .top-grid {
-       grid-template-columns: 1fr;
-     }
-     .mid-grid {
-       grid-template-columns: repeat(2, minmax(0, 1fr));
-     }
-   }
-
-   @media (max-width: 800px) {
-     .mid-grid {
-       grid-template-columns: 1fr;
-     }
-     .info-panel {
-       grid-template-columns: 1fr;
-     }
-     nav.main-nav {
-       justify-content: flex-start;
-     }
-     .nav-list {
-       flex-wrap: wrap;
-       row-gap: 4px;
-     }
-   }
-
-   @media (max-width: 640px) {
-     .topbar-inner {
-       flex-direction: column;
-       align-items: flex-start;
-       row-gap: 8px;
-     }
-     .topbar-right {
-       align-self: stretch;
-       justify-content: space-between;
-       width: 100%;
-     }
-     .brand-text-main {
-       font-size: 16px;
-     }
-   }
- </style>
+  <meta charset="UTF-8" />
+  <title>AYAS-7 – Výkon & výnos motoru</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Chart.js pro grafy -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    :root {
+      --blue-dark: #003063;
+      --blue-mid: #0053a6;
+      --blue-light: #4f8edc;
+      --bg-page: #020617;
+      --card-bg: #0b1120;
+      --border-soft: rgba(148, 163, 184, 0.4);
+      --text-main: #e5e7eb;
+      --text-muted: #9ca3af;
+      --accent: #22c55e;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, #msg_body {
+      width: 100%;
+      height: 100%;
+    }
+
+    body, #msg_body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background: radial-gradient(circle at 40% 0%, #0f172a 0%, #020617 55%, #000 100%);
+      color: var(--text-main);
+      overflow-x: hidden;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    /* TOP BAR / MENU – stejný základ jako login/payments */
+    header.topbar {
+      background: linear-gradient(to right, var(--blue-dark), var(--blue-mid));
+      color: #fff;
+      padding: 10px 0;
+      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.7);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .topbar-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .brand-text-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 2px;
+    }
+
+    .brand-text-main {
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .brand-text-sub {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: rgba(226, 232, 240, 0.75);
+    }
+
+    nav.main-nav {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .nav-list {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      font-size: 14px;
+    }
+
+    .nav-link {
+      position: relative;
+      padding: 4px 0;
+      color: rgba(226, 232, 240, 0.86);
+      transition: color 0.18s ease;
+      white-space: nowrap;
+    }
+
+    .nav-link::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: -3px;
+      width: 0;
+      height: 2px;
+      border-radius: 999px;
+      background: linear-gradient(to right, #22c55e, #4ade80);
+      transition: width 0.22s ease;
+    }
+
+    .nav-link:hover {
+      color: #ffffff;
+    }
+
+    .nav-link:hover::after {
+      width: 100%;
+    }
+
+    .nav-link.active {
+      color: #ffffff;
+      font-weight: 600;
+    }
+
+    .nav-link.active::after {
+      width: 100%;
+    }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-shrink: 0;
+    }
+
+    .lang-switch {
+      font-size: 12px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(226, 232, 240, 0.8);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+    }
+
+    .lang-switch span {
+      cursor: pointer;
+      opacity: 0.65;
+    }
+
+    .lang-switch span.active {
+      opacity: 1;
+      font-weight: 600;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    .lang-sep {
+      opacity: 0.4;
+    }
+
+    .btn-login {
+      padding: 6px 16px;
+      border-radius: 999px;
+      border: 1px solid rgba(226, 232, 240, 0.6);
+      background: rgba(15, 23, 42, 0.18);
+      color: #f9fafb;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: background 0.18s ease, border-color 0.18s ease, transform 0.12s ease;
+      white-space: nowrap;
+    }
+
+    .btn-login span.dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--accent);
+      box-shadow: 0 0 8px rgba(34, 197, 94, 0.9);
+    }
+
+    .btn-login:hover {
+      background: rgba(15, 23, 42, 0.35);
+      border-color: #ffffff;
+      transform: translateY(-1px);
+    }
+
+    .btn-login:active {
+      transform: translateY(0);
+    }
+
+    /* HLAVNÍ OBSAH */
+    main {
+      min-height: calc(100vh - 72px - 60px);
+      padding: 32px 16px 40px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .page-wrap {
+      max-width: 1200px;
+      width: 100%;
+    }
+
+    .page-header {
+      margin-bottom: 22px;
+    }
+
+    .page-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 2px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.55);
+      font-size: 11px;
+      color: var(--text-muted);
+      background: rgba(15, 23, 42, 0.6);
+      margin-bottom: 8px;
+    }
+
+    .page-eyebrow-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: var(--blue-light);
+      box-shadow: 0 0 10px rgba(79, 163, 255, 0.9);
+    }
+
+    .page-title {
+      font-size: 22px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .page-subtitle {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    /* GRID – horní sekce: velký graf + KPI */
+    .top-grid {
+      margin-top: 24px;
+      display: grid;
+      grid-template-columns: 2.1fr 1.2fr;
+      gap: 18px;
+      margin-bottom: 22px;
+    }
+
+    .card {
+      background: radial-gradient(circle at top left, #111827, #020617 75%);
+      border-radius: 18px;
+      border: 1px solid var(--border-soft);
+      padding: 16px 18px 14px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 18px 40px rgba(15, 23, 42, 0.7);
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: linear-gradient(to right, #4fa3ff, #22c55e);
+      opacity: 0.9;
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .card-title {
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .card-pill {
+      font-size: 11px;
+      padding: 3px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      color: var(--text-muted);
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .pill-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: var(--accent);
+      box-shadow: 0 0 8px rgba(34, 197, 94, 0.9);
+    }
+
+    .card-text {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+      line-height: 1.55;
+    }
+
+    .chart-wrap {
+      margin-top: 4px;
+      background: rgba(15, 23, 42, 0.8);
+      border-radius: 10px;
+      padding: 8px 10px 6px;
+    }
+
+    .chart-wrap canvas {
+      width: 100%;
+      height: 180px;
+    }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+
+    .kpi-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      font-size: 12px;
+      padding: 6px 0;
+      border-bottom: 1px solid rgba(30, 64, 175, 0.5);
+    }
+
+    .kpi-label {
+      color: var(--text-muted);
+    }
+
+    .kpi-value {
+      font-weight: 600;
+      font-size: 13px;
+    }
+
+    .kpi-tag {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--text-muted);
+      margin-top: 6px;
+    }
+
+    /* GRID – střední sekce: 3 boxy pro vrstvy / tokeny */
+    .mid-grid {
+      margin-top: 6px;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+      margin-bottom: 24px;
+    }
+
+    .mini-card-title {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .mini-card-text {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .mini-stat-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      margin-bottom: 3px;
+    }
+
+    .mini-label {
+      color: var(--text-muted);
+    }
+
+    .mini-value {
+      font-weight: 500;
+    }
+
+    .trend-up {
+      color: #4ade80;
+    }
+
+    .trend-down {
+      color: #f97373;
+    }
+
+    /* SPODNÍ INFO PANEL */
+    .info-panel {
+      margin-top: 6px;
+      padding-top: 16px;
+      border-top: 1px solid rgba(31, 41, 55, 0.8);
+      display: grid;
+      grid-template-columns: 2.1fr 1.4fr;
+      gap: 22px;
+    }
+
+    .info-block-title {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .info-block-text {
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    .info-list {
+      margin-top: 4px;
+      padding-left: 18px;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .info-list li {
+      margin-bottom: 4px;
+    }
+
+    .info-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 9px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    .info-badge-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: var(--blue-light);
+      box-shadow: 0 0 8px rgba(79, 163, 255, 0.9);
+    }
+
+    footer {
+      text-align: center;
+      padding: 10px 16px 16px;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 1024px) {
+      .top-grid {
+        grid-template-columns: 1fr;
+      }
+      .mid-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 800px) {
+      .mid-grid {
+        grid-template-columns: 1fr;
+      }
+      .info-panel {
+        grid-template-columns: 1fr;
+      }
+      nav.main-nav {
+        justify-content: flex-start;
+      }
+      .nav-list {
+        flex-wrap: wrap;
+        row-gap: 4px;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .topbar-inner {
+        flex-direction: column;
+        align-items: flex-start;
+        row-gap: 8px;
+      }
+      .topbar-right {
+        align-self: stretch;
+        justify-content: space-between;
+        width: 100%;
+      }
+      .brand-text-main {
+        font-size: 16px;
+      }
+    }
+  </style>
 </head>
 <body>
 
- <header class="topbar">
-   <div class="topbar-inner">
+<header class="topbar">
+  <div class="topbar-inner">
 
-     <div class="brand-text-wrap">
-       <div class="brand-text-main">AYAS-7 Engine</div>
-       <div class="brand-text-sub">WIN-WIN COOPERATIVE</div>
-     </div>
+    <div class="brand-text-wrap">
+      <div class="brand-text-main">AYAS-7 Engine</div>
+      <div class="brand-text-sub">WIN-WIN COOPERATIVE</div>
+    </div>
 
-     <nav class="main-nav" aria-label="Hlavní menu">
-       <ul class="nav-list">
-         <li><a href="dashboard.html" class="nav-link">Home</a></li>
-         <li><a href="members.html" class="nav-link">Členové</a></li>
-         <li><a href="payments.html" class="nav-link">Platby</a></li>
-         <li><a href="performance.html" class="nav-link active">Výkon &amp; výnos</a></li>
-         <li><a href="fintech.html" class="nav-link">FinTech</a></li>
-       </ul>
-     </nav>
+    <nav class="main-nav" aria-label="Hlavní menu">
+      <ul class="nav-list">
+        <li><a href="dashboard.html" class="nav-link">Home</a></li>
+        <li><a href="members.html" class="nav-link">Členové</a></li>
+        <li><a href="payments.html" class="nav-link">Platby</a></li>
+        <li><a href="performance.html" class="nav-link active">Výkon &amp; výnos</a></li>
+        <li><a href="fintech.html" class="nav-link">FinTech</a></li>
+      </ul>
+    </nav>
 
-     <div class="topbar-right">
-       <div class="lang-switch" aria-label="Přepnutí jazyka">
-         <span class="active">CZ</span>
-         <span class="lang-sep">|</span>
-         <span>EN</span>
-       </div>
-       <a href="login.html">
-         <button type="button" class="btn-login">
-           <span class="dot"></span>
-           <span>Login</span>
-         </button>
-       </a>
-     </div>
+    <div class="topbar-right">
+      <div class="lang-switch" aria-label="Přepnutí jazyka">
+        <span class="active">CZ</span>
+        <span class="lang-sep">|</span>
+        <span>EN</span>
+      </div>
+      <a href="login.html">
+        <button type="button" class="btn-login">
+          <span class="dot"></span>
+          <span>Login</span>
+        </button>
+      </a>
+    </div>
 
-   </div>
- </header>
+  </div>
+</header>
 
- <main>
-   <section class="page-wrap">
-     <div class="page-header">
-       <div class="page-eyebrow">
-         <span class="page-eyebrow-dot"></span>
-         Výkonnostní vrstva AYAS-7
-       </div>
-       <h1 class="page-title">Výkon &amp; výnos motoru AYAS-7</h1>
-       <p class="page-subtitle">
-         Přehled zhodnocení USDt.z, GUSD a rozdělení výnosů přes 7 vrstev motoru. Údaje jsou modelované,
-         připravené na napojení na živá data.
-       </p>
-     </div>
+<main>
+  <section class="page-wrap">
+    <div class="page-header">
+      <div class="page-eyebrow">
+        <span class="page-eyebrow-dot"></span>
+        Výkonnostní vrstva AYAS-7
+      </div>
+      <h1 class="page-title">Výkon &amp; výnos motoru AYAS-7</h1>
+      <p class="page-subtitle">
+        Přehled zhodnocení USDt.z, GUSD a rozdělení výnosů přes 7 vrstev motoru. Údaje jsou modelované,
+        připravené na napojení na živá data.
+      </p>
+    </div>
 
-     <div class="top-grid">
+    <!-- HORNÍ GRID – hlavní graf + KPI -->
+    <div class="top-grid">
 
-       <article class="card">
-         <div class="card-header">
-           <div class="card-title">Celkový výkon – USDt.z &amp; GUSD</div>
-           <div class="card-pill">
-             <span class="pill-dot"></span>
-             Modelované zhodnocení 12M
-           </div>
-         </div>
-         <p class="card-text">
-           Křivka ukazuje, jak by se vyvíjel kapitál 10&nbsp;000&nbsp;EUR rozdělený mezi USDt.z a GUSD
-           při konzervativním modelu. V ostré verzi lze napojit přímo data z DEX a interního routingu.
-         </p>
-         <div class="chart-wrap">
-           <canvas id="perfMainChart"></canvas>
-         </div>
-       </article>
+      <!-- Hlavní performance graf -->
+      <article class="card">
+        <div class="card-header">
+          <div class="card-title">Celkový výkon – USDt.z &amp; GUSD</div>
+          <div class="card-pill">
+            <span class="pill-dot"></span>
+            Modelované zhodnocení 12M
+          </div>
+        </div>
+        <p class="card-text">
+          Křivka ukazuje, jak by se vyvíjel kapitál 10&nbsp;000&nbsp;EUR rozdělený mezi USDt.z a GUSD
+          při konzervativním modelu. V ostré verzi lze napojit přímo data z DEX a interního routingu.
+        </p>
+        <div class="chart-wrap">
+          <canvas id="perfMainChart"></canvas>
+        </div>
+      </article>
 
-       <aside class="card">
-         <div class="card-header">
-           <div class="card-title">Klíčové metriky výkonu</div>
-           <div class="card-pill">
-             <span class="pill-dot"></span>
-             AYAS-7 benchmark
-           </div>
-         </div>
-         <p class="card-text">
-           Rychlý přehled toho, jak motor pracuje s kapitálem členů. Hodnoty jsou illustrativní – pro
-           audit lze napojit na databázi <b>members_data</b> a <b>members_rewards</b>.
-         </p>
+      <!-- KPI panel -->
+      <aside class="card">
+        <div class="card-header">
+          <div class="card-title">Klíčové metriky výkonu</div>
+          <div class="card-pill">
+            <span class="pill-dot"></span>
+            AYAS-7 benchmark
+          </div>
+        </div>
+        <p class="card-text">
+          Rychlý přehled toho, jak motor pracuje s kapitálem členů. Hodnoty jsou ilustrativní – pro
+          audit lze napojit na databázi <b>members_data</b> a <b>members_rewards</b>.
+        </p>
 
-         <div class="kpi-grid">
-           <div class="kpi-row">
-             <span class="kpi-label">Očekávaný roční výnos USDt.z</span>
-             <span class="kpi-value">+5,8&nbsp;%</span>
-           </div>
-           <div class="kpi-row">
-             <span class="kpi-label">Očekávaný roční výnos GUSD</span>
-             <span class="kpi-value">+3,2&nbsp;%</span>
-           </div>
-           <div class="kpi-row">
-             <span class="kpi-label">Podíl výnosu pro členy</span>
-             <span class="kpi-value">72&nbsp;%</span>
-           </div>
-           <div class="kpi-row">
-             <span class="kpi-label">Rezervy &amp; bezpečnostní polštář</span>
-             <span class="kpi-value">18&nbsp;%</span>
-           </div>
-           <div class="kpi-row">
-             <span class="kpi-label">Fond provozu &amp; rozvoje</span>
-             <span class="kpi-value">10&nbsp;%</span>
-           </div>
-         </div>
+        <div class="kpi-grid">
+          <div class="kpi-row">
+            <span class="kpi-label">Očekávaný roční výnos USDt.z</span>
+            <span class="kpi-value">+5,8&nbsp;%</span>
+          </div>
+          <div class="kpi-row">
+            <span class="kpi-label">Očekávaný roční výnos GUSD</span>
+            <span class="kpi-value">+3,2&nbsp;%</span>
+          </div>
+          <div class="kpi-row">
+            <span class="kpi-label">Podíl výnosu pro členy</span>
+            <span class="kpi-value">72&nbsp;%</span>
+          </div>
+          <div class="kpi-row">
+            <span class="kpi-label">Rezervy &amp; bezpečnostní polštář</span>
+            <span class="kpi-value">18&nbsp;%</span>
+          </div>
+          <div class="kpi-row">
+            <span class="kpi-label">Fond provozu &amp; rozvoje</span>
+            <span class="kpi-value">10&nbsp;%</span>
+          </div>
+        </div>
 
-         <div class="kpi-tag">
-           Model AYAS-7 · rozdělení výnosů podle WW-KEY a 7 vrstev motoru
-         </div>
-       </aside>
-     </div>
+        <div class="kpi-tag">
+          Model AYAS-7 · rozdělení výnosů podle WW-KEY a 7 vrstev motoru
+        </div>
+      </aside>
+    </div>
 
-     <div class="mid-grid">
+    <!-- STŘEDNÍ GRID – vrstvy, WW-KEY, riziko -->
+    <div class="mid-grid">
 
-       <article class="card">
-         <div class="card-header">
-           <div class="card-title">Výnos podle vrstev AYAS-7</div>
-           <div class="card-pill">
-             <span class="pill-dot"></span>
-             Vrstva 1–7 · roční zhodnocení
-           </div>
-         </div>
-         <p class="mini-card-text">
-           Sloupcový graf ukazuje, jakou část výnosu generují jednotlivé vrstvy. V ostrém provozu se
-           zde mohou zobrazovat živá data včetně upozornění na limity a rizika.
-         </p>
-         <div class="chart-wrap">
-           <canvas id="layersChart"></canvas>
-         </div>
-       </article>
+      <!-- Výnos podle vrstev -->
+      <article class="card">
+        <div class="card-header">
+          <div class="card-title">Výnos podle vrstev AYAS-7</div>
+          <div class="card-pill">
+            <span class="pill-dot"></span>
+            Vrstva 1–7 · roční zhodnocení
+          </div>
+        </div>
+        <p class="mini-card-text">
+          Sloupcový graf ukazuje, jakou část výnosu generují jednotlivé vrstvy. V ostrém provozu se
+          zde mohou zobrazovat živá data včetně upozornění na limity a rizika.
+        </p>
+        <div class="chart-wrap">
+          <canvas id="layersChart"></canvas>
+        </div>
+      </article>
 
-       <article class="card">
-         <div class="card-header">
-           <div class="card-title">Tok výnosu → WW-KEY</div>
-           <div class="card-pill">
-             <span class="pill-dot"></span>
-             Routing &amp; rozdělení
-           </div>
-         </div>
-         <p class="mini-card-text">
-           AYAS-7 přepočítává výnosy do klíčů WW-KEY. Každý klíč reprezentuje podíl na motoru a
-           dostává svou část z výnosu po průchodu 7 vrstvami.
-         </p>
-         <div class="mini-stat-row">
-           <span class="mini-label">Aktivní WW-KEY</span>
-           <span class="mini-value">42&nbsp;350</span>
-         </div>
-         <div class="mini-stat-row">
-           <span class="mini-label">Výnos za posledních 30 dní</span>
-           <span class="mini-value trend-up">+3,1&nbsp;%</span>
-         </div>
-         <div class="mini-stat-row">
-           <span class="mini-label">Průměr na jednoho člena</span>
-           <span class="mini-value">+1,4&nbsp;% / měsíc</span>
-         </div>
-         <p class="card-text" style="margin-top:8px;">
-           Přesná čísla se v ostré verzi vypočítají z tabulek <b>members_data</b> a <b>members_rewards</b>
-           podle počtu WW-KEY každého člena.
-         </p>
-       </article>
+      <!-- Tok výnosu → WW-KEY -->
+      <article class="card">
+        <div class="card-header">
+          <div class="card-title">Tok výnosu → WW-KEY</div>
+          <div class="card-pill">
+            <span class="pill-dot"></span>
+            Routing &amp; rozdělení
+          </div>
+        </div>
+        <p class="mini-card-text">
+          AYAS-7 přepočítává výnosy do klíčů WW-KEY. Každý klíč reprezentuje podíl na motoru a
+          dostává svou část z výnosu po průchodu 7 vrstvami.
+        </p>
+        <div class="mini-stat-row">
+          <span class="mini-label">Aktivní WW-KEY</span>
+          <span class="mini-value">42&nbsp;350</span>
+        </div>
+        <div class="mini-stat-row">
+          <span class="mini-label">Výnos za posledních 30 dní</span>
+          <span class="mini-value trend-up">+3,1&nbsp;%</span>
+        </div>
+        <div class="mini-stat-row">
+          <span class="mini-label">Průměr na jednoho člena</span>
+          <span class="mini-value">+1,4&nbsp;% / měsíc</span>
+        </div>
+        <p class="card-text" style="margin-top:8px;">
+          Přesná čísla se v ostré verzi vypočítají z tabulek <b>members_data</b> a <b>members_rewards</b>
+          podle počtu WW-KEY každého člena.
+        </p>
+      </article>
 
-       <article class="card">
-         <div class="card-header">
-           <div class="card-title">Stabilita &amp; rizikový profil</div>
-           <div class="card-pill">
-             <span class="pill-dot"></span>
-             Risk &amp; compliance
-           </div>
-         </div>
-         <p class="mini-card-text">
-           Layer 4 AYAS-7 hlídá, aby výnos nebyl na úkor řízení rizik. Systém pracuje s limity expozic,
-           diverzifikací a scénáři stresových testů.
-         </p>
-         <div class="mini-stat-row">
-           <span class="mini-label">Cílová volatilita USDt.z</span>
-           <span class="mini-value">nízká</span>
-         </div>
-         <div class="mini-stat-row">
-           <span class="mini-label">Tracking vůči benchmarku</span>
-           <span class="mini-value trend-up">+0,6&nbsp;p.b.</span>
-         </div>
-         <div class="mini-stat-row">
-           <span class="mini-label">Max. drawdown model</span>
-           <span class="mini-value trend-down">-2,4&nbsp;%</span>
-         </div>
-         <p class="card-text" style="margin-top:8px;">
-           Tyto parametry lze přímo dokumentovat pro banky a investory – AYAS-7 není „black box“,
-           ale auditovatelný motor.
-         </p>
-       </article>
+      <!-- Stabilita & rizikový profil -->
+      <article class="card" id="risk-card">
+        <div class="card-header">
+          <div class="card-title">Stabilita &amp; rizikový profil</div>
+          <div class="card-pill">
+            <span class="pill-dot"></span>
+            Risk &amp; compliance
+          </div>
+        </div>
+        <p class="mini-card-text">
+          Layer 4 AYAS-7 hlídá, aby výnos nebyl na úkor řízení rizik. Systém pracuje s limity expozic,
+          diverzifikací a scénáři stresových testů.
+        </p>
+        <div class="mini-stat-row">
+          <span class="mini-label">Cílová volatilita USDt.z</span>
+          <span class="mini-value">nízká</span>
+        </div>
+        <div class="mini-stat-row">
+          <span class="mini-label">Tracking vůči benchmarku</span>
+          <span class="mini-value trend-up">+0,6&nbsp;p.b.</span>
+        </div>
+        <div class="mini-stat-row">
+          <span class="mini-label">Max. drawdown model</span>
+          <span class="mini-value trend-down">-2,4&nbsp;%</span>
+        </div>
+        <p class="card-text" style="margin-top:8px;">
+          Tyto parametry lze přímo dokumentovat pro banky a investory – AYAS-7 není „black box“,
+          ale auditovatelný motor.
+        </p>
+      </article>
 
-     </div>
+    </div>
 
-     <div class="info-panel">
+    <!-- SPODNÍ INFO PANEL -->
+    <div class="info-panel">
 
-       <div>
-         <div class="info-block-title">Jak AYAS-7 přeměňuje vklad na výkon</div>
-         <p class="info-block-text">
-           Člen vloží kapitál (FIAT nebo krypto), za který získá WW-KEY. Tyto klíče definují jeho
-           podíl na výkonném motoru. AYAS-7 pak směruje kapitál přes 7 vrstev – od tokenizace,
-           přes likviditu, routing, risk až po finální analytiku.
-         </p>
-         <ul class="info-list">
-           <li><b>Layer 1–2:</b> tokeny USDt.z &amp; GUSD, likvidita a pooly na DEX.</li>
-           <li><b>Layer 3–4:</b> routing výnosu, řízení rizika a limity expozic.</li>
-           <li><b>Layer 5–6:</b> FinTech rozhraní, reporting a výpočetní jádro.</li>
-           <li><b>Layer 7:</b> tato stránka – konsolidovaný pohled na výkon a výnos.</li>
-         </ul>
-       </div>
+      <div>
+        <div class="info-block-title">Jak AYAS-7 přeměňuje vklad na výkon</div>
+        <p class="info-block-text">
+          Člen vloží kapitál (FIAT nebo krypto), za který získá WW-KEY. Tyto klíče definují jeho
+          podíl na výkonném motoru. AYAS-7 pak směruje kapitál přes 7 vrstev – od tokenizace,
+          přes likviditu, routing, risk až po finální analytiku.
+        </p>
+        <ul class="info-list">
+          <li><b>Layer 1–2:</b> tokeny USDt.z &amp; GUSD, likvidita a pooly na DEX.</li>
+          <li><b>Layer 3–4:</b> routing výnosu, řízení rizika a limity expozic.</li>
+          <li><b>Layer 5–6:</b> FinTech rozhraní, reporting a výpočetní jádro.</li>
+          <li><b>Layer 7:</b> tato stránka – konsolidovaný pohled na výkon a výnos.</li>
+        </ul>
+      </div>
 
-       <div>
-         <div class="info-badge">
-           <span class="info-badge-dot"></span>
-           Připraveno pro audit &amp; investory
-         </div>
-         <div class="info-block-title">Co uvidí členové a co uvidí banky</div>
-         <p class="info-block-text">
-           Člen v členské sekci uvidí svůj vklad, počet WW-KEY a podíl na výnosu. Investor nebo banka
-           může v tomto dashboardu sledovat agregovaná čísla – výkonnost tokenů, vrstev a stabilitu
-           celého motoru. Vše lze exportovat do CSV/PDF a přiložit k technické dokumentaci.
-         </p>
-         <p class="info-block-text" style="margin-top:6px;">
-           Další krok je napojení na živá data z databáze a DEX – front-end je připraven,
-           backend můžeš kdykoli doplnit podle strategie družstva Win-Win.
-         </p>
-       </div>
+      <div>
+        <div class="info-badge">
+          <span class="info-badge-dot"></span>
+          Připraveno pro audit &amp; investory
+        </div>
+        <div class="info-block-title">Co uvidí členové a co uvidí banky</div>
+        <p class="info-block-text">
+          Člen v členské sekci uvidí svůj vklad, počet WW-KEY a podíl na výnosu. Investor nebo banka
+          může v tomto dashboardu sledovat agregovaná čísla – výkonnost tokenů, vrstev a stabilitu
+          celého motoru. Vše lze exportovat do CSV/PDF a přiložit k technické dokumentaci.
+        </p>
+        <p class="info-block-text" style="margin-top:6px;">
+          Další krok je napojení na živá data z databáze a DEX – front-end je připraven,
+          backend můžeš kdykoli doplnit podle strategie družstva Win-Win.
+        </p>
+      </div>
 
-     </div>
+    </div>
 
-   </section>
- </main>
+  </section>
+</main>
 
- <footer>
-   © 2025 Win-Win Družstvo · AYAS-7 Engine · Výkon &amp; výnos motoru
- </footer>
+<footer>
+  © 2025 Win-Win Družstvo · AYAS-7 Engine · Výkon &amp; výnos motoru
+</footer>
 
- <script>
-// ================== PERFORMANCE CHART – USDt.z & GUSD ==================
-const perfCtx = document.getElementById('perfMainChart').getContext('2d');
-const perfMainChart = new Chart(perfCtx, {
-  type: 'line',
-  data: {
-    labels: ['M1','M2','M3','M4','M5','M6','M7','M8','M9','M10','M11','M12'],
-    datasets: [
-      {
-        label: 'USDt.z',
-        data: [10000,10080,10160,10240,10350,10440,10560,10680,10820,10960,11120,11300],
-        borderColor: '#4fa3ff',
-        backgroundColor: 'rgba(79,163,255,0.12)',
-        tension: .35,
-        fill: true,
-        pointRadius: 0
+<!-- =====================  SCRIPTS – GRAFY + ANIMACE  ===================== -->
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  if (typeof Chart === "undefined") {
+    console.warn("Chart.js není dostupný");
+    return;
+  }
+
+  const perfCanvas   = document.getElementById("perfMainChart");
+  const layersCanvas = document.getElementById("layersChart");
+  if (!perfCanvas || !layersCanvas) {
+    console.warn("Chybí canvas prvky pro grafy");
+    return;
+  }
+
+  /* ------------------  1) ZÁKLADNÍ DATA  ------------------ */
+
+  const baseUsd = [10000, 10080, 10160, 10240, 10350, 10440, 10560, 10680, 10820, 10960, 11120, 11300];
+  const baseGusd = [10000, 10045, 10090, 10140, 10190, 10240, 10300, 10360, 10420, 10480, 10540, 10600];
+  const months = ['M1','M2','M3','M4','M5','M6','M7','M8','M9','M10','M11','M12'];
+
+  const baseLayers = [5.2, 5.8, 5.4, 4.3, 5.0, 6.1, 4.7];
+
+  /* ------------------  2) GRAFY – VYTVOŘENÍ  ------------------ */
+
+  const perfChart = new Chart(perfCanvas.getContext("2d"), {
+    type: "line",
+    data: {
+      labels: months,
+      datasets: [
+        {
+          label: "USDt.z",
+          data: baseUsd.slice(),
+          borderColor: "#4fa3ff",
+          backgroundColor: "rgba(79,163,255,0.12)",
+          tension: 0.35,
+          fill: true,
+          pointRadius: 0
+        },
+        {
+          label: "GUSD",
+          data: baseGusd.slice(),
+          borderColor: "#22c55e",
+          backgroundColor: "rgba(34,197,94,0.10)",
+          tension: 0.35,
+          fill: true,
+          pointRadius: 0
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          labels: {
+            font: { family: "Segoe UI", size: 11 },
+            color: "#e5e7eb"
+          }
+        }
       },
-      {
-        label: 'GUSD',
-        data: [10000,10045,10090,10140,10190,10240,10300,10360,10420,10480,10540,10600],
-        borderColor: '#22c55e',
-        backgroundColor: 'rgba(34,197,94,0.10)',
-        tension: .35,
-        fill: true,
-        pointRadius: 0
-      }
-    ]
-  },
-  options: {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: {
-        labels: {
-          font: { family:'Segoe UI', size:11 }, color:'#e5e7eb'
+      scales: {
+        x: {
+          grid: { color: "rgba(30,64,175,0.35)" },
+          ticks: {
+            font: { family: "Segoe UI", size: 11 },
+            color: "#9ca3af"
+          }
+        },
+        y: {
+          grid: { color: "rgba(30,64,175,0.35)" },
+          ticks: {
+            font: { family: "Segoe UI", size: 11 },
+            color: "#9ca3af",
+            callback: v => v.toLocaleString("cs-CZ") + " €"
+          }
         }
       }
-    },
-    scales: {
-      x:{ grid:{color:'rgba(30,64,175,0.35)'},
-        ticks:{font:{family:'Segoe UI',size:11},color:'#9ca3af'} },
-      y:{ grid:{color:'rgba(30,64,175,0.35)'},
-        ticks:{font:{family:'Segoe UI',size:11},color:'#9ca3af',
-          callback:v=>v.toLocaleString('cs-CZ')+' €'} }
     }
-  }
-});
-window.perfMainChart = perfMainChart;
-
-
-// ================== BAR – VRSTVY MOTORU 1–7 ==================
-const layersCtx = document.getElementById('layersChart').getContext('2d');
-const layersChart = new Chart(layersCtx, {
-  type:'bar',
-  data:{
-    labels:['L1','L2','L3','L4','L5','L6','L7'],
-    datasets:[{
-      data:[5.2,5.8,5.4,4.3,5.0,6.1,4.7],
-      backgroundColor:[
-        '#22c55e','#4fa3ff','#8b5cf6','#facc15',
-        '#f97316','#0ea5e9','#6b7280'
-      ]
-    }]
-  },
-  options:{
-    responsive:true,
-    maintainAspectRatio:false,
-    plugins:{legend:{display:false}},
-    scales:{
-      x:{ grid:{display:false},
-        ticks:{font:{family:'Segoe UI',size:11},color:'#9ca3af'}},
-      y:{ beginAtZero:true, suggestedMax:7,
-        grid:{color:'rgba(30,64,175,0.35)'},
-        ticks:{font:{family:'Segoe UI',size:11},color:'#9ca3af',
-        callback:v=>v+' %'}}
-    }
-  }
-});
-window.layersChart = layersChart;
-
-
-// ================== ANIMAČNÍ ENGINE – SKUTEČNÝ POHYB 🔥 ==================
-function animateValue(from,to,duration,onUpdate){
-  const start=performance.now();
-  function frame(time){
-    const p=Math.min((time-start)/duration,1);
-    const eased=from+(to-from)*(0.5-0.5*Math.cos(Math.PI*p));
-    onUpdate(eased);
-    if(p<1) requestAnimationFrame(frame);
-  }
-  requestAnimationFrame(frame);
-}
-
-setInterval(()=>{
-  if(!window.perfMainChart || !window.layersChart) return;
-
-  // ===== Hlavní křivka – jemný živý růst/dýchání =====
-  const d=perfMainChart.data.datasets[0].data;
-  const last=d[d.length-1]||11200;
-  const target=last+(Math.random()*180-90);
-
-  animateValue(last,target,900,(v)=>{
-    d.push(v);
-    if(d.length>22) d.shift();
-    perfMainChart.update('none');
   });
 
-  // ===== Bar graf – mikropohyby vrstev =====
-  layersChart.data.datasets[0].data=
-    layersChart.data.datasets[0].data.map(v=>v+(Math.random()-0.5)*0.05);
+  const layersChart = new Chart(layersCanvas.getContext("2d"), {
+    type: "bar",
+    data: {
+      labels: ["L1","L2","L3","L4","L5","L6","L7"],
+      datasets: [{
+        data: baseLayers.slice(),
+        backgroundColor: [
+          "#22c55e",
+          "#4fa3ff",
+          "#8b5cf6",
+          "#facc15",
+          "#f97316",
+          "#0ea5e9",
+          "#6b7280"
+        ]
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: {
+          grid: { display: false },
+          ticks: {
+            font: { family: "Segoe UI", size: 11 },
+            color: "#9ca3af"
+          }
+        },
+        y: {
+          beginAtZero: true,
+          grid: { color: "rgba(30,64,175,0.35)" },
+          ticks: {
+            font: { family: "Segoe UI", size: 11 },
+            color: "#9ca3af",
+            callback: v => v + " %"
+          },
+          suggestedMax: 7
+        }
+      }
+    }
+  });
 
-  layersChart.update('none');
+  /* ------------------  3) HELPER – DRIFT  ------------------ */
 
-},1300);
+  function drift(val, min, max, step) {
+    let next = val + (Math.random() - 0.5) * step;
+    if (next > max) next = max - step * 0.4;
+    if (next < min) next = min + step * 0.4;
+    return Number(next.toFixed(2));
+  }
+
+  /* ------------------  4) KPI DYNAMICS  ------------------ */
+
+  let k_usd  = 5.8;
+  let k_gusd = 3.2;
+  let k_mem  = 72;
+  let k_res  = 18;
+  let k_dev  = 10;
+
+  const kpiRows = Array.from(document.querySelectorAll(".kpi-row"));
+
+  function updateKPIs() {
+    k_usd  = drift(k_usd,  4.8,  6.3, 0.10);
+    k_gusd = drift(k_gusd, 2.6,  3.6, 0.08);
+    k_mem  = drift(k_mem,  70,   74,  0.25);
+    k_res  = drift(k_res,  16.5, 19.6,0.20);
+    k_dev  = drift(k_dev,   9.2, 11.4,0.18);
+
+    if (kpiRows.length >= 5) {
+      kpiRows[0].querySelector(".kpi-value").innerHTML = `+${k_usd.toFixed(1)}&nbsp;%`;
+      kpiRows[1].querySelector(".kpi-value").innerHTML = `+${k_gusd.toFixed(1)}&nbsp;%`;
+      kpiRows[2].querySelector(".kpi-value").innerHTML = `${k_mem.toFixed(1)}&nbsp;%`;
+      kpiRows[3].querySelector(".kpi-value").innerHTML = `${k_res.toFixed(1)}&nbsp;%`;
+      kpiRows[4].querySelector(".kpi-value").innerHTML = `${k_dev.toFixed(1)}&nbsp;%`;
+    }
+  }
+
+  updateKPIs();
+  setInterval(updateKPIs, 2200);
+
+  /* ------------------  5) RISK BLOK – TRACKING / DRAWDOWN  ------------------ */
+
+  const riskCard = document.getElementById("risk-card");
+  const riskRows = riskCard ? riskCard.querySelectorAll(".mini-stat-row") : [];
+
+  let track = 0.60;   // p.b.
+  let draw  = -2.40;  // %
+
+  function updateRisk() {
+    if (!riskCard || riskRows.length < 3) return;
+
+    track = drift(track, 0.40, 0.95, 0.06);
+    draw  = drift(draw, -3.2, -1.8, 0.10);
+
+    // tracking
+    const trackEl = riskRows[1].querySelector(".mini-value");
+    trackEl.textContent = `+${track.toFixed(2)} p.b.`;
+
+    // drawdown
+    const ddEl = riskRows[2].querySelector(".mini-value");
+    ddEl.textContent = `${draw.toFixed(2)} %`;
+    ddEl.classList.add("trend-down");
+    ddEl.style.color = draw < -2.8 ? "#ff4f4f" : "#f97373";
+
+    // Jemné pulznutí okraje podle rizika
+    const intensity = Math.min(1, Math.abs(draw + 2.4) / 1.0); // 0–1
+    riskCard.style.boxShadow =
+      `0 18px 40px rgba(15,23,42,0.7),
+       0 0 ${8 + 10 * intensity}px rgba(239,68,68,${0.25 + 0.25 * intensity})`;
+  }
+
+  updateRisk();
+  setInterval(updateRisk, 2400);
+
+  /* ------------------  6) GRAFY – JEMNÁ ANIMACE  ------------------ */
+
+  let factorUsd  = 1.00;
+  let factorGusd = 1.00;
+  let layerVals  = baseLayers.slice();
+
+  function updateCharts() {
+    // USDt.z – jemné dýchání kolem základní křivky
+    factorUsd  = drift(factorUsd,  0.98, 1.06, 0.006);
+    factorGusd = drift(factorGusd, 0.99, 1.04, 0.004);
+
+    perfChart.data.datasets[0].data = baseUsd.map(v  => Number((v  * factorUsd ).toFixed(0)));
+    perfChart.data.datasets[1].data = baseGusd.map(v => Number((v * factorGusd).toFixed(0)));
+    perfChart.update("none");
+
+    // Sloupcový graf – každá vrstva kolem své základní hodnoty
+    layerVals = layerVals.map((v, i) => {
+      const base = baseLayers[i];
+      const min = base - 0.6;
+      const max = base + 0.6;
+      return drift(v, min, max, 0.06);
+    });
+
+    layersChart.data.datasets[0].data = layerVals;
+    layersChart.update("none");
+  }
+
+  updateCharts();
+  setInterval(updateCharts, 2000);
+
+  console.log("✅ AYAS-7 performance page – animace aktivní");
+});
 </script>
-</body>
-</html>
 
 </body>
 </html>
