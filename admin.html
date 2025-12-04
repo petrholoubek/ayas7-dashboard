@@ -721,158 +721,113 @@ main{
 
   </section>
 
-  <!-- BOTTOM COMM / MANUAL -->
-  <section class="bottom-bar">
-    <div class="bottom-left">
-      <strong>Komunikační centrum · AYAS-7 Velín</strong><br>
-      Demo režim – real-time simulace. V ostré verzi se zde napojí notifikace, alerty a provozní zprávy.
-    </div>
-    <div class="bottom-contact">
-      <div>E-mail: <strong>petrholoubek39@gmail.com</strong></div>
-      <div>WhatsApp / Tel: <strong>+420 778 060 622</strong></div>
-    </div>
-    <a class="bottom-pill" href="manual-control-room.html">
-      <span class="dot" style="background:var(--accent-blue);box-shadow:0 0 10px rgba(79,163,255,0.9);"></span>
-      Otevřít manuál k velínu (demo)
-    </a>
-  </section>
+ <script>
+/* =========================
+      AYAS-7 LIVE ENGINE JS
+========================= */
 
-  <footer style="text-align:center;margin-top:18px;color:var(--muted)">
-    © 2025 Win-Win Družstvo · AYAS-7 Engine · Demo
-  </footer>
-</main>
+const $ = s=>document.querySelector(s);
+const $$= s=>document.querySelectorAll(s);
 
-<!-- CHIP CORE SCRIPT -->
+/* === STATE === */
+let S = {
+ ai:true,
+ manual:false,
+ brake:false,
+ tvl:1600000,
+ change:-0.02,
+ yield:4.8,
+ latency:52,
+ writes:70,
+ integrity:100,
+ msReq:5, msSig:4,
+ block:23230000,
+ sync:0.95, rpc:3.5,
+ L:[0.79,0.99,0.82,0.63,0.66,0.55,0.49],
+ ops:1500, queue:900, thr:"320 Mb/s",
+ logs:[], alive:true
+};
+
+/* === FAST HELPERS === */
+function log(m){
+ let t=new Date().toLocaleTimeString();
+ S.logs.unshift(`${t} · ${m}`);
+ if(S.logs.length>100)S.logs.pop();
+ renderLog();
+}
+function bar(id,v){ if($(id))$(id).style.width=v+"%"; }
+
+/* === RENDER ENGINE === */
+function render(){
+ $("#aiPercent").textContent=Math.round(S.L[0]*100)+"%";
+ $("#L1").style.width=Math.round(S.L[0]*100)+'%';
+ $("#L2").style.width=Math.round(S.L[1]*100)+'%';
+ $("#L3").style.width=Math.round(S.L[2]*100)+'%';
+ $("#L4").style.width=Math.round(S.L[3]*100)+'%';
+ $("#L5").style.width=Math.round(S.L[4]*100)+'%';
+ $("#L6").style.width=Math.round(S.L[5]*100)+'%';
+ $("#L7").style.width=Math.round(S.L[6]*100)+'%';
+
+ $("#msSubmitted").textContent=S.msSig;
+ $("#blockHeight").textContent="#"+S.block.toLocaleString();
+ $("#rpcLatency").textContent=S.rpc.toFixed(2)+" s";
+ $("#syncPerc").textContent=Math.round(S.sync*100)+"%";
+ $("#ops").textContent=S.ops;
+ $("#queue").textContent=S.queue;
+ $("#through").textContent=S.thr;
+
+ $("#ledAi").style.background = S.ai? "var(--accent-green)" : "#ff4444";
+ $("#toggleAiLabel").textContent = S.ai?"AI ON":"AI OFF";
+ $("#manualActive").textContent = S.manual?"ON":"OFF";
+
+}
+
+/* === LOG === */
+function renderLog(){
+ let box=$("#logBox"); box.innerHTML="";
+ S.logs.slice(0,40).forEach(x=>{
+  let d=document.createElement("div");
+  d.className="log-item"; d.textContent=x;
+  box.appendChild(d);
+ });
+}
+
+/* === SIMULATION LOOP === */
+function tick(){
+ if(!S.ai)return;
+ S.block += Math.floor(Math.random()*3);
+ S.rpc += (Math.random()-.5)*.12;
+ S.sync=Math.min(1, Math.max(.7,S.sync+(Math.random()-.5)*.01));
+ S.ops=Math.max(400,Math.min(3500,S.ops+(Math.random()-.5)*120));
+ S.queue=Math.max(10,S.queue+(Math.random()-.4)*20);
+ if(Math.random()>.85)log("AI adaptive cycle processed");
+ render();
+}
+setInterval(tick,250);
+
+/* === CONTROLS === */
+$("#toggleAI").onclick=()=>{ S.ai=!S.ai; log("AI "+(S.ai?"RESUMED":"STOPPED")); render(); }
+$("#btnManual").onclick=()=>{ S.manual=!S.manual; log("Manual mode "+(S.manual?"ON":"OFF")); render(); }
+$("#btnBrake").onclick=()=>{ alert("EMERGENCY BRAKE (demo)"); log("BRAKE TRIGGERED!"); }
+$("#viewPools").onclick=()=>alert("POOL VIEW DEMO");
+$("#openMs").onclick=()=>alert("MULTISIG DEMO");
+$("#exportAudit").onclick=()=>alert("AUDIT EXPORTED");
+$("#refreshChain").onclick=()=>{ S.block++; log("CHAIN UPDATED"); render(); }
+$("#engineSim").onclick=()=>{ S.L=S.L.map(v=>Math.min(1,v+.05)); log("ENGINE CYCLE++"); render(); }
+$("#engineReset").onclick=()=>{ S.L=[0.79,0.99,0.82,0.63,0.66,0.55,0.49]; log("ENGINE RESET"); render(); }
+
+render(); log("AYAS-7 LIVE SYSTEM READY");
+<!-- 1) Hlavní REALTIME řídící systém -->
+<script>
+  ... (LIVE ENGINE JS který jsem ti poslal celý předtím) ...
+</script>
+
+<!-- 2) CHIP-CORE engine → animace, glow, pulz, efekt AI -->
 <script src="assets/chip-core.js"></script>
-<script>
-// === CHIP-CORE → ADMIN SYNC LINK === //
 
-setInterval(()=>{
-    if(window.AYAS7ChipCore){
-        const s = AYAS7ChipCore.state;
-
-        // převod stavu jádra do UI velína
-        state.aiRuntime      = s.aiRuntime;
-        state.aiInterventions= s.aiInterventions;
-        state.pool           = s.pool;
-        state.db             = s.db;
-        state.chain          = s.chain;
-        state.layers         = s.layers;
-        state.throughput     = s.throughput;
-
-        render(); // přemaluje dashboard
-    }
-},600); // každých 0.6 sekundy
-</script>
-<script>
-// === ADMIN -> CHIP-CORE CONTROL === //
-function coreCommand(change){
-    if(window.AYAS7ChipCore){
-        Object.assign(AYAS7ChipCore.state, change);
-        if(AYAS7ChipCore.render) AYAS7ChipCore.render();
-    }
-}
-
-// AI Toggle
-document.getElementById("toggleAI")?.addEventListener("click",()=>{
-    coreCommand({ aiOn: !AYAS7ChipCore.state.aiOn });
-});
-
-// Manual Mode
-document.getElementById("btnManual")?.addEventListener("click",()=>{
-    coreCommand({ manual: !AYAS7ChipCore.state.manual });
-});
-
-// Brake
-document.getElementById("btnBrake")?.addEventListener("click",()=>{
-    coreCommand({ brake: true, aiOn:false });
-});
-
-// Pool push
-document.getElementById("runRebalance")?.addEventListener("click",()=>{
-    coreCommand({ pool:{ 
-        ...AYAS7ChipCore.state.pool,
-        tvl: AYAS7ChipCore.state.pool.tvl + 20000,
-        change: AYAS7ChipCore.state.pool.change + 0.01
-    }});
-});
-</script>
-...
-<!-- sem NIC nedávat -->
-
-<script>
-/* ===============================
-       STABILNÍ AI — režim A
-   =============================== */
-
-document.getElementById("toggleAI").addEventListener("click", () => {
-
-    if (!state.aiOn) {
-        state.aiOn = true;
-        state.manual = false;
-        state.brake = false;
-        state.aiRuntime = 0.70;
-        pushLog("⚡ AI REACTIVED — SYSTEM STABLE ON AUTO");
-    } else {
-        state.aiOn = false;
-        state.manual = true;
-        state.aiRuntime = 0.35;
-        pushLog("🔧 AI DISABLED — MANUAL CONTROL ACTIVE");
-    }
-
-    render();
-});
-</script>
-
-<script>
-document.addEventListener("DOMContentLoaded",()=>{
-
-/* === AI toggle === */
-if(document.getElementById("toggleAI")){
-   document.getElementById("toggleAI").addEventListener("click",()=>{
-        state.aiOn = !state.aiOn;
-        if(!state.aiOn) state.manual = true;
-        pushLog(state.aiOn ? "AI ACTIVATED" : "AI DISABLED → MANUAL MODE");
-        render();
-   });
-}
-
-/* === MANUAL MODE === */
-if(document.getElementById("btnManual")){
-   document.getElementById("btnManual").addEventListener("click",()=>{
-       state.manual = !state.manual;
-       pushLog(state.manual ? "MANUAL MODE ON" : "MANUAL MODE OFF");
-       render();
-   });
-}
-
-/* === EMERGENCY BRAKE === */
-if(document.getElementById("btnBrake")){
-   document.getElementById("btnBrake").addEventListener("click",()=>{
-        const ok = prompt("Type EMERGENCY to confirm:");
-        if(ok==="EMERGENCY"){
-            state.brake=true;
-            state.aiOn=false;
-            state.manual=true;
-            pushLog("🚨 EMERGENCY BRAKE ACTIVATED");
-            render();
-        }
-   });
-}
-
-/* === SAFE MODE RESET === */
-if(document.getElementById("btnSafe")){
-    document.getElementById("btnSafe").addEventListener("click",()=>{
-        state.brake=false;
-        pushLog("SAFE MODE RESTORED");
-        render();
-    });
-}
-
-});
-</script>
-<!-- CHIP CORE ENGINE -->
-<script src="assets/chip-core.js"></script>
 </body>
 </html>
 
+</script>
+</body>
+</html>
