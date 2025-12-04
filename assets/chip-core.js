@@ -4,7 +4,7 @@
 (function () {
   'use strict';
 
-  // --- Helpery --------------------------------------------------------
+  // HELPERY
   const $ = (s) => document.querySelector(s);
   const $$ = (s) => Array.from(document.querySelectorAll(s));
   const fmt = (n) => n.toLocaleString('cs-CZ');
@@ -23,7 +23,7 @@
     }
 
     const glow = Math.min(1.0, pct / 100);
-    el.style.boxShadow = `0 6px ${18 * glow}px rgba(79,163,255,${0.06 + glow * 0.12})`;
+    el.style.boxShadow = `0 6px ${18 * glow}px rgba(79,163,255,${0.08 + glow * 0.14})`;
   }
 
   function setMsLight(el, pct) {
@@ -34,10 +34,10 @@
     else el.classList.add('ms-red');
   }
 
-  // --- Počáteční stav „čipu“ -----------------------------------------
+  // STATE
   const state = {
     aiOn: true,
-    aiRuntime: 0.74, // 74 %
+    aiRuntime: 0.74,
     aiInterventions: 12,
     manual: false,
     brake: false,
@@ -50,7 +50,7 @@
     logs: []
   };
 
-  // --- Mapování na DOM prvky -----------------------------------------
+  // MAP DOM
   const elements = {
     aiFill: $('#aiFill'),
     aiPercent: $('#aiPercent'),
@@ -110,7 +110,7 @@
     cardsGrid: $('#cardsGrid')
   };
 
-  // --- Logování -------------------------------------------------------
+  // LOGS
   function pushLog(msg) {
     const ts = new Date().toLocaleTimeString();
     state.logs.push({ ts, msg });
@@ -133,17 +133,21 @@
     if (elements.logStatus) elements.logStatus.textContent = 'connected';
   }
 
-  // --- Hlavní render podle stavu čipu --------------------------------
+  // RENDER
   function render() {
     // AI
     if (elements.aiFill) {
       const targetAiPct = Math.round(state.aiRuntime * 100);
-      elements.aiFill.dataset.target = targetAiPct;
       setFill(elements.aiFill, targetAiPct);
       if (elements.aiPercent) elements.aiPercent.textContent = targetAiPct + ' %';
       if (elements.aiInterventions) elements.aiInterventions.textContent = state.aiInterventions;
       if (elements.aiLast) elements.aiLast.textContent = 'a few sec';
-      if (elements.ledAi) elements.ledAi.style.background = state.aiOn ? 'var(--accent-green)' : '#ff6b6b';
+      if (elements.ledAi) {
+        elements.ledAi.style.background = state.aiOn ? 'var(--accent-green)' : '#ff6b6b';
+        elements.ledAi.style.boxShadow = state.aiOn
+          ? '0 0 10px rgba(34,197,94,0.9)'
+          : '0 0 10px rgba(239,68,68,0.95)';
+      }
       if (elements.toggleAiLabel) elements.toggleAiLabel.textContent = state.aiOn ? 'AI ON' : 'AI OFF';
       if (elements.aiMode)
         elements.aiMode.textContent = state.aiOn ? 'AUTO' : state.manual ? 'MANUAL' : 'OFF';
@@ -204,7 +208,7 @@
     }
 
     // Engine layers
-    if (elements.L) {
+    if (elements.L && elements.Lpct) {
       state.layers.forEach((val, i) => {
         const bar = elements.L[i];
         const label = elements.Lpct[i];
@@ -227,9 +231,9 @@
     }
   }
 
-  // --- Simulační tick -------------------------------------------------
+  // TICK
   function tick() {
-    // AI random walk
+    // AI
     state.aiRuntime = Math.max(
       0.25,
       Math.min(0.99, state.aiRuntime + (Math.random() - 0.5) * 0.02)
@@ -267,7 +271,7 @@
       state.db.writes + Math.round((Math.random() - 0.5) * 8)
     );
 
-    // Multi-Sig
+    // Multi-sig
     if (Math.random() > 0.86) {
       state.ms.submitted = Math.max(
         0,
@@ -290,7 +294,7 @@
       state.throughput.queue + Math.round((Math.random() - 0.3) * 6)
     );
 
-    // Občasné logy
+    // Random logs
     if (Math.random() < 0.2) {
       const ev = [
         'AI decision made (sim)',
@@ -308,7 +312,7 @@
     render();
   }
 
-  // --- Interakce (tlačítka) ------------------------------------------
+  // INTERACTIONS
   function bindInteractions() {
     const toggleAI = $('#toggleAI');
     const btnManual = $('#btnManual');
@@ -506,63 +510,56 @@
       });
     }
 
-    // Expand karty (… tlačítko)
-    $$('.expand-btn').forEach((btn) => {
-      btn.addEventListener('click', (e) => {
-        const card = e.target.closest('.card');
-        if (!card) return;
-        card.classList.toggle('expanded');
-        if (card.classList.contains('expanded')) {
+    // Rozbalování boxů přes 01–09
+    $$('.card-index').forEach((pill) => {
+      pill.addEventListener('click', () => {
+        const card = pill.closest('.card');
+        const open = card.classList.contains('expanded');
+
+        $$('.card.expanded').forEach((c) => c.classList.remove('expanded'));
+
+        if (!open) {
+          card.classList.add('expanded');
           card.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
       });
     });
 
-    // Hover efekt
-    $$('.card').forEach((c) => {
-      c.addEventListener(
-        'mouseenter',
-        () => (c.style.boxShadow = '0 30px 80px rgba(2,6,23,0.95)')
-      );
-      c.addEventListener(
-        'mouseleave',
-        () => (c.style.boxShadow = '0 18px 40px rgba(2,6,23,0.7)')
-      );
+    // ESC zavře
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        $$('.card.expanded').forEach((c) => c.classList.remove('expanded'));
+      }
     });
 
-    // Klávesové zkratky
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'm' && btnManual) btnManual.click();
-      if (e.key === 'a' && toggleAI) toggleAI.click();
-      if (e.key === 'b' && btnBrake) btnBrake.click();
+    // Hover efekt na karty
+    $$('.card').forEach((c) => {
+      c.addEventListener('mouseenter', () => {
+        c.style.boxShadow = '0 30px 80px rgba(2,6,23,0.95)';
+      });
+      c.addEventListener('mouseleave', () => {
+        c.style.boxShadow = '0 18px 40px rgba(2,6,23,0.7)';
+      });
     });
   }
 
-  // --- Inicializace po načtení ---------------------------------------
+  // INIT
   function initChipCore() {
-    pushLog('AYAS-7 Chip Core initialized');
+    pushLog('AYAS-7 admin initialized');
     pushLog('Telemetry link established (demo)');
     pushLog('Simulations active');
 
     bindInteractions();
     render();
-
-    const loopInterval = 280;
-    setInterval(tick, loopInterval);
+    setInterval(tick, 280);
   }
 
-  // Pokud je DOM ready, spustíme init hned
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initChipCore);
   } else {
     initChipCore();
   }
 
-  // Export pro debug (do konzole)
-  window.AYAS7ChipCore = {
-    state,
-    tick,
-    render,
-    pushLog
-  };
+  // Expose pro debug
+  window.AYAS7ChipCore = { state, render, tick, pushLog };
 })();
