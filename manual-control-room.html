@@ -1,0 +1,1256 @@
+<!doctype html>
+<html lang="cs">
+<head>
+<meta charset="utf-8" />
+<title>AYAS-7 · Engine & Control Manual</title>
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+
+<style>
+:root{
+  --max-w:1200px;
+  --bg-1:#020617;
+  --bg-2:#020617;
+  --accent-blue:#4fa3ff;
+  --accent-green:#22c55e;
+  --accent-cyan:#7de2ff;
+  --accent-yellow:#facc15;
+  --accent-red:#ef4444;
+  --muted:#9ca3af;
+  --text:#e5e7eb;
+  --card-bg: linear-gradient(145deg, rgba(15,23,42,0.92), rgba(15,23,42,0.98));
+  --glass: rgba(15,23,42,0.8);
+  --border: rgba(148,163,184,0.35);
+  --border-soft: rgba(148,163,184,0.14);
+  --led-height:9px;
+  --led-radius:999px;
+  --dot:7px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{
+  height:100%;
+  font-family:"Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background:
+    radial-gradient(circle at 40% 0%, #0f172a 0%, #020617 55%, #000 100%);
+  color:var(--text);
+  -webkit-font-smoothing:antialiased;
+}
+a{color:inherit;text-decoration:none}
+small{color:var(--muted);font-size:12px}
+
+/* layout */
+main{
+  max-width:var(--max-w);
+  margin:20px auto 40px;
+  padding:0 18px 40px;
+  position:relative;
+}
+.ambient{
+  position:absolute;
+  left:50%;
+  top:10vh;
+  transform:translateX(-50%);
+  width:1100px;
+  height:380px;
+  background:
+    radial-gradient(circle at 40% 0%, rgba(79,163,255,0.32) 0%, transparent 45%);
+  filter:blur(80px);
+  opacity:.22;
+  pointer-events:none;
+  z-index:0;
+}
+
+/* header */
+.hdr{
+  position:relative;
+  z-index:2;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+.kicker{
+  font-size:12px;
+  color:var(--muted);
+  text-transform:uppercase;
+  letter-spacing:.14em;
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.kicker .dot{
+  width:8px;height:8px;border-radius:999px;
+  background:var(--accent-green);
+  box-shadow:0 0 10px rgba(34,197,94,1);
+}
+.title{
+  font-size:26px;
+  font-weight:800;
+  letter-spacing:.02em;
+}
+.subtitle{
+  color:var(--muted);
+  max-width:980px;
+  font-size:13px;
+  line-height:1.6;
+}
+
+/* top hero strip */
+.hero{
+  position:relative;
+  z-index:2;
+  margin-top:18px;
+  padding:14px 14px 16px;
+  border-radius:16px;
+  border:1px solid var(--border-soft);
+  background:
+    radial-gradient(circle at 10% 0%, rgba(56,189,248,0.18), transparent 55%),
+    radial-gradient(circle at 90% 0%, rgba(52,211,153,0.14), transparent 55%),
+    rgba(15,23,42,0.96);
+  display:grid;
+  grid-template-columns:1.2fr 1.1fr 1.1fr;
+  gap:18px;
+}
+.hero-left-title{
+  font-size:13px;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:var(--muted);
+}
+.hero-main{
+  font-size:20px;
+  font-weight:800;
+  margin-top:6px;
+}
+.hero-text{
+  font-size:13px;
+  color:var(--muted);
+  margin-top:6px;
+  line-height:1.5;
+}
+
+/* chip core orb */
+.chip-orb-wrap{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+.chip-orb{
+  position:relative;
+  width:190px;
+  height:190px;
+  border-radius:50%;
+  background:radial-gradient(circle at 30% 0%, rgba(248,250,252,0.18), rgba(15,23,42,1));
+  box-shadow:0 30px 80px rgba(15,23,42,1);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+}
+.chip-orb-core{
+  width:84px;
+  height:84px;
+  border-radius:18px;
+  background:linear-gradient(145deg,#020617,#020617 55%,#0f172a);
+  border:1px solid rgba(148,163,184,0.28);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  font-weight:900;
+  letter-spacing:.08em;
+  color:var(--accent-cyan);
+  font-size:11px;
+  text-align:center;
+  text-shadow:0 0 12px rgba(125,226,255,0.5);
+}
+.chip-orb-core span{
+  font-size:9px;
+  color:var(--muted);
+  letter-spacing:.12em;
+}
+.chip-orb-ring{
+  position:absolute;
+  border-radius:50%;
+  border:1px dashed rgba(148,163,184,0.2);
+  inset:18px;
+  animation:spinSlow 26s linear infinite;
+  pointer-events:none;
+}
+.chip-orb-ring:nth-child(2){
+  inset:34px;
+  border-style:solid;
+  border-color:rgba(79,163,255,0.4);
+  opacity:.7;
+  animation-direction:reverse;
+}
+.chip-orb-pulse{
+  position:absolute;
+  width:280px;
+  height:280px;
+  border-radius:50%;
+  background:radial-gradient(circle, rgba(56,189,248,0.13), transparent 65%);
+  filter:blur(12px);
+  opacity:.9;
+  pointer-events:none;
+}
+
+/* hero right facts */
+.hero-facts{
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+.fact-card{
+  border-radius:10px;
+  border:1px solid rgba(148,163,184,0.18);
+  background:rgba(15,23,42,0.94);
+  padding:8px 10px;
+  font-size:12px;
+}
+.fact-label{
+  text-transform:uppercase;
+  letter-spacing:.14em;
+  color:var(--muted);
+  font-size:11px;
+}
+.fact-value{
+  margin-top:4px;
+  font-weight:700;
+  font-size:13px;
+}
+.fact-mini{
+  margin-top:4px;
+  color:var(--muted);
+  font-size:11px;
+}
+
+/* module map 3x3 */
+.module-map{
+  position:relative;
+  z-index:2;
+  margin-top:22px;
+}
+.map-heading{
+  font-size:12px;
+  color:var(--muted);
+  text-transform:uppercase;
+  letter-spacing:.16em;
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  align-items:center;
+}
+.map-heading span strong{color:var(--accent-cyan);}
+.map-grid{
+  margin-top:10px;
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:12px;
+}
+.map-tile{
+  position:relative;
+  border-radius:14px;
+  border:1px solid var(--border-soft);
+  background:rgba(15,23,42,0.96);
+  padding:11px 12px 12px;
+  cursor:pointer;
+  overflow:hidden;
+  transition:transform .15s ease, box-shadow .15s ease, border-color .15s ease, background .15s ease;
+}
+.map-tile:hover{
+  transform:translateY(-4px);
+  box-shadow:0 20px 60px rgba(15,23,42,0.9);
+  border-color:rgba(79,163,255,0.6);
+  background:radial-gradient(circle at 0% 0%, rgba(56,189,248,0.18), rgba(15,23,42,1));
+}
+.map-tile-number{
+  position:absolute;
+  right:10px;
+  top:8px;
+  font-size:18px;
+  font-weight:900;
+  letter-spacing:.14em;
+  color:rgba(148,163,184,0.4);
+  text-shadow:0 0 12px rgba(15,23,42,0.8);
+}
+.map-tile-title{
+  font-size:13px;
+  font-weight:700;
+}
+.map-tile-sub{
+  font-size:11px;
+  color:var(--muted);
+  margin-top:4px;
+}
+.map-led{
+  width:var(--dot);
+  height:var(--dot);
+  border-radius:50%;
+  margin-right:6px;
+  box-shadow:0 0 10px rgba(15,23,42,0.9);
+}
+.map-led-row{
+  display:flex;
+  align-items:center;
+  margin-top:8px;
+  font-size:11px;
+  color:var(--muted);
+}
+
+/* detail layout */
+.detail-layout{
+  position:relative;
+  z-index:2;
+  margin-top:26px;
+  display:grid;
+  grid-template-columns:260px 1fr;
+  gap:18px;
+}
+
+/* side nav */
+.side-nav{
+  position:sticky;
+  top:16px;
+  align-self:flex-start;
+  border-radius:14px;
+  border:1px solid var(--border-soft);
+  background:rgba(15,23,42,0.96);
+  padding:10px 10px 12px;
+}
+.side-nav-title{
+  font-size:11px;
+  text-transform:uppercase;
+  letter-spacing:.15em;
+  color:var(--muted);
+}
+.side-nav-list{
+  margin-top:8px;
+  display:flex;
+  flex-direction:column;
+  gap:3px;
+}
+.side-nav-item{
+  font-size:12px;
+  padding:5px 7px;
+  border-radius:9px;
+  display:flex;
+  align-items:center;
+  gap:6px;
+  cursor:pointer;
+  color:var(--muted);
+  transition:background .12s, color .12s, transform .12s;
+}
+.side-nav-item span.nav-num{
+  font-size:10px;
+  font-weight:800;
+  letter-spacing:.18em;
+  color:rgba(148,163,184,0.7);
+}
+.side-nav-item:hover{
+  background:rgba(15,23,42,1);
+  color:var(--text);
+  transform:translateX(2px);
+}
+.side-nav-item.active{
+  background:linear-gradient(90deg,rgba(56,189,248,0.14),rgba(37,99,235,0.22));
+  color:#e0f2fe;
+}
+
+/* detail cards */
+.detail-column{
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+}
+.detail-card{
+  border-radius:16px;
+  border:1px solid var(--border-soft);
+  background:var(--card-bg);
+  padding:14px 14px 12px;
+}
+.detail-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+}
+.detail-title{
+  font-size:14px;
+  font-weight:800;
+}
+.detail-tag{
+  font-size:11px;
+  text-transform:uppercase;
+  letter-spacing:.16em;
+  color:var(--muted);
+}
+.detail-number-pill{
+  border-radius:999px;
+  padding:5px 10px;
+  font-size:11px;
+  font-weight:700;
+  display:flex;
+  align-items:center;
+  gap:6px;
+  border:1px solid rgba(148,163,184,0.3);
+  background:rgba(15,23,42,0.9);
+}
+.detail-number-pill span.num{
+  font-size:11px;
+  letter-spacing:.16em;
+}
+.detail-text{
+  font-size:13px;
+  color:var(--muted);
+  margin-top:6px;
+  line-height:1.55;
+}
+.detail-list{
+  margin-top:8px;
+  font-size:13px;
+  color:var(--muted);
+}
+.detail-list ul{
+  margin:4px 0 0 16px;
+}
+.detail-list li{
+  margin-bottom:3px;
+}
+
+/* mini led strip in detail */
+.detail-strip{
+  margin-top:10px;
+}
+.led-strip{
+  height:var(--led-height);
+  border-radius:var(--led-radius);
+  background:rgba(15,23,42,0.96);
+  border:1px solid rgba(30,64,175,0.9);
+  overflow:hidden;
+  box-shadow:inset 0 -6px 18px rgba(0,0,0,0.5);
+}
+.led-fill{
+  height:100%;
+  width:0%;
+  border-radius:var(--led-radius);
+  background:linear-gradient(90deg,var(--accent-blue),var(--accent-green));
+  box-shadow:0 6px 24px rgba(56,189,248,0.35);
+  transition:width .7s cubic-bezier(.2,.9,.2,1), background .2s;
+}
+
+/* stat chips */
+.stat-row{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-top:10px;
+}
+.stat-chip{
+  border-radius:999px;
+  border:1px solid rgba(148,163,184,0.28);
+  padding:5px 8px;
+  font-size:11px;
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  background:rgba(15,23,42,0.94);
+}
+.stat-dot{
+  width:7px;height:7px;border-radius:999px;
+  box-shadow:0 0 10px rgba(15,23,42,0.9);
+}
+
+/* code-ish block */
+.code-block{
+  margin-top:8px;
+  border-radius:10px;
+  border:1px dashed rgba(148,163,184,0.35);
+  background:rgba(15,23,42,0.96);
+  padding:8px 10px;
+  font-family:"Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-size:11px;
+  color:#cbd5f5;
+  white-space:pre-line;
+}
+
+/* contact & footer */
+.contact{
+  position:relative;
+  z-index:2;
+  margin-top:22px;
+  display:grid;
+  grid-template-columns:1.4fr 1fr;
+  gap:16px;
+}
+.contact-card{
+  border-radius:16px;
+  border:1px solid var(--border-soft);
+  background:var(--card-bg);
+  padding:14px;
+}
+.contact-title{
+  font-size:14px;
+  font-weight:800;
+}
+.contact-text{
+  font-size:13px;
+  color:var(--muted);
+  margin-top:6px;
+  line-height:1.5;
+}
+.contact-row{
+  margin-top:8px;
+  font-size:13px;
+}
+.contact-row strong{color:var(--text);}
+.contact-pill{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  margin-top:8px;
+  font-size:12px;
+  padding:6px 10px;
+  border-radius:999px;
+  border:1px solid rgba(56,189,248,0.5);
+  background:rgba(15,23,42,0.96);
+}
+footer{
+  position:relative;
+  z-index:2;
+  margin-top:16px;
+  text-align:center;
+  font-size:11px;
+  color:var(--muted);
+}
+
+/* responsive */
+@media (max-width:950px){
+  .hero{grid-template-columns:1fr;gap:14px;}
+  .chip-orb-wrap{order:-1;}
+}
+@media (max-width:800px){
+  .detail-layout{grid-template-columns:1fr;}
+  .side-nav{position:relative;top:0;margin-bottom:4px;}
+  .contact{grid-template-columns:1fr;}
+}
+@media (max-width:700px){
+  .map-grid{grid-template-columns:repeat(2,1fr);}
+}
+@media (max-width:520px){
+  .map-grid{grid-template-columns:1fr;}
+}
+
+/* animations */
+@keyframes spinSlow{
+  from{transform:rotate(0deg);}
+  to{transform:rotate(360deg);}
+}
+</style>
+</head>
+<body>
+<main>
+  <div class="ambient" aria-hidden="true"></div>
+
+  <header class="hdr">
+    <div class="kicker"><span class="dot"></span> AYAS-7 · Engine & Control Manual</div>
+    <div class="title">AYAS-7 · Chip Core & Control Room — Documentation</div>
+    <div class="subtitle">
+      Tento manuál popisuje, co dělá každý modul velínu AYAS-7, na co je napojený,
+      jaká data čte a co bude v ostré verzi skutečně řídit. Vizuál zůstává stejný
+      jako v dashboardu — FinTech high-end, ale text jde do hloubky.
+    </div>
+  </header>
+
+  <!-- HERO STRIP -->
+  <section class="hero" aria-label="AYAS-7 overview">
+    <div>
+      <div class="hero-left-title">AYAS-7 · Engine</div>
+      <div class="hero-main">Chip Core · L1–L7 řízený motor</div>
+      <div class="hero-text">
+        AYAS-7 Chip Core je deterministické výpočetní jádro, které orchestruje
+        sedm vrstev systému: Token, Likvidita, Yield, Risk, FinTech integrace,
+        Core Engine a Analytics. Velín zobrazuje demo simulaci — v ostré verzi
+        se napojí na reálné on-chain a off-chain zdroje dat.
+      </div>
+      <div class="hero-text" style="margin-top:8px;">
+        <strong>Čti tento manuál tak,</strong> jako bys seděl v kokpitu:
+        každý box 1–9 má jasný účel, vstupy, výstupy a bezpečnostní logiku.
+      </div>
+    </div>
+
+    <div class="chip-orb-wrap" aria-hidden="true">
+      <div class="chip-orb">
+        <div class="chip-orb-pulse"></div>
+        <div class="chip-orb-ring"></div>
+        <div class="chip-orb-ring"></div>
+        <div class="chip-orb-core">
+          AYAS-7
+          <span>CHIP&nbsp;CORE</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-facts">
+      <div class="fact-card">
+        <div class="fact-label">Režimy řízení</div>
+        <div class="fact-value">AI · Manual · Brake</div>
+        <div class="fact-mini">
+          AI provádí běžné zásahy, Manual je override operátora
+          a Brake je nouzová brzda s multi-sig politikou.
+        </div>
+      </div>
+      <div class="fact-card">
+        <div class="fact-label">Napojení Chip Core</div>
+        <div class="fact-value">L1–L7 + DB + Chain</div>
+        <div class="fact-mini">
+          Token/LP data, Supabase, Multi-Sig a blockchain telemetry.
+          Vše končí v auditovatelném Event Logu.
+        </div>
+      </div>
+      <div class="fact-card">
+        <div class="fact-label">Tento dokument</div>
+        <div class="fact-value">Pro investory & operátory</div>
+        <div class="fact-mini">
+          Vysvětluje, co vidíš na velínu, jak se to propojí s on-chain
+          logikou a co bude v ostré verzi skutečně exekuováno.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MODULE MAP -->
+  <section class="module-map">
+    <div class="map-heading">
+      <span>Mapa modulů velínu · <strong>Boxy 01–09</strong></span>
+      <span style="font-size:11px;color:var(--muted);">
+        Klikni na dlaždici nebo na box ve velínu → přejdi do detailu modulu.
+      </span>
+    </div>
+
+    <div class="map-grid">
+      <!-- 01 AI -->
+      <a href="#mod-01" class="map-tile">
+        <div class="map-tile-number">01</div>
+        <div class="map-tile-title">AI Automatic Control</div>
+        <div class="map-tile-sub">Autopilot enginu, zásahy do poolů, ochrana TVL.</div>
+        <div class="map-led-row">
+          <span class="map-led" style="background:var(--accent-green);"></span>
+          <span>Režim: AI · ENGINE ON</span>
+        </div>
+      </a>
+
+      <!-- 02 Manual -->
+      <a href="#mod-02" class="map-tile">
+        <div class="map-tile-number">02</div>
+        <div class="map-tile-title">Manual & Emergency Brake</div>
+        <div class="map-tile-sub">Override operátora + nouzové zastavení.</div>
+        <div class="map-led-row">
+          <span class="map-led" style="background:var(--accent-yellow);"></span>
+          <span>Manuální řízení · SAFE MODE</span>
+        </div>
+      </a>
+
+      <!-- 03 Pool -->
+      <a href="#mod-03" class="map-tile">
+        <div class="map-tile-number">03</div>
+        <div class="map-tile-title">Pool Output Simulation</div>
+        <div class="map-tile-sub">TVL, rebalance, simulace výnosu.</div>
+        <div class="map-led-row">
+          <span class="map-led" style="background:var(--accent-cyan);"></span>
+          <span>Token / LP vrstvy napojené na Chip Core</span>
+        </div>
+      </a>
+
+      <!-- 04 DB -->
+      <a href="#mod-04" class="map-tile">
+        <div class="map-tile-number">04</div>
+        <div class="map-tile-title">Supabase · DB Status</div>
+        <div class="map-tile-sub">Latence, zápisy, integrity check.</div>
+        <div class="map-led-row">
+          <span class="map-led" style="background:var(--accent-green);"></span>
+          <span>DB checkpointy → auditovatelné snapshoty</span>
+        </div>
+      </a>
+
+      <!-- 05 Multi-Sig -->
+      <a href="#mod-05" class="map-tile">
+        <div class="map-tile-number">05</div>
+        <div class="map-tile-title">Multi-Sig Status</div>
+        <div class="map-tile-sub">Podpisy, time-lock, kritické operace.</div>
+        <div class="map-led-row">
+          <span class="map-led" style="background:#f97316;"></span>
+          <span>Policy pro approvování zásahů do TVL</span>
+        </div>
+      </a>
+
+      <!-- 06 Chain -->
+      <a href="#mod-06" class="map-tile">
+        <div class="map-tile-number">06</div>
+        <div class="map-tile-title">Blockchain Connection</div>
+        <div class="map-tile-sub">RPC latency, block height, sync.</div>
+        <div class="map-led-row">
+          <span class="map-led" style="background:var(--accent-cyan);"></span>
+          <span>On-chain zdraví sítě</span>
+        </div>
+      </a>
+
+      <!-- 07 Engine -->
+      <a href="#mod-07" class="map-tile">
+        <div class="map-tile-number">07</div>
+        <div class="map-tile-title">Engine · 7 Layers</div>
+        <div class="map-tile-sub">L1–L7 výkon, mapování WW-KEY.</div>
+        <div class="map-led-row">
+          <span class="map-led" style="background:#818cf8;"></span>
+          <span>Core výpočetní logika AYAS-Math</span>
+        </div>
+      </a>
+
+      <!-- 08 Throughput -->
+      <a href="#mod-08" class="map-tile">
+        <div class="map-tile-number">08</div>
+        <div class="map-tile-title">System Throughput</div>
+        <div class="map-tile-sub">ops/s, queue depth, propustnost.</div>
+        <div class="map-led-row">
+          <span class="map-led" style="background:#a855f7;"></span>
+          <span>Výkon uzlů, škálování clusteru</span>
+        </div>
+      </a>
+
+      <!-- 09 Event Log -->
+      <a href="#mod-09" class="map-tile">
+        <div class="map-tile-number">09</div>
+        <div class="map-tile-title">Event Log · Audit</div>
+        <div class="map-tile-sub">Audit trail všech událostí.</div>
+        <div class="map-led-row">
+          <span class="map-led" style="background:var(--accent-blue);"></span>
+          <span>Jediný zdroj pravdy · replay scénářů</span>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <!-- DETAIL SECTION -->
+  <section class="detail-layout">
+    <!-- side nav -->
+    <nav class="side-nav" aria-label="Moduly velínu">
+      <div class="side-nav-title">Navigace modulů</div>
+      <div class="side-nav-list">
+        <a href="#mod-01" class="side-nav-item active"><span class="nav-num">01</span> AI Control</a>
+        <a href="#mod-02" class="side-nav-item"><span class="nav-num">02</span> Manual & Brake</a>
+        <a href="#mod-03" class="side-nav-item"><span class="nav-num">03</span> Pool Output</a>
+        <a href="#mod-04" class="side-nav-item"><span class="nav-num">04</span> DB Status</a>
+        <a href="#mod-05" class="side-nav-item"><span class="nav-num">05</span> Multi-Sig</a>
+        <a href="#mod-06" class="side-nav-item"><span class="nav-num">06</span> Blockchain</a>
+        <a href="#mod-07" class="side-nav-item"><span class="nav-num">07</span> Engine 7 Layers</a>
+        <a href="#mod-08" class="side-nav-item"><span class="nav-num">08</span> Throughput</a>
+        <a href="#mod-09" class="side-nav-item"><span class="nav-num">09</span> Event Log</a>
+      </div>
+    </nav>
+
+    <!-- detail column -->
+    <div class="detail-column">
+
+      <!-- 01 AI -->
+      <article class="detail-card" id="mod-01">
+        <div class="detail-header">
+          <div>
+            <div class="detail-tag">Box 01 · AI Automatic Control</div>
+            <div class="detail-title">AI autopilot enginu AYAS-7</div>
+          </div>
+          <div class="detail-number-pill" style="border-color:rgba(34,197,94,0.8);">
+            <span style="width:var(--dot);height:var(--dot);border-radius:50%;background:var(--accent-green);box-shadow:0 0 10px rgba(34,197,94,1);"></span>
+            <span class="num">01</span>
+          </div>
+        </div>
+
+        <div class="detail-text">
+          Tento modul simuluje <strong>autopilota</strong> — AI sleduje metriky enginu
+          (TVL, volatility, queue, latency) a provádí malé korekce. V demu vidíš
+          runtime %, počet zásahů a poslední intervenci. V ostré verzi bude AI
+          navázaná na reálné <strong>policy pro rebalance a řízení rizika</strong>.
+        </div>
+
+        <div class="detail-strip">
+          <div class="led-strip">
+            <div class="led-fill" data-target="78"></div>
+          </div>
+          <div class="stat-row">
+            <div class="stat-chip">
+              <span class="stat-dot" style="background:var(--accent-green);"></span>
+              Runtime: <span data-count="78">78</span> %
+            </div>
+            <div class="stat-chip">
+              <span class="stat-dot" style="background:var(--accent-blue);"></span>
+              Intervence (24h): <span data-count="32">32</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="detail-list">
+          <strong>Vstupy (budoucí ostrá verze):</strong>
+          <ul>
+            <li>On-chain data z LP poolů (TVL, volume, fee, volatility).</li>
+            <li>Off-chain metriky (latence, throughput, error rate).</li>
+            <li>Konfigurační policy (limity rizika, max drawdown, max leverage).</li>
+          </ul>
+        </div>
+
+        <div class="detail-list">
+          <strong>Výstupy:</strong>
+          <ul>
+            <li>Návrh rebalancí pro Pool modul (03) ke schválení přes Multi-Sig (05).</li>
+            <li>Flagy pro přepnutí do Manual / Brake (Box 02), pokud se data utrhnou.</li>
+            <li>Eventy do Event Logu (Box 09) pro audit a replay.</li>
+          </ul>
+        </div>
+
+        <div class="code-block">
+FLOW (zjednodušeně):
+1. AI načte poslední snapshot → porovná s thresholdy.
+2. Pokud je výnos OK a riziko v limitu → pouze loguje stav.
+3. Pokud se riziko zvedá → navrhne rebalanci (Pool modul).
+4. Pokud metriky překročí krizové limity → triggeruje MANUAL/BRAKE.
+        </div>
+      </article>
+
+      <!-- 02 Manual -->
+      <article class="detail-card" id="mod-02">
+        <div class="detail-header">
+          <div>
+            <div class="detail-tag">Box 02 · Manual & Emergency Brake</div>
+            <div class="detail-title">Ruční řízení & nouzové zastavení</div>
+          </div>
+          <div class="detail-number-pill" style="border-color:rgba(250,204,21,0.8);">
+            <span style="width:var(--dot);height:var(--dot);border-radius:50%;background:var(--accent-yellow);box-shadow:0 0 10px rgba(250,204,21,1);"></span>
+            <span class="num">02</span>
+          </div>
+        </div>
+
+        <div class="detail-text">
+          Tento box reprezentuje <strong>poslední slovo operátora</strong>. V demu
+          se toggluje mezi ON/OFF, v ostré verzi bude navázán na <strong>role-based
+          access</strong> a Multi-Sig. Emergency Brake zmrazí exekuci a zastaví
+          rebalancing i výplaty.
+        </div>
+
+        <div class="detail-strip">
+          <div class="led-strip">
+            <div class="led-fill" data-target="32"></div>
+          </div>
+          <div class="stat-row">
+            <div class="stat-chip">
+              <span class="stat-dot" style="background:var(--accent-yellow);"></span>
+              Manual: přebírá řízení od AI
+            </div>
+            <div class="stat-chip">
+              <span class="stat-dot" style="background:var(--accent-red);"></span>
+              Brake: <strong>ARMED</strong> pouze přes Multi-Sig
+            </div>
+          </div>
+        </div>
+
+        <div class="detail-list">
+          <strong>V ostré verzi:</strong>
+          <ul>
+            <li>Aktivace Manual → AI přejde do read-only, žádné další zásahy.</li>
+            <li>Emergency Brake → stop rebalancím, lock vybraných smart kontraktů.</li>
+            <li>Všechny kroky logované do Event Logu (Box 09) jako kritické eventy.</li>
+          </ul>
+        </div>
+      </article>
+
+      <!-- 03 Pool -->
+      <article class="detail-card" id="mod-03">
+        <div class="detail-header">
+          <div>
+            <div class="detail-tag">Box 03 · Pool Output Simulation</div>
+            <div class="detail-title">TVL & výnos · simulace poolů</div>
+          </div>
+          <div class="detail-number-pill" style="border-color:rgba(125,226,255,0.8);">
+            <span style="width:var(--dot);height:var(--dot);border-radius:50%;background:var(--accent-cyan);box-shadow:0 0 10px rgba(125,226,255,1);"></span>
+            <span class="num">03</span>
+          </div>
+        </div>
+
+        <div class="detail-text">
+          Pool modul zobrazuje <strong>TVL (Total Value Locked)</strong>, změnu za 24h
+          a simulovaný výnos. V současnosti běží demo, ale architektura počítá
+          s reálným napojením na DEX/LP (např. BSC, další chainy).
+        </div>
+
+        <div class="detail-strip">
+          <div class="led-strip">
+            <div class="led-fill" data-target="64"></div>
+          </div>
+          <div class="stat-row">
+            <div class="stat-chip">
+              <span class="stat-dot" style="background:var(--accent-cyan);"></span>
+              TVL demo: <span data-count="1248332">1 248 332</span> USDt.z
+            </div>
+            <div class="stat-chip">
+              <span class="stat-dot" style="background:var(--accent-green);"></span>
+              Sim. Yield: <span data-count="4.8">4.8</span> % p.a.
+            </div>
+          </div>
+        </div>
+
+        <div class="detail-list">
+          <strong>Napojení na Chip Core:</strong>
+          <ul>
+            <li>Čte rozhodnutí AI (Box 01) — návrhy rebalancí a změn váh.</li>
+            <li>Odesílá požadavky na Multi-Sig (Box 05) k potvrzení kritických změn.</li>
+            <li>Výsledné transakce jsou logovány do Event Logu (Box 09).</li>
+          </ul>
+        </div>
+      </article>
+
+      <!-- 04 DB -->
+      <article class="detail-card" id="mod-04">
+        <div class="detail-header">
+          <div>
+            <div class="detail-tag">Box 04 · Supabase · DB Status</div>
+            <div class="detail-title">Databázová vrstva & checkpointy</div>
+          </div>
+          <div class="detail-number-pill" style="border-color:rgba(34,197,94,0.8);">
+            <span style="width:var(--dot);height:var(--dot);border-radius:50%;background:var(--accent-green);box-shadow:0 0 10px rgba(34,197,94,1);"></span>
+            <span class="num">04</span>
+          </div>
+        </div>
+
+        <div class="detail-text">
+          Tento modul hlídá <strong>Supabase / DB vrstvu</strong>: latence, počet
+          zápisů a integritu dat. V demu jde o simulaci; ostrá verze bude číst
+          metriky přímo z DB a stát se centrálním health checkem datové vrstvy.
+        </div>
+
+        <div class="detail-strip">
+          <div class="led-strip">
+            <div class="led-fill" data-target="92"></div>
+          </div>
+          <div class="stat-row">
+            <div class="stat-chip">
+              <span class="stat-dot" style="background:var(--accent-green);"></span>
+              Integrita: <span data-count="100">100</span> %
+            </div>
+            <div class="stat-chip">
+              <span class="stat-dot" style="background:var(--accent-blue);"></span>
+              Latence: <span data-count="14">14</span> ms
+            </div>
+          </div>
+        </div>
+
+        <div class="detail-list">
+          <strong>Role v systému:</strong>
+          <ul>
+            <li>Ukládá snapshoty konfigurace (policy, nastavení poolů, parametry AI).</li>
+            <li>Slouží jako datový zdroj pro reporting a audit (exporty pro družstvo / banky).</li>
+            <li>Kritické změny konfigurace loguje do Event Logu (Box 09).</li>
+          </ul>
+        </div>
+      </article>
+
+      <!-- 05 Multi-Sig -->
+      <article class="detail-card" id="mod-05">
+        <div class="detail-header">
+          <div>
+            <div class="detail-tag">Box 05 · Multi-Sig Status</div>
+            <div class="detail-title">Podpisová politika & time-lock</div>
+          </div>
+          <div class="detail-number-pill" style="border-color:rgba(249,115,22,0.9);">
+            <span style="width:var(--dot);height:var(--dot);border-radius:50%;background:#f97316;box-shadow:0 0 10px rgba(249,115,22,1);"></span>
+            <span class="num">05</span>
+          </div>
+        </div>
+
+        <div class="detail-text">
+          Multi-Sig modul říká, <strong>kdo skutečně rozhoduje</strong>. AI může navrhovat,
+          ale <strong>bez podpisů</strong> není žádný pohyb TVL. Box 05 ukazuje required
+          vs. submitted signatures a time-lock.
+        </div>
+
+        <div class="detail-strip">
+          <div class="led-strip">
+            <div class="led-fill" data-target="60"></div>
+          </div>
+          <div class="stat-row">
+            <div class="stat-chip">
+              <span class="stat-dot" style="background:#f97316;"></span>
+              Required: <span data-count="5">5</span> · Submitted: <span data-count="3">3</span>
+            </div>
+            <div class="stat-chip">
+              <span class="stat-dot" style="background:var(--accent-yellow);"></span>
+              Time-lock: <span data-count="2">2</span> h
+            </div>
+          </div>
+        </div>
+
+        <div class="detail-list">
+          <strong>Tok schvalování (budoucí ostrá verze):</strong>
+          <ul>
+            <li>AI / operátor vytvoří návrh změny (rebalancování, úprava parametrů).</li>
+            <li>Návrh se uloží do DB, vytvoří se Multi-Sig request.</li>
+            <li>Signatáři podepisují on-chain → po dosažení required se provede exekuce.</li>
+            <li>Event Log (Box 09) uloží celý průchod (kdo, kdy, co schválil).</li>
+          </ul>
+        </div>
+      </article>
+
+      <!-- 06 Chain -->
+      <article class="detail-card" id="mod-06">
+        <div class="detail-header">
+          <div>
+            <div class="detail-tag">Box 06 · Blockchain Connection</div>
+            <div class="detail-title">On-chain zdraví sítě</div>
+          </div>
+          <div class="detail-number-pill" style="border-color:rgba(125,226,255,0.9);">
+            <span style="width:var(--dot);height:var(--dot);border-radius:50%;background:var(--accent-cyan);box-shadow:0 0 10px rgba(125,226,255,1);"></span>
+            <span class="num">06</span>
+          </div>
+        </div>
+
+        <div class="detail-text">
+          Tento box sleduje <strong>block height</strong>, <strong>RPC latenci</strong> a
+          <strong>stupeň synchronizace</strong>. V demu se čísla hýbou náhodně; v ostré
+          verzi se připojí na reálné RPC endpointy a bude fungovat jako radar
+          congestion / problémů chainu.
+        </div>
+
+        <div class="detail-strip">
+          <div class="led-strip">
+            <div class="led-fill" data-target="82"></div>
+          </div>
+          <div class="stat-row">
+            <div class="stat-chip">
+              <span class="stat-dot" style="background:var(--accent-cyan);"></span>
+              Sync: <span data-count="98">98</span> %
+            </div>
+            <div class="stat-chip">
+              <span class="stat-dot" style="background:var(--accent-blue);"></span>
+              RPC: <span data-count="3.1">3.1</span> s
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- 07 Engine -->
+      <article class="detail-card" id="mod-07">
+        <div class="detail-header">
+          <div>
+            <div class="detail-tag">Box 07 · Engine · 7 Layers</div>
+            <div class="detail-title">AYAS-7 · Sedm vrstev výpočetního enginu</div>
+          </div>
+          <div class="detail-number-pill" style="border-color:rgba(129,140,248,0.9);">
+            <span style="width:var(--dot);height:var(--dot);border-radius:50%;background:#818cf8;box-shadow:0 0 10px rgba(129,140,248,1);"></span>
+            <span class="num">07</span>
+          </div>
+        </div>
+
+        <div class="detail-text">
+          Tento modul ukazuje <strong>výkon L1–L7</strong>. V dashboardu máš LED pásky
+          pro každou vrstvu. V manuálu to popisuje, co každá vrstva dělá a jak
+          spolu komunikují přes Chip Core.
+        </div>
+
+        <div class="detail-list">
+          <strong>Mapování vrstev:</strong>
+          <ul>
+            <li><strong>L1 · Token Layer</strong> — emise, supply, základní tokenomika.</li>
+            <li><strong>L2 · Liquidity</strong> — LP pooly, páry, fee, hloubka trhu.</li>
+            <li><strong>L3 · Yield</strong> — výnosové strategie, routování výnosu.</li>
+            <li><strong>L4 · Risk</strong> — limity rizika, volatility, drawdown.</li>
+            <li><strong>L5 · FinTech</strong> — napojení na klasické fintech systémy.</li>
+            <li><strong>L6 · Core</strong> — AYAS-Math engine, alokační logika.</li>
+            <li><strong>L7 · Analytics</strong> — dashboardy, reporty, KPI.</li>
+          </ul>
+        </div>
+
+        <div class="code-block">
+AYAS-Math (konceptuálně):
+- AYAS-Alloc: deterministická alokace přes linear / convex programming.
+- Risk guard: kontrola constraintů před exekucí (TVL, VaR, max exposure).
+- Replay: engine umí přehrát historické snapshoty → audit / backtest.
+        </div>
+      </article>
+
+      <!-- 08 Throughput -->
+      <article class="detail-card" id="mod-08">
+        <div class="detail-header">
+          <div>
+            <div class="detail-tag">Box 08 · System Throughput</div>
+            <div class="detail-title">Výkon systému · ops/s & cluster</div>
+          </div>
+          <div class="detail-number-pill" style="border-color:rgba(168,85,247,0.9);">
+            <span style="width:var(--dot);height:var(--dot);border-radius:50%;background:#a855f7;box-shadow:0 0 10px rgba(168,85,247,1);"></span>
+            <span class="num">08</span>
+          </div>
+        </div>
+
+        <div class="detail-text">
+          Throughput box ukazuje kolik operací za sekundu systém zvládá,
+          jak hluboká je fronta a jakou má propustnost. V demu jde o simulaci,
+          ale design je připravený na metriky z produkčního clusteru.
+        </div>
+
+        <div class="detail-strip">
+          <div class="led-strip">
+            <div class="led-fill" data-target="70"></div>
+          </div>
+          <div class="stat-row">
+            <div class="stat-chip">
+              <span class="stat-dot" style="background:#a855f7;"></span>
+              ops/s: <span data-count="1232">1 232</span>
+            </div>
+            <div class="stat-chip">
+              <span class="stat-dot" style="background:var(--accent-blue);"></span>
+              Queue: <span data-count="24">24</span>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- 09 Event Log -->
+      <article class="detail-card" id="mod-09">
+        <div class="detail-header">
+          <div>
+            <div class="detail-tag">Box 09 · Event Log</div>
+            <div class="detail-title">Audit trail celého enginu</div>
+          </div>
+          <div class="detail-number-pill" style="border-color:rgba(59,130,246,0.9);">
+            <span style="width:var(--dot);height:var(--dot);border-radius:50%;background:var(--accent-blue);box-shadow:0 0 10px rgba(59,130,246,1);"></span>
+            <span class="num">09</span>
+          </div>
+        </div>
+
+        <div class="detail-text">
+          Event Log je <strong>jediný zdroj pravdy</strong> — vše, co udělá AI, operátor,
+          Multi-Sig i engine, se loguje sem. Demo ukazuje stream událostí; ostrá
+          verze bude mít exporty pro audit, banky a družstvo.
+        </div>
+
+        <div class="detail-list">
+          <strong>Typy eventů:</strong>
+          <ul>
+            <li>AI rozhodnutí (návrh rebalancí, změny parametrů, risk alerty).</li>
+            <li>Manual/Brake akce (kdo, kdy a proč přepnul režim).</li>
+            <li>On-chain tx (hash, páry, změny TVL, výsledné fee/výnos).</li>
+            <li>Konfigurační změny (policy, parametry AI/LP, Multi-Sig threshold).</li>
+          </ul>
+        </div>
+
+        <div class="code-block">
+Export & audit (plán):
+- JSON / CSV export pro interní audit družstva.
+- Speciální "audit mode" pro banky a externí partnery.
+- Možnost přehrát timeline: co by se stalo, kdybychom změnu neschválili.
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- CONTACT / COMM CENTER -->
+  <section class="contact" aria-label="Kontaktní centrum">
+    <div class="contact-card">
+      <div class="contact-title">Komunikační centrum · AYAS-7</div>
+      <div class="contact-text">
+        Pro investory, partnery a banky je velín kombinací vizuálního cockpit UI
+        a reálné exekuční logiky. V ostré verzi se všechny moduly připojí na
+        on-chain a off-chain zdroje dat. Pro jednání a hlubší technické dotazy:
+      </div>
+
+      <div class="contact-row">
+        <strong>E-mail (hlavní):</strong> petrholoubek39@gmail.com<br/>
+        <strong>E-mail (podpora):</strong> sca.ssca@centrum.cz
+      </div>
+      <div class="contact-row" style="margin-top:6px;">
+        <strong>Telefon / WhatsApp:</strong> +420&nbsp;778&nbsp;060&nbsp;622
+      </div>
+
+      <div class="contact-pill">
+        <span style="width:var(--dot);height:var(--dot);border-radius:50%;background:var(--accent-green);box-shadow:0 0 10px rgba(34,197,94,1);"></span>
+        AYAS-7 · Contact ready — demo / prezentace · ostrá verze napojí reálná data
+      </div>
+    </div>
+
+    <div class="contact-card">
+      <div class="contact-title">Jak tento manuál používat při prezentaci</div>
+      <div class="contact-text">
+        1) Nejprve ukážeme velín (živou simulaci).<br/>
+        2) Poté otevřeme tento manuál a projdeme hlavní boxy 01–09.<br/>
+        3) Zdůrazníme, že UI je hotové a připravené na napojení na produkční data.
+      </div>
+      <div class="contact-text" style="margin-top:8px;">
+        Každý modul má jasný popis vstupů, výstupů a propojení. V okamžiku, kdy
+        se připojí smart kontrakty, RPC a DB, se z dema stane reálný mozek
+        finančního systému AYAS-7.
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    © 2025 Win-Win Družstvo · AYAS-7 Engine · Manual (demo) · UI prepared for production wiring
+  </footer>
+</main>
+
+<script>
+// jednoduchá animace čísel a LED proužků pro WOW efekt
+document.addEventListener('DOMContentLoaded', () => {
+  const fills = document.querySelectorAll('.led-fill[data-target]');
+  fills.forEach(fill => {
+    const target = parseFloat(fill.getAttribute('data-target') || '0');
+    let v = 0;
+    const step = () => {
+      v += (target - v) * 0.12;
+      if (target - v < 0.4) v = target;
+      fill.style.width = v.toFixed(1) + '%';
+      if (v < 40) {
+        fill.style.background = 'linear-gradient(90deg,var(--accent-blue),var(--accent-cyan))';
+      } else if (v < 80) {
+        fill.style.background = 'linear-gradient(90deg,var(--accent-blue),var(--accent-green))';
+      } else {
+        fill.style.background = 'linear-gradient(90deg,var(--accent-yellow),var(--accent-red))';
+      }
+      if (v < target) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  });
+
+  const nums = document.querySelectorAll('[data-count]');
+  nums.forEach(el => {
+    const targetStr = el.getAttribute('data-count') || '0';
+    const target = parseFloat(targetStr.toString().replace(/\s| /g, ''));
+    let v = 0;
+    const isPercent = targetStr.toString().includes('%');
+    const isFloat = !Number.isInteger(target);
+    const step = () => {
+      v += (target - v) * 0.18;
+      if (Math.abs(target - v) < (isFloat ? 0.03 : 0.6)) v = target;
+      let out = isFloat ? v.toFixed(1) : Math.round(v).toLocaleString('cs-CZ');
+      el.textContent = out;
+      if (v < target) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  });
+
+  // side nav active state on scroll
+  const sections = Array.from(document.querySelectorAll('.detail-card[id^="mod-"]'));
+  const navItems = Array.from(document.querySelectorAll('.side-nav-item'));
+  const onScroll = () => {
+    const scrollY = window.scrollY;
+    let activeId = null;
+    sections.forEach(sec => {
+      const rect = sec.getBoundingClientRect();
+      const top = rect.top + scrollY - 140;
+      if (scrollY >= top) activeId = sec.id;
+    });
+    if (!activeId) activeId = sections[0].id;
+    navItems.forEach(item => {
+      const href = item.getAttribute('href') || '';
+      item.classList.toggle('active', href === '#' + activeId);
+    });
+  };
+  window.addEventListener('scroll', onScroll);
+  onScroll();
+});
+</script>
+</body>
+</html>
