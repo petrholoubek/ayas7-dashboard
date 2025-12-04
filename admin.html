@@ -14,6 +14,15 @@
   --accent-blue:#4fa3ff;
   --accent-green:#22c55e;
   --accent-green-soft:#4ade80;
+  --accent-yellow:#f6d365;
+  --accent-red:#ff6b6b;
+  --accent-cyan:#7de2ff;
+  --accent-mint:#9adabf;
+  --accent-peach:#ffd6a5;
+  --accent-sky:#7de2ff;
+  --accent-indigo:#7fb7ff;
+  --accent-violet:#a6b8ff;
+  --accent-ice:#b9d7ff;
   --muted:#9ca3af;
   --text:#e5e7eb;
   --card-bg: linear-gradient(circle at 10% 10%, rgba(255,255,255,0.012), rgba(255,255,255,0.01));
@@ -26,93 +35,387 @@
   --chip-glow: rgba(79,163,255,0.08);
 }
 *{box-sizing:border-box;margin:0;padding:0}
-html,#msg_body {height:100%;font-family:"Segoe UI", Tahoma, Geneva, Verdana, sans-serif;background:
-  radial-gradient(circle at 40% 0%, #0f172a 0%, #020617 55%, #000 100%);color:var(--text);-webkit-font-smoothing:antialiased}
+html,#msg_body {
+  height:100%;
+  font-family:"Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background:radial-gradient(circle at 40% 0%, #0f172a 0%, #020617 55%, #000 100%);
+  color:var(--text);
+  -webkit-font-smoothing:antialiased
+}
 a{color:inherit;text-decoration:none}
 small{color:var(--muted);font-size:12px}
 
-/* Remove site menu as requested: single standalone control room */
+/* Remove site menu: standalone velín */
 header.topbar{display:none}
 
 /* Main container */
-main{max-width:var(--max-w);margin:22px auto;padding:0 var(--pad) 60px;position:relative}
-.ambient{position:absolute;left:50%;top:6vh;transform:translateX(-50%);width:900px;height:420px;filter:blur(100px);opacity:.12;background:radial-gradient(circle,#4fa3ff 0%,transparent 45%);z-index:0}
+main{
+  max-width:var(--max-w);
+  margin:22px auto;
+  padding:0 var(--pad) 60px;
+  position:relative
+}
+.ambient{
+  position:absolute;
+  left:50%;
+  top:6vh;
+  transform:translateX(-50%);
+  width:900px;
+  height:420px;
+  filter:blur(110px);
+  opacity:.13;
+  background:radial-gradient(circle,#4fa3ff 0%,transparent 55%);
+  z-index:0
+}
 
-.hdr{display:flex;flex-direction:column;gap:8px;z-index:2}
-.kicker{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.12em;display:flex;align-items:center;gap:8px}
-.kicker .dot{width:8px;height:8px;border-radius:999px;background:var(--accent-green);box-shadow:0 0 8px rgba(34,197,94,0.9)}
+.hdr{
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  z-index:2
+}
+.kicker{
+  font-size:12px;
+  color:var(--muted);
+  text-transform:uppercase;
+  letter-spacing:.12em;
+  display:flex;
+  align-items:center;
+  gap:8px
+}
+.kicker .dot{
+  width:8px;
+  height:8px;
+  border-radius:999px;
+  background:var(--accent-green);
+  box-shadow:0 0 8px rgba(34,197,94,0.9)
+}
 .title{font-size:26px;font-weight:800}
 .subtitle{color:var(--muted);max-width:1000px;line-height:1.5}
 
-/* Grid 3x3, maintain structure exactly as provided */
-.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:16px;z-index:2}
-
-/* Base card */
-.card{
- background:var(--card-bg);border-radius:14px;padding:14px;border:1px solid var(--border);box-shadow:0 18px 40px rgba(2,6,23,0.7);min-height:170px;position:relative;overflow:hidden;
- display:flex;flex-direction:column;justify-content:space-between;
- transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+/* GRID 3×3 */
+.cards{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:18px;
+  margin-top:16px;
+  z-index:2
 }
-.card:hover{transform:translateY(-6px);box-shadow:0 28px 80px rgba(2,6,23,0.85);border-color:rgba(79,163,255,0.12)}
 
-/* card-badge consistent */
-.card .badge{display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border-radius:999px;background:rgba(11,17,32,0.45);border:1px solid rgba(148,163,184,0.12);font-size:12px;color:var(--muted)}
-.card h3{margin-top:8px;font-size:15px;color:var(--text);letter-spacing:.02em}
-.card p.sub{color:var(--muted);font-size:13px;min-height:36px}
+/* ZÁKLADNÍ KARTA */
+.card{
+  background:var(--card-bg);
+  border-radius:14px;
+  padding:14px;
+  border:1px solid var(--border);
+  box-shadow:0 18px 40px rgba(2,6,23,0.7);
+  min-height:170px;
+  position:relative;
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+}
+.card:hover{
+  transform:translateY(-6px);
+  box-shadow:0 28px 80px rgba(2,6,23,0.9);
+  border-color:rgba(79,163,255,0.18);
+}
 
-/* LED strip design */
+/* INDEX „01“ VPRAVO NAHOŘE – KLIKACÍ */
+.card-index{
+  position:absolute;
+  top:10px;
+  right:10px;
+  padding:8px 10px;
+  border-radius:12px;
+  border:1px solid rgba(148,163,184,0.5);
+  background:radial-gradient(circle at 0% 0%,rgba(255,255,255,0.12),rgba(15,23,42,0.96));
+  display:flex;
+  flex-direction:column;
+  align-items:flex-end;
+  gap:2px;
+  cursor:pointer;
+  box-shadow:0 10px 30px rgba(15,23,42,0.95);
+  transition:transform .14s ease, box-shadow .14s ease, border-color .14s ease, background .14s ease;
+}
+.card-index span.num{
+  font-size:15px;
+  font-weight:900;
+  letter-spacing:.16em;
+}
+.card-index span.label{
+  font-size:9px;
+  color:var(--muted);
+  letter-spacing:.16em;
+}
+
+/* Barvy indexů podle typu boxu */
+.card-index[data-accent="blue"] .num{color:var(--accent-blue);}
+.card-index[data-accent="amber"] .num{color:var(--accent-yellow);}
+.card-index[data-accent="cyan"] .num{color:var(--accent-cyan);}
+.card-index[data-accent="mint"] .num{color:var(--accent-mint);}
+.card-index[data-accent="peach"] .num{color:var(--accent-peach);}
+.card-index[data-accent="sky"] .num{color:var(--accent-sky);}
+.card-index[data-accent="indigo"] .num{color:var(--accent-indigo);}
+.card-index[data-accent="violet"] .num{color:var(--accent-violet);}
+.card-index[data-accent="ice"] .num{color:var(--accent-ice);}
+
+.card-index:hover{
+  transform:translateY(-1px) scale(1.03);
+  box-shadow:0 16px 42px rgba(0,0,0,1);
+  border-color:rgba(248,250,252,0.9);
+  background:radial-gradient(circle at 0% 0%,rgba(255,255,255,0.18),rgba(15,23,42,0.96));
+}
+
+/* Rozbalená karta přes celou šířku */
+.card.expanded{
+  grid-column:span 3;
+  background:linear-gradient(180deg, rgba(255,255,255,0.018), rgba(10,16,35,0.96));
+}
+
+/* badge nahoře v kartě */
+.card .badge{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:6px 10px;
+  border-radius:999px;
+  background:rgba(11,17,32,0.45);
+  border:1px solid rgba(148,163,184,0.16);
+  font-size:12px;
+  color:var(--muted)
+}
+.card h3{
+  margin-top:8px;
+  font-size:15px;
+  color:var(--text);
+  letter-spacing:.02em
+}
+.card p.sub{
+  color:var(--muted);
+  font-size:13px;
+  min-height:36px
+}
+
+/* LED pásky */
 .led-strip{
- height:var(--led-height);border-radius:var(--led-radius);background:rgba(255,255,255,0.02);overflow:hidden;border:1px solid rgba(255,255,255,0.02);
- position:relative;margin-top:10px;box-shadow:inset 0 -6px 18px rgba(0,0,0,0.4);
+  height:var(--led-height);
+  border-radius:var(--led-radius);
+  background:rgba(255,255,255,0.02);
+  overflow:hidden;
+  border:1px solid rgba(255,255,255,0.02);
+  position:relative;
+  margin-top:10px;
+  box-shadow:inset 0 -6px 18px rgba(0,0,0,0.4);
 }
 .led-fill{
- height:100%;width:0%;border-radius:var(--led-radius);background:linear-gradient(90deg,var(--accent-blue),var(--accent-green-soft));box-shadow:0 6px 24px rgba(79,163,255,0.08);transition:width .6s cubic-bezier(.2,.9,.3,1), box-shadow .2s;
- will-change:width,box-shadow,background;
+  height:100%;
+  width:0%;
+  border-radius:var(--led-radius);
+  background:linear-gradient(90deg,var(--accent-blue),var(--accent-green-soft));
+  box-shadow:0 6px 24px rgba(79,163,255,0.12);
+  transition:width .6s cubic-bezier(.2,.9,.3,1), box-shadow .2s, background .2s;
+  will-change:width,box-shadow,background;
 }
-.led-grid{height:6px;margin-top:6px;border-top:1px solid rgba(148,163,184,0.06);opacity:0.9}
+.led-grid{
+  height:6px;
+  margin-top:6px;
+  border-top:1px solid rgba(148,163,184,0.06);
+  opacity:0.9
+}
 
 /* metrics */
-.metrics{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
-.metric{background:rgba(255,255,255,0.01);border:1px solid rgba(255,255,255,0.02);padding:8px 10px;border-radius:8px;min-width:110px;text-align:left}
-.metric h4{margin:0;font-size:14px;color:var(--text)}
-.metric p{margin:0;color:var(--muted);font-size:12px}
+.metrics{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-top:10px
+}
+.metric{
+  background:rgba(255,255,255,0.01);
+  border:1px solid rgba(255,255,255,0.02);
+  padding:8px 10px;
+  border-radius:8px;
+  min-width:110px;
+  text-align:left
+}
+.metric h4{
+  margin:0;
+  font-size:14px;
+  color:var(--text)
+}
+.metric p{
+  margin:0;
+  color:var(--muted);
+  font-size:12px
+}
 
-/* links as modern pills */
-.links{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
-.link{padding:8px 12px;border-radius:999px;border:1px solid rgba(148,163,184,0.12);background:rgba(11,17,32,0.45);font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:8px;transition:transform .12s, background .12s}
-.link:hover{transform:translateY(-3px);background:rgba(255,255,255,0.02)}
+/* odkazy / tlačítka */
+.links{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-top:12px
+}
+.link{
+  padding:8px 12px;
+  border-radius:999px;
+  border:1px solid rgba(148,163,184,0.18);
+  background:radial-gradient(circle at 0% 0%,rgba(255,255,255,0.06),rgba(11,17,32,0.98));
+  font-weight:700;
+  cursor:pointer;
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  transition:transform .12s, background .12s, box-shadow .12s, border-color .12s;
+  font-size:12px;
+}
+.link:hover{
+  transform:translateY(-3px);
+  background:radial-gradient(circle at 0% 0%,rgba(255,255,255,0.16),rgba(15,23,42,1));
+  box-shadow:0 12px 32px rgba(15,23,42,0.95);
+  border-color:rgba(248,250,252,0.8);
+}
 
-/* led small for links */
-.link .led{width:10px;height:10px;border-radius:50%;box-shadow:0 0 8px rgba(0,0,0,0.4)}
+/* malé led v tlačítku */
+.link .led{
+  width:10px;
+  height:10px;
+  border-radius:50%;
+  box-shadow:0 0 8px rgba(0,0,0,0.4)
+}
 
-/* multisig indicator */
-.multisig{display:flex;align-items:center;gap:8px;margin-top:8px}
-.ms-light{width:12px;height:12px;border-radius:50%;box-shadow:0 0 10px rgba(0,0,0,0.4);border:1px solid rgba(255,255,255,0.04)}
-.ms-green{background:var(--accent-green);box-shadow:0 0 12px rgba(34,197,94,0.6)}
-.ms-yellow{background:#f6d365;box-shadow:0 0 10px rgba(246,211,77,0.4)}
-.ms-red{background:#ff6b6b;box-shadow:0 0 10px rgba(255,107,107,0.4)}
+/* multisig tečky */
+.multisig{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  margin-top:8px
+}
+.ms-light{
+  width:12px;
+  height:12px;
+  border-radius:50%;
+  box-shadow:0 0 10px rgba(0,0,0,0.4);
+  border:1px solid rgba(255,255,255,0.04)
+}
+.ms-green{
+  background:var(--accent-green);
+  box-shadow:0 0 12px rgba(34,197,94,0.6)
+}
+.ms-yellow{
+  background:#f6d365;
+  box-shadow:0 0 10px rgba(246,211,77,0.4)
+}
+.ms-red{
+  background:#ff6b6b;
+  box-shadow:0 0 10px rgba(255,107,107,0.4)
+}
 
 /* log area */
-.log{background:rgba(255,255,255,0.015);border-radius:8px;padding:8px;border:1px solid rgba(255,255,255,0.02);max-height:220px;overflow:auto;margin-top:10px}
-.log-item{padding:6px;border-bottom:1px dashed rgba(255,255,255,0.02);color:var(--muted);font-size:13px}
-
-/* chip-like top center small visual (control panel identity) */
-.panel-id{display:flex;align-items:center;gap:12px;justify-content:center;margin:6px 0 12px 0}
-.panel-chip{
- width:120px;height:44px;border-radius:10px;background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));
- display:flex;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,0.03);
- box-shadow:0 8px 30px var(--chip-glow);
- font-weight:800;color:var(--accent-blue);letter-spacing:.08em
+.log{
+  background:rgba(255,255,255,0.015);
+  border-radius:8px;
+  padding:8px;
+  border:1px solid rgba(255,255,255,0.02);
+  max-height:220px;
+  overflow:auto;
+  margin-top:10px
 }
-.panel-sub{font-size:12px;color:var(--muted)}
+.log-item{
+  padding:6px;
+  border-bottom:1px dashed rgba(255,255,255,0.02);
+  color:var(--muted);
+  font-size:13px
+}
 
-/* interactive expand (kept minimal, no structure change) */
-.card.expanded{grid-column:span 3;background:linear-gradient(180deg, rgba(255,255,255,0.015), rgba(255,255,255,0.01));}
-.card .expand-btn{position:absolute;right:12px;top:12px;padding:6px 8px;border-radius:8px;border:1px solid rgba(255,255,255,0.03);background:rgba(255,255,255,0.01);cursor:pointer;font-weight:700;color:var(--muted)}
+/* panel identita (AYAS-7 / Control Room / Chip Core) */
+.panel-id{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin:10px 0 4px 0;
+  padding:4px 0;
+}
+.panel-chip{
+  width:130px;
+  height:46px;
+  border-radius:10px;
+  background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border:1px solid rgba(255,255,255,0.03);
+  box-shadow:0 10px 34px var(--chip-glow);
+  font-weight:900;
+  color:var(--text);
+  letter-spacing:.08em;
+  font-size:20px;
+}
+.panel-sub{
+  font-size:12px;
+  color:var(--muted)
+}
 
-/* mini responsive */
-@media (max-width:1100px){ .cards{grid-template-columns:repeat(2,1fr)} }
-@media (max-width:700px){ .cards{grid-template-columns:1fr} .panel-chip{width:140px} .title{font-size:20px} }
+/* spodní řádek: komunikace + manuál */
+.bottom-bar{
+  display:flex;
+  gap:18px;
+  margin-top:22px;
+}
+.bottom-card{
+  flex:1;
+  padding:14px;
+  border-radius:14px;
+  border:1px solid rgba(148,163,184,0.18);
+  background:radial-gradient(circle at 10% 10%,rgba(255,255,255,0.02),rgba(15,23,42,0.96));
+  box-shadow:0 18px 40px rgba(2,6,23,0.7);
+  font-size:13px;
+  color:var(--muted);
+}
+.bottom-card h4{
+  margin-bottom:6px;
+  font-size:14px;
+  color:var(--text);
+}
+.bottom-pill{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:7px 11px;
+  border-radius:999px;
+  border:1px solid rgba(148,163,184,0.18);
+  background:radial-gradient(circle at 0% 0%,rgba(255,255,255,0.06),rgba(11,17,32,0.98));
+  font-size:12px;
+  margin-top:6px;
+  cursor:pointer;
+  transition:all .12s;
+}
+.bottom-pill:hover{
+  transform:translateY(-2px);
+  border-color:rgba(248,250,252,0.85);
+  box-shadow:0 10px 28px rgba(15,23,42,0.9);
+}
+.bottom-pill .dot{
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:var(--accent-green);
+  box-shadow:0 0 8px rgba(34,197,94,0.9);
+}
+
+/* responsive */
+@media (max-width:1100px){
+  .cards{grid-template-columns:repeat(2,1fr)}
+}
+@media (max-width:700px){
+  .cards{grid-template-columns:1fr}
+  .panel-chip{width:140px}
+  .title{font-size:20px}
+  .bottom-bar{flex-direction:column}
+}
 </style>
 </head>
 <body>
@@ -122,24 +425,67 @@ main{max-width:var(--max-w);margin:22px auto;padding:0 var(--pad) 60px;position:
  <div class="hdr">
    <div class="kicker"><span class="dot"></span> Řídicí panel · Velín</div>
    <div class="title">AYAS-7 Admin Control Room</div>
-   <div class="subtitle">Plně navazuje na dashboard — stejné LED lišty, rychlá plynulá simulace, interaktivní ovládací prvky. Demo: živá simulace pro prezentaci investorům.</div>
+   <div class="subtitle">Plně navazuje na dashboard — stejné LED lišty, plynulá simulace, interaktivní ovládací prvky. Demo: živý velín připravený na ostré napojení na AYAS-7 Chip Core.</div>
  </div>
 
+ <!-- AYAS-7 / CONTROL ROOM / CHIP CORE ONLINE -->
  <div class="panel-id" role="banner" aria-label="panel identity">
-   <div class="panel-chip">AYAS-7</div>
-   <div class="panel-sub">Control Room · Chip Core — heart of engine</div>
+   <!-- LEVÁ STRANA: AYAS-7 -->
+   <div class="panel-chip">
+     AYAS-7
+   </div>
+
+   <!-- STŘED: Control Room -->
+   <div style="
+        font-size:14px;
+        letter-spacing:.06em;
+        color:var(--muted);
+        text-transform:uppercase;
+        font-weight:700;
+      ">
+     Control Room
+   </div>
+
+   <!-- PRAVÁ STRANA: LED + ONLINE TEXT -->
+   <div style="display:flex;align-items:center;gap:10px;">
+     <div id="chipLed" style="
+          width:10px;
+          height:10px;
+          border-radius:50%;
+          background:#22ff77;
+          box-shadow:
+            0 0 8px #22ff77,
+            0 0 14px #22ff77,
+            0 0 20px rgba(34,255,119,0.8);
+        ">
+     </div>
+     <div style="font-size:12px;color:var(--muted);letter-spacing:.04em;">
+       Chip Core · ONLINE
+     </div>
+   </div>
  </div>
 
+ <div class="panel-sub" style="text-align:center;margin-top:4px;">
+   Chip Core — heart of engine
+ </div>
+
+ <!-- 3×3 KARTY -->
  <section class="cards" id="cardsGrid">
-   
+
+   <!-- 01 · AI CONTROL -->
    <article class="card" id="card-ai" data-card="ai">
+     <button class="card-index" type="button" data-accent="blue">
+       <span class="num">01</span>
+       <span class="label">AI</span>
+     </button>
+
      <div>
        <div class="badge"><span style="width:8px;height:8px;border-radius:999px;background:var(--accent-blue);display:inline-block"></span>&nbsp;AI Control</div>
        <h3>AI Automatic Control</h3>
        <p class="sub">Automatický režim řízení enginu. Přepnutí na manuál zastaví automatické zásahy.</p>
 
        <div class="led-strip" aria-hidden="true">
-         <div class="led-fill" id="aiFill" style="width:74%"></div>
+         <div class="led-fill" id="aiFill"></div>
        </div>
        <div class="led-grid" aria-hidden="true"></div>
 
@@ -150,26 +496,38 @@ main{max-width:var(--max-w);margin:22px auto;padding:0 var(--pad) 60px;position:
        </div>
 
        <div class="links">
-         <a class="link" id="toggleAI" role="button"><span class="led" id="ledAi" style="background:var(--accent-green);"></span><span id="toggleAiLabel">AI ON</span></a>
+         <a class="link" id="toggleAI" role="button">
+           <span class="led" id="ledAi"></span>
+           <span id="toggleAiLabel">AI ON</span>
+         </a>
          <a class="link" id="openAiLog">AI Log</a>
        </div>
      </div>
 
      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px">
-       <div class="multisig" title="AI health"><div class="ms-light ms-green" id="aiMs"></div><small style="color:var(--muted)">AI Health</small></div>
+       <div class="multisig" title="AI health">
+         <div class="ms-light ms-green" id="aiMs"></div>
+         <small style="color:var(--muted)">AI Health</small>
+       </div>
        <div style="font-size:12px;color:var(--muted)">Mode: <strong id="aiMode">AUTO</strong></div>
      </div>
-     <button class="expand-btn" title="Expand">...</button>
    </article>
 
-   
+   <!-- 02 · MANUAL / BRAKE -->
    <article class="card" id="card-manual" data-card="manual">
+     <button class="card-index" type="button" data-accent="amber">
+       <span class="num">02</span>
+       <span class="label">MAN</span>
+     </button>
+
      <div>
        <div class="badge"><span style="width:8px;height:8px;border-radius:999px;background:#f6d365;display:inline-block"></span>&nbsp;Manual / Brake</div>
        <h3>Manual Mode &amp; Emergency Brake</h3>
        <p class="sub">Rychlé přepnutí do ručního režimu a aktivace nouzové brzdy. Demo bezpečné operace.</p>
 
-       <div class="led-strip"><div class="led-fill" id="manualFill" style="width:56%;background:linear-gradient(90deg,#f6d365,#ff8a65)"></div></div>
+       <div class="led-strip">
+         <div class="led-fill" id="manualFill"></div>
+       </div>
        <div class="led-grid"></div>
 
        <div class="metrics">
@@ -180,26 +538,38 @@ main{max-width:var(--max-w);margin:22px auto;padding:0 var(--pad) 60px;position:
 
        <div class="links">
          <a class="link" id="btnManual">ACTIVATE MANUAL</a>
-         <a class="link" id="btnBrake" style="border-color:rgba(231,76,60,0.18);color:#ffdede">SYSTEM BRAKE</a>
+         <a class="link" id="btnBrake" style="border-color:rgba(231,76,60,0.35);">
+           <span class="led" style="background:var(--accent-red);box-shadow:0 0 10px rgba(239,68,68,0.95)"></span>
+           SYSTEM BRAKE
+         </a>
          <a class="link" id="btnSafe">SAFE MODE</a>
        </div>
      </div>
 
      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px">
-       <div class="multisig"><div class="ms-light ms-yellow" id="manualMs"></div><small style="color:var(--muted)">Manual Status</small></div>
+       <div class="multisig">
+         <div class="ms-light ms-yellow" id="manualMs"></div>
+         <small style="color:var(--muted)">Manual Status</small>
+       </div>
        <div style="font-size:12px;color:var(--muted)"><strong>Admin actions</strong></div>
      </div>
-     <button class="expand-btn" title="Expand">...</button>
    </article>
 
-   
+   <!-- 03 · POOL -->
    <article class="card" id="card-pool" data-card="pool">
+     <button class="card-index" type="button" data-accent="cyan">
+       <span class="num">03</span>
+       <span class="label">POOL</span>
+     </button>
+
      <div>
        <div class="badge"><span style="width:8px;height:8px;border-radius:999px;background:#7de2ff;display:inline-block"></span>&nbsp;Pool Output</div>
        <h3>Pool Output Simulation</h3>
        <p class="sub">Simulace výstupů z poolů: rebalancing, změny TVL a odhad výnosu.</p>
 
-       <div class="led-strip"><div class="led-fill" id="poolFill" style="width:62%;background:linear-gradient(90deg,#7de2ff,#4fa3ff)"></div></div>
+       <div class="led-strip">
+         <div class="led-fill" id="poolFill"></div>
+       </div>
        <div class="led-grid"></div>
 
        <div class="metrics">
@@ -215,20 +585,31 @@ main{max-width:var(--max-w);margin:22px auto;padding:0 var(--pad) 60px;position:
      </div>
 
      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px">
-       <div class="multisig"><div class="ms-light ms-green" id="poolMs"></div><small style="color:var(--muted)">Pool OK</small></div>
-       <div style="font-size:12px;color:var(--muted)"><strong>Last rebalance</strong> <br><small id="poolLast">3h ago</small></div>
+       <div class="multisig">
+         <div class="ms-light ms-green" id="poolMs"></div>
+         <small style="color:var(--muted)">Pool OK</small>
+       </div>
+       <div style="font-size:12px;color:var(--muted)">
+         <strong>Last rebalance</strong> <br><small id="poolLast">3h ago</small>
+       </div>
      </div>
-     <button class="expand-btn" title="Expand">...</button>
    </article>
 
-   
+   <!-- 04 · DATABASE -->
    <article class="card" id="card-db" data-card="db">
+     <button class="card-index" type="button" data-accent="mint">
+       <span class="num">04</span>
+       <span class="label">DB</span>
+     </button>
+
      <div>
        <div class="badge"><span style="width:8px;height:8px;border-radius:999px;background:#9adabf;display:inline-block"></span>&nbsp;Database</div>
        <h3>Supabase · DB Status</h3>
        <p class="sub">Monitoring latency, writes/min a integrity check. Export report pro audit.</p>
 
-       <div class="led-strip"><div class="led-fill" id="dbFill" style="width:92%;background:linear-gradient(90deg,#9adabf,#22c55e)"></div></div>
+       <div class="led-strip">
+         <div class="led-fill" id="dbFill"></div>
+       </div>
        <div class="led-grid"></div>
 
        <div class="metrics">
@@ -244,20 +625,31 @@ main{max-width:var(--max-w);margin:22px auto;padding:0 var(--pad) 60px;position:
      </div>
 
      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px">
-       <div class="multisig"><div class="ms-light ms-green" id="dbMs"></div><small style="color:var(--muted)">DB OK</small></div>
-       <div style="font-size:12px;color:var(--muted)"><strong>Last checkpoint</strong> <br><small id="dbLast">2025-11-27</small></div>
+       <div class="multisig">
+         <div class="ms-light ms-green" id="dbMs"></div>
+         <small style="color:var(--muted)">DB OK</small>
+       </div>
+       <div style="font-size:12px;color:var(--muted)">
+         <strong>Last checkpoint</strong> <br><small id="dbLast">2025-11-27</small>
+       </div>
      </div>
-     <button class="expand-btn" title="Expand">...</button>
    </article>
 
-   
+   <!-- 05 · MULTI-SIG -->
    <article class="card" id="card-ms" data-card="ms">
+     <button class="card-index" type="button" data-accent="peach">
+       <span class="num">05</span>
+       <span class="label">MSIG</span>
+     </button>
+
      <div>
        <div class="badge"><span style="width:8px;height:8px;border-radius:999px;background:#ffd6a5;display:inline-block"></span>&nbsp;Multi-Sig</div>
        <h3>Multi-Sig Status</h3>
        <p class="sub">Počet požadovaných podpisů, aktuální počet zaslaných a stav time-locku.</p>
 
-       <div class="led-strip"><div class="led-fill" id="msFill" style="width:50%;background:linear-gradient(90deg,#ffd6a5,#ff8a65)"></div></div>
+       <div class="led-strip">
+         <div class="led-fill" id="msFill"></div>
+       </div>
        <div class="led-grid"></div>
 
        <div class="metrics">
@@ -273,20 +665,31 @@ main{max-width:var(--max-w);margin:22px auto;padding:0 var(--pad) 60px;position:
      </div>
 
      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px">
-       <div class="multisig"><div class="ms-light ms-yellow" id="msLight"></div><small style="color:var(--muted)">Signatures</small></div>
-       <div style="font-size:12px;color:var(--muted)"><strong>Last tx</strong> <br><small id="msLast">2h ago</small></div>
+       <div class="multisig">
+         <div class="ms-light ms-yellow" id="msLight"></div>
+         <small style="color:var(--muted)">Signatures</small>
+       </div>
+       <div style="font-size:12px;color:var(--muted)">
+         <strong>Last tx</strong> <br><small id="msLast">2h ago</small>
+       </div>
      </div>
-     <button class="expand-btn" title="Expand">...</button>
    </article>
 
-   
+   <!-- 06 · BLOCKCHAIN -->
    <article class="card" id="card-chain" data-card="chain">
+     <button class="card-index" type="button" data-accent="sky">
+       <span class="num">06</span>
+       <span class="label">CHAIN</span>
+     </button>
+
      <div>
        <div class="badge"><span style="width:8px;height:8px;border-radius:999px;background:#7de2ff;display:inline-block"></span>&nbsp;Blockchain</div>
        <h3>Blockchain Connection</h3>
        <p class="sub">RPC latency, block height a sync status. Monitor on-chain health.</p>
 
-       <div class="led-strip"><div class="led-fill" id="chainFill" style="width:82%;background:linear-gradient(90deg,#7de2ff,#4fa3ff)"></div></div>
+       <div class="led-strip">
+         <div class="led-fill" id="chainFill"></div>
+       </div>
        <div class="led-grid"></div>
 
        <div class="metrics">
@@ -302,51 +705,53 @@ main{max-width:var(--max-w);margin:22px auto;padding:0 var(--pad) 60px;position:
      </div>
 
      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px">
-       <div class="multisig"><div class="ms-light ms-green" id="chainMs"></div><small style="color:var(--muted)">On-chain</small></div>
-       <div style="font-size:12px;color:var(--muted)"><strong>Pairs</strong> <br><small id="chainPairs">USDt.z / GUSD</small></div>
+       <div class="multisig">
+         <div class="ms-light ms-green" id="chainMs"></div>
+         <small style="color:var(--muted)">On-chain</small>
+       </div>
+       <div style="font-size:12px;color:var(--muted)">
+         <strong>Pairs</strong> <br><small id="chainPairs">USDt.z / GUSD</small>
+       </div>
      </div>
-     <button class="expand-btn" title="Expand">...</button>
    </article>
 
-   
+   <!-- 07 · ENGINE 7 LAYERS -->
    <article class="card" id="card-engine" data-card="engine">
+     <button class="card-index" type="button" data-accent="indigo">
+       <span class="num">07</span>
+       <span class="label">ENGINE</span>
+     </button>
+
      <div>
        <div class="badge"><span style="width:8px;height:8px;border-radius:999px;background:#7fb7ff;display:inline-block"></span>&nbsp;AYAS-7 Engine</div>
        <h3>Engine Simulation · 7 Layers</h3>
        <p class="sub">Sedm horizontálních LED pásků znázorňuje výkon každé vrstvy (L1–L7).</p>
 
        <div style="display:flex;flex-direction:column;gap:8px;margin-top:10px">
-         
          <div>
            <div style="display:flex;justify-content:space-between;font-size:13px"><strong>Layer 1 · Token</strong><span id="L1pct">88%</span></div>
            <div class="led-strip"><div class="led-fill mini" id="L1" style="width:88%"></div></div>
          </div>
-
          <div>
            <div style="display:flex;justify-content:space-between;font-size:13px"><strong>Layer 2 · Liquidity</strong><span id="L2pct">68%</span></div>
            <div class="led-strip"><div class="led-fill mini" id="L2" style="width:68%"></div></div>
          </div>
-
          <div>
            <div style="display:flex;justify-content:space-between;font-size:13px"><strong>Layer 3 · Yield</strong><span id="L3pct">81%</span></div>
            <div class="led-strip"><div class="led-fill mini" id="L3" style="width:81%"></div></div>
          </div>
-
          <div>
            <div style="display:flex;justify-content:space-between;font-size:13px"><strong>Layer 4 · Risk</strong><span id="L4pct">92%</span></div>
            <div class="led-strip"><div class="led-fill mini" id="L4" style="width:92%"></div></div>
          </div>
-
          <div>
            <div style="display:flex;justify-content:space-between;font-size:13px"><strong>Layer 5 · FinTech</strong><span id="L5pct">56%</span></div>
            <div class="led-strip"><div class="led-fill mini" id="L5" style="width:56%"></div></div>
          </div>
-
          <div>
            <div style="display:flex;justify-content:space-between;font-size:13px"><strong>Layer 6 · Core</strong><span id="L6pct">61%</span></div>
            <div class="led-strip"><div class="led-fill mini" id="L6" style="width:61%"></div></div>
          </div>
-
          <div>
            <div style="display:flex;justify-content:space-between;font-size:13px"><strong>Layer 7 · Analytics</strong><span id="L7pct">82%</span></div>
            <div class="led-strip"><div class="led-fill mini" id="L7" style="width:82%"></div></div>
@@ -360,20 +765,31 @@ main{max-width:var(--max-w);margin:22px auto;padding:0 var(--pad) 60px;position:
      </div>
 
      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px">
-       <div class="multisig"><div class="ms-light ms-green" id="engineMs"></div><small style="color:var(--muted)">Engine health</small></div>
-       <div style="font-size:12px;color:var(--muted)"><strong>Mode</strong> <br><small id="engineMode">SIM</small></div>
+       <div class="multisig">
+         <div class="ms-light ms-green" id="engineMs"></div>
+         <small style="color:var(--muted)">Engine health</small>
+       </div>
+       <div style="font-size:12px;color:var(--muted)">
+         <strong>Mode</strong> <br><small id="engineMode">SIM</small>
+       </div>
      </div>
-     <button class="expand-btn" title="Expand">...</button>
    </article>
 
-   
+   <!-- 08 · THROUGHPUT -->
    <article class="card" id="card-throughput" data-card="throughput">
+     <button class="card-index" type="button" data-accent="violet">
+       <span class="num">08</span>
+       <span class="label">TPS</span>
+     </button>
+
      <div>
        <div class="badge"><span style="width:8px;height:8px;border-radius:999px;background:#a6b8ff;display:inline-block"></span>&nbsp;Throughput</div>
        <h3>System Throughput</h3>
        <p class="sub">Operací za sekundu (ops/s), queue depth a propustnost systému.</p>
 
-       <div class="led-strip"><div class="led-fill" id="tpFill" style="width:70%;background:linear-gradient(90deg,#a6b8ff,#4fa3ff)"></div></div>
+       <div class="led-strip">
+         <div class="led-fill" id="tpFill"></div>
+       </div>
        <div class="led-grid"></div>
 
        <div class="metrics">
@@ -389,18 +805,27 @@ main{max-width:var(--max-w);margin:22px auto;padding:0 var(--pad) 60px;position:
      </div>
 
      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px">
-       <div class="multisig"><div class="ms-light ms-green" id="tpMs"></div><small style="color:var(--muted)">Node health</small></div>
-       <div style="font-size:12px;color:var(--muted)"><strong>Cluster</strong> <br><small id="clusterNodes">3 nodes</small></div>
+       <div class="multisig">
+         <div class="ms-light ms-green" id="tpMs"></div>
+         <small style="color:var(--muted)">Node health</small>
+       </div>
+       <div style="font-size:12px;color:var(--muted)">
+         <strong>Cluster</strong> <br><small id="clusterNodes">3 nodes</small>
+       </div>
      </div>
-     <button class="expand-btn" title="Expand">...</button>
    </article>
 
-   
+   <!-- 09 · EVENT LOG -->
    <article class="card" id="card-log" data-card="log">
+     <button class="card-index" type="button" data-accent="ice">
+       <span class="num">09</span>
+       <span class="label">LOG</span>
+     </button>
+
      <div>
        <div class="badge"><span style="width:8px;height:8px;border-radius:999px;background:#b9d7ff;display:inline-block"></span>&nbsp;Event Log</div>
        <h3>Event Log</h3>
-       <p class="sub">Poslední události systému. Export, filtrovat a popř. stáhnout auditní záznamy.</p>
+       <p class="sub">Poslední události systému. Export, filtrovat a stáhnout auditní záznamy.</p>
 
        <div class="log" id="logBox"></div>
 
@@ -413,27 +838,45 @@ main{max-width:var(--max-w);margin:22px auto;padding:0 var(--pad) 60px;position:
      <div style="display:flex;justify-content:flex-end;align-items:center;margin-top:12px">
        <div style="font-size:12px;color:var(--muted)"><strong>Live</strong> · <small id="logStatus">connected</small></div>
      </div>
-     <button class="expand-btn" title="Expand">...</button>
    </article>
+ </section>
+
+ <!-- KOMUNIKAČNÍ CENTRUM + MANUÁL -->
+ <section class="bottom-bar">
+   <div class="bottom-card">
+     <h4>AYAS-7 Communication Center</h4>
+     <p>Pro urgentní zásah, eskalace nebo domluvu integrace AYAS-7 Chip Core se spoj přímo s operátorem velínu.</p>
+     <p style="margin-top:6px;">
+       <strong>Email:</strong> <a href="mailto:petrholoubek39@gmail.com">petrholoubek39@gmail.com</a><br>
+       <strong>WhatsApp:</strong> <a href="https://wa.me/420778060622" target="_blank" rel="noreferrer">+420&nbsp;778&nbsp;060&nbsp;622</a>
+     </p>
+     <a class="bottom-pill" href="mailto:petrholoubek39@gmail.com?subject=AYAS-7%20Control%20Room">
+       <span class="dot"></span>
+       Kontaktovat Control Room
+     </a>
+   </div>
+
+   <div class="bottom-card">
+     <h4>Control Room Manual</h4>
+     <p>Detailní technická dokumentace k tomuto velínu: rozložení modulů, význam LED pásek, napojení na Chip Core a databázi.</p>
+     <p style="margin-top:6px;">Po vytvoření manuálu ho stačí nahrát jako <code>manual-control-room.html</code> do stejného repozitáře.</p>
+     <a class="bottom-pill" href="manual-control-room.html">
+       <span class="dot" style="background:var(--accent-blue);box-shadow:0 0 10px rgba(79,163,255,0.9);"></span>
+       Otevřít manuál (demo)
+     </a>
+   </div>
  </section>
 
  <footer style="text-align:center;margin-top:18px;color:var(--muted)">© 2025 Win-Win Družstvo · AYAS-7 Engine · Demo</footer>
 </main>
 
 <script>
-/* Enhanced interactive simulation script
-  - faster loop (~280ms) with smoothing
-  - micro-pulses and hover interactions
-  - expand-on-click for cards (kept minimal)
-  - careful to not change HTML structure
-*/
-
-// Utility selectors
+/* === HELPERY === */
 const $ = s => document.querySelector(s);
 const $$ = s => Array.from(document.querySelectorAll(s));
 const fmt = n => n.toLocaleString('cs-CZ');
 
-// INITIAL STATE (mirror previous)
+/* === STAV SIMULACE === */
 const state = {
  aiOn: true,
  aiRuntime: 0.74,
@@ -449,7 +892,7 @@ const state = {
  logs: []
 };
 
-// Map DOM
+/* === MAPOVÁNÍ DOM PRVKŮ === */
 const elements = {
  aiFill: $('#aiFill'),
  aiPercent: $('#aiPercent'),
@@ -509,10 +952,7 @@ const elements = {
  cardsGrid: $('#cardsGrid')
 };
 
-// Smooth step helper
-function smooth(curr, target, factor=0.12){ return curr + (target - curr) * factor; }
-
-// Set fill with color banding and smooth transition
+/* === FUNKCE PRO LED A MULTISIG === */
 function setFill(el, pct){
  if(!el) return;
  pct = Math.max(0, Math.min(100, pct));
@@ -520,12 +960,10 @@ function setFill(el, pct){
  if(pct >= 90) el.style.background = 'linear-gradient(90deg,#ff6b6b,#ff8a65)';
  else if(pct >= 75) el.style.background = 'linear-gradient(90deg,#f6d365,#ff8a65)';
  else el.style.background = 'linear-gradient(90deg,var(--accent-blue),var(--accent-green-soft))';
- // subtle glow scale
  const glow = Math.min(1.0, pct/100);
- el.style.boxShadow = `0 6px ${18*glow}px rgba(79,163,255,${0.06 + glow*0.12})`;
+ el.style.boxShadow = `0 6px ${18*glow}px rgba(79,163,255,${0.08 + glow*0.14})`;
 }
 
-// Multisig indicator
 function setMsLight(el, pct){
  el.classList.remove('ms-green','ms-yellow','ms-red');
  if(pct >= 0.75) el.classList.add('ms-green');
@@ -533,7 +971,7 @@ function setMsLight(el, pct){
  else el.classList.add('ms-red');
 }
 
-// Logs
+/* === LOGY === */
 function pushLog(msg){
  const ts = new Date().toLocaleTimeString();
  state.logs.push({ts,msg});
@@ -551,16 +989,18 @@ function renderLogs(){
  elements.logStatus.textContent = 'connected';
 }
 
-// Render UI from state (smoothing for visual)
+/* === RENDER CELÉHO UI ZE STAVU === */
 function render(){
  // AI
  const targetAiPct = Math.round(state.aiRuntime*100);
- elements.aiFill.dataset.target = targetAiPct;
  setFill(elements.aiFill, targetAiPct);
  elements.aiPercent.textContent = targetAiPct + ' %';
  elements.aiInterventions.textContent = state.aiInterventions;
  elements.aiLast.textContent = 'a few sec';
  elements.ledAi.style.background = state.aiOn ? 'var(--accent-green)' : '#ff6b6b';
+ elements.ledAi.style.boxShadow = state.aiOn
+   ? '0 0 10px rgba(34,197,94,0.9)'
+   : '0 0 10px rgba(239,68,68,0.95)';
  elements.toggleAiLabel.textContent = state.aiOn ? 'AI ON' : 'AI OFF';
  elements.aiMode.textContent = state.aiOn ? 'AUTO' : (state.manual ? 'MANUAL' : 'OFF');
  setMsLight(elements.aiMs, state.aiRuntime);
@@ -605,12 +1045,11 @@ function render(){
  elements.syncPerc.textContent = Math.round(state.chain.sync*100) + '%';
  setMsLight(elements.chainMs, state.chain.sync);
 
- // Layers (smooth visually by lerping)
+ // 7 vrstvy enginu
  state.layers.forEach((val, i) => {
    const pct = Math.round(val*100);
    setFill(elements.L[i], pct);
    elements.Lpct[i].textContent = pct + '%';
-   // micro-pulse animation via transform
    const pulse = 1 + (Math.sin(Date.now()/300 + i)*0.002*(pct/20));
    elements.L[i].style.transform = `scaleY(${pulse})`;
  });
@@ -623,24 +1062,28 @@ function render(){
  setMsLight(elements.tpMs, 0.85);
 }
 
-// Simulation tick with smoothing and faster updates
+/* === SIMULAČNÍ LOOP === */
 function tick(){
- // random walk with small steps
  state.aiRuntime = Math.max(0.25, Math.min(0.99, state.aiRuntime + (Math.random()-0.5)*0.02));
  if(Math.random() > 0.88) state.aiInterventions += 1;
+
  state.pool.tvl = Math.max(300000, state.pool.tvl + Math.round((Math.random()-0.45)*12000));
  state.pool.change = Math.max(-0.05, Math.min(0.1, state.pool.change + (Math.random()-0.5)*0.0025));
+
  state.chain.block += Math.round(Math.random()*4);
  state.chain.sync = Math.max(0.7, Math.min(1, state.chain.sync + (Math.random()-0.5)*0.012));
  state.chain.rpc = Math.max(0.8, Math.min(8, state.chain.rpc + (Math.random()-0.5)*0.12));
+
  state.db.latency = Math.max(5, Math.min(300, Math.round(state.db.latency + (Math.random()-0.5)*6)));
  state.db.writes = Math.max(10, state.db.writes + Math.round((Math.random()-0.5)*8));
+
  state.ms.submitted = Math.max(0, Math.min(state.ms.required, state.ms.submitted + (Math.random()>0.86?1:0)));
+
  state.layers = state.layers.map(l => Math.max(0.02, Math.min(1, l + (Math.random()-0.5)*0.045)));
+
  state.throughput.ops = Math.max(120, Math.min(5000, state.throughput.ops + Math.round((Math.random()-0.5)*140)));
  state.throughput.queue = Math.max(1, state.throughput.queue + Math.round((Math.random()-0.3)*6));
 
- // occasional logs
  if(Math.random() < 0.2){
    const ev = [
      'AI decision made (sim)',
@@ -658,7 +1101,7 @@ function tick(){
  render();
 }
 
-// Interactions
+/* === INTERAKCE TLAČÍTEK === */
 $('#toggleAI').addEventListener('click', e=>{
  e.preventDefault();
  state.aiOn = !state.aiOn;
@@ -679,78 +1122,152 @@ $('#btnBrake').addEventListener('click', e=>{
  state.brake = true;
  state.layers = state.layers.map(()=>0.02);
  state.aiRuntime = 0.02;
+ state.aiOn = false;
  pushLog('EMERGENCY BRAKE activated - safe mode');
  render();
 });
-$('#btnSafe').addEventListener('click', e=>{ e.preventDefault(); state.brake = false; pushLog('Safe mode toggled'); render(); });
+$('#btnSafe').addEventListener('click', e=>{
+ e.preventDefault();
+ state.brake = false;
+ pushLog('Safe mode toggled');
+ render();
+});
 
-$('#runRebalance').addEventListener('click', e=>{ e.preventDefault(); state.pool.change += 0.01; pushLog('Rebalance executed (sim)'); render(); });
-$('#viewPools').addEventListener('click', e=>{ e.preventDefault(); alert('Pools view (demo)'); pushLog('Pools viewed'); });
+$('#runRebalance').addEventListener('click', e=>{
+ e.preventDefault();
+ state.pool.change += 0.01;
+ pushLog('Rebalance executed (sim)');
+ render();
+});
+$('#viewPools').addEventListener('click', e=>{
+ e.preventDefault();
+ alert('Pools view (demo)');
+ pushLog('Pools viewed');
+});
 
-$('#dbReindex').addEventListener('click', e=>{ e.preventDefault(); state.db.latency += 5; pushLog('Reindex triggered (sim)'); render(); });
-$('#exportAudit').addEventListener('click', e=>{ e.preventDefault(); pushLog('Audit export requested'); alert('Audit export (demo)'); });
+$('#dbReindex').addEventListener('click', e=>{
+ e.preventDefault();
+ state.db.latency += 5;
+ pushLog('Reindex triggered (sim)');
+ render();
+});
+$('#exportAudit').addEventListener('click', e=>{
+ e.preventDefault();
+ pushLog('Audit export requested');
+ alert('Audit export (demo)');
+});
 
-$('#openMs').addEventListener('click', e=>{ e.preventDefault(); pushLog('Multi-sig opened (sim)'); alert('Multi-sig (demo)'); });
-$('#downloadAudit').addEventListener('click', e=>{ e.preventDefault(); pushLog('Audit downloaded'); alert('Audit (demo)'); });
+$('#openMs').addEventListener('click', e=>{
+ e.preventDefault();
+ pushLog('Multi-sig opened (sim)');
+ alert('Multi-sig (demo)');
+});
+$('#downloadAudit').addEventListener('click', e=>{
+ e.preventDefault();
+ pushLog('Audit downloaded');
+ alert('Audit (demo)');
+});
 
-$('#refreshChain').addEventListener('click', e=>{ e.preventDefault(); state.chain.block += 1; pushLog('Chain refreshed (sim)'); render(); });
-$('#openExplorer').addEventListener('click', e=>{ e.preventDefault(); pushLog('Explorer opened'); alert('Explorer (demo)'); });
+$('#refreshChain').addEventListener('click', e=>{
+ e.preventDefault();
+ state.chain.block += 1;
+ pushLog('Chain refreshed (sim)');
+ render();
+});
+$('#openExplorer').addEventListener('click', e=>{
+ e.preventDefault();
+ pushLog('Explorer opened');
+ alert('Explorer (demo)');
+});
 
-$('#engineSim').addEventListener('click', e=>{ e.preventDefault(); state.layers = state.layers.map(v => Math.min(1, v + 0.05)); pushLog('Engine simulation step'); render(); });
-$('#engineReset').addEventListener('click', e=>{ e.preventDefault(); state.layers = [0.88,0.68,0.81,0.92,0.56,0.61,0.82]; pushLog('Engine reset'); render(); });
+$('#engineSim').addEventListener('click', e=>{
+ e.preventDefault();
+ state.layers = state.layers.map(v => Math.min(1, v + 0.05));
+ pushLog('Engine simulation step');
+ render();
+});
+$('#engineReset').addEventListener('click', e=>{
+ e.preventDefault();
+ state.layers = [0.88,0.68,0.81,0.92,0.56,0.61,0.82];
+ pushLog('Engine reset');
+ render();
+});
 
-$('#scaleUp').addEventListener('click', e=>{ e.preventDefault(); state.throughput.ops += 200; pushLog('Scale up requested'); render(); });
-$('#scaleDown').addEventListener('click', e=>{ e.preventDefault(); state.throughput.ops = Math.max(200, state.throughput.ops - 200); pushLog('Scale down requested'); render(); });
+$('#scaleUp').addEventListener('click', e=>{
+ e.preventDefault();
+ state.throughput.ops += 200;
+ pushLog('Scale up requested');
+ render();
+});
+$('#scaleDown').addEventListener('click', e=>{
+ e.preventDefault();
+ state.throughput.ops = Math.max(200, state.throughput.ops - 200);
+ pushLog('Scale down requested');
+ render();
+});
 
-$('#clearLogs').addEventListener('click', e=>{ e.preventDefault(); state.logs = []; renderLogs(); pushLog('Logs cleared'); });
+/* LOG tlačítka */
+$('#clearLogs').addEventListener('click', e=>{
+ e.preventDefault();
+ state.logs = [];
+ renderLogs();
+ pushLog('Logs cleared');
+});
 $('#exportLogs').addEventListener('click', e=>{
  e.preventDefault();
  const txt = state.logs.map(l => `${l.ts} - ${l.msg}`).join('\n');
- const blob = new Blob([txt],{type:'text/plain'}); const url = URL.createObjectURL(blob);
- const a = document.createElement('a'); a.href = url; a.download = 'ayas7_logs.txt'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+ const blob = new Blob([txt],{type:'text/plain'});
+ const url = URL.createObjectURL(blob);
+ const a = document.createElement('a');
+ a.href = url;
+ a.download = 'ayas7_logs.txt';
+ document.body.appendChild(a);
+ a.click();
+ a.remove();
+ URL.revokeObjectURL(url);
  pushLog('Logs exported');
 });
 
-// Expand card minimal interaction (keeps structure)
-$$('.expand-btn').forEach(btn=>{
- btn.addEventListener('click', (e)=>{
-   const card = e.target.closest('.card');
-   card.classList.toggle('expanded');
-   // if expanded, scroll into view gently
-   if(card.classList.contains('expanded')) card.scrollIntoView({behavior:'smooth',block:'center'});
+/* === ROZBALOVÁNÍ BOXŮ PŘES ČÍSLA 01–09 === */
+const indexPills = $$('.card-index');
+indexPills.forEach(pill=>{
+ pill.addEventListener('click', ()=>{
+   const card = pill.closest('.card');
+   const already = card.classList.contains('expanded');
+   $$('.card.expanded').forEach(c=>c.classList.remove('expanded'));
+   if(!already){
+     card.classList.add('expanded');
+     card.scrollIntoView({behavior:'smooth',block:'center'});
+   }
  });
 });
+document.addEventListener('keydown', e=>{
+ if(e.key === 'Escape'){
+   $$('.card.expanded').forEach(c=>c.classList.remove('expanded'));
+ }
+});
 
-// Hover lightening effect per card
+/* Hover efekt */
 $$('.card').forEach(c=>{
  c.addEventListener('mouseenter', ()=>{ c.style.boxShadow='0 30px 80px rgba(2,6,23,0.95)'; });
  c.addEventListener('mouseleave', ()=>{ c.style.boxShadow='0 18px 40px rgba(2,6,23,0.7)'; });
 });
 
-// initial logs seed
+/* Seed logů */
 pushLog('AYAS-7 admin initialized');
 pushLog('Telemetry link established (demo)');
 pushLog('Simulations active');
 
-// fast loop: ~280ms for smooth feeling
+/* Loop */
 render();
-const loopInterval = 280;
-setInterval(tick, loopInterval);
+setInterval(tick, 280);
 
-// keyboard shortcuts for demo
+/* Klávesové zkratky */
 document.addEventListener('keydown', (e)=>{
  if(e.key === 'm') { $('#btnManual').click(); }
  if(e.key === 'a') { $('#toggleAI').click(); }
  if(e.key === 'b') { $('#btnBrake').click(); }
 });
-
-// Accessibility: focus outlines
-document.addEventListener('keydown', e=>{
- if(e.key === 'Tab') document.body.classList.add('show-focus');
-});
-
-// ensure initial UI matches state
-render();
 </script>
 </body>
 </html>
