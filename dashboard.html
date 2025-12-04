@@ -774,14 +774,14 @@
   © 2025 Win-Win Družstvo · AYAS-7 Engine · Všechna práva vyhrazena
 </footer>
 
-<!-- 1) CHIP CORE ENGINE (mozkový modul) -->
+<!-- 1) CHIP CORE ENGINE (hlavní mozkový modul) -->
 <script src="assets/chip-core.js"></script>
 
-<!-- 2) DASHBOARD – NAPOJENÍ NA CORE + GRAFY -->
+<!-- 2) DASHBOARD – LIVE UPDATE (grafy + LED pásky) -->
 <script>
 document.addEventListener("DOMContentLoaded", () => {
 
-  // helper pro náhradní generování (fallback)
+  //fallback generátor když Core není aktivní
   function generateSeries(base, vol, len = 16) {
     const arr = [];
     let current = base;
@@ -793,233 +793,98 @@ document.addEventListener("DOMContentLoaded", () => {
     return arr;
   }
 
+  //grafová plátna
   const ctxUsdtz = document.getElementById('chartUsdtz');
   const ctxGusd  = document.getElementById('chartGusd');
-
-  // pokud plátna neexistují, nic neděláme
   if (!ctxUsdtz || !ctxGusd) return;
 
-  // inicializační data (fallback, když není CORE)
+  //výchozí fallback
   const initUsdtz = generateSeries(5.4, 0.25);
   const initGusd  = generateSeries(3.2, 0.18);
 
   const chartUsdtz = new Chart(ctxUsdtz.getContext('2d'), {
-    type: 'line',
-    data: {
-      labels: initUsdtz.map((_, i) => 'T' + (i + 1)),
-      datasets: [{
-        data: initUsdtz,
-        borderColor: '#4fa3ff',
-        backgroundColor: 'rgba(79,163,255,0.05)',
-        borderWidth: 2,
-        tension: 0.35,
-        pointRadius: 0
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: { legend: { display: false } },
-      scales: {
-        x: {
-          grid: { color: 'rgba(148,163,184,0.25)' },
-          ticks: { display: false }
-        },
-        y: {
-          grid: { color: 'rgba(148,163,184,0.25)' },
-          ticks: { display: false }
-        }
-      }
+    type:"line",
+    data:{ labels:initUsdtz.map((_,i)=>"T"+(i+1)),
+      datasets:[{data:initUsdtz,borderColor:"#4fa3ff",
+        backgroundColor:"rgba(79,163,255,0.05)",borderWidth:2,tension:.35,pointRadius:0 }]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false}},
+      scales:{x:{ticks:{display:false},grid:{color:"rgba(148,163,184,0.25)"}},
+              y:{ticks:{display:false},grid:{color:"rgba(148,163,184,0.25)"}}}
     }
   });
 
   const chartGusd = new Chart(ctxGusd.getContext('2d'), {
-    type: 'line',
-    data: {
-      labels: initGusd.map((_, i) => 'T' + (i + 1)),
-      datasets: [{
-        data: initGusd,
-        borderColor: '#22c55e',
-        backgroundColor: 'rgba(34,197,94,0.05)',
-        borderWidth: 2,
-        tension: 0.35,
-        pointRadius: 0
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: { legend: { display: false } },
-      scales: {
-        x: {
-          grid: { color: 'rgba(148,163,184,0.25)' },
-          ticks: { display: false }
-        },
-        y: {
-          grid: { color: 'rgba(148,163,184,0.25)' },
-          ticks: { display: false }
-        }
-      }
+    type:"line",
+    data:{ labels:initGusd.map((_,i)=>"T"+(i+1)),
+      datasets:[{data:initGusd,borderColor:"#22c55e",
+        backgroundColor:"rgba(34,197,94,0.05)",borderWidth:2,tension:.35,pointRadius:0 }]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false}},
+      scales:{x:{ticks:{display:false},grid:{color:"rgba(148,163,184,0.25)"}},
+              y:{ticks:{display:false},grid:{color:"rgba(148,163,184,0.25)"}}}
     }
   });
 
-  <!-- 2) DASHBOARD – NAPOJENÍ NA CORE + GRAFY + LED PÁSKY -->
-<script>
-document.addEventListener("DOMContentLoaded", () => {
 
-  // helper pro náhradní generování (fallback)
-  function generateSeries(base, vol, len = 16) {
-    const arr = [];
-    let current = base;
-    for (let i = 0; i < len; i++) {
-      const delta = (Math.random() - 0.5) * vol;
-      current = Math.max(base - 0.6, current + delta);
-      arr.push(Number(current.toFixed(2)));
-    }
-    return arr;
-  }
-
-  const ctxUsdtz = document.getElementById('chartUsdtz');
-  const ctxGusd  = document.getElementById('chartGusd');
-
-  // pokud plátna neexistují, nic neděláme
-  if (!ctxUsdtz || !ctxGusd) return;
-
-  // inicializační data (fallback, když není CORE)
-  const initUsdtz = generateSeries(5.4, 0.25);
-  const initGusd  = generateSeries(3.2, 0.18);
-
-  const chartUsdtz = new Chart(ctxUsdtz.getContext('2d'), {
-    type: 'line',
-    data: {
-      labels: initUsdtz.map((_, i) => 'T' + (i + 1)),
-      datasets: [{
-        data: initUsdtz,
-        borderColor: '#4fa3ff',
-        backgroundColor: 'rgba(79,163,255,0.05)',
-        borderWidth: 2,
-        tension: 0.35,
-        pointRadius: 0
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: { legend: { display: false } },
-      scales: {
-        x: {
-          grid: { color: 'rgba(148,163,184,0.25)' },
-          ticks: { display: false }
-        },
-        y: {
-          grid: { color: 'rgba(148,163,184,0.25)' },
-          ticks: { display: false }
-        }
-      }
-    }
-  });
-
-  const chartGusd = new Chart(ctxGusd.getContext('2d'), {
-    type: 'line',
-    data: {
-      labels: initGusd.map((_, i) => 'T' + (i + 1)),
-      datasets: [{
-        data: initGusd,
-        borderColor: '#22c55e',
-        backgroundColor: 'rgba(34,197,94,0.05)',
-        borderWidth: 2,
-        tension: 0.35,
-        pointRadius: 0
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: { legend: { display: false } },
-      scales: {
-        x: {
-          grid: { color: 'rgba(148,163,184,0.25)' },
-          ticks: { display: false }
-        },
-        y: {
-          grid: { color: 'rgba(148,163,184,0.25)' },
-          ticks: { display: false }
-        }
-      }
-    }
-  });
-
-  // FUNKCE: aktualizace grafů z Core.history
-  function updateChartsFromCore(state) {
-    if (!state || !Array.isArray(state.history) || state.history.length === 0) return;
-
-    const h = state.history.slice(-16);
-    const labels = h.map((_, i) => 'T' + (i + 1));
-
-    chartUsdtz.data.labels = labels;
-    chartUsdtz.data.datasets[0].data = h.map(p => (p.yieldRate ?? 0));
-    chartUsdtz.update('none');
-
-    // GUSD – mapnuto na nodesOnline (jen vizuálně pro demo)
-    chartGusd.data.labels = labels;
-    chartGusd.data.datasets[0].data = h.map(p => (p.nodesOnline ?? 0) * 0.3 + 3);
-    chartGusd.update('none');
-  }
-
-  // FUNKCE: realtime update LED pásek (card-bar-fill) z Core stavu
-  function updateLedBarsFromCore(state) {
-    if (!state) return;
-
-    const layers = [
-      { sel: ".cards-grid .dash-card:nth-child(1) .card-bar-fill", value: state.yieldRate       }, // L1 Token
-      { sel: ".cards-grid .dash-card:nth-child(2) .card-bar-fill", value: state.yieldRate * 0.87}, // L2 Liquidity
-      { sel: ".cards-grid .dash-card:nth-child(3) .card-bar-fill", value: state.yieldRate * 1.20}, // L3 Yield
-      { sel: ".cards-grid .dash-card:nth-child(4) .card-bar-fill", value: 100 - state.yieldRate }, // L4 Risk
-      { sel: ".cards-grid .dash-card:nth-child(5) .card-bar-fill", value: state.nodesOnline * 3 }, // L5 FinTech / online
-      { sel: ".cards-grid .dash-card:nth-child(6) .card-bar-fill", value: state.nodesOnline * 2 }, // L6 Core
-      { sel: ".cards-grid .dash-card:nth-child(7) .card-bar-fill", value: state.yieldRate * 1.4 }, // L7 Analytics
-      { sel: ".cards-grid .dash-card:nth-child(8) .card-bar-fill", value: state.yieldRate       }, // USDt.z graf karta
-      { sel: ".cards-grid .dash-card:nth-child(9) .card-bar-fill", value: state.nodesOnline * 2 }  // GUSD graf karta
-    ];
-
-    layers.forEach(L => {
-      const el = document.querySelector(L.sel);
-      if (!el) return;
-      let v = Number(L.value || 0);
-      if (isNaN(v)) v = 0;
-      v = Math.max(0, Math.min(100, v));
-      el.style.setProperty("--fill", v + "%");
-    });
-  }
-
-  // NAPOJENÍ NA AYASCore
+  /* 🔥 LIVE UPDATE – pokud běží CHIP CORE sim */
   if (window.AYASCore && typeof AYASCore.subscribe === "function") {
-    AYASCore.subscribe((state) => {
-      // grafy
-      updateChartsFromCore(state);
-      // LED pásky
-      updateLedBarsFromCore(state);
-    });
-  } else {
-    // fallback – jemná animace grafů, když Core neběží
-    setInterval(() => {
-      const d1 = chartUsdtz.data.datasets[0].data;
-      const last1 = d1[d1.length - 1] ?? 5.4;
-      d1.shift();
-      d1.push(Number((last1 + (Math.random() - 0.5) * 0.08).toFixed(2)));
-      chartUsdtz.update('none');
 
-      const d2 = chartGusd.data.datasets[0].data;
-      const last2 = d2[d2.length - 1] ?? 3.2;
-      d2.shift();
-      d2.push(Number((last2 + (Math.random() - 0.5) * 0.06).toFixed(2)));
-      chartGusd.update('none');
-    }, 1200);
+    AYASCore.subscribe(state => {
+
+      /*** --- GRAFY --- ***/
+      if(state.history?.length){
+        const h = state.history.slice(-16);
+        const L = h.map((_,i)=>"T"+(i+1));
+
+        chartUsdtz.data.labels = L;
+        chartUsdtz.data.datasets[0].data = h.map(p=>p.yieldRate ?? 0);
+        chartUsdtz.update("none");
+
+        chartGusd.data.labels = L;
+        chartGusd.data.datasets[0].data = h.map(p=>(p.nodesOnline ?? 0)*0.3+3);
+        chartGusd.update("none");
+      }
+
+      /*** --- LED PÁSKY VRSTEV --- ***/
+      const layers = [
+        [1, state.yieldRate], 
+        [2, state.yieldRate*0.87],
+        [3, state.yieldRate*1.20],
+        [4, 100-state.yieldRate],
+        [5, state.nodesOnline*3],
+        [6, state.nodesOnline*2],
+        [7, state.yieldRate*1.4],
+        [8, state.yieldRate],
+        [9, state.nodesOnline*2]
+      ];
+
+      layers.forEach(([i,val])=>{
+        const bar = document.querySelector(`.cards-grid .dash-card:nth-child(${i}) .card-bar-fill`);
+        if(bar){
+          val = Math.min(100,Math.max(0,val||0));
+          bar.style.setProperty("--fill",val+"%");
+        }
+      });
+
+    });
+
+  } else {
+
+    /** fallback animace – běží i když Core není aktivní **/
+    setInterval(()=>{
+      const d1=chartUsdtz.data.datasets[0].data;
+      d1.shift(); d1.push(Number((d1[d1.length-1]+(Math.random()-0.5)*.08).toFixed(2)));
+      chartUsdtz.update("none");
+
+      const d2=chartGusd.data.datasets[0].data;
+      d2.shift(); d2.push(Number((d2[d2.length-1]+(Math.random()-0.5)*.06).toFixed(2)));
+      chartGusd.update("none");
+    },1400);
   }
 
 });
 </script>
-
 
 </body>
 </html>
