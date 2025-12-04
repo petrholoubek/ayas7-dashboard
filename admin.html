@@ -797,6 +797,36 @@ document.getElementById("runRebalance")?.addEventListener("click",()=>{
     }});
 });
 </script>
+...
+<!-- sem NIC nedávat -->
+
+<script>
+/* ===============================
+       STABILNÍ AI — režim A
+   =============================== */
+
+document.getElementById("toggleAI").addEventListener("click", () => {
+
+    if (!state.aiOn) {
+        state.aiOn = true;
+        state.manual = false;
+        state.brake = false;
+        state.aiRuntime = 0.70;
+        pushLog("⚡ AI REACTIVED — SYSTEM STABLE ON AUTO");
+    } else {
+        state.aiOn = false;
+        state.manual = true;
+        state.aiRuntime = 0.35;
+        pushLog("🔧 AI DISABLED — MANUAL CONTROL ACTIVE");
+    }
+
+    render();
+});
+</script>
+
+<script src="assets/chip-core.js"></script>
+</body>
+</html>
 
 </body>
 </html>
