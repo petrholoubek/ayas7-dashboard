@@ -7,34 +7,6 @@
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
-
-/* ======== 🔥 FINAL PREMIUM EXPAND — bez zmenšení boxů 🔥 ======== */
-
-.cards{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:18px;
-}
-
-.card{
-  height:auto;
-  max-height:none;
-  overflow:hidden;
-  transition:.35s ease;
-  position:relative;
-  z-index:1;
-}
-
-.card.expanded{
-  grid-column:1 / -1;
-  max-height:860px;
-  transform:scale(1.015);
-  border:1px solid rgba(0,255,200,.35);
-  box-shadow:0 0 40px rgba(0,255,200,.35);
-  z-index:10;
-  backdrop-filter:blur(6px);
-}
-
 :root{
   --max-w:1200px;
   --bg-1:#0b1220;
@@ -42,15 +14,6 @@
   --accent-blue:#4fa3ff;
   --accent-green:#22c55e;
   --accent-green-soft:#4ade80;
-  --accent-yellow:#f6d365;
-  --accent-red:#ff6b6b;
-  --accent-cyan:#7de2ff;
-  --accent-mint:#9adabf;
-  --accent-peach:#ffd6a5;
-  --accent-sky:#7de2ff;
-  --accent-indigo:#7fb7ff;
-  --accent-violet:#a6b8ff;
-  --accent-ice:#b9d7ff;
   --muted:#9ca3af;
   --text:#e5e7eb;
   --card-bg: linear-gradient(circle at 10% 10%, rgba(255,255,255,0.012), rgba(255,255,255,0.01));
@@ -63,25 +26,23 @@
   --chip-glow: rgba(79,163,255,0.08);
 }
 *{box-sizing:border-box;margin:0;padding:0}
-html,#msg_body {
+html,body{
   height:100%;
   font-family:"Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  background:radial-gradient(circle at 40% 0%, #0f172a 0%, #020617 55%, #000 100%);
+  background: radial-gradient(circle at 40% 0%, #0b1220 0%, #020617 55%, #000 100%);
   color:var(--text);
-  -webkit-font-smoothing:antialiased
+  -webkit-font-smoothing:antialiased;
 }
 a{color:inherit;text-decoration:none}
 small{color:var(--muted);font-size:12px}
-
-/* Remove site menu: standalone velín */
 header.topbar{display:none}
 
-/* Main container */
+/* MAIN LAYOUT */
 main{
   max-width:var(--max-w);
   margin:22px auto;
   padding:0 var(--pad) 60px;
-  position:relative
+  position:relative;
 }
 .ambient{
   position:absolute;
@@ -90,17 +51,18 @@ main{
   transform:translateX(-50%);
   width:900px;
   height:420px;
-  filter:blur(110px);
-  opacity:.13;
-  background:radial-gradient(circle,#4fa3ff 0%,transparent 55%);
-  z-index:0
+  filter:blur(100px);
+  opacity:.18;
+  background:radial-gradient(circle at 50% 0%, #1e40af 0%, transparent 55%);
+  z-index:0;
 }
 
 .hdr{
   display:flex;
   flex-direction:column;
   gap:8px;
-  z-index:2
+  z-index:2;
+  position:relative;
 }
 .kicker{
   font-size:12px;
@@ -109,32 +71,84 @@ main{
   letter-spacing:.12em;
   display:flex;
   align-items:center;
-  gap:8px
+  gap:8px;
 }
 .kicker .dot{
-  width:8px;
-  height:8px;
+  width:8px;height:8px;
   border-radius:999px;
   background:var(--accent-green);
-  box-shadow:0 0 8px rgba(34,197,94,0.9)
+  box-shadow:0 0 8px rgba(34,197,94,0.9);
 }
 .title{font-size:26px;font-weight:800}
 .subtitle{color:var(--muted);max-width:1000px;line-height:1.5}
+
+/* TOP PANEL: AYAS-7 · CONTROL ROOM · CHIP CORE */
+.panel-id{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin:10px 0 4px 0;
+  position:relative;
+  z-index:2;
+}
+.panel-chip{
+  width:130px;
+  height:46px;
+  border-radius:10px;
+  background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border:1px solid rgba(255,255,255,0.04);
+  box-shadow:0 10px 34px var(--chip-glow);
+  font-weight:900;
+  font-size:20px;
+  letter-spacing:.08em;
+  color:var(--text);
+}
+.panel-center{
+  font-size:14px;
+  letter-spacing:.06em;
+  color:var(--muted);
+  text-transform:uppercase;
+  font-weight:700;
+}
+.panel-right{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+#chipLed{
+  width:11px;
+  height:11px;
+  border-radius:50%;
+  background:#22ff77;
+  box-shadow:
+    0 0 8px #22ff77,
+    0 0 16px #22ff77,
+    0 0 24px rgba(34,255,119,0.8);
+}
+.panel-sub{
+  font-size:12px;
+  color:var(--muted);
+  text-align:center;
+}
 
 /* GRID 3×3 */
 .cards{
   display:grid;
   grid-template-columns:repeat(3,1fr);
   gap:18px;
-  margin-top:16px;
-  z-index:2
+  margin-top:18px;
+  z-index:2;
+  position:relative;
 }
 
-/* ZÁKLADNÍ KARTA */
+/* CARD BASE */
 .card{
   background:var(--card-bg);
   border-radius:14px;
-  padding:14px;
+  padding:14px 14px 16px 14px;
   border:1px solid var(--border);
   box-shadow:0 18px 40px rgba(2,6,23,0.7);
   min-height:170px;
@@ -146,88 +160,78 @@ main{
   transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease;
 }
 .card:hover{
-  transform:translateY(-6px);
-  box-shadow:0 28px 80px rgba(2,6,23,0.9);
-  border-color:rgba(79,163,255,0.18);
+  transform:translateY(-4px);
+  box-shadow:0 26px 72px rgba(2,6,23,0.9);
+  border-color:rgba(79,163,255,0.16);
 }
-
-/* INDEX „01“ VPRAVO NAHOŘE – KLIKACÍ */
-.card-index{
-  position:absolute;
-  top:10px;
-  right:10px;
-  padding:8px 10px;
-  border-radius:12px;
-  border:1px solid rgba(148,163,184,0.5);
-  background:radial-gradient(circle at 0% 0%,rgba(255,255,255,0.12),rgba(15,23,42,0.96));
-  display:flex;
-  flex-direction:column;
-  align-items:flex-end;
-  gap:2px;
-  cursor:pointer;
-  box-shadow:0 10px 30px rgba(15,23,42,0.95);
-  transition:transform .14s ease, box-shadow .14s ease, border-color .14s ease, background .14s ease;
-}
-.card-index span.num{
-  font-size:15px;
-  font-weight:900;
-  letter-spacing:.16em;
-}
-.card-index span.label{
-  font-size:9px;
-  color:var(--muted);
-  letter-spacing:.16em;
-}
-
-/* Barvy indexů podle typu boxu */
-.card-index[data-accent="blue"] .num{color:var(--accent-blue);}
-.card-index[data-accent="amber"] .num{color:var(--accent-yellow);}
-.card-index[data-accent="cyan"] .num{color:var(--accent-cyan);}
-.card-index[data-accent="mint"] .num{color:var(--accent-mint);}
-.card-index[data-accent="peach"] .num{color:var(--accent-peach);}
-.card-index[data-accent="sky"] .num{color:var(--accent-sky);}
-.card-index[data-accent="indigo"] .num{color:var(--accent-indigo);}
-.card-index[data-accent="violet"] .num{color:var(--accent-violet);}
-.card-index[data-accent="ice"] .num{color:var(--accent-ice);}
-
-.card-index:hover{
-  transform:translateY(-1px) scale(1.03);
-  box-shadow:0 16px 42px rgba(0,0,0,1);
-  border-color:rgba(248,250,252,0.9);
-  background:radial-gradient(circle at 0% 0%,rgba(255,255,255,0.18),rgba(15,23,42,0.96));
-}
-
-/* Rozbalená karta přes celou šířku */
-.card.expanded{
-  grid-column:span 3;
-  background:linear-gradient(180deg, rgba(255,255,255,0.018), rgba(10,16,35,0.96));
-}
-
-/* badge nahoře v kartě */
 .card .badge{
   display:inline-flex;
   align-items:center;
   gap:8px;
   padding:6px 10px;
   border-radius:999px;
-  background:rgba(11,17,32,0.45);
-  border:1px solid rgba(148,163,184,0.16);
+  background:rgba(11,17,32,0.55);
+  border:1px solid rgba(148,163,184,0.18);
   font-size:12px;
-  color:var(--muted)
-}
-.card h3{
-  margin-top:8px;
-  font-size:15px;
-  color:var(--text);
-  letter-spacing:.02em
-}
-.card p.sub{
   color:var(--muted);
-  font-size:13px;
-  min-height:36px
+}
+.card h3{margin-top:8px;font-size:15px;color:var(--text);letter-spacing:.02em}
+.card p.sub{color:var(--muted);font-size:13px;min-height:32px}
+
+/* INDEX PILL (01–09 vpravo nahoře) */
+.card-index{
+  position:absolute;
+  right:10px;
+  top:8px;
+  padding:8px 10px;
+  border-radius:999px;
+  border:1px solid rgba(148,163,184,0.2);
+  background:rgba(15,23,42,0.9);
+  display:flex;
+  align-items:center;
+  gap:6px;
+  cursor:pointer;
+  font-family:inherit;
+  outline:none;
+  transition:transform .12s ease, box-shadow .12s ease, border-color .12s ease, background .12s ease;
+}
+.card-index .num{
+  font-size:12px;
+  font-weight:800;
+  letter-spacing:.14em;
+}
+.card-index .label{
+  font-size:10px;
+  text-transform:uppercase;
+  letter-spacing:.16em;
+  color:var(--muted);
+}
+.card-index[data-accent="blue"]{
+  color:var(--accent-blue);
+  box-shadow:0 0 12px rgba(59,130,246,0.35);
+}
+.card-index[data-accent="amber"]{
+  color:#fbbf24;
+  box-shadow:0 0 12px rgba(245,158,11,0.35);
+}
+.card-index[data-accent="cyan"]{
+  color:#22d3ee;
+  box-shadow:0 0 12px rgba(34,211,238,0.35);
+}
+.card-index:hover{
+  transform:translateY(-2px);
+  border-color:rgba(148,163,184,0.6);
+  background:rgba(15,23,42,1);
 }
 
-/* LED pásky */
+/* EXPANDED STATE */
+.card.expanded{
+  grid-column:span 3;
+  min-height:230px;
+  box-shadow:0 28px 80px rgba(2,6,23,0.95);
+}
+
+/* LED STRIP */
 .led-strip{
   height:var(--led-height);
   border-radius:var(--led-radius);
@@ -245,104 +249,83 @@ main{
   background:linear-gradient(90deg,var(--accent-blue),var(--accent-green-soft));
   box-shadow:0 6px 24px rgba(79,163,255,0.12);
   transition:width .6s cubic-bezier(.2,.9,.3,1), box-shadow .2s, background .2s;
-  will-change:width,box-shadow,background;
 }
 .led-grid{
   height:6px;
   margin-top:6px;
   border-top:1px solid rgba(148,163,184,0.06);
-  opacity:0.9
+  opacity:0.9;
 }
 
-/* metrics */
+/* METRICS */
 .metrics{
   display:flex;
   gap:10px;
   flex-wrap:wrap;
-  margin-top:10px
+  margin-top:10px;
 }
 .metric{
   background:rgba(255,255,255,0.01);
-  border:1px solid rgba(255,255,255,0.02);
+  border:1px solid rgba(255,255,255,0.03);
   padding:8px 10px;
   border-radius:8px;
   min-width:110px;
-  text-align:left
+  text-align:left;
 }
-.metric h4{
-  margin:0;
-  font-size:14px;
-  color:var(--text)
-}
-.metric p{
-  margin:0;
-  color:var(--muted);
-  font-size:12px
-}
+.metric h4{margin:0;font-size:14px;color:var(--text)}
+.metric p{margin:0;color:var(--muted);font-size:12px}
 
-/* odkazy / tlačítka */
+/* LINKS (PILLS) */
 .links{
   display:flex;
   gap:8px;
   flex-wrap:wrap;
-  margin-top:12px
+  margin-top:12px;
 }
 .link{
   padding:8px 12px;
   border-radius:999px;
-  border:1px solid rgba(148,163,184,0.18);
-  background:radial-gradient(circle at 0% 0%,rgba(255,255,255,0.06),rgba(11,17,32,0.98));
+  border:1px solid rgba(148,163,184,0.22);
+  background:rgba(11,17,32,0.65);
   font-weight:700;
   cursor:pointer;
   display:inline-flex;
   align-items:center;
   gap:8px;
-  transition:transform .12s, background .12s, box-shadow .12s, border-color .12s;
   font-size:12px;
+  transition:transform .12s, background .12s, box-shadow .12s, border-color .12s;
 }
 .link:hover{
-  transform:translateY(-3px);
-  background:radial-gradient(circle at 0% 0%,rgba(255,255,255,0.16),rgba(15,23,42,1));
-  box-shadow:0 12px 32px rgba(15,23,42,0.95);
-  border-color:rgba(248,250,252,0.8);
+  transform:translateY(-2px);
+  background:rgba(15,23,42,0.95);
+  box-shadow:0 0 14px rgba(148,163,184,0.3);
 }
-
-/* malé led v tlačítku */
 .link .led{
   width:10px;
   height:10px;
   border-radius:50%;
-  box-shadow:0 0 8px rgba(0,0,0,0.4)
+  box-shadow:0 0 8px rgba(0,0,0,0.4);
 }
 
-/* multisig tečky */
+/* MULTISIG LIGHT */
 .multisig{
   display:flex;
   align-items:center;
   gap:8px;
-  margin-top:8px
+  margin-top:8px;
 }
 .ms-light{
   width:12px;
   height:12px;
   border-radius:50%;
   box-shadow:0 0 10px rgba(0,0,0,0.4);
-  border:1px solid rgba(255,255,255,0.04)
+  border:1px solid rgba(255,255,255,0.04);
 }
-.ms-green{
-  background:var(--accent-green);
-  box-shadow:0 0 12px rgba(34,197,94,0.6)
-}
-.ms-yellow{
-  background:#f6d365;
-  box-shadow:0 0 10px rgba(246,211,77,0.4)
-}
-.ms-red{
-  background:#ff6b6b;
-  box-shadow:0 0 10px rgba(255,107,107,0.4)
-}
+.ms-green{background:var(--accent-green);box-shadow:0 0 12px rgba(34,197,94,0.7);}
+.ms-yellow{background:#f6d365;box-shadow:0 0 11px rgba(246,211,77,0.6);}
+.ms-red{background:#ff6b6b;box-shadow:0 0 11px rgba(248,113,113,0.75);}
 
-/* log area */
+/* LOG */
 .log{
   background:rgba(255,255,255,0.015);
   border-radius:8px;
@@ -350,800 +333,416 @@ main{
   border:1px solid rgba(255,255,255,0.02);
   max-height:220px;
   overflow:auto;
-  margin-top:10px
+  margin-top:10px;
 }
 .log-item{
   padding:6px;
-  border-bottom:1px dashed rgba(255,255,255,0.02);
+  border-bottom:1px dashed rgba(255,255,255,0.06);
   color:var(--muted);
-  font-size:13px
-}
-
-/* panel identita (AYAS-7 / Control Room / Chip Core) */
-.panel-id{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  margin:10px 0 4px 0;
-  padding:4px 0;
-}
-.panel-chip{
-  width:130px;
-  height:46px;
-  border-radius:10px;
-  background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  border:1px solid rgba(255,255,255,0.03);
-  box-shadow:0 10px 34px var(--chip-glow);
-  font-weight:900;
-  color:var(--text);
-  letter-spacing:.08em;
-  font-size:20px;
-}
-.panel-sub{
-  font-size:12px;
-  color:var(--muted)
-}
-
-/* spodní řádek: komunikace + manuál */
-.bottom-bar{
-  display:flex;
-  gap:18px;
-  margin-top:22px;
-}
-.bottom-card{
-  flex:1;
-  padding:14px;
-  border-radius:14px;
-  border:1px solid rgba(148,163,184,0.18);
-  background:radial-gradient(circle at 10% 10%,rgba(255,255,255,0.02),rgba(15,23,42,0.96));
-  box-shadow:0 18px 40px rgba(2,6,23,0.7);
   font-size:13px;
+}
+
+/* BOTTOM COMM / MANUAL BAR */
+.bottom-bar{
+  margin-top:26px;
+  padding:12px 16px;
+  border-radius:14px;
+  border:1px solid rgba(148,163,184,0.25);
+  background:linear-gradient(90deg,rgba(15,23,42,0.9),rgba(15,23,42,0.6));
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:16px;
+}
+.bottom-left{
+  font-size:12px;
   color:var(--muted);
 }
-.bottom-card h4{
-  margin-bottom:6px;
-  font-size:14px;
-  color:var(--text);
+.bottom-left strong{color:var(--text)}
+.bottom-contact{
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+  font-size:12px;
 }
 .bottom-pill{
+  padding:8px 14px;
+  border-radius:999px;
+  border:1px solid rgba(59,130,246,0.7);
+  background:rgba(15,23,42,0.95);
   display:inline-flex;
   align-items:center;
   gap:8px;
-  padding:7px 11px;
-  border-radius:999px;
-  border:1px solid rgba(148,163,184,0.18);
-  background:radial-gradient(circle at 0% 0%,rgba(255,255,255,0.06),rgba(11,17,32,0.98));
   font-size:12px;
-  margin-top:6px;
+  font-weight:700;
   cursor:pointer;
-  transition:all .12s;
-}
-.bottom-pill:hover{
-  transform:translateY(-2px);
-  border-color:rgba(248,250,252,0.85);
-  box-shadow:0 10px 28px rgba(15,23,42,0.9);
+  text-decoration:none;
+  box-shadow:0 0 16px rgba(37,99,235,0.5);
 }
 .bottom-pill .dot{
-  width:8px;
-  height:8px;
-  border-radius:50%;
-  background:var(--accent-green);
-  box-shadow:0 0 8px rgba(34,197,94,0.9);
+  width:9px;height:9px;border-radius:50%;
 }
 
-/* responsive */
+/* RESPONSIVE */
 @media (max-width:1100px){
-  .cards{grid-template-columns:repeat(2,1fr)}
+  .cards{grid-template-columns:repeat(2,1fr);}
+  .card.expanded{grid-column:span 2;}
 }
 @media (max-width:700px){
-  .cards{grid-template-columns:1fr}
-  .panel-chip{width:140px}
-  .title{font-size:20px}
-  .bottom-bar{flex-direction:column}
+  .cards{grid-template-columns:1fr;}
+  .card.expanded{grid-column:span 1;}
+  .panel-id{flex-direction:column;gap:8px;}
+  .bottom-bar{flex-direction:column;align-items:flex-start;}
 }
-/* ================================
-   S2 – GLASS + NEON CONTROL ROOM UPGRADE
-   ================================= */
-
-/* Pozadí ultra-clean (odstraní pruh/cáru) */
-body {
-    background: radial-gradient(circle at 50% 0%, #001529, #000811 60%, #000000 100%);
-    background-attachment: fixed;
-}
-
-/* GRID – velikost vrácena na původní scale */
-#cardsGrid {
-    width: 95%;
-    max-width: 1480px;
-    margin: 0 auto;
-}
-.cards{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:18px;
-}
-
-/* ★ BOX CORE – high clarity + sklo + neon + plná výška */
-.cards{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:18px;
-}
-
-.card {
-    backdrop-filter: blur(22px) saturate(140%);
-    -webkit-backdrop-filter: blur(22px) saturate(140%);
-    background: rgba(0, 17, 37, 0.45);
-    border: 1px solid rgba(0,255,255,0.06);
-    box-shadow: 0 18px 40px rgba(0,0,0,0.72);
-
-    /* >>> TOTO DĚLÁ ZÁSADU <<< */
-    min-height: 260px;
-    height: auto;
-    max-height: unset; /* 🔥 umožní expanzi */
-    overflow: hidden;
-    transition: .35s ease, box-shadow .35s ease;
-    position: relative;
-    padding: 24px 28px;
-}
-/* Rozbalený režim – fullscreen řádek */
-.card.expanded {
-    grid-column: 1 / -1;
-    max-height: 880px;
-    transform: scale(1.018);
-    box-shadow: 0 0 45px rgba(0,255,255,0.45);
-    border: 1px solid rgba(0,255,255,0.35);
-    backdrop-filter: blur(28px);
-}
-
-
-/* HOVER — větší hloubka, luxusní efekt */
-.card:hover {
-    transform: translateY(-4px) scale(1.015);
-    box-shadow: 0 38px 100px rgba(0,200,255,0.5);
-}
-
-/* EXPAND — hluboké zvětšení */
-.card.expanded {
-    transform: scale(1.08);
-    z-index: 20;
-    box-shadow: 0 42px 110px rgba(0,255,255,0.58);
-}
-
-/* INDEX 01-09 — nová SVÍTÍCÍ varianta */
-.card-index .num {
-    font-size: 22px;
-    font-weight: 800;
-    letter-spacing: .04em;
-    text-shadow: 0 0 12px currentColor, 0 0 25px currentColor;
-    filter: drop-shadow(0 0 8px currentColor);
-}
-
-/* Při najetí MYSÍ — index funguje jako tlačítko */
-.card-index:hover .num {
-    transform: scale(1.18);
-}
-
-/* Individuální LED barvy 01–09 (možno měnit později) */
-.card-index[data-accent="blue"] .num { color:#4fa3ff; }
-.card-index[data-accent="yellow"] .num { color:#f6d365; }
-.card-index[data-accent="cyan"] .num { color:#7de2ff; }
-.card-index[data-accent="green"] .num { color:#00ff9d; }
-.card-index[data-accent="red"] .num { color:#ff6b6b; }
-.card-index[data-accent="purple"] .num { color:#c77dff; }
-.card-index[data-accent="teal"] .num { color:#00e7c4; }
-.card-index[data-accent="orange"] .num { color:#ff9f43; }
-.card-index[data-accent="white"] .num { color:#c9e6ff; }
-
-/* LED ACTION FEEDBAR — teď svítí mnohem víc */
-.led-bar > div {
-    transition: width .25s linear, background .25s, box-shadow .45s;
-}
-/* ========================================================
-   S2-STEP-2 – REALTIME UI GLOW + LED SIGNAL ANIMATION
-   ======================================================== */
-
-
-/***  🔵 AI LIVE GLOW ***/
-.card[data-card="ai"] .led{
-    filter: drop-shadow(0 0 10px rgba(34,197,94,.9));
-    animation:pulseGreen 2.4s infinite ease-in-out;
-}
-@keyframes pulseGreen{
-    0%   {box-shadow:0 0 4px rgba(34,197,94,.4);}
-    50%  {box-shadow:0 0 16px rgba(34,197,94,.9);}
-    100% {box-shadow:0 0 4px rgba(34,197,94,.4);}
-}
-
-/***  🔥 PROVOZ / ENGINE – živý tep systému ***/
-.engine-bar{
-    transition:width 0.35s ease-out,background 0.5s,box-shadow 0.5s;
-    animation:layerPulse 4s infinite ease-in-out;
-    transform-origin:bottom;
-}
-@keyframes layerPulse{
-    0%{transform:scaleY(1);}
-    50%{transform:scaleY(1.08);}
-    100%{transform:scaleY(1);}
-}
-
-/***  🟦 HOVER UPGRADE – jemné rozsvícení panelu ***/
-.card{
-  transition:box-shadow .45s,transform .45s;
-}
-.card:hover{
-  transform:translateY(-6px);
-  box-shadow:0px 30px 85px rgba(10,16,60,.85);
-}
-
-/*** 🟢 LED + STATUS STRIP silnější jas ***/
-.led-fill{
-    transition:width .45s,box-shadow .45s;
-    filter: drop-shadow(0 0 8px rgba(79,163,255,.8));
-}
-.led-fill:hover{
-    filter:drop-shadow(0 0 12px rgba(79,163,255,1));
-}
-/* ===========================
-   PREMIUM EXPANDED CARD GLOW
-   =========================== */
-
-.card.expanded{
-    grid-column:1 / -1;
-    max-height:860px;
-    transform:scale(1.018);
-    background:rgba(0,25,55,0.65);
-    border:1px solid rgba(0,255,215,0.45);
-    box-shadow:
-      0 0 12px rgba(0,255,215,0.55),
-      0 0 28px rgba(0,255,215,0.35),
-      inset 0 0 22px rgba(0,255,255,0.18);
-    backdrop-filter:blur(6px) brightness(1.08);
-    transition:.35s ease;
-    z-index:12;
-}
-
 </style>
 </head>
 <body>
 <main>
- <div class="ambient" aria-hidden="true"></div>
+  <div class="ambient" aria-hidden="true"></div>
 
- <div class="hdr">
-   <div class="kicker"><span class="dot"></span> Řídicí panel · Velín</div>
-   <div class="title">AYAS-7 Admin Control Room</div>
-   <div class="subtitle">Plně navazuje na dashboard — stejné LED lišty, plynulá simulace, interaktivní ovládací prvky. Demo: živý velín připravený na ostré napojení na AYAS-7 Chip Core.</div>
- </div>
+  <div class="hdr">
+    <div class="kicker"><span class="dot"></span> Řídicí panel · Velín</div>
+    <div class="title">AYAS-7 Admin Control Room</div>
+    <div class="subtitle">
+      Plně navazuje na dashboard — stejné LED lišty, plynulá simulace a interaktivní moduly AI, manuálního řízení,
+      poolů, databáze, multi-sig, blockchainu a engine 7 vrstev.
+    </div>
+  </div>
 
- <!-- AYAS-7 / CONTROL ROOM / CHIP CORE ONLINE -->
- <div class="panel-id" role="banner" aria-label="panel identity">
-   <!-- LEVÁ STRANA: AYAS-7 -->
-   <div class="panel-chip">
-     AYAS-7
-   </div>
+  <!-- TOP PANEL -->
+  <div class="panel-id" role="banner" aria-label="panel identity">
+    <div class="panel-chip">AYAS-7</div>
+    <div class="panel-center">Control Room</div>
+    <div class="panel-right">
+      <div id="chipLed"></div>
+      <div style="font-size:12px;color:var(--muted);letter-spacing:.04em;">Chip Core · ONLINE</div>
+    </div>
+  </div>
+  <div class="panel-sub">Chip Core — heart of engine</div>
 
-   <!-- STŘED: Control Room -->
-   <div style="
-        font-size:14px;
-        letter-spacing:.06em;
-        color:var(--muted);
-        text-transform:uppercase;
-        font-weight:700;
-      ">
-     Control Room
-   </div>
+  <!-- GRID 3×3 -->
+  <section class="cards" id="cardsGrid">
 
-   <!-- PRAVÁ STRANA: LED + ONLINE TEXT -->
-   <div style="display:flex;align-items:center;gap:10px;">
-     <div id="chipLed" style="
-          width:10px;
-          height:10px;
-          border-radius:50%;
-          background:#22ff77;
-          box-shadow:
-            0 0 8px #22ff77,
-            0 0 14px #22ff77,
-            0 0 20px rgba(34,255,119,0.8);
-        ">
-     </div>
-     <div style="font-size:12px;color:var(--muted);letter-spacing:.04em;">
-       Chip Core · ONLINE
-     </div>
-   </div>
- </div>
+    <!-- 01 · AI CONTROL -->
+    <article class="card" id="card-ai" data-card="ai">
+      <button class="card-index" type="button" data-accent="blue">
+        <span class="num">01</span><span class="label">AI</span>
+      </button>
+      <div>
+        <div class="badge"><span style="width:8px;height:8px;border-radius:999px;background:var(--accent-blue);display:inline-block"></span>&nbsp;AI Control</div>
+        <h3>AI Automatic Control</h3>
+        <p class="sub">Automatický režim řízení enginu. Přepnutí na manuál zastaví automatické zásahy.</p>
 
- <div class="panel-sub" style="text-align:center;margin-top:4px;">
-   Chip Core — heart of engine
- </div>
+        <div class="led-strip" aria-hidden="true">
+          <div class="led-fill" id="aiFill" style="width:74%"></div>
+        </div>
+        <div class="led-grid" aria-hidden="true"></div>
 
- <!-- 3×3 KARTY -->
- <section class="cards" id="cardsGrid">
+        <div class="metrics">
+          <div class="metric"><h4 id="aiPercent">74 %</h4><p>Runtime</p></div>
+          <div class="metric"><h4 id="aiInterventions">12</h4><p>Intervence (24h)</p></div>
+          <div class="metric"><h4 id="aiLast">a few sec</h4><p>Poslední zásah</p></div>
+        </div>
 
-   <!-- 01 · AI CONTROL -->
-   <article class="card" id="card-ai" data-card="ai">
-     <button class="card-index" type="button" data-accent="blue">
-       <span class="num">01</span>
-       <span class="label">AI</span>
-     </button>
+        <div class="links">
+          <a class="link" id="toggleAI" role="button"><span class="led" id="ledAi" style="background:var(--accent-green);"></span><span id="toggleAiLabel">AI ON</span></a>
+          <a class="link" id="openAiLog">AI Log</a>
+        </div>
+      </div>
 
-     <div>
-       <div class="badge"><span style="width:8px;height:8px;border-radius:999px;background:var(--accent-blue);display:inline-block"></span>&nbsp;AI Control</div>
-       <h3>AI Automatic Control</h3>
-       <p class="sub">Automatický režim řízení enginu. Přepnutí na manuál zastaví automatické zásahy.</p>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px">
+        <div class="multisig" title="AI health"><div class="ms-light ms-green" id="aiMs"></div><small style="color:var(--muted)">AI Health</small></div>
+        <div style="font-size:12px;color:var(--muted)">Mode: <strong id="aiMode">AUTO</strong></div>
+      </div>
+    </article>
 
-       <div class="led-strip" aria-hidden="true">
-         <div class="led-fill" id="aiFill"></div>
-       </div>
-       <div class="led-grid" aria-hidden="true"></div>
+    <!-- 02 · MANUAL / BRAKE -->
+    <article class="card" id="card-manual" data-card="manual">
+      <button class="card-index" type="button" data-accent="amber">
+        <span class="num">02</span><span class="label">MAN</span>
+      </button>
+      <div>
+        <div class="badge"><span style="width:8px;height:8px;border-radius:999px;background:#f6d365;display:inline-block"></span>&nbsp;Manual / Brake</div>
+        <h3>Manual Mode &amp; Emergency Brake</h3>
+        <p class="sub">Rychlé přepnutí do ručního režimu a bezpečná nouzová brzda (demo).</p>
 
-       <div class="metrics">
-         <div class="metric"><h4 id="aiPercent">74 %</h4><p>Runtime</p></div>
-         <div class="metric"><h4 id="aiInterventions">12</h4><p>Intervence (24h)</p></div>
-         <div class="metric"><h4 id="aiLast">a few sec</h4><p>Poslední zásah</p></div>
-       </div>
+        <div class="led-strip"><div class="led-fill" id="manualFill" style="width:56%"></div></div>
+        <div class="led-grid"></div>
 
-       <div class="links">
-         <a class="link" id="toggleAI" role="button">
-           <span class="led" id="ledAi"></span>
-           <span id="toggleAiLabel">AI ON</span>
-         </a>
-         <a class="link" id="openAiLog">AI Log</a>
-       </div>
-     </div>
+        <div class="metrics">
+          <div class="metric"><h4 id="manualActive">OFF</h4><p>Manual</p></div>
+          <div class="metric"><h4 id="brakeState">DISARMED</h4><p>Brake</p></div>
+          <div class="metric"><h4 id="safeMode">OK</h4><p>Safe Mode</p></div>
+        </div>
 
-     <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px">
-       <div class="multisig" title="AI health">
-         <div class="ms-light ms-green" id="aiMs"></div>
-         <small style="color:var(--muted)">AI Health</small>
-       </div>
-       <div style="font-size:12px;color:var(--muted)">Mode: <strong id="aiMode">AUTO</strong></div>
-     </div>
-   </article>
+        <div class="links">
+          <a class="link" id="btnManual">ACTIVATE MANUAL</a>
+          <a class="link" id="btnBrake" style="border-color:rgba(231,76,60,0.3);color:#ffdede">SYSTEM BRAKE</a>
+          <a class="link" id="btnSafe">SAFE MODE</a>
+        </div>
+      </div>
 
-   <!-- 02 · MANUAL / BRAKE -->
-   <article class="card" id="card-manual" data-card="manual">
-     <button class="card-index" type="button" data-accent="amber">
-       <span class="num">02</span>
-       <span class="label">MAN</span>
-     </button>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px">
+        <div class="multisig"><div class="ms-light ms-yellow" id="manualMs"></div><small style="color:var(--muted)">Manual Status</small></div>
+        <div style="font-size:12px;color:var(--muted)"><strong>Admin actions</strong></div>
+      </div>
+    </article>
 
-     <div>
-       <div class="badge"><span style="width:8px;height:8px;border-radius:999px;background:#f6d365;display:inline-block"></span>&nbsp;Manual / Brake</div>
-       <h3>Manual Mode &amp; Emergency Brake</h3>
-       <p class="sub">Rychlé přepnutí do ručního režimu a aktivace nouzové brzdy. Demo bezpečné operace.</p>
+    <!-- 03 · POOLS -->
+    <article class="card" id="card-pool" data-card="pool">
+      <button class="card-index" type="button" data-accent="cyan">
+        <span class="num">03</span><span class="label">POOL</span>
+      </button>
+      <div>
+        <div class="badge"><span style="width:8px;height:8px;border-radius:999px;background:#7de2ff;display:inline-block"></span>&nbsp;Pool Output</div>
+        <h3>Pool Output Simulation</h3>
+        <p class="sub">Simulace výstupů z poolů: TVL, rebalancing a odhad výnosu (demo).</p>
 
-       <div class="led-strip">
-         <div class="led-fill" id="manualFill"></div>
-       </div>
-       <div class="led-grid"></div>
+        <div class="led-strip"><div class="led-fill" id="poolFill" style="width:62%"></div></div>
+        <div class="led-grid"></div>
 
-       <div class="metrics">
-         <div class="metric"><h4 id="manualActive">OFF</h4><p>Manual</p></div>
-         <div class="metric"><h4 id="brakeState">DISARMED</h4><p>Brake</p></div>
-         <div class="metric"><h4 id="safeMode">OK</h4><p>Safe Mode</p></div>
-       </div>
+        <div class="metrics">
+          <div class="metric"><h4 id="tvl">1 248 332</h4><p>TVL (USDt.z)</p></div>
+          <div class="metric"><h4 id="tvlChange">+1.5%</h4><p>24h change</p></div>
+          <div class="metric"><h4 id="simYield">4.8%</h4><p>Sim. Yield</p></div>
+        </div>
 
-       <div class="links">
-         <a class="link" id="btnManual">ACTIVATE MANUAL</a>
-         <a class="link" id="btnBrake" style="border-color:rgba(231,76,60,0.35);">
-           <span class="led" style="background:var(--accent-red);box-shadow:0 0 10px rgba(239,68,68,0.95)"></span>
-           SYSTEM BRAKE
-         </a>
-         <a class="link" id="btnSafe">SAFE MODE</a>
-       </div>
-     </div>
+        <div class="links">
+          <a class="link" id="runRebalance">Run Rebalance</a>
+          <a class="link" id="viewPools">View Pools</a>
+        </div>
+      </div>
 
-     <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px">
-       <div class="multisig">
-         <div class="ms-light ms-yellow" id="manualMs"></div>
-         <small style="color:var(--muted)">Manual Status</small>
-       </div>
-       <div style="font-size:12px;color:var(--muted)"><strong>Admin actions</strong></div>
-     </div>
-   </article>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px">
+        <div class="multisig"><div class="ms-light ms-green" id="poolMs"></div><small style="color:var(--muted)">Pool OK</small></div>
+        <div style="font-size:12px;color:var(--muted)"><strong>Last rebalance</strong> <br><small id="poolLast">3h ago</small></div>
+      </div>
+    </article>
 
-   <!-- 03 · POOL -->
-   <article class="card" id="card-pool" data-card="pool">
-     <button class="card-index" type="button" data-accent="cyan">
-       <span class="num">03</span>
-       <span class="label">POOL</span>
-     </button>
+    <!-- 04 · DB -->
+    <article class="card" id="card-db" data-card="db">
+      <button class="card-index" type="button" data-accent="cyan">
+        <span class="num">04</span><span class="label">DB</span>
+      </button>
+      <div>
+        <div class="badge"><span style="width:8px;height:8px;border-radius:999px;background:#9adabf;display:inline-block"></span>&nbsp;Database</div>
+        <h3>Supabase · DB Status</h3>
+        <p class="sub">Monitoring latency, writes/min a integrity check. Export report pro audit (demo).</p>
 
-     <div>
-       <div class="badge"><span style="width:8px;height:8px;border-radius:999px;background:#7de2ff;display:inline-block"></span>&nbsp;Pool Output</div>
-       <h3>Pool Output Simulation</h3>
-       <p class="sub">Simulace výstupů z poolů: rebalancing, změny TVL a odhad výnosu.</p>
+        <div class="led-strip"><div class="led-fill" id="dbFill" style="width:92%"></div></div>
+        <div class="led-grid"></div>
 
-       <div class="led-strip">
-         <div class="led-fill" id="poolFill"></div>
-       </div>
-       <div class="led-grid"></div>
+        <div class="metrics">
+          <div class="metric"><h4 id="dbLatency">14 ms</h4><p>Latency</p></div>
+          <div class="metric"><h4 id="dbWrites">120</h4><p>Writes / min</p></div>
+          <div class="metric"><h4 id="dbIntegrity">100%</h4><p>Integrity</p></div>
+        </div>
 
-       <div class="metrics">
-         <div class="metric"><h4 id="tvl">1 248 332</h4><p>TVL (USDt.z)</p></div>
-         <div class="metric"><h4 id="tvlChange">+1.5%</h4><p>24h change</p></div>
-         <div class="metric"><h4 id="simYield">4.8%</h4><p>Sim. Yield</p></div>
-       </div>
+        <div class="links">
+          <a class="link" id="dbReindex">Trigger Reindex</a>
+          <a class="link" id="exportAudit">Download Audit</a>
+        </div>
+      </div>
 
-       <div class="links">
-         <a class="link" id="runRebalance">Run Rebalance</a>
-         <a class="link" id="viewPools">View Pools</a>
-       </div>
-     </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px">
+        <div class="multisig"><div class="ms-light ms-green" id="dbMs"></div><small style="color:var(--muted)">DB OK</small></div>
+        <div style="font-size:12px;color:var(--muted)"><strong>Last checkpoint</strong> <br><small id="dbLast">2025-11-27</small></div>
+      </div>
+    </article>
 
-     <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px">
-       <div class="multisig">
-         <div class="ms-light ms-green" id="poolMs"></div>
-         <small style="color:var(--muted)">Pool OK</small>
-       </div>
-       <div style="font-size:12px;color:var(--muted)">
-         <strong>Last rebalance</strong> <br><small id="poolLast">3h ago</small>
-       </div>
-     </div>
-   </article>
+    <!-- 05 · MULTI-SIG -->
+    <article class="card" id="card-ms" data-card="ms">
+      <button class="card-index" type="button" data-accent="amber">
+        <span class="num">05</span><span class="label">MSIG</span>
+      </button>
+      <div>
+        <div class="badge"><span style="width:8px;height:8px;border-radius:999px;background:#ffd6a5;display:inline-block"></span>&nbsp;Multi-Sig</div>
+        <h3>Multi-Sig Status</h3>
+        <p class="sub">Počet požadovaných podpisů, aktuální počet zaslaných a time-lock (demo).</p>
 
-   <!-- 04 · DATABASE -->
-   <article class="card" id="card-db" data-card="db">
-     <button class="card-index" type="button" data-accent="mint">
-       <span class="num">04</span>
-       <span class="label">DB</span>
-     </button>
+        <div class="led-strip"><div class="led-fill" id="msFill" style="width:50%"></div></div>
+        <div class="led-grid"></div>
 
-     <div>
-       <div class="badge"><span style="width:8px;height:8px;border-radius:999px;background:#9adabf;display:inline-block"></span>&nbsp;Database</div>
-       <h3>Supabase · DB Status</h3>
-       <p class="sub">Monitoring latency, writes/min a integrity check. Export report pro audit.</p>
+        <div class="metrics">
+          <div class="metric"><h4 id="msRequired">5</h4><p>Required</p></div>
+          <div class="metric"><h4 id="msSubmitted">3</h4><p>Submitted</p></div>
+          <div class="metric"><h4 id="msTimelock">2h</h4><p>Time-lock</p></div>
+        </div>
 
-       <div class="led-strip">
-         <div class="led-fill" id="dbFill"></div>
-       </div>
-       <div class="led-grid"></div>
+        <div class="links">
+          <a class="link" id="openMs">Open Multi-Sig</a>
+          <a class="link" id="downloadAudit">Download Audit</a>
+        </div>
+      </div>
 
-       <div class="metrics">
-         <div class="metric"><h4 id="dbLatency">14 ms</h4><p>Latency</p></div>
-         <div class="metric"><h4 id="dbWrites">120</h4><p>Writes / min</p></div>
-         <div class="metric"><h4 id="dbIntegrity">100%</h4><p>Integrity</p></div>
-       </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px">
+        <div class="multisig"><div class="ms-light ms-yellow" id="msLight"></div><small style="color:var(--muted)">Signatures</small></div>
+        <div style="font-size:12px;color:var(--muted)"><strong>Last tx</strong> <br><small id="msLast">2h ago</small></div>
+      </div>
+    </article>
 
-       <div class="links">
-         <a class="link" id="dbReindex">Trigger Reindex</a>
-         <a class="link" id="exportAudit">Download Audit</a>
-       </div>
-     </div>
+    <!-- 06 · CHAIN -->
+    <article class="card" id="card-chain" data-card="chain">
+      <button class="card-index" type="button" data-accent="blue">
+        <span class="num">06</span><span class="label">CHAIN</span>
+      </button>
+      <div>
+        <div class="badge"><span style="width:8px;height:8px;border-radius:999px;background:#7de2ff;display:inline-block"></span>&nbsp;Blockchain</div>
+        <h3>Blockchain Connection</h3>
+        <p class="sub">RPC latency, block height a sync status. Monitor on-chain health (demo).</p>
 
-     <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px">
-       <div class="multisig">
-         <div class="ms-light ms-green" id="dbMs"></div>
-         <small style="color:var(--muted)">DB OK</small>
-       </div>
-       <div style="font-size:12px;color:var(--muted)">
-         <strong>Last checkpoint</strong> <br><small id="dbLast">2025-11-27</small>
-       </div>
-     </div>
-   </article>
+        <div class="led-strip"><div class="led-fill" id="chainFill" style="width:82%"></div></div>
+        <div class="led-grid"></div>
 
-   <!-- 05 · MULTI-SIG -->
-   <article class="card" id="card-ms" data-card="ms">
-     <button class="card-index" type="button" data-accent="peach">
-       <span class="num">05</span>
-       <span class="label">MSIG</span>
-     </button>
+        <div class="metrics">
+          <div class="metric"><h4 id="blockHeight">#23,231,241</h4><p>Last block</p></div>
+          <div class="metric"><h4 id="rpcLatency">3.12 s</h4><p>RPC</p></div>
+          <div class="metric"><h4 id="syncPerc">98%</h4><p>Sync</p></div>
+        </div>
 
-     <div>
-       <div class="badge"><span style="width:8px;height:8px;border-radius:999px;background:#ffd6a5;display:inline-block"></span>&nbsp;Multi-Sig</div>
-       <h3>Multi-Sig Status</h3>
-       <p class="sub">Počet požadovaných podpisů, aktuální počet zaslaných a stav time-locku.</p>
+        <div class="links">
+          <a class="link" id="refreshChain">Refresh</a>
+          <a class="link" id="openExplorer">Explorer</a>
+        </div>
+      </div>
 
-       <div class="led-strip">
-         <div class="led-fill" id="msFill"></div>
-       </div>
-       <div class="led-grid"></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px">
+        <div class="multisig"><div class="ms-light ms-green" id="chainMs"></div><small style="color:var(--muted)">On-chain</small></div>
+        <div style="font-size:12px;color:var(--muted)"><strong>Pairs</strong> <br><small id="chainPairs">USDt.z / GUSD</small></div>
+      </div>
+    </article>
 
-       <div class="metrics">
-         <div class="metric"><h4 id="msRequired">5</h4><p>Required</p></div>
-         <div class="metric"><h4 id="msSubmitted">3</h4><p>Submitted</p></div>
-         <div class="metric"><h4 id="msTimelock">2h</h4><p>Time-lock</p></div>
-       </div>
+    <!-- 07 · ENGINE -->
+    <article class="card" id="card-engine" data-card="engine">
+      <button class="card-index" type="button" data-accent="blue">
+        <span class="num">07</span><span class="label">ENGINE</span>
+      </button>
+      <div>
+        <div class="badge"><span style="width:8px;height:8px;border-radius:999px;background:#7fb7ff;display:inline-block"></span>&nbsp;AYAS-7 Engine</div>
+        <h3>Engine Simulation · 7 Layers</h3>
+        <p class="sub">Sedm horizontálních LED pásků znázorňuje výkon každé vrstvy (L1–L7).</p>
 
-       <div class="links">
-         <a class="link" id="openMs">Open Multi-Sig</a>
-         <a class="link" id="downloadAudit">Download Audit</a>
-       </div>
-     </div>
+        <div style="display:flex;flex-direction:column;gap:8px;margin-top:10px">
+          <div>
+            <div style="display:flex;justify-content:space-between;font-size:13px"><strong>Layer 1 · Token</strong><span id="L1pct">88%</span></div>
+            <div class="led-strip"><div class="led-fill" id="L1" style="width:88%"></div></div>
+          </div>
+          <div>
+            <div style="display:flex;justify-content:space-between;font-size:13px"><strong>Layer 2 · Liquidity</strong><span id="L2pct">68%</span></div>
+            <div class="led-strip"><div class="led-fill" id="L2" style="width:68%"></div></div>
+          </div>
+          <div>
+            <div style="display:flex;justify-content:space-between;font-size:13px"><strong>Layer 3 · Yield</strong><span id="L3pct">81%</span></div>
+            <div class="led-strip"><div class="led-fill" id="L3" style="width:81%"></div></div>
+          </div>
+          <div>
+            <div style="display:flex;justify-content:space-between;font-size:13px"><strong>Layer 4 · Risk</strong><span id="L4pct">92%</span></div>
+            <div class="led-strip"><div class="led-fill" id="L4" style="width:92%"></div></div>
+          </div>
+          <div>
+            <div style="display:flex;justify-content:space-between;font-size:13px"><strong>Layer 5 · FinTech</strong><span id="L5pct">56%</span></div>
+            <div class="led-strip"><div class="led-fill" id="L5" style="width:56%"></div></div>
+          </div>
+          <div>
+            <div style="display:flex;justify-content:space-between;font-size:13px"><strong>Layer 6 · Core</strong><span id="L6pct">61%</span></div>
+            <div class="led-strip"><div class="led-fill" id="L6" style="width:61%"></div></div>
+          </div>
+          <div>
+            <div style="display:flex;justify-content:space-between;font-size:13px"><strong>Layer 7 · Analytics</strong><span id="L7pct">82%</span></div>
+            <div class="led-strip"><div class="led-fill" id="L7" style="width:82%"></div></div>
+          </div>
+        </div>
 
-     <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px">
-       <div class="multisig">
-         <div class="ms-light ms-yellow" id="msLight"></div>
-         <small style="color:var(--muted)">Signatures</small>
-       </div>
-       <div style="font-size:12px;color:var(--muted)">
-         <strong>Last tx</strong> <br><small id="msLast">2h ago</small>
-       </div>
-     </div>
-   </article>
+        <div class="links" style="margin-top:12px">
+          <a class="link" id="engineSim">Run Simulation</a>
+          <a class="link" id="engineReset">Reset</a>
+        </div>
+      </div>
 
-   <!-- 06 · BLOCKCHAIN -->
-   <article class="card" id="card-chain" data-card="chain">
-     <button class="card-index" type="button" data-accent="sky">
-       <span class="num">06</span>
-       <span class="label">CHAIN</span>
-     </button>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px">
+        <div class="multisig"><div class="ms-light ms-green" id="engineMs"></div><small style="color:var(--muted)">Engine health</small></div>
+        <div style="font-size:12px;color:var(--muted)"><strong>Mode</strong> <br><small id="engineMode">SIM</small></div>
+      </div>
+    </article>
 
-     <div>
-       <div class="badge"><span style="width:8px;height:8px;border-radius:999px;background:#7de2ff;display:inline-block"></span>&nbsp;Blockchain</div>
-       <h3>Blockchain Connection</h3>
-       <p class="sub">RPC latency, block height a sync status. Monitor on-chain health.</p>
+    <!-- 08 · THROUGHPUT -->
+    <article class="card" id="card-throughput" data-card="throughput">
+      <button class="card-index" type="button" data-accent="cyan">
+        <span class="num">08</span><span class="label">IO</span>
+      </button>
+      <div>
+        <div class="badge"><span style="width:8px;height:8px;border-radius:999px;background:#a6b8ff;display:inline-block"></span>&nbsp;Throughput</div>
+        <h3>System Throughput</h3>
+        <p class="sub">Operací za sekundu (ops/s), queue depth a propustnost systému (demo).</p>
 
-       <div class="led-strip">
-         <div class="led-fill" id="chainFill"></div>
-       </div>
-       <div class="led-grid"></div>
+        <div class="led-strip"><div class="led-fill" id="tpFill" style="width:70%"></div></div>
+        <div class="led-grid"></div>
 
-       <div class="metrics">
-         <div class="metric"><h4 id="blockHeight">#23,231,241</h4><p>Last block</p></div>
-         <div class="metric"><h4 id="rpcLatency">3.12 s</h4><p>RPC</p></div>
-         <div class="metric"><h4 id="syncPerc">98%</h4><p>Sync</p></div>
-       </div>
+        <div class="metrics">
+          <div class="metric"><h4 id="ops">1 232</h4><p>ops/s</p></div>
+          <div class="metric"><h4 id="queue">24</h4><p>Queue</p></div>
+          <div class="metric"><h4 id="through">320 MB/s</h4><p>Throughput</p></div>
+        </div>
 
-       <div class="links">
-         <a class="link" id="refreshChain">Refresh</a>
-         <a class="link" id="openExplorer">Explorer</a>
-       </div>
-     </div>
+        <div class="links">
+          <a class="link" id="scaleUp">Scale Up</a>
+          <a class="link" id="scaleDown">Scale Down</a>
+        </div>
+      </div>
 
-     <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px">
-       <div class="multisig">
-         <div class="ms-light ms-green" id="chainMs"></div>
-         <small style="color:var(--muted)">On-chain</small>
-       </div>
-       <div style="font-size:12px;color:var(--muted)">
-         <strong>Pairs</strong> <br><small id="chainPairs">USDt.z / GUSD</small>
-       </div>
-     </div>
-   </article>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px">
+        <div class="multisig"><div class="ms-light ms-green" id="tpMs"></div><small style="color:var(--muted)">Node health</small></div>
+        <div style="font-size:12px;color:var(--muted)"><strong>Cluster</strong> <br><small id="clusterNodes">3 nodes</small></div>
+      </div>
+    </article>
 
-   <!-- 07 · ENGINE 7 LAYERS -->
-   <article class="card" id="card-engine" data-card="engine">
-     <button class="card-index" type="button" data-accent="indigo">
-       <span class="num">07</span>
-       <span class="label">ENGINE</span>
-     </button>
+    <!-- 09 · EVENT LOG -->
+    <article class="card" id="card-log" data-card="log">
+      <button class="card-index" type="button" data-accent="blue">
+        <span class="num">09</span><span class="label">LOG</span>
+      </button>
+      <div>
+        <div class="badge"><span style="width:8px;height:8px;border-radius:999px;background:#b9d7ff;display:inline-block"></span>&nbsp;Event Log</div>
+        <h3>Event Log</h3>
+        <p class="sub">Poslední události systému. Export, filtrace a auditní záznamy (demo).</p>
 
-     <div>
-       <div class="badge"><span style="width:8px;height:8px;border-radius:999px;background:#7fb7ff;display:inline-block"></span>&nbsp;AYAS-7 Engine</div>
-       <h3>Engine Simulation · 7 Layers</h3>
-       <p class="sub">Sedm horizontálních LED pásků znázorňuje výkon každé vrstvy (L1–L7).</p>
+        <div class="log" id="logBox"></div>
 
-       <div style="display:flex;flex-direction:column;gap:8px;margin-top:10px">
-         <div>
-           <div style="display:flex;justify-content:space-between;font-size:13px"><strong>Layer 1 · Token</strong><span id="L1pct">88%</span></div>
-           <div class="led-strip"><div class="led-fill mini" id="L1" style="width:88%"></div></div>
-         </div>
-         <div>
-           <div style="display:flex;justify-content:space-between;font-size:13px"><strong>Layer 2 · Liquidity</strong><span id="L2pct">68%</span></div>
-           <div class="led-strip"><div class="led-fill mini" id="L2" style="width:68%"></div></div>
-         </div>
-         <div>
-           <div style="display:flex;justify-content:space-between;font-size:13px"><strong>Layer 3 · Yield</strong><span id="L3pct">81%</span></div>
-           <div class="led-strip"><div class="led-fill mini" id="L3" style="width:81%"></div></div>
-         </div>
-         <div>
-           <div style="display:flex;justify-content:space-between;font-size:13px"><strong>Layer 4 · Risk</strong><span id="L4pct">92%</span></div>
-           <div class="led-strip"><div class="led-fill mini" id="L4" style="width:92%"></div></div>
-         </div>
-         <div>
-           <div style="display:flex;justify-content:space-between;font-size:13px"><strong>Layer 5 · FinTech</strong><span id="L5pct">56%</span></div>
-           <div class="led-strip"><div class="led-fill mini" id="L5" style="width:56%"></div></div>
-         </div>
-         <div>
-           <div style="display:flex;justify-content:space-between;font-size:13px"><strong>Layer 6 · Core</strong><span id="L6pct">61%</span></div>
-           <div class="led-strip"><div class="led-fill mini" id="L6" style="width:61%"></div></div>
-         </div>
-         <div>
-           <div style="display:flex;justify-content:space-between;font-size:13px"><strong>Layer 7 · Analytics</strong><span id="L7pct">82%</span></div>
-           <div class="led-strip"><div class="led-fill mini" id="L7" style="width:82%"></div></div>
-         </div>
-       </div>
+        <div class="links" style="margin-top:10px">
+          <a class="link" id="clearLogs">Clear</a>
+          <a class="link" id="exportLogs">Export</a>
+        </div>
+      </div>
 
-       <div class="links" style="margin-top:12px">
-         <a class="link" id="engineSim">Run Simulation</a>
-         <a class="link" id="engineReset">Reset</a>
-       </div>
-     </div>
+      <div style="display:flex;justify-content:flex-end;align-items:center;margin-top:12px">
+        <div style="font-size:12px;color:var(--muted)"><strong>Live</strong> · <small id="logStatus">connected</small></div>
+      </div>
+    </article>
 
-     <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px">
-       <div class="multisig">
-         <div class="ms-light ms-green" id="engineMs"></div>
-         <small style="color:var(--muted)">Engine health</small>
-       </div>
-       <div style="font-size:12px;color:var(--muted)">
-         <strong>Mode</strong> <br><small id="engineMode">SIM</small>
-       </div>
-     </div>
-   </article>
+  </section>
 
-   <!-- 08 · THROUGHPUT -->
-   <article class="card" id="card-throughput" data-card="throughput">
-     <button class="card-index" type="button" data-accent="violet">
-       <span class="num">08</span>
-       <span class="label">TPS</span>
-     </button>
+  <!-- BOTTOM COMM / MANUAL -->
+  <section class="bottom-bar">
+    <div class="bottom-left">
+      <strong>Komunikační centrum · AYAS-7 Velín</strong><br>
+      Demo režim – real-time simulace. V ostré verzi se zde napojí notifikace, alerty a provozní zprávy.
+    </div>
+    <div class="bottom-contact">
+      <div>E-mail: <strong>petrholoubek39@gmail.com</strong></div>
+      <div>WhatsApp / Tel: <strong>+420 778 060 622</strong></div>
+    </div>
+    <a class="bottom-pill" href="manual-control-room.html">
+      <span class="dot" style="background:var(--accent-blue);box-shadow:0 0 10px rgba(79,163,255,0.9);"></span>
+      Otevřít manuál k velínu (demo)
+    </a>
+  </section>
 
-     <div>
-       <div class="badge"><span style="width:8px;height:8px;border-radius:999px;background:#a6b8ff;display:inline-block"></span>&nbsp;Throughput</div>
-       <h3>System Throughput</h3>
-       <p class="sub">Operací za sekundu (ops/s), queue depth a propustnost systému.</p>
-
-       <div class="led-strip">
-         <div class="led-fill" id="tpFill"></div>
-       </div>
-       <div class="led-grid"></div>
-
-       <div class="metrics">
-         <div class="metric"><h4 id="ops">1 232</h4><p>ops/s</p></div>
-         <div class="metric"><h4 id="queue">24</h4><p>Queue</p></div>
-         <div class="metric"><h4 id="through">320 MB/s</h4><p>Throughput</p></div>
-       </div>
-
-       <div class="links">
-         <a class="link" id="scaleUp">Scale Up</a>
-         <a class="link" id="scaleDown">Scale Down</a>
-       </div>
-     </div>
-
-     <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px">
-       <div class="multisig">
-         <div class="ms-light ms-green" id="tpMs"></div>
-         <small style="color:var(--muted)">Node health</small>
-       </div>
-       <div style="font-size:12px;color:var(--muted)">
-         <strong>Cluster</strong> <br><small id="clusterNodes">3 nodes</small>
-       </div>
-     </div>
-   </article>
-
-   <!-- 09 · EVENT LOG -->
-   <article class="card" id="card-log" data-card="log">
-     <button class="card-index" type="button" data-accent="ice">
-       <span class="num">09</span>
-       <span class="label">LOG</span>
-     </button>
-
-     <div>
-       <div class="badge"><span style="width:8px;height:8px;border-radius:999px;background:#b9d7ff;display:inline-block"></span>&nbsp;Event Log</div>
-       <h3>Event Log</h3>
-       <p class="sub">Poslední události systému. Export, filtrovat a stáhnout auditní záznamy.</p>
-
-       <div class="log" id="logBox"></div>
-
-       <div class="links" style="margin-top:10px">
-         <a class="link" id="clearLogs">Clear</a>
-         <a class="link" id="exportLogs">Export</a>
-       </div>
-     </div>
-
-     <div style="display:flex;justify-content:flex-end;align-items:center;margin-top:12px">
-       <div style="font-size:12px;color:var(--muted)"><strong>Live</strong> · <small id="logStatus">connected</small></div>
-     </div>
-   </article>
- </section>
-
- <!-- KOMUNIKAČNÍ CENTRUM + MANUÁL -->
- <section class="bottom-bar">
-   <div class="bottom-card">
-     <h4>AYAS-7 Communication Center</h4>
-     <p>Pro urgentní zásah, eskalace nebo domluvu integrace AYAS-7 Chip Core se spoj přímo s operátorem velínu.</p>
-     <p style="margin-top:6px;">
-       <strong>Email:</strong> <a href="mailto:petrholoubek39@gmail.com">petrholoubek39@gmail.com</a><br>
-       <strong>WhatsApp:</strong> <a href="https://wa.me/420778060622" target="_blank" rel="noreferrer">+420&nbsp;778&nbsp;060&nbsp;622</a>
-     </p>
-     <a class="bottom-pill" href="mailto:petrholoubek39@gmail.com?subject=AYAS-7%20Control%20Room">
-       <span class="dot"></span>
-       Kontaktovat Control Room
-     </a>
-   </div>
-
-   <div class="bottom-card">
-     <h4>Control Room Manual</h4>
-     <p>Detailní technická dokumentace k tomuto velínu: rozložení modulů, význam LED pásek, napojení na Chip Core a databázi.</p>
-     <p style="margin-top:6px;">Po vytvoření manuálu ho stačí nahrát jako <code>manual-control-room.html</code> do stejného repozitáře.</p>
-     <a class="bottom-pill" href="manual-control-room.html">
-       <span class="dot" style="background:var(--accent-blue);box-shadow:0 0 10px rgba(79,163,255,0.9);"></span>
-       Otevřít manuál (demo)
-     </a>
-   </div>
- </section>
-
- <footer style="text-align:center;margin-top:18px;color:var(--muted)">© 2025 Win-Win Družstvo · AYAS-7 Engine · Demo</footer>
+  <footer style="text-align:center;margin-top:18px;color:var(--muted)">
+    © 2025 Win-Win Družstvo · AYAS-7 Engine · Demo
+  </footer>
 </main>
+
+<!-- CHIP CORE SCRIPT -->
 <script src="assets/chip-core.js"></script>
-<script>
-// ========== EXPAND OVLÁDÁNÍ 01–09 (ČISTÉ & BEZPORUCHOVÉ) ==========
-
-document.querySelectorAll(".card-index").forEach(pill=>{
-  pill.addEventListener("click",()=>{
-
-    const panel = pill.closest(".card");
-    const isOpen = panel.classList.contains("expanded");
-
-    document.querySelectorAll(".card.expanded")
-            .forEach(c=>c.classList.remove("expanded"));
-
-    if(!isOpen){
-      panel.classList.add("expanded");
-      setTimeout(()=>panel.scrollIntoView({behavior:"smooth",block:"center"}),150);
-    }
-  });
-});
-
-// ------- zavírání mimo kartu -------
-document.addEventListener("click",e=>{
-  if(!e.target.closest(".card") && !e.target.classList.contains("card-index")){
-    document.querySelectorAll(".card.expanded")
-            .forEach(c=>c.classList.remove("expanded"));
-  }
-});
-
-// ------- ESC close -------
-document.addEventListener("keydown",e=>{
-  if(e.key==="Escape"){
-    document.querySelectorAll(".card.expanded")
-            .forEach(c=>c.classList.remove("expanded"));
-  }
-});
-
-<script>
-window.addEventListener("load", ()=>{
-
-  console.log("AYAS7 UI → Expand listener ACTIVE"); // pro ověření v konzoli
-
-  document.querySelectorAll(".card-index").forEach(pill=>{
-    pill.addEventListener("click", ()=>{
-        const card = pill.closest(".card");
-        const already = card.classList.contains("expanded");
-
-        document.querySelectorAll(".card.expanded")
-              .forEach(c=>c.classList.remove("expanded"));
-
-        if(!already){
-            card.classList.add("expanded");
-            card.scrollIntoView({behavior:"smooth", block:"center"});
-        }
-    });
-  });
-
-  // ESC = zavře rozbalené boxy
-  document.addEventListener("keydown", e=>{
-      if(e.key==="Escape"){
-        document.querySelectorAll(".card.expanded")
-              .forEach(c=>c.classList.remove("expanded"));
-      }
-  });
-
-});
-</script>
-
-<!-- CHIP CORE -->
-<script src="assets/js/chip-core.js"></script>
-
-<!-- FIX OTVÍRÁNÍ BOXŮ -->
-<script>
-document.querySelectorAll(".card-index").forEach(pill=>{
-    pill.addEventListener("click",()=>{
-        const card=pill.closest(".card");
-        const open=card.classList.contains("expanded");
-        document.querySelectorAll(".card.expanded").forEach(c=>c.classList.remove("expanded"));
-        if(!open) card.classList.add("expanded");
-    });
-});
-
-document.addEventListener("keydown",e=>{
-    if(e.key==="Escape"){ document.querySelectorAll(".card.expanded").forEach(c=>c.classList.remove("expanded")); }
-});
-</script>
 </body>
 </html>
-
