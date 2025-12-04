@@ -1,17 +1,23 @@
 // assets/chip-core.js
-// AYAS-7 CHIP CORE · plná simulace velínu (AI, Manual, Pool, DB, Multi-Sig, Chain, Engine, Throughput, Log)
+// AYAS-7 · CHIP CORE · Intelligent Simulation Engine (E1)
 
 (function () {
   'use strict';
 
-  // HELPERY
+  /* ========== HELPERY ========== */
+
   const $ = (s) => document.querySelector(s);
   const $$ = (s) => Array.from(document.querySelectorAll(s));
   const fmt = (n) => n.toLocaleString('cs-CZ');
 
+  const clamp = (v, min, max) => Math.min(max, Math.max(min, v));
+
+  // lineární přiblížení (plynulé chování)
+  const lerp = (from, to, k) => from + (to - from) * k;
+
   function setFill(el, pct) {
     if (!el) return;
-    pct = Math.max(0, Math.min(100, pct));
+    pct = clamp(pct, 0, 100);
     el.style.width = pct + '%';
 
     if (pct >= 90) {
@@ -34,83 +40,119 @@
     else el.classList.add('ms-red');
   }
 
-  // STATE
+  /* ========== STAV CHIP CORE ========== */
+
   const state = {
-    aiOn: true,
-    aiRuntime: 0.74,
-    aiInterventions: 12,
-    manual: false,
-    brake: false,
-    pool: { tvl: 1248332, change: 0.015, yield: 4.8 },
-    db: { latency: 14, writes: 120, integrity: 100, last: '2025-11-27' },
-    ms: { required: 5, submitted: 3, timelock: '2h' },
-    chain: { block: 23231241, rpc: 3.12, sync: 0.98 },
+    ai: {
+      on: true,
+      runtime: 0.78,       // 0–1
+      interventions: 12,
+      lastSec: 3
+    },
+    manual: {
+      active: false,
+      brake: false
+    },
+    pool: {
+      tvl: 1248332,
+      change: 0.015,       // -0.05 – 0.1
+      yield: 4.8
+    },
+    db: {
+      latency: 14,         // ms
+      writes: 120,
+      integrity: 100,
+      last: '2025-11-27'
+    },
+    ms: {
+      required: 5,
+      submitted: 3,
+      timelock: '2h'
+    },
+    chain: {
+      block: 23231241,
+      rpc: 3.12,           // s
+      sync: 0.98
+    },
     layers: [0.88, 0.68, 0.81, 0.92, 0.56, 0.61, 0.82],
-    throughput: { ops: 1232, queue: 24, through: '320 MB/s' },
-    logs: []
+    throughput: {
+      ops: 1232,
+      queue: 24,
+      through: 320 // MB/s jako číslo
+    },
+    logs: [],
+    // odvozené metriky
+    stress: 0.2,
+    engineHealth: 0.9
   };
 
-  // MAP DOM
-  const elements = {
-    aiFill: $('#aiFill'),
-    aiPercent: $('#aiPercent'),
-    aiInterventions: $('#aiInterventions'),
-    aiLast: $('#aiLast'),
-    ledAi: $('#ledAi'),
-    toggleAiLabel: $('#toggleAiLabel'),
-    aiMode: $('#aiMode'),
-    aiMs: $('#aiMs'),
+  /* ========== MAPOVÁNÍ DOM ========== */
 
-    manualFill: $('#manualFill'),
-    manualActive: $('#manualActive'),
-    brakeState: $('#brakeState'),
-    safeMode: $('#safeMode'),
-    manualMs: $('#manualMs'),
+  const elements = {};
 
-    poolFill: $('#poolFill'),
-    tvl: $('#tvl'),
-    tvlChange: $('#tvlChange'),
-    simYield: $('#simYield'),
-    poolMs: $('#poolMs'),
-    poolLast: $('#poolLast'),
+  function mapDom() {
+    Object.assign(elements, {
+      aiFill: $('#aiFill'),
+      aiPercent: $('#aiPercent'),
+      aiInterventions: $('#aiInterventions'),
+      aiLast: $('#aiLast'),
+      ledAi: $('#ledAi'),
+      toggleAiLabel: $('#toggleAiLabel'),
+      aiMode: $('#aiMode'),
+      aiMs: $('#aiMs'),
 
-    dbFill: $('#dbFill'),
-    dbLatency: $('#dbLatency'),
-    dbWrites: $('#dbWrites'),
-    dbIntegrity: $('#dbIntegrity'),
-    dbLast: $('#dbLast'),
-    dbMs: $('#dbMs'),
+      manualFill: $('#manualFill'),
+      manualActive: $('#manualActive'),
+      brakeState: $('#brakeState'),
+      safeMode: $('#safeMode'),
+      manualMs: $('#manualMs'),
 
-    msFill: $('#msFill'),
-    msRequired: $('#msRequired'),
-    msSubmitted: $('#msSubmitted'),
-    msTimelock: $('#msTimelock'),
-    msLast: $('#msLast'),
-    msLight: $('#msLight'),
+      poolFill: $('#poolFill'),
+      tvl: $('#tvl'),
+      tvlChange: $('#tvlChange'),
+      simYield: $('#simYield'),
+      poolMs: $('#poolMs'),
+      poolLast: $('#poolLast'),
 
-    chainFill: $('#chainFill'),
-    blockHeight: $('#blockHeight'),
-    rpcLatency: $('#rpcLatency'),
-    syncPerc: $('#syncPerc'),
-    chainMs: $('#chainMs'),
+      dbFill: $('#dbFill'),
+      dbLatency: $('#dbLatency'),
+      dbWrites: $('#dbWrites'),
+      dbIntegrity: $('#dbIntegrity'),
+      dbLast: $('#dbLast'),
+      dbMs: $('#dbMs'),
 
-    L: [$('#L1'), $('#L2'), $('#L3'), $('#L4'), $('#L5'), $('#L6'), $('#L7')],
-    Lpct: [$('#L1pct'), $('#L2pct'), $('#L3pct'), $('#L4pct'), $('#L5pct'), $('#L6pct'), $('#L7pct')],
-    engineMode: $('#engineMode'),
-    engineMs: $('#engineMs'),
+      msFill: $('#msFill'),
+      msRequired: $('#msRequired'),
+      msSubmitted: $('#msSubmitted'),
+      msTimelock: $('#msTimelock'),
+      msLast: $('#msLast'),
+      msLight: $('#msLight'),
 
-    tpFill: $('#tpFill'),
-    ops: $('#ops'),
-    queue: $('#queue'),
-    through: $('#through'),
-    tpMs: $('#tpMs'),
+      chainFill: $('#chainFill'),
+      blockHeight: $('#blockHeight'),
+      rpcLatency: $('#rpcLatency'),
+      syncPerc: $('#syncPerc'),
+      chainMs: $('#chainMs'),
 
-    logBox: $('#logBox'),
-    logStatus: $('#logStatus'),
-    cardsGrid: $('#cardsGrid')
-  };
+      L: [$('#L1'), $('#L2'), $('#L3'), $('#L4'), $('#L5'), $('#L6'), $('#L7')],
+      Lpct: [$('#L1pct'), $('#L2pct'), $('#L3pct'), $('#L4pct'), $('#L5pct'), $('#L6pct'), $('#L7pct')],
+      engineMode: $('#engineMode'),
+      engineMs: $('#engineMs'),
 
-  // LOGS
+      tpFill: $('#tpFill'),
+      ops: $('#ops'),
+      queue: $('#queue'),
+      through: $('#through'),
+      tpMs: $('#tpMs'),
+
+      logBox: $('#logBox'),
+      logStatus: $('#logStatus'),
+      cardsGrid: $('#cardsGrid')
+    });
+  }
+
+  /* ========== LOGY ========== */
+
   function pushLog(msg) {
     const ts = new Date().toLocaleTimeString();
     state.logs.push({ ts, msg });
@@ -133,51 +175,92 @@
     if (elements.logStatus) elements.logStatus.textContent = 'connected';
   }
 
-  // RENDER
+  /* ========== VÝPOČET „STRESS / HEALTH“ ========== */
+
+  function computeDerived() {
+    // normalizace jednotlivých stresorů 0–1
+    const dbLatencyNorm = clamp(state.db.latency / 250, 0, 1);
+    const rpcNorm = clamp(state.chain.rpc / 7, 0, 1);
+    const queueNorm = clamp(state.throughput.queue / 80, 0, 1);
+    const syncPenalty = clamp(1 - state.chain.sync, 0, 1);
+    const msPenalty = clamp(
+      (state.ms.required - state.ms.submitted) / Math.max(1, state.ms.required),
+      0,
+      1
+    );
+    const negativeYieldPenalty = state.pool.change < 0 ? clamp(-state.pool.change / 0.05, 0, 1) : 0;
+
+    const stressRaw =
+      dbLatencyNorm * 0.22 +
+      rpcNorm * 0.18 +
+      queueNorm * 0.18 +
+      syncPenalty * 0.16 +
+      msPenalty * 0.16 +
+      negativeYieldPenalty * 0.1;
+
+    state.stress = clamp(stressRaw, 0, 1);
+
+    // engine health = invertovaný stress + kvalita layers
+    const layerAvg = state.layers.reduce((a, v) => a + v, 0) / state.layers.length;
+    const health = clamp(0.5 * (1 - state.stress) + 0.5 * layerAvg, 0, 1);
+    state.engineHealth = lerp(state.engineHealth, health, 0.1);
+  }
+
+  /* ========== RENDER UI ========== */
+
   function render() {
     // AI
     if (elements.aiFill) {
-      const targetAiPct = Math.round(state.aiRuntime * 100);
-      setFill(elements.aiFill, targetAiPct);
-      if (elements.aiPercent) elements.aiPercent.textContent = targetAiPct + ' %';
-      if (elements.aiInterventions) elements.aiInterventions.textContent = state.aiInterventions;
-      if (elements.aiLast) elements.aiLast.textContent = 'a few sec';
+      const pct = Math.round(state.ai.runtime * 100);
+      setFill(elements.aiFill, pct);
+      if (elements.aiPercent) elements.aiPercent.textContent = pct + ' %';
+      if (elements.aiInterventions) elements.aiInterventions.textContent = state.ai.interventions;
+      if (elements.aiLast) elements.aiLast.textContent = state.ai.lastSec + ' s';
       if (elements.ledAi) {
-        elements.ledAi.style.background = state.aiOn ? 'var(--accent-green)' : '#ff6b6b';
-        elements.ledAi.style.boxShadow = state.aiOn
+        elements.ledAi.style.background = state.ai.on ? 'var(--accent-green)' : '#ff6b6b';
+        elements.ledAi.style.boxShadow = state.ai.on
           ? '0 0 10px rgba(34,197,94,0.9)'
           : '0 0 10px rgba(239,68,68,0.95)';
       }
-      if (elements.toggleAiLabel) elements.toggleAiLabel.textContent = state.aiOn ? 'AI ON' : 'AI OFF';
+      if (elements.toggleAiLabel)
+        elements.toggleAiLabel.textContent = state.ai.on ? 'AI ON' : 'AI OFF';
       if (elements.aiMode)
-        elements.aiMode.textContent = state.aiOn ? 'AUTO' : state.manual ? 'MANUAL' : 'OFF';
-      setMsLight(elements.aiMs, state.aiRuntime);
+        elements.aiMode.textContent = state.ai.on
+          ? 'AUTO'
+          : state.manual.active
+          ? 'MANUAL'
+          : 'OFF';
+      setMsLight(elements.aiMs, state.ai.runtime);
     }
 
-    // Manual / Brake
+    // Manual
     if (elements.manualFill) {
-      setFill(elements.manualFill, state.manual ? 80 : 30);
-      if (elements.manualActive) elements.manualActive.textContent = state.manual ? 'ON' : 'OFF';
-      if (elements.brakeState) elements.brakeState.textContent = state.brake ? 'ARMED' : 'DISARMED';
-      if (elements.safeMode) elements.safeMode.textContent = state.brake ? 'SAFE' : 'OK';
-      setMsLight(elements.manualMs, state.manual ? 0.8 : 0.4);
+      setFill(elements.manualFill, state.manual.active ? 80 : 30);
+      if (elements.manualActive)
+        elements.manualActive.textContent = state.manual.active ? 'ON' : 'OFF';
+      if (elements.brakeState)
+        elements.brakeState.textContent = state.manual.brake ? 'ARMED' : 'DISARMED';
+      if (elements.safeMode)
+        elements.safeMode.textContent = state.manual.brake ? 'SAFE' : 'OK';
+      setMsLight(elements.manualMs, state.manual.active ? 0.8 : 0.4);
     }
 
     // Pool
     if (elements.poolFill) {
-      const poolPct = Math.min(100, Math.max(0, (state.pool.change + 0.05) * 100));
+      const poolPct = clamp((state.pool.change + 0.08) * 100, 5, 98);
       setFill(elements.poolFill, poolPct);
       if (elements.tvl) elements.tvl.textContent = fmt(state.pool.tvl);
-      if (elements.tvlChange)
-        elements.tvlChange.textContent =
-          (state.pool.change >= 0 ? '+' : '') + (state.pool.change * 100).toFixed(2) + '%';
+      if (elements.tvlChange) {
+        const v = (state.pool.change * 100).toFixed(2);
+        elements.tvlChange.textContent = (state.pool.change >= 0 ? '+' : '') + v + '%';
+      }
       if (elements.simYield) elements.simYield.textContent = state.pool.yield.toFixed(1) + '%';
-      setMsLight(elements.poolMs, 0.8);
+      setMsLight(elements.poolMs, state.pool.change >= 0 ? 0.8 : 0.5);
     }
 
     // DB
     if (elements.dbFill) {
-      const dbPct = Math.max(0, Math.min(100, 100 - state.db.latency));
+      const dbPct = clamp(100 - state.db.latency / 2.5, 0, 100);
       setFill(elements.dbFill, dbPct);
       if (elements.dbLatency) elements.dbLatency.textContent = state.db.latency + ' ms';
       if (elements.dbWrites) elements.dbWrites.textContent = state.db.writes;
@@ -186,7 +269,7 @@
       setMsLight(elements.dbMs, state.db.integrity / 100);
     }
 
-    // Multi-Sig
+    // Multi-sig
     if (elements.msFill) {
       const msPct = state.ms.submitted / Math.max(1, state.ms.required);
       setFill(elements.msFill, Math.round(msPct * 100));
@@ -208,7 +291,7 @@
     }
 
     // Engine layers
-    if (elements.L && elements.Lpct) {
+    if (elements.L && elements.L.length) {
       state.layers.forEach((val, i) => {
         const bar = elements.L[i];
         const label = elements.Lpct[i];
@@ -216,95 +299,166 @@
         const pct = Math.round(val * 100);
         setFill(bar, pct);
         label.textContent = pct + '%';
-        const pulse = 1 + (Math.sin(Date.now() / 300 + i) * 0.002 * (pct / 20));
+        const pulse = 1 + (Math.sin(Date.now() / 380 + i) * 0.0025 * (pct / 20));
         bar.style.transform = `scaleY(${pulse})`;
       });
     }
 
+    // Engine health LED
+    if (elements.engineMs) {
+      setMsLight(elements.engineMs, state.engineHealth);
+    }
+
     // Throughput
     if (elements.tpFill) {
-      setFill(elements.tpFill, Math.min(100, (state.throughput.ops / 2000) * 100));
+      const tpPct = clamp((state.throughput.ops / 2200) * 100, 5, 100);
+      setFill(elements.tpFill, tpPct);
       if (elements.ops) elements.ops.textContent = fmt(state.throughput.ops);
       if (elements.queue) elements.queue.textContent = state.throughput.queue;
-      if (elements.through) elements.through.textContent = state.throughput.through;
+      if (elements.through)
+        elements.through.textContent = state.throughput.through.toFixed(0) + ' MB/s';
       setMsLight(elements.tpMs, 0.85);
     }
   }
 
-  // TICK
-  function tick() {
-    // AI
-    state.aiRuntime = Math.max(
-      0.25,
-      Math.min(0.99, state.aiRuntime + (Math.random() - 0.5) * 0.02)
-    );
-    if (Math.random() > 0.88) state.aiInterventions += 1;
+  /* ========== INTELIGENTNÍ SMYČKA ========== */
 
-    // Pool
+  function updateDynamics() {
+    // 1) jemný náhodný šum
     state.pool.tvl = Math.max(
       300000,
-      state.pool.tvl + Math.round((Math.random() - 0.45) * 12000)
+      state.pool.tvl + Math.round((Math.random() - 0.45) * 18000)
     );
-    state.pool.change = Math.max(
+    state.pool.change = clamp(
+      state.pool.change + (Math.random() - 0.5) * 0.0025,
       -0.05,
-      Math.min(0.1, state.pool.change + (Math.random() - 0.5) * 0.0025)
+      0.12
     );
 
-    // Chain
     state.chain.block += Math.round(Math.random() * 4);
-    state.chain.sync = Math.max(
+    state.chain.rpc = clamp(
+      state.chain.rpc + (Math.random() - 0.5) * 0.16,
       0.7,
-      Math.min(1, state.chain.sync + (Math.random() - 0.5) * 0.012)
+      8
     );
-    state.chain.rpc = Math.max(
-      0.8,
-      Math.min(8, state.chain.rpc + (Math.random() - 0.5) * 0.12)
-    );
-
-    // DB
-    state.db.latency = Math.max(
-      5,
-      Math.min(300, Math.round(state.db.latency + (Math.random() - 0.5) * 6))
-    );
-    state.db.writes = Math.max(
-      10,
-      state.db.writes + Math.round((Math.random() - 0.5) * 8)
+    state.chain.sync = clamp(
+      state.chain.sync + (Math.random() - 0.5) * 0.01,
+      0.7,
+      1
     );
 
-    // Multi-sig
-    if (Math.random() > 0.86) {
-      state.ms.submitted = Math.max(
-        0,
-        Math.min(state.ms.required, state.ms.submitted + 1)
-      );
+    state.db.latency = clamp(
+      state.db.latency + (Math.random() - 0.45) * 5,
+      6,
+      260
+    );
+    state.db.writes = clamp(
+      state.db.writes + Math.round((Math.random() - 0.5) * 10),
+      15,
+      680
+    );
+
+    // integrity mírně padá se stresem
+    const targetIntegrity = clamp(100 - state.stress * 22, 75, 100);
+    state.db.integrity = Math.round(lerp(state.db.integrity, targetIntegrity, 0.05));
+
+    // throughput
+    state.throughput.ops = clamp(
+      state.throughput.ops + Math.round((Math.random() - 0.4) * 160),
+      120,
+      5400
+    );
+    state.throughput.queue = clamp(
+      state.throughput.queue + Math.round((Math.random() - 0.25) * 8),
+      1,
+      120
+    );
+
+    const targetThrough = clamp(
+      120 + state.throughput.ops / 10 - state.stress * 60,
+      80,
+      900
+    );
+    state.throughput.through = lerp(state.throughput.through, targetThrough, 0.12);
+
+    // Multi-sig – občas přijde podpis
+    if (Math.random() > 0.9 && state.ms.submitted < state.ms.required) {
+      state.ms.submitted += 1;
+      pushLog('New multisig signature received (sim)');
     }
 
-    // Layers
-    state.layers = state.layers.map((l) =>
-      Math.max(0.02, Math.min(1, l + (Math.random() - 0.5) * 0.045))
+    // AI runtime cíl podle stresu
+    if (state.ai.on) {
+      const targetRuntime = clamp(0.65 + (1 - state.stress) * 0.25, 0.55, 0.95);
+      state.ai.runtime = lerp(state.ai.runtime, targetRuntime, 0.08);
+
+      // čím větší stress, tím víc zásahů
+      const pIntervention = 0.5 * state.stress + 0.1;
+      if (Math.random() < pIntervention) {
+        state.ai.interventions += 1;
+        state.ai.lastSec = 1 + Math.floor(Math.random() * 5);
+        pushLog('AI intervention executed (sim)');
+      } else {
+        state.ai.lastSec = Math.min(state.ai.lastSec + 1, 99);
+      }
+    } else {
+      const targetRuntime = state.manual.brake ? 0.02 : 0.25;
+      state.ai.runtime = lerp(state.ai.runtime, targetRuntime, 0.12);
+      state.ai.lastSec = Math.min(state.ai.lastSec + 2, 120);
+    }
+
+    // Engine layers – chování z reality
+    const tvlNorm = clamp(Math.log10(state.pool.tvl / 100000) / 2, 0.2, 1);
+    const yieldNorm = clamp(state.pool.yield / 12, 0.1, 1);
+    const riskBase = clamp(
+      0.3 +
+        state.stress * 0.5 +
+        (state.chain.rpc - 1) * 0.05 +
+        (state.pool.change < 0 ? -state.pool.change * 2 : 0),
+      0,
+      1
     );
 
-    // Throughput
-    state.throughput.ops = Math.max(
-      120,
-      Math.min(5000, state.throughput.ops + Math.round((Math.random() - 0.5) * 140))
-    );
-    state.throughput.queue = Math.max(
-      1,
-      state.throughput.queue + Math.round((Math.random() - 0.3) * 6)
-    );
+    const targetLayers = [
+      // L1 Token – síla tokenu ~ TVL
+      tvlNorm,
+      // L2 Liquidity – závislá na TVL + queue (čím vyšší queue, tím horší)
+      clamp(tvlNorm - state.throughput.queue / 300, 0.15, 1),
+      // L3 Yield – přímo z výnosu
+      yieldNorm,
+      // L4 Risk – vyšší stress, vyšší risk
+      riskBase,
+      // L5 FinTech – spíš stabilní, ale klesá při velkém stresu
+      clamp(0.8 - state.stress * 0.4, 0.25, 0.9),
+      // L6 Core – jádro systému, reaguje na DB integrity a sync
+      clamp((state.db.integrity / 100) * 0.6 + state.chain.sync * 0.4, 0.3, 1),
+      // L7 Analytics – roste s daty (writes) a throughputem
+      clamp(
+        0.3 + (state.db.writes / 600) * 0.3 + (state.throughput.through / 900) * 0.4,
+        0.25,
+        1
+      )
+    ];
 
-    // Random logs
-    if (Math.random() < 0.2) {
+    state.layers = state.layers.map((v, i) => lerp(v, targetLayers[i], 0.08));
+  }
+
+  /* ========== TICK ========== */
+
+  function tick() {
+    computeDerived();
+    updateDynamics();
+
+    // náhodné „události“
+    if (Math.random() < 0.12) {
       const ev = [
-        'AI decision made (sim)',
-        'Pool rebalanced (sim)',
-        'Multisig signature received',
-        'DB checkpoint created',
         'RPC latency spike detected',
+        'DB checkpoint created',
         'Telemetry snapshot saved',
-        'Manual override performed',
-        'Emergency brake checked (sim)'
+        'Manual override verified (sim)',
+        'Liquidity micro-rebalance scheduled',
+        'Engine self-diagnostic passed',
+        'AI risk model recalibrated'
       ];
       pushLog(ev[Math.floor(Math.random() * ev.length)]);
     }
@@ -312,7 +466,8 @@
     render();
   }
 
-  // INTERACTIONS
+  /* ========== INTERAKCE (TLAČÍTKA) ========== */
+
   function bindInteractions() {
     const toggleAI = $('#toggleAI');
     const btnManual = $('#btnManual');
@@ -332,22 +487,36 @@
     const scaleDown = $('#scaleDown');
     const clearLogs = $('#clearLogs');
     const exportLogs = $('#exportLogs');
+    const openAiLog = $('#openAiLog');
 
     if (toggleAI) {
       toggleAI.addEventListener('click', (e) => {
         e.preventDefault();
-        state.aiOn = !state.aiOn;
-        if (!state.aiOn) state.manual = true;
-        pushLog(state.aiOn ? 'AI enabled by admin' : 'AI disabled - manual mode');
+        state.ai.on = !state.ai.on;
+        if (!state.ai.on) state.manual.active = true;
+        pushLog(state.ai.on ? 'AI enabled by admin' : 'AI disabled — manual mode');
         render();
+      });
+    }
+
+    if (openAiLog) {
+      openAiLog.addEventListener('click', (e) => {
+        e.preventDefault();
+        pushLog('AI Log opened (demo)');
+        alert('AI LOG DEMO – události jsou v Event Logu.');
       });
     }
 
     if (btnManual) {
       btnManual.addEventListener('click', (e) => {
         e.preventDefault();
-        state.manual = !state.manual;
-        pushLog(state.manual ? 'Manual mode activated' : 'Manual mode deactivated');
+        state.manual.active = !state.manual.active;
+        if (!state.manual.active && !state.ai.on) {
+          // když vypneš manual a AI je OFF → zůstává OFF
+          pushLog('Manual mode deactivated, AI remains OFF');
+        } else {
+          pushLog(state.manual.active ? 'Manual mode activated' : 'Manual mode deactivated');
+        }
         render();
       });
     }
@@ -361,12 +530,12 @@
           pushLog('Brake cancelled');
           return;
         }
-        state.brake = true;
-        state.manual = true;
+        state.manual.brake = true;
+        state.manual.active = true;
+        state.ai.on = false;
         state.layers = state.layers.map(() => 0.02);
-        state.aiRuntime = 0.02;
-        state.aiOn = false;
-        pushLog('EMERGENCY BRAKE activated - safe mode');
+        state.ai.runtime = 0.02;
+        pushLog('EMERGENCY BRAKE activated — safe mode');
         render();
       });
     }
@@ -374,7 +543,7 @@
     if (btnSafe) {
       btnSafe.addEventListener('click', (e) => {
         e.preventDefault();
-        state.brake = false;
+        state.manual.brake = false;
         pushLog('Safe mode toggled');
         render();
       });
@@ -383,9 +552,9 @@
     if (runRebalance) {
       runRebalance.addEventListener('click', (e) => {
         e.preventDefault();
-        state.pool.change = Math.min(0.12, state.pool.change + 0.01);
-        state.pool.tvl += Math.round(12000 + Math.random() * 8000);
-        pushLog('Rebalance executed (sim)');
+        state.pool.change = clamp(state.pool.change + 0.01, -0.05, 0.14);
+        state.pool.tvl += Math.round(18000 + Math.random() * 12000);
+        pushLog('Pool rebalance executed (demo)');
         render();
       });
     }
@@ -393,16 +562,16 @@
     if (viewPools) {
       viewPools.addEventListener('click', (e) => {
         e.preventDefault();
-        pushLog('Pools viewed (sim)');
-        alert('Pools view (demo)');
+        pushLog('Pools view opened (demo)');
+        alert('Pools view (demo) – v ostré verzi zde budou konkrétní pooly.');
       });
     }
 
     if (dbReindex) {
       dbReindex.addEventListener('click', (e) => {
         e.preventDefault();
-        state.db.latency += 5;
-        pushLog('Reindex triggered (sim)');
+        state.db.latency += 8;
+        pushLog('DB reindex triggered (demo)');
         render();
       });
     }
@@ -410,24 +579,24 @@
     if (exportAudit) {
       exportAudit.addEventListener('click', (e) => {
         e.preventDefault();
-        pushLog('Audit export requested');
-        alert('Audit export (demo)');
+        pushLog('Audit export requested (demo)');
+        alert('Audit export (demo) – v ostrém režimu stáhneš auditní log.');
       });
     }
 
     if (openMs) {
       openMs.addEventListener('click', (e) => {
         e.preventDefault();
-        pushLog('Multi-sig opened (sim)');
-        alert('Multi-sig (demo)');
+        pushLog('Multi-sig panel opened (demo)');
+        alert('Multi-sig (demo) – v ostré verzi zde budou konkrétní trezory.');
       });
     }
 
     if (downloadAudit) {
       downloadAudit.addEventListener('click', (e) => {
         e.preventDefault();
-        pushLog('Audit downloaded (sim)');
-        alert('Audit (demo)');
+        pushLog('Multi-sig audit downloaded (demo)');
+        alert('Multi-sig audit (demo).');
       });
     }
 
@@ -435,7 +604,7 @@
       refreshChain.addEventListener('click', (e) => {
         e.preventDefault();
         state.chain.block += 1;
-        pushLog('Chain refreshed (sim)');
+        pushLog('Chain state refreshed (demo)');
         render();
       });
     }
@@ -443,16 +612,16 @@
     if (openExplorer) {
       openExplorer.addEventListener('click', (e) => {
         e.preventDefault();
-        pushLog('Explorer opened (sim)');
-        alert('Explorer (demo)');
+        pushLog('Explorer opened (demo)');
+        alert('Explorer (demo) – v ostré verzi link na skutečný block explorer.');
       });
     }
 
     if (engineSim) {
       engineSim.addEventListener('click', (e) => {
         e.preventDefault();
-        state.layers = state.layers.map((v) => Math.min(1, v + 0.05));
-        pushLog('Engine simulation step');
+        state.layers = state.layers.map((v) => clamp(v + 0.04, 0, 1));
+        pushLog('Engine simulation pulse');
         render();
       });
     }
@@ -461,7 +630,7 @@
       engineReset.addEventListener('click', (e) => {
         e.preventDefault();
         state.layers = [0.88, 0.68, 0.81, 0.92, 0.56, 0.61, 0.82];
-        pushLog('Engine reset');
+        pushLog('Engine reset to baseline');
         render();
       });
     }
@@ -469,8 +638,8 @@
     if (scaleUp) {
       scaleUp.addEventListener('click', (e) => {
         e.preventDefault();
-        state.throughput.ops += 200;
-        pushLog('Scale up requested');
+        state.throughput.ops += 260;
+        pushLog('Cluster scale-up requested');
         render();
       });
     }
@@ -478,8 +647,8 @@
     if (scaleDown) {
       scaleDown.addEventListener('click', (e) => {
         e.preventDefault();
-        state.throughput.ops = Math.max(200, state.throughput.ops - 200);
-        pushLog('Scale down requested');
+        state.throughput.ops = Math.max(200, state.throughput.ops - 260);
+        pushLog('Cluster scale-down requested');
         render();
       });
     }
@@ -506,18 +675,17 @@
         a.click();
         a.remove();
         URL.revokeObjectURL(url);
-        pushLog('Logs exported');
+        pushLog('Logs exported (demo)');
       });
     }
 
-    // Rozbalování boxů přes 01–09
+    // Otevírání boxů 01–09 přes čísla
     $$('.card-index').forEach((pill) => {
       pill.addEventListener('click', () => {
         const card = pill.closest('.card');
+        if (!card) return;
         const open = card.classList.contains('expanded');
-
         $$('.card.expanded').forEach((c) => c.classList.remove('expanded'));
-
         if (!open) {
           card.classList.add('expanded');
           card.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -532,7 +700,7 @@
       }
     });
 
-    // Hover efekt na karty
+    // Hover efekty karet
     $$('.card').forEach((c) => {
       c.addEventListener('mouseenter', () => {
         c.style.boxShadow = '0 30px 80px rgba(2,6,23,0.95)';
@@ -541,25 +709,41 @@
         c.style.boxShadow = '0 18px 40px rgba(2,6,23,0.7)';
       });
     });
+
+    // Klávesové zkratky
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'm' && btnManual) btnManual.click();
+      if (e.key === 'a' && toggleAI) toggleAI.click();
+      if (e.key === 'b' && btnBrake) btnBrake.click();
+    });
   }
 
-  // INIT
-  function initChipCore() {
-    pushLog('AYAS-7 admin initialized');
-    pushLog('Telemetry link established (demo)');
-    pushLog('Simulations active');
+  /* ========== INIT ========== */
 
+  function init() {
+    mapDom();
     bindInteractions();
+
+    pushLog('AYAS-7 Chip Core (E1) initialized');
+    pushLog('Telemetry link established (demo)');
+    pushLog('Intelligent simulation loop active');
+
+    computeDerived();
     render();
-    setInterval(tick, 280);
+
+    setInterval(tick, 320); // trochu pomalejší, „dospělejší“ pohyb
   }
 
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initChipCore);
+    document.addEventListener('DOMContentLoaded', init);
   } else {
-    initChipCore();
+    init();
   }
 
-  // Expose pro debug
-  window.AYAS7ChipCore = { state, render, tick, pushLog };
+  // Debug hook — můžeš si hrát v konzoli
+  window.AYAS7ChipCore = {
+    state,
+    tick,
+    render
+  };
 })();
