@@ -23,7 +23,7 @@ html, #msg_body {
  <title>AYAS-7 – Výkon & výnos motoru</title>
  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
- 
+ <!-- Chart.js pro grafy -->
  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
  <style>
@@ -553,7 +553,6 @@ html, #msg_body {
 </head>
 <body>
 
- 
  <header class="topbar">
    <div class="topbar-inner">
 
@@ -589,7 +588,6 @@ html, #msg_body {
    </div>
  </header>
 
- 
  <main>
    <section class="page-wrap">
      <div class="page-header">
@@ -604,9 +602,8 @@ html, #msg_body {
        </p>
      </div>
 
-     
      <div class="top-grid">
-       
+
        <article class="card">
          <div class="card-header">
            <div class="card-title">Celkový výkon – USDt.z &amp; GUSD</div>
@@ -624,7 +621,6 @@ html, #msg_body {
          </div>
        </article>
 
-       
        <aside class="card">
          <div class="card-header">
            <div class="card-title">Klíčové metriky výkonu</div>
@@ -634,7 +630,7 @@ html, #msg_body {
            </div>
          </div>
          <p class="card-text">
-           Rychlý přehled toho, jak motor pracuje s kapitálem členů. Hodnoty jsou ilustrativní – pro
+           Rychlý přehled toho, jak motor pracuje s kapitálem členů. Hodnoty jsou illustrativní – pro
            audit lze napojit na databázi <b>members_data</b> a <b>members_rewards</b>.
          </p>
 
@@ -667,10 +663,8 @@ html, #msg_body {
        </aside>
      </div>
 
-     
      <div class="mid-grid">
 
-       
        <article class="card">
          <div class="card-header">
            <div class="card-title">Výnos podle vrstev AYAS-7</div>
@@ -688,7 +682,6 @@ html, #msg_body {
          </div>
        </article>
 
-       
        <article class="card">
          <div class="card-header">
            <div class="card-title">Tok výnosu → WW-KEY</div>
@@ -719,7 +712,6 @@ html, #msg_body {
          </p>
        </article>
 
-       
        <article class="card">
          <div class="card-header">
            <div class="card-title">Stabilita &amp; rizikový profil</div>
@@ -752,7 +744,6 @@ html, #msg_body {
 
      </div>
 
-     
      <div class="info-panel">
 
        <div>
@@ -796,28 +787,48 @@ html, #msg_body {
    © 2025 Win-Win Družstvo · AYAS-7 Engine · Výkon &amp; výnos motoru
  </footer>
 
+ <!-- CHIP CORE – sdílený mozek (globální AYASCore) -->
+ <script src="assets/chip-core.js"></script>
+
+ <!-- PERFORMANCE GRAFY + LIVE NAPOJENÍ -->
  <script>
-   // Hlavní performance graf – USDt.z vs GUSD
-   const perfCtx = document.getElementById('perfMainChart').getContext('2d');
-   new Chart(perfCtx, {
-     type: 'line',
+ document.addEventListener("DOMContentLoaded", () => {
+   console.log("📊 Performance dashboard init");
+
+   const perfCanvas   = document.getElementById("perfMainChart");
+   const layersCanvas = document.getElementById("layersChart");
+
+   if (!perfCanvas || !layersCanvas || typeof Chart === "undefined") {
+     console.warn("⚠ Performance: canvas nebo Chart.js není dostupný");
+     return;
+   }
+
+   // ZÁKLADNÍ (MODEL) DATA – slouží jako základ a pro fallback
+   const baseUsd = [10000, 10080, 10160, 10240, 10350, 10440, 10560, 10680, 10820, 10960, 11120, 11300];
+   const baseGusd = [10000, 10045, 10090, 10140, 10190, 10240, 10300, 10360, 10420, 10480, 10540, 10600];
+   const baseLayers = [5.2, 5.8, 5.4, 4.3, 5.0, 6.1, 4.7];
+
+   // 1) LINE GRAF – USDt.z vs GUSD
+   const perfCtx = perfCanvas.getContext("2d");
+   const perfChart = new Chart(perfCtx, {
+     type: "line",
      data: {
-       labels: ['M1','M2','M3','M4','M5','M6','M7','M8','M9','M10','M11','M12'],
+       labels: ["M1","M2","M3","M4","M5","M6","M7","M8","M9","M10","M11","M12"],
        datasets: [
          {
-           label: 'USDt.z',
-           data: [10000, 10080, 10160, 10240, 10350, 10440, 10560, 10680, 10820, 10960, 11120, 11300],
-           borderColor: '#4fa3ff',
-           backgroundColor: 'rgba(79,163,255,0.12)',
+           label: "USDt.z",
+           data: baseUsd.slice(),
+           borderColor: "#4fa3ff",
+           backgroundColor: "rgba(79,163,255,0.12)",
            tension: 0.35,
            fill: true,
            pointRadius: 0
          },
          {
-           label: 'GUSD',
-           data: [10000, 10045, 10090, 10140, 10190, 10240, 10300, 10360, 10420, 10480, 10540, 10600],
-           borderColor: '#22c55e',
-           backgroundColor: 'rgba(34,197,94,0.10)',
+           label: "GUSD",
+           data: baseGusd.slice(),
+           borderColor: "#22c55e",
+           backgroundColor: "rgba(34,197,94,0.10)",
            tension: 0.35,
            fill: true,
            pointRadius: 0
@@ -830,47 +841,47 @@ html, #msg_body {
        plugins: {
          legend: {
            labels: {
-             font: { family: 'Segoe UI', size: 11 },
-             color: '#e5e7eb'
+             font: { family: "Segoe UI", size: 11 },
+             color: "#e5e7eb"
            }
          }
        },
        scales: {
          x: {
-           grid: { color: 'rgba(30,64,175,0.35)' },
+           grid: { color: "rgba(30,64,175,0.35)" },
            ticks: {
-             font: { family: 'Segoe UI', size: 11 },
-             color: '#9ca3af'
+             font: { family: "Segoe UI", size: 11 },
+             color: "#9ca3af"
            }
          },
          y: {
-           grid: { color: 'rgba(30,64,175,0.35)' },
+           grid: { color: "rgba(30,64,175,0.35)" },
            ticks: {
-             font: { family: 'Segoe UI', size: 11 },
-             color: '#9ca3af',
-             callback: v => v.toLocaleString('cs-CZ') + ' €'
+             font: { family: "Segoe UI", size: 11 },
+             color: "#9ca3af",
+             callback: v => v.toLocaleString("cs-CZ") + " €"
            }
          }
        }
      }
    });
 
-   // Sloupcový graf – vrstvy 1–7
-   const layersCtx = document.getElementById('layersChart').getContext('2d');
-   new Chart(layersCtx, {
-     type: 'bar',
+   // 2) BAR GRAF – vrstvy 1–7
+   const layersCtx = layersCanvas.getContext("2d");
+   const layersChart = new Chart(layersCtx, {
+     type: "bar",
      data: {
-       labels: ['L1','L2','L3','L4','L5','L6','L7'],
+       labels: ["L1","L2","L3","L4","L5","L6","L7"],
        datasets: [{
-         data: [5.2, 5.8, 5.4, 4.3, 5.0, 6.1, 4.7],
+         data: baseLayers.slice(),
          backgroundColor: [
-           '#22c55e',
-           '#4fa3ff',
-           '#8b5cf6',
-           '#facc15',
-           '#f97316',
-           '#0ea5e9',
-           '#6b7280'
+           "#22c55e",
+           "#4fa3ff",
+           "#8b5cf6",
+           "#facc15",
+           "#f97316",
+           "#0ea5e9",
+           "#6b7280"
          ]
        }]
      },
@@ -882,90 +893,90 @@ html, #msg_body {
          x: {
            grid: { display: false },
            ticks: {
-             font: { family: 'Segoe UI', size: 11 },
-             color: '#9ca3af'
+             font: { family: "Segoe UI", size: 11 },
+             color: "#9ca3af"
            }
          },
          y: {
            beginAtZero: true,
-           grid: { color: 'rgba(30,64,175,0.35)' },
+           grid: { color: "rgba(30,64,175,0.35)" },
            ticks: {
-             font: { family: 'Segoe UI', size: 11 },
-             color: '#9ca3af',
-             callback: v => v + ' %'
+             font: { family: "Segoe UI", size: 11 },
+             color: "#9ca3af",
+             callback: v => v + " %"
            },
            suggestedMax: 7
          }
        }
      }
    });
+
+   // --- Funkce pro napojení na AYASCore ---
+   function applyCoreState(state) {
+     if (!state) return;
+
+     const y = typeof state.yieldRate === "number" ? state.yieldRate : 0;
+     const n = typeof state.nodesOnline === "number" ? state.nodesOnline : 0;
+
+     // Faktor podle aktuálního výkonu – jemně modulujeme základ
+     const factorUsd  = 1 + (y - 50) / 900;   // kolem 1.0, max ~ + / - několik procent
+     const factorGusd = 1 + (y - 40) / 1200;
+
+     perfChart.data.datasets[0].data = baseUsd.map(v => Math.round(v * factorUsd));
+     perfChart.data.datasets[1].data = baseGusd.map(v => Math.round(v * factorGusd));
+     perfChart.update("none");
+
+     // Layer výnos – mapování na yield + nodes (jen vizuální demo)
+     let l1 = y / 18;
+     let l2 = y / 19;
+     let l3 = y / 20;
+     let l4 = 7 - y / 40;
+     let l5 = 3 + n * 0.08;
+     let l6 = 4 + n * 0.05;
+     let l7 = 4 + y / 28;
+
+     const layerVals = [l1,l2,l3,l4,l5,l6,l7].map(v => {
+       v = Number.isFinite(v) ? v : 0;
+       if (v < 0) v = 0;
+       if (v > 9) v = 9;
+       return Number(v.toFixed(2));
+     });
+
+     layersChart.data.datasets[0].data = layerVals;
+     layersChart.update("none");
+   }
+
+   // --- Napojení na CHIP CORE nebo fallback ---
+   if (window.AYASCore && typeof AYASCore.subscribe === "function") {
+     console.log("🧠 AYASCore detected – live performance mode ON");
+     try {
+       AYASCore.setMode && AYASCore.setMode("ACTIVE");
+     } catch(e){}
+
+     AYASCore.subscribe(applyCoreState);
+   } else {
+     console.warn("⚠ AYASCore not found – running local demo animation");
+
+     setInterval(() => {
+       // Lehké dýchání křivky
+       const jitter = () => 1 + (Math.random() - 0.5) * 0.02;
+
+       perfChart.data.datasets.forEach(ds => {
+         ds.data = ds.data.map(v => Math.round(v * jitter()));
+       });
+       perfChart.update("none");
+
+       // Sloupce – drobné pohyby
+       layersChart.data.datasets[0].data =
+         layersChart.data.datasets[0].data.map(v => {
+           const nv = v + (Math.random() - 0.5) * 0.15;
+           return Math.max(0, Math.min(9, Number(nv.toFixed(2))));
+         });
+       layersChart.update("none");
+     }, 1600);
+   }
+ });
  </script>
-<!-- 🔥 AYAS-7 Performance Engine Runtime -->
-<script>
-document.addEventListener("DOMContentLoaded",()=>{
-
-    console.log("📈 Performance Engine INIT");
-
-    // KONTROLA CORE
-    const coreLive = (window.AYASCore && typeof AYASCore.subscribe==="function");
-    if(coreLive) console.log("🧠 CORE CONNECTED → LIVE DATA MODE");
-    else console.warn("⚠ CORE NOT FOUND → fallback simulation running");
-
-    /* 🧠 LIVE DATA – pokud existuje AYAS-7 Core */
-    if(coreLive){
-
-      AYASCore.subscribe(state=>{
-        updateMainChart(state);
-        updateLayers(state);
-      });
-
-    } else {
-
-      /* 🟡  SIMULACE – bez chip-core.js */
-      setInterval(()=>{
-        perfMainChart.data.datasets[0].data.push(
-          perfMainChart.data.datasets[0].data.slice(-1)[0] + (Math.random()*25)
-        );
-        perfMainChart.data.datasets[1].data.push(
-          perfMainChart.data.datasets[1].data.slice(-1)[0] + (Math.random()*10)
-        );
-        if(perfMainChart.data.datasets[0].data.length>12){
-          perfMainChart.data.datasets[0].data.shift();
-          perfMainChart.data.datasets[1].data.shift();
-        }
-        perfMainChart.update("none");
-      },1000);
-
-      setInterval(()=>{
-        let L = layersChart.data.datasets[0].data;
-        let i = Math.floor(Math.random()*7);
-        L[i] = Math.max(2,Math.min(7, L[i] + (Math.random()-0.5)));
-        layersChart.update("none");
-      },900);
-    }
-
-    /* 🔥 FUNKCE – UPDATE grafů na základě CORE state */
-    function updateMainChart(state){
-      if(!state.history?.length) return;
-      const h = state.history.slice(-12);
-      perfMainChart.data.datasets[0].data = h.map(p=>10000+(p.yieldRate*120));   // USDt.z
-      perfMainChart.data.datasets[1].data = h.map(p=>10000+(p.nodesOnline*80));  // GUSD
-      perfMainChart.update("none");
-    }
-    function updateLayers(state){
-      const L = layersChart.data.datasets[0].data;
-      L[0]=state.yieldRate*0.08;
-      L[1]=state.yieldRate*0.09;
-      L[2]=state.yieldRate*0.07;
-      L[3]=5-(state.yieldRate*0.03);
-      L[4]=state.nodesOnline*0.5;
-      L[5]=state.nodesOnline*0.35;
-      L[6]=state.yieldRate*0.06;
-      layersChart.update("none");
-    }
-
-});
-</script>
 
 </body>
 </html>
