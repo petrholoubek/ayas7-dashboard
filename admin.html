@@ -587,6 +587,24 @@ body {
 .led-fill:hover{
     filter:drop-shadow(0 0 12px rgba(79,163,255,1));
 }
+/* ===========================
+   PREMIUM EXPANDED CARD GLOW
+   =========================== */
+
+.card.expanded{
+    grid-column:1 / -1;
+    max-height:860px;
+    transform:scale(1.018);
+    background:rgba(0,25,55,0.65);
+    border:1px solid rgba(0,255,215,0.45);
+    box-shadow:
+      0 0 12px rgba(0,255,215,0.55),
+      0 0 28px rgba(0,255,215,0.35),
+      inset 0 0 22px rgba(0,255,255,0.18);
+    backdrop-filter:blur(6px) brightness(1.08);
+    transition:.35s ease;
+    z-index:12;
+}
 
 </style>
 </head>
