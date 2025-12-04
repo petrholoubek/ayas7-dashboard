@@ -764,6 +764,39 @@ setInterval(()=>{
     }
 },600); // každých 0.6 sekundy
 </script>
+<script>
+// === ADMIN -> CHIP-CORE CONTROL === //
+function coreCommand(change){
+    if(window.AYAS7ChipCore){
+        Object.assign(AYAS7ChipCore.state, change);
+        if(AYAS7ChipCore.render) AYAS7ChipCore.render();
+    }
+}
+
+// AI Toggle
+document.getElementById("toggleAI")?.addEventListener("click",()=>{
+    coreCommand({ aiOn: !AYAS7ChipCore.state.aiOn });
+});
+
+// Manual Mode
+document.getElementById("btnManual")?.addEventListener("click",()=>{
+    coreCommand({ manual: !AYAS7ChipCore.state.manual });
+});
+
+// Brake
+document.getElementById("btnBrake")?.addEventListener("click",()=>{
+    coreCommand({ brake: true, aiOn:false });
+});
+
+// Pool push
+document.getElementById("runRebalance")?.addEventListener("click",()=>{
+    coreCommand({ pool:{ 
+        ...AYAS7ChipCore.state.pool,
+        tvl: AYAS7ChipCore.state.pool.tvl + 20000,
+        change: AYAS7ChipCore.state.pool.change + 0.01
+    }});
+});
+</script>
 
 </body>
 </html>
