@@ -7,6 +7,33 @@
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
+/* ======== 🔥 FINAL PREMIUM EXPAND — bez zmenšení boxů 🔥 ======== */
+
+.cards{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:18px;
+}
+
+.card{
+  height:auto;
+  max-height:none;
+  overflow:hidden;
+  transition:.35s ease;
+  position:relative;
+  z-index:1;
+}
+
+.card.expanded{
+  grid-column:1 / -1;
+  max-height:860px;
+  transform:scale(1.015);
+  border:1px solid rgba(0,255,200,.35);
+  box-shadow:0 0 40px rgba(0,255,200,.35);
+  z-index:10;
+  backdrop-filter:blur(6px);
+}
+
 :root{
   --max-w:1200px;
   --bg-1:#0b1220;
@@ -870,5 +897,41 @@ main{
  <footer style="text-align:center;margin-top:18px;color:var(--muted)">© 2025 Win-Win Družstvo · AYAS-7 Engine · Demo</footer>
 </main>
 <script src="assets/chip-core.js"></script>
+<script>
+// ========== EXPAND OVLÁDÁNÍ 01–09 (ČISTÉ & BEZPORUCHOVÉ) ==========
+
+document.querySelectorAll(".card-index").forEach(pill=>{
+  pill.addEventListener("click",()=>{
+
+    const panel = pill.closest(".card");
+    const isOpen = panel.classList.contains("expanded");
+
+    document.querySelectorAll(".card.expanded")
+            .forEach(c=>c.classList.remove("expanded"));
+
+    if(!isOpen){
+      panel.classList.add("expanded");
+      setTimeout(()=>panel.scrollIntoView({behavior:"smooth",block:"center"}),150);
+    }
+  });
+});
+
+// ------- zavírání mimo kartu -------
+document.addEventListener("click",e=>{
+  if(!e.target.closest(".card") && !e.target.classList.contains("card-index")){
+    document.querySelectorAll(".card.expanded")
+            .forEach(c=>c.classList.remove("expanded"));
+  }
+});
+
+// ------- ESC close -------
+document.addEventListener("keydown",e=>{
+  if(e.key==="Escape"){
+    document.querySelectorAll(".card.expanded")
+            .forEach(c=>c.classList.remove("expanded"));
+  }
+});
+</script>
+
 </body>
 </html>
