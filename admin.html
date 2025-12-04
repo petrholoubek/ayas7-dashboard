@@ -825,8 +825,37 @@ document.getElementById("toggleAI").addEventListener("click", () => {
 </script>
 
 <script src="assets/chip-core.js"></script>
-</body>
-</html>
+<script>
+document.addEventListener("DOMContentLoaded", ()=>{
+
+    /* AI ON/OFF kontrola */
+    const btnAI = document.getElementById("toggleAI");
+    const ledAI = document.getElementById("ledAi");
+    const labelAI = document.getElementById("toggleAiLabel");
+
+    if(btnAI){
+        btnAI.addEventListener("click", ()=>{
+
+            state.aiOn = !state.aiOn;
+
+            // změna LED 🟢 🔴
+            ledAI.style.background = state.aiOn?"#00ff7f":"#ff4444";
+            ledAI.style.boxShadow = state.aiOn
+                ? "0 0 12px rgba(0,255,120,0.9)"
+                : "0 0 12px rgba(255,70,70,0.9)";
+
+            // přepnutí textu
+            labelAI.textContent = state.aiOn?"AI ON":"AI OFF";
+
+            // záznam logu
+            pushLog("AI mode changed → "+(state.aiOn?"ON":"OFF"));
+
+            render();
+        });
+    }
+
+});
+</script>
 
 </body>
 </html>
