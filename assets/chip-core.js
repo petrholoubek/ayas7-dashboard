@@ -1,394 +1,210 @@
-// assets/chip-core.js
-// AYAS-7 – simulovaný centrální mozek pro GitHub prezentace
+// AYAS-7 CENTRAL SIM ENGINE (BROWSER VERSION)
 //
-// - běží v prohlížeči (žádný Node, žádný server)
-// - drží sdílený stav (lze sdílet přes localStorage mezi taby)
-// - simuluje ENGAGE / ACTIVE / SAFE / ERROR stavy
-// - generuje logy, auto-recovery, soft/hard alarmy
-// - poskytuje UI hinty pro glow efekty: state.ui.glowClass, glowLevel, dangerLevel, pulse
+// - Realtime stavová logika
+// - Live yield / nodes / alarm / auto-recovery
+// - Historie pro grafy (dashboard.html)
+// - Glow/alert UI indikátory
+// - Napojení přes window.AYASCore.subscribe()
 //
-// Aktuálně ho admin.html jen načítá, ale nepoužívá.
-// V dalším kroku na něj napojíme admin + dashboard přes import { Core }.
-//
-// Poznámka: psáno jako ES modul, ale funguje i prostě jako globální objekt AYASCore,
-// pokud se načte přes <script src="assets/chip-core.js"></script>.
+// 🚀 Tento soubor NEpoužívá export/module.
+// 🚀 Funkční přímo v prohlížeči přes <script src="assets/chip-core.js">
 
 (function(global){
-  const STORAGE_KEY = 'AYAS7_CORE_STATE_V2';
+  const STORAGE_KEY = 'AYAS7_CORE_STATE_V3';
 
   class AyasCoreSim {
-    constructor() {
+    constructor(){
       this.listeners = new Set();
+      this._tick = 0;
       this._lastRecoveryToken = null;
-      this._tickCount = 0;
-
-      this.state = this._loadInitialState();
-      this._startTicker();
+      this.state = this._load() || this._defaults();
+      this._start();
     }
 
-    // ------------- PUBLIC API ------------- //
+    // ---------------- PUBLIC API ---------------- //
 
-    subscribe(fn) {
+    subscribe(fn){
       this.listeners.add(fn);
-      fn(this.state);
-      return () => this.listeners.delete(fn);
+      fn(this.state); // první push ihned
+      return ()=> this.listeners.delete(fn);
     }
 
-    getState() {
-      return this.state;
+    getState(){ return this.state; }
+
+    setMode(mode){
+      if(!['IDLE','ACTIVE','SAFE','ERROR'].includes(mode)) return;
+      this._update({ systemMode:mode }, `MODE → ${mode}`);
     }
 
-    // základní režimy – pro budoucí napojení UI
-    setMode(mode) {
-      if (!['IDLE','ACTIVE','SAFE','ERROR'].includes(mode)) return;
-      this._updateState({ systemMode: mode }, `MODE → ${mode}`);
+    adjustYield(delta){
+      let y = this.state.yieldRate + delta;
+      if(y<0) y=0; if(y>100) y=100;
+      this._update({yieldRate:Math.round(y*10)/10}, `YIELD ${delta>=0?'+':''}${delta}`);
     }
 
-    adjustYield(delta) {
-      const cur = Number(this.state.yieldRate) || 0;
-      let next = cur + delta;
-      if (next < 0) next = 0;
-      if (next > 100) next = 100;
-      this._updateState({ yieldRate: Math.round(next * 10) / 10 }, `YIELD ${delta >= 0 ? '+' : ''}${delta}`);
+    adjustNodes(delta){
+      let n = this.state.nodesOnline + delta;
+      if(n<0) n=0; if(n>50) n=50;
+      this._update({nodesOnline:n}, `NODES ${delta>=0?'+':''}${delta}`);
     }
 
-    adjustNodes(delta) {
-      const cur = Number(this.state.nodesOnline) || 0;
-      let next = cur + delta;
-      if (next < 0) next = 0;
-      if (next > 50) next = 50;
-      this._updateState({ nodesOnline: next }, `NODES ${delta >= 0 ? '+' : ''}${delta}`);
-    }
+    addLog(m){ this._log(m); this._save(); this._notify(); }
+    clearLogs(){ this.state.logs=[]; this._save(); this._notify(); }
 
-    addLog(msg) {
-      this._log(msg);
-      this._saveState();
+    resetState(){
+      this._log("🔁 RESET STATE");
+      this.state=this._defaults();
+      this._save();
       this._notify();
     }
 
-    clearLogs() {
-      this.state.logs = [];
-      this._saveState();
-      this._notify();
-    }
-
-    resetState() {
-      this._log('🔁 RESET STATE → DEFAULT');
-      this.state = this._defaultState();
-      this._saveState();
-      this._notify();
-    }
-
-    // scénáře pro “showtime” v prezentacích
-    triggerScenario(name) {
-      switch (name) {
-        case 'spike':
-          this._log('⚡ SCENARIO: Performance Spike');
-          this._updateState({
-            systemMode: 'ACTIVE',
-            yieldRate: 90,
-            nodesOnline: Math.max(this.state.nodesOnline, 5)
-          }, null);
+    triggerScenario(name){
+      switch(name){
+        case "spike":
+          this._log("⚡ SCENARIO: Spike");
+          this._update({systemMode:"ACTIVE",yieldRate:90,nodesOnline:5});
           break;
-        case 'drain':
-          this._log('🕳 SCENARIO: Drain & Recovery');
-          this._updateState({
-            systemMode: 'ACTIVE',
-            yieldRate: 15,
-            nodesOnline: 2
-          }, null);
+        case "drain":
+          this._log("🕳 SCENARIO: Drain");
+          this._update({systemMode:"ACTIVE",yieldRate:15,nodesOnline:2});
           break;
-        case 'errorStorm':
-          this._log('🌩 SCENARIO: Error Storm');
-          this._updateState({
-            systemMode: 'ERROR',
-            yieldRate: 30
-          }, null);
+        case "errorStorm":
+          this._log("🌩 ERROR STORM");
+          this._update({systemMode:"ERROR",yieldRate:30});
           break;
-        case 'stableSafe':
-          this._log('🛡 SCENARIO: Stabilní SAFE');
-          this._updateState({
-            systemMode: 'SAFE',
-            yieldRate: 25,
-            nodesOnline: 4
-          }, null);
+        case "stableSafe":
+          this._log("🛡 SAFE MODE");
+          this._update({systemMode:"SAFE",yieldRate:25,nodesOnline:4});
           break;
         default:
-          this._log(`ℹ Unknown scenario: ${name}`);
+          this._log("ℹ Unknown scenario "+name);
       }
     }
 
-    // ------------- INTERNAL: STATE / STORAGE ------------- //
+    // ---------------- INTERNAL ---------------- //
 
-    _defaultState() {
-      const now = new Date();
-      return {
-        systemMode: 'IDLE',      // IDLE | ACTIVE | SAFE | ERROR
-        yieldRate: 0,
-        nodesOnline: 0,
-        alarm: 'OK',
-        alarmDetail: '',
-        logs: [],
-        lastUpdate: now.toISOString(),
-        uptimeSeconds: 0,
+    _defaults(){
+      return{
+        systemMode:"IDLE",
+        yieldRate:0,
+        nodesOnline:0,
+        alarm:"OK",
+        alarmDetail:"",
+        uptimeSeconds:0,
+        lastUpdate:new Date().toISOString(),
 
-        // historie pro grafy / dashboard
-        history: [],   // { t, yieldRate, nodesOnline, mode, alarm }
+        logs:[],
+        history:[], // {t,yieldRate,nodesOnline,mode,alarm}
 
-        // UI hinty pro glow / efekty
-        ui: {
-          glowClass: 'glow-idle',
-          glowLevel: 0.2,
-          dangerLevel: 0,
-          pulse: false
+        ui:{
+          glowClass:"glow-idle",
+          glowLevel:0.2,
+          dangerLevel:0,
+          pulse:false
         }
       };
     }
 
-    _loadInitialState() {
-      try {
-        const raw = localStorage.getItem(STORAGE_KEY);
-        if (raw) {
-          const parsed = JSON.parse(raw);
-          return {
-            ...this._defaultState(),
-            ...parsed
-          };
-        }
-      } catch (err) {
-        console.warn('AYAS-7: Nelze načíst stav, používám default:', err);
-      }
-      return this._defaultState();
+    _log(txt){
+      const l=`[${new Date().toLocaleTimeString()}] ${txt}`;
+      this.state.logs.unshift(l);
+      if(this.state.logs.length>300) this.state.logs.pop();
     }
 
-    _saveState() {
-      try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(this.state));
-      } catch (err) {
-        console.warn('AYAS-7: Chyba ukládání stavu do localStorage', err);
-      }
-    }
+    _update(patch,log=null){
+      if(log) this._log(log);
 
-    _log(line) {
-      const entry = `[${new Date().toLocaleTimeString()}] ${line}`;
-      this.state.logs.unshift(entry);
-      if (this.state.logs.length > 300) this.state.logs.pop();
-    }
-
-    _updateState(patch, logText = null) {
-      if (logText) this._log(logText);
-
-      this.state = {
-        ...this.state,
-        ...patch,
-        lastUpdate: new Date().toISOString()
-      };
-
-      this._checkAlarmsAndRecovery();
-      this._recalcUiHints();
-      this._saveState();
+      this.state={...this.state,...patch,lastUpdate:new Date().toISOString()};
+      this._alarms();
+      this._ui();
+      this._save();
       this._notify();
     }
 
-    _notify() {
-      for (const fn of this.listeners) {
-        try {
-          fn(this.state);
-        } catch (err) {
-          console.error('AYAS-7: Listener error:', err);
-        }
+    _notify(){
+      for(const fn of this.listeners){
+        try{ fn(this.state); } catch(e){ console.error(e); }
       }
     }
 
-    // ------------- ALARMS / AUTO-RECOVERY ------------- //
+    _alarms(){
+      let alarm="OK", detail="";
 
-    _checkAlarmsAndRecovery() {
-      let alarm = 'OK';
-      let detail = '';
+      if(this.state.systemMode==="ERROR"){
+        alarm="⚠ SYSTEM ERROR"; detail="Critical fault";
+        this._log("⚠ ERROR TRIGGERED");
 
-      if (this.state.systemMode === 'ERROR') {
-        alarm = '⚠ SYSTEM ERROR';
-        detail = 'Critical fault reported by core.';
-        this._log('⚠ ALARM TRIGGERED: SYSTEM ERROR');
-
-        const token = Symbol('RECOVERY');
-        this._lastRecoveryToken = token;
-
-        // Auto recovery po 7 s
-        setTimeout(() => {
-          if (this._lastRecoveryToken !== token) return;
-          if (this.state.systemMode === 'ERROR') {
-            this._log('🔄 AUTO-RECOVERY → SAFE MODE');
-            this.state.systemMode = 'SAFE';
-            alarm = 'OK';
-            detail = 'Recovered from ERROR to SAFE.';
-            this.state.lastUpdate = new Date().toISOString();
-            this._recalcUiHints();
-            this._saveState();
-            this._notify();
+        const tok=Symbol(); this._lastRecoveryToken=tok;
+        setTimeout(()=>{
+          if(this._lastRecoveryToken!==tok) return;
+          if(this.state.systemMode==="ERROR"){
+            this._log("🔄 AUTO-RECOVERY → SAFE");
+            this.state.systemMode="SAFE";
+            this._ui(); this._save(); this._notify();
           }
-        }, 7000);
-      } else {
-        this._lastRecoveryToken = null;
+        },7000);
 
-        // měkké (soft) alarmy
-        if (this.state.systemMode === 'ACTIVE' && this.state.yieldRate >= 80) {
-          alarm = '⚠ HIGH LOAD';
-          detail = 'Performance near maximum capacity.';
-          this._log('⚠ SOFT ALARM: HIGH LOAD');
+      }else{
+        this._lastRecoveryToken=null;
+        if(this.state.systemMode==="ACTIVE" && this.state.yieldRate>=80){
+          alarm="⚠ HIGH LOAD";
+          detail="High capacity load";
         }
-
-        if (this.state.systemMode === 'ACTIVE' && this.state.nodesOnline === 0) {
-          alarm = '⚠ NO NODES ONLINE';
-          detail = 'Active mode with zero nodes – check network.';
-          this._log('⚠ SOFT ALARM: ACTIVE MODE WITHOUT NODES');
+        if(this.state.systemMode==="ACTIVE" && this.state.nodesOnline===0){
+          alarm="⚠ ACTIVE w/ 0 nodes";
+          detail="No workers online";
         }
       }
 
-      this.state.alarm = alarm;
-      this.state.alarmDetail = detail;
+      this.state.alarm=alarm;
+      this.state.alarmDetail=detail;
     }
 
-    // ------------- UI GLOW HINTS ------------- //
+    _ui(){
+      const {systemMode,yieldRate,alarm}=this.state;
+      let glow=0.2, danger=0, pulse=false, css="glow-idle";
 
-    _recalcUiHints() {
-      let glowLevel = 0.2;
-      let dangerLevel = 0;
-      let pulse = false;
-      let glowClass = 'glow-idle';
-
-      const mode = this.state.systemMode;
-      const alarm = this.state.alarm;
-      const yieldRate = this.state.yieldRate;
-
-      if (mode === 'IDLE') {
-        glowLevel = 0.15;
-        dangerLevel = 0;
-        glowClass = 'glow-idle';
-      } else if (mode === 'SAFE') {
-        glowLevel = 0.3;
-        dangerLevel = 0.1;
-        glowClass = 'glow-safe';
-      } else if (mode === 'ACTIVE') {
-        glowLevel = 0.6;
-        dangerLevel = 0.3;
-        glowClass = 'glow-active';
-        if (yieldRate > 70) {
-          glowLevel = 0.8;
-          dangerLevel = 0.6;
-          glowClass = 'glow-overload';
-          pulse = true;
-        }
-      } else if (mode === 'ERROR') {
-        glowLevel = 1.0;
-        dangerLevel = 1.0;
-        glowClass = 'glow-error';
-        pulse = true;
+      if(systemMode==="SAFE"){glow=.3;css="glow-safe";}
+      if(systemMode==="ACTIVE"){
+        glow=.6;danger=.3;css="glow-active";
+        if(yieldRate>70){glow=.8;danger=.6;css="glow-overload";pulse=true;}
       }
+      if(systemMode==="ERROR"){glow=1;danger=1;css="glow-error";pulse=true;}
+      if(alarm!=="OK"){danger=.7;pulse=true;}
 
-      if (alarm && alarm !== 'OK') {
-        dangerLevel = Math.max(dangerLevel, 0.7);
-        pulse = true;
-      }
-
-      this.state.ui = {
-        glowLevel,
-        dangerLevel,
-        pulse,
-        glowClass
-      };
+      this.state.ui={glowLevel:glow,dangerLevel:danger,pulse,glowClass:css};
     }
 
-    // ------------- TICKER / SIMULACE ------------- //
+    _load(){
+      try{ return JSON.parse(localStorage.getItem(STORAGE_KEY)); }
+      catch{return null;}
+    }
+    _save(){
+      try{ localStorage.setItem(STORAGE_KEY,JSON.stringify(this.state)); }
+      catch(e){}
+    }
 
-    _startTicker() {
-      setInterval(() => {
-        this._tickCount += 1;
-        this.state.uptimeSeconds += 1;
+    _start(){
+      setInterval(()=>{
+        this._tick++, this.state.uptimeSeconds++;
+        const now=new Date(), hist=[...this.state.history];
 
-        const now = new Date();
-        const patch = {};
-
-        // simulace výkonu při ACTIVE
-        if (this.state.systemMode === 'ACTIVE') {
-          const drift = (Math.random() - 0.5) * 1.8;
-          let newYield = this.state.yieldRate + drift;
-          if (newYield < 0) newYield = 0;
-          if (newYield > 100) newYield = 100;
-          patch.yieldRate = Math.round(newYield * 10) / 10;
-
-          // mikro události do logu
-          if (this._tickCount % 10 === 0) {
-            const micro = Math.random();
-            if (micro < 0.33) {
-              this._log('✅ Node heartbeat OK');
-            } else if (micro < 0.66) {
-              this._log('ℹ Telemetry packet processed');
-            } else {
-              this._log('ℹ Yield calibration sample stored');
-            }
-          }
+        if(this.state.systemMode==="ACTIVE"){
+          const drift=(Math.random()-0.5)*1.8;
+          let y=this.state.yieldRate+drift;
+          if(y<0)y=0;if(y>100)y=100;
+          this.state.yieldRate=Math.round(y*10)/10;
         }
 
-        // bod historie pro graf
-        const point = {
-          t: now.toISOString(),
-          yieldRate: this.state.yieldRate,
-          nodesOnline: this.state.nodesOnline,
-          mode: this.state.systemMode,
-          alarm: this.state.alarm
-        };
-        const hist = Array.isArray(this.state.history) ? [...this.state.history] : [];
-        hist.push(point);
-        if (hist.length > 300) hist.shift();
-        patch.history = hist;
+        hist.push({t:now.toISOString(),yieldRate:this.state.yieldRate,nodesOnline:this.state.nodesOnline,mode:this.state.systemMode,alarm:this.state.alarm});
+        if(hist.length>300) hist.shift();
 
-        this.state = {
-          ...this.state,
-          ...patch,
-          lastUpdate: now.toISOString()
-        };
-
-        this._checkAlarmsAndRecovery();
-        this._recalcUiHints();
-        this._saveState();
-        this._notify();
-      }, 1000); // takt 1s
+        this.state={...this.state,history:hist,lastUpdate:now.toISOString()};
+        this._alarms(); this._ui(); this._save(); this._notify();
+      },1000);
     }
   }
 
-  const coreInstance = new AyasCoreSim();
+  global.AYASCore = new AyasCoreSim();
 
-  const CoreAPI = {
-    subscribe: fn => coreInstance.subscribe(fn),
-    getState: () => coreInstance.getState(),
-    setMode: mode => coreInstance.setMode(mode),
-    adjustYield: delta => coreInstance.adjustYield(delta),
-    adjustNodes: delta => coreInstance.adjustNodes(delta),
-    addLog: msg => coreInstance.addLog(msg),
-    clearLogs: () => coreInstance.clearLogs(),
-    resetState: () => coreInstance.resetState(),
-    triggerScenario: name => coreInstance.triggerScenario(name)
-  };
-
-  // export buď jako ES modul (pokud importuješ) nebo jako globál
-  if (typeof global !== 'undefined') {
-    global.AYASCore = CoreAPI;
-  }
-
-  if (typeof export !== 'undefined' || typeof module !== 'undefined') {
-    // ochrana pro bundlery – když bys to někdy používal s module systemem
-    try {
-      // eslint-disable-next-line no-undef
-      module.exports = CoreAPI;
-    } catch(e){}
-  }
-
-  // podpora pro <script type="module"> import
-  if (typeof window !== 'undefined') {
-    try {
-      // nic neděláme, jen necháme možnost importu: import { Core } from './assets/chip-core.js';
-    } catch(e){}
-  }
-
-})(typeof window !== 'undefined' ? window : this);
+})(typeof window!=="undefined"?window:this);
