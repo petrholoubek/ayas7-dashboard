@@ -209,3 +209,59 @@ setInterval(tick,280);
 window.AYAS7=state;
 
 })(); // END SYSTEM
+/* =============================================================
+   🔘 INTERAKCE – AI / MANUAL / BRAKE (aktivace buttonů)
+============================================================= */
+function bindControls(){
+  
+  // AI toggle
+  const aiBtn = document.getElementById("toggleAI");
+  if(aiBtn){
+      aiBtn.addEventListener("click",()=>{
+          state.aiOn = !state.aiOn;
+          if(!state.aiOn){ state.manual = true; pushLog("AI OFF → Manual enforced"); }
+          else{ state.manual = false; pushLog("AI ONLINE stabilized"); }
+          render();
+      });
+  }
+
+  // MANUAL toggle
+  const manualBtn = document.getElementById("btnManual");
+  if(manualBtn){
+      manualBtn.addEventListener("click",()=>{
+          state.manual = !state.manual;
+          state.aiOn = !state.manual;
+          pushLog(state.manual ? "Manual control enabled" : "Manual released → AI resumes");
+          render();
+      });
+  }
+
+  // BRAKE
+  const brakeBtn = document.getElementById("btnBrake");
+  if(brakeBtn){
+      brakeBtn.addEventListener("click",()=>{
+          const ok = prompt("Napište: EMERGENCY");
+          if(ok!=="EMERGENCY"){ pushLog("Brake cancel"); return; }
+          state.brake=true;
+          state.aiOn=false;
+          state.manual=true;
+          pushLog("EMERGENCY BRAKE → SYSTEM HARD STOP");
+          render();
+      });
+  }
+
+  // SAFE RESET
+  const safeBtn = document.getElementById("btnSafe");
+  if(safeBtn){
+      safeBtn.addEventListener("click",()=>{
+          state.brake=false;
+          state.aiOn=true;
+          state.manual=false;
+          pushLog("System SAFE restored");
+          render();
+      });
+  }
+}
+
+bindControls(); // 🔥 aktivace tlačítek
+
