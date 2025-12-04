@@ -787,196 +787,123 @@ html, #msg_body {
    © 2025 Win-Win Družstvo · AYAS-7 Engine · Výkon &amp; výnos motoru
  </footer>
 
- <!-- CHIP CORE – sdílený mozek (globální AYASCore) -->
- <script src="assets/chip-core.js"></script>
-
- <!-- PERFORMANCE GRAFY + LIVE NAPOJENÍ -->
  <script>
- document.addEventListener("DOMContentLoaded", () => {
-   console.log("📊 Performance dashboard init");
+// ================== PERFORMANCE CHART – USDt.z & GUSD ==================
+const perfCtx = document.getElementById('perfMainChart').getContext('2d');
+const perfMainChart = new Chart(perfCtx, {
+  type: 'line',
+  data: {
+    labels: ['M1','M2','M3','M4','M5','M6','M7','M8','M9','M10','M11','M12'],
+    datasets: [
+      {
+        label: 'USDt.z',
+        data: [10000,10080,10160,10240,10350,10440,10560,10680,10820,10960,11120,11300],
+        borderColor: '#4fa3ff',
+        backgroundColor: 'rgba(79,163,255,0.12)',
+        tension: .35,
+        fill: true,
+        pointRadius: 0
+      },
+      {
+        label: 'GUSD',
+        data: [10000,10045,10090,10140,10190,10240,10300,10360,10420,10480,10540,10600],
+        borderColor: '#22c55e',
+        backgroundColor: 'rgba(34,197,94,0.10)',
+        tension: .35,
+        fill: true,
+        pointRadius: 0
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        labels: {
+          font: { family:'Segoe UI', size:11 }, color:'#e5e7eb'
+        }
+      }
+    },
+    scales: {
+      x:{ grid:{color:'rgba(30,64,175,0.35)'},
+        ticks:{font:{family:'Segoe UI',size:11},color:'#9ca3af'} },
+      y:{ grid:{color:'rgba(30,64,175,0.35)'},
+        ticks:{font:{family:'Segoe UI',size:11},color:'#9ca3af',
+          callback:v=>v.toLocaleString('cs-CZ')+' €'} }
+    }
+  }
+});
+window.perfMainChart = perfMainChart;
 
-   const perfCanvas   = document.getElementById("perfMainChart");
-   const layersCanvas = document.getElementById("layersChart");
 
-   if (!perfCanvas || !layersCanvas || typeof Chart === "undefined") {
-     console.warn("⚠ Performance: canvas nebo Chart.js není dostupný");
-     return;
-   }
+// ================== BAR – VRSTVY MOTORU 1–7 ==================
+const layersCtx = document.getElementById('layersChart').getContext('2d');
+const layersChart = new Chart(layersCtx, {
+  type:'bar',
+  data:{
+    labels:['L1','L2','L3','L4','L5','L6','L7'],
+    datasets:[{
+      data:[5.2,5.8,5.4,4.3,5.0,6.1,4.7],
+      backgroundColor:[
+        '#22c55e','#4fa3ff','#8b5cf6','#facc15',
+        '#f97316','#0ea5e9','#6b7280'
+      ]
+    }]
+  },
+  options:{
+    responsive:true,
+    maintainAspectRatio:false,
+    plugins:{legend:{display:false}},
+    scales:{
+      x:{ grid:{display:false},
+        ticks:{font:{family:'Segoe UI',size:11},color:'#9ca3af'}},
+      y:{ beginAtZero:true, suggestedMax:7,
+        grid:{color:'rgba(30,64,175,0.35)'},
+        ticks:{font:{family:'Segoe UI',size:11},color:'#9ca3af',
+        callback:v=>v+' %'}}
+    }
+  }
+});
+window.layersChart = layersChart;
 
-   // ZÁKLADNÍ (MODEL) DATA – slouží jako základ a pro fallback
-   const baseUsd = [10000, 10080, 10160, 10240, 10350, 10440, 10560, 10680, 10820, 10960, 11120, 11300];
-   const baseGusd = [10000, 10045, 10090, 10140, 10190, 10240, 10300, 10360, 10420, 10480, 10540, 10600];
-   const baseLayers = [5.2, 5.8, 5.4, 4.3, 5.0, 6.1, 4.7];
 
-   // 1) LINE GRAF – USDt.z vs GUSD
-   const perfCtx = perfCanvas.getContext("2d");
-   const perfChart = new Chart(perfCtx, {
-     type: "line",
-     data: {
-       labels: ["M1","M2","M3","M4","M5","M6","M7","M8","M9","M10","M11","M12"],
-       datasets: [
-         {
-           label: "USDt.z",
-           data: baseUsd.slice(),
-           borderColor: "#4fa3ff",
-           backgroundColor: "rgba(79,163,255,0.12)",
-           tension: 0.35,
-           fill: true,
-           pointRadius: 0
-         },
-         {
-           label: "GUSD",
-           data: baseGusd.slice(),
-           borderColor: "#22c55e",
-           backgroundColor: "rgba(34,197,94,0.10)",
-           tension: 0.35,
-           fill: true,
-           pointRadius: 0
-         }
-       ]
-     },
-     options: {
-       responsive: true,
-       maintainAspectRatio: false,
-       plugins: {
-         legend: {
-           labels: {
-             font: { family: "Segoe UI", size: 11 },
-             color: "#e5e7eb"
-           }
-         }
-       },
-       scales: {
-         x: {
-           grid: { color: "rgba(30,64,175,0.35)" },
-           ticks: {
-             font: { family: "Segoe UI", size: 11 },
-             color: "#9ca3af"
-           }
-         },
-         y: {
-           grid: { color: "rgba(30,64,175,0.35)" },
-           ticks: {
-             font: { family: "Segoe UI", size: 11 },
-             color: "#9ca3af",
-             callback: v => v.toLocaleString("cs-CZ") + " €"
-           }
-         }
-       }
-     }
-   });
+// ================== ANIMAČNÍ ENGINE – SKUTEČNÝ POHYB 🔥 ==================
+function animateValue(from,to,duration,onUpdate){
+  const start=performance.now();
+  function frame(time){
+    const p=Math.min((time-start)/duration,1);
+    const eased=from+(to-from)*(0.5-0.5*Math.cos(Math.PI*p));
+    onUpdate(eased);
+    if(p<1) requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+}
 
-   // 2) BAR GRAF – vrstvy 1–7
-   const layersCtx = layersCanvas.getContext("2d");
-   const layersChart = new Chart(layersCtx, {
-     type: "bar",
-     data: {
-       labels: ["L1","L2","L3","L4","L5","L6","L7"],
-       datasets: [{
-         data: baseLayers.slice(),
-         backgroundColor: [
-           "#22c55e",
-           "#4fa3ff",
-           "#8b5cf6",
-           "#facc15",
-           "#f97316",
-           "#0ea5e9",
-           "#6b7280"
-         ]
-       }]
-     },
-     options: {
-       responsive: true,
-       maintainAspectRatio: false,
-       plugins: { legend: { display: false } },
-       scales: {
-         x: {
-           grid: { display: false },
-           ticks: {
-             font: { family: "Segoe UI", size: 11 },
-             color: "#9ca3af"
-           }
-         },
-         y: {
-           beginAtZero: true,
-           grid: { color: "rgba(30,64,175,0.35)" },
-           ticks: {
-             font: { family: "Segoe UI", size: 11 },
-             color: "#9ca3af",
-             callback: v => v + " %"
-           },
-           suggestedMax: 7
-         }
-       }
-     }
-   });
+setInterval(()=>{
+  if(!window.perfMainChart || !window.layersChart) return;
 
-   // --- Funkce pro napojení na AYASCore ---
-   function applyCoreState(state) {
-     if (!state) return;
+  // ===== Hlavní křivka – jemný živý růst/dýchání =====
+  const d=perfMainChart.data.datasets[0].data;
+  const last=d[d.length-1]||11200;
+  const target=last+(Math.random()*180-90);
 
-     const y = typeof state.yieldRate === "number" ? state.yieldRate : 0;
-     const n = typeof state.nodesOnline === "number" ? state.nodesOnline : 0;
+  animateValue(last,target,900,(v)=>{
+    d.push(v);
+    if(d.length>22) d.shift();
+    perfMainChart.update('none');
+  });
 
-     // Faktor podle aktuálního výkonu – jemně modulujeme základ
-     const factorUsd  = 1 + (y - 50) / 900;   // kolem 1.0, max ~ + / - několik procent
-     const factorGusd = 1 + (y - 40) / 1200;
+  // ===== Bar graf – mikropohyby vrstev =====
+  layersChart.data.datasets[0].data=
+    layersChart.data.datasets[0].data.map(v=>v+(Math.random()-0.5)*0.05);
 
-     perfChart.data.datasets[0].data = baseUsd.map(v => Math.round(v * factorUsd));
-     perfChart.data.datasets[1].data = baseGusd.map(v => Math.round(v * factorGusd));
-     perfChart.update("none");
+  layersChart.update('none');
 
-     // Layer výnos – mapování na yield + nodes (jen vizuální demo)
-     let l1 = y / 18;
-     let l2 = y / 19;
-     let l3 = y / 20;
-     let l4 = 7 - y / 40;
-     let l5 = 3 + n * 0.08;
-     let l6 = 4 + n * 0.05;
-     let l7 = 4 + y / 28;
-
-     const layerVals = [l1,l2,l3,l4,l5,l6,l7].map(v => {
-       v = Number.isFinite(v) ? v : 0;
-       if (v < 0) v = 0;
-       if (v > 9) v = 9;
-       return Number(v.toFixed(2));
-     });
-
-     layersChart.data.datasets[0].data = layerVals;
-     layersChart.update("none");
-   }
-
-   // --- Napojení na CHIP CORE nebo fallback ---
-   if (window.AYASCore && typeof AYASCore.subscribe === "function") {
-     console.log("🧠 AYASCore detected – live performance mode ON");
-     try {
-       AYASCore.setMode && AYASCore.setMode("ACTIVE");
-     } catch(e){}
-
-     AYASCore.subscribe(applyCoreState);
-   } else {
-     console.warn("⚠ AYASCore not found – running local demo animation");
-
-     setInterval(() => {
-       // Lehké dýchání křivky
-       const jitter = () => 1 + (Math.random() - 0.5) * 0.02;
-
-       perfChart.data.datasets.forEach(ds => {
-         ds.data = ds.data.map(v => Math.round(v * jitter()));
-       });
-       perfChart.update("none");
-
-       // Sloupce – drobné pohyby
-       layersChart.data.datasets[0].data =
-         layersChart.data.datasets[0].data.map(v => {
-           const nv = v + (Math.random() - 0.5) * 0.15;
-           return Math.max(0, Math.min(9, Number(nv.toFixed(2))));
-         });
-       layersChart.update("none");
-     }, 1600);
-   }
- });
- </script>
+},1300);
+</script>
+</body>
+</html>
 
 </body>
 </html>
