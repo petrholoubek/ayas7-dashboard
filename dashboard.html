@@ -884,7 +884,35 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
 });
+/* -------------------  BIND NA CHIP CORE ------------------- */
+
+if(window.AYASCore){
+    console.log("🧠 CORE DETECTED – LIVE MODE 🔥");
+
+    AYASCore.subscribe(state=>{
+        updateCharts(state);
+        updateLED(state);
+    });
+
+    // 🔥 Aktivace engine až po detekci – bezpečné
+    AYASCore.setMode("ACTIVE");   // zapnutí motoru
+    AYASCore.adjustNodes(5);      // počet uzlů → LED ožijí
+    AYASCore.adjustYield(45);     // výnos → graf se rozběhne
+
+} else {
+
+    console.warn("⚠ CORE NOT FOUND – fallback activated.");
+
+    setInterval(()=>{
+        const d = chartUsdtz.data.datasets[0].data;
+        d.push((d[d.length-1]||5.4)+(Math.random()-0.5)*.15);
+        if(d.length>32) d.shift();
+        chartUsdtz.update("none");
+    },1300);
+}
+
 </script>
 <script src="assets/chip-core.js"></script>
+
 </body>
 </html>
