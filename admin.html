@@ -744,5 +744,26 @@ main{
 
 <!-- CHIP CORE SCRIPT -->
 <script src="assets/chip-core.js"></script>
+<script>
+// === CHIP-CORE → ADMIN SYNC LINK === //
+
+setInterval(()=>{
+    if(window.AYAS7ChipCore){
+        const s = AYAS7ChipCore.state;
+
+        // převod stavu jádra do UI velína
+        state.aiRuntime      = s.aiRuntime;
+        state.aiInterventions= s.aiInterventions;
+        state.pool           = s.pool;
+        state.db             = s.db;
+        state.chain          = s.chain;
+        state.layers         = s.layers;
+        state.throughput     = s.throughput;
+
+        render(); // přemaluje dashboard
+    }
+},600); // každých 0.6 sekundy
+</script>
+
 </body>
 </html>
