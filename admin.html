@@ -824,38 +824,55 @@ document.getElementById("toggleAI").addEventListener("click", () => {
 });
 </script>
 
-<script src="assets/chip-core.js"></script>
 <script>
-document.addEventListener("DOMContentLoaded", ()=>{
+document.addEventListener("DOMContentLoaded",()=>{
 
-    /* AI ON/OFF kontrola */
-    const btnAI = document.getElementById("toggleAI");
-    const ledAI = document.getElementById("ledAi");
-    const labelAI = document.getElementById("toggleAiLabel");
+/* === AI toggle === */
+if(document.getElementById("toggleAI")){
+   document.getElementById("toggleAI").addEventListener("click",()=>{
+        state.aiOn = !state.aiOn;
+        if(!state.aiOn) state.manual = true;
+        pushLog(state.aiOn ? "AI ACTIVATED" : "AI DISABLED → MANUAL MODE");
+        render();
+   });
+}
 
-    if(btnAI){
-        btnAI.addEventListener("click", ()=>{
+/* === MANUAL MODE === */
+if(document.getElementById("btnManual")){
+   document.getElementById("btnManual").addEventListener("click",()=>{
+       state.manual = !state.manual;
+       pushLog(state.manual ? "MANUAL MODE ON" : "MANUAL MODE OFF");
+       render();
+   });
+}
 
-            state.aiOn = !state.aiOn;
-
-            // změna LED 🟢 🔴
-            ledAI.style.background = state.aiOn?"#00ff7f":"#ff4444";
-            ledAI.style.boxShadow = state.aiOn
-                ? "0 0 12px rgba(0,255,120,0.9)"
-                : "0 0 12px rgba(255,70,70,0.9)";
-
-            // přepnutí textu
-            labelAI.textContent = state.aiOn?"AI ON":"AI OFF";
-
-            // záznam logu
-            pushLog("AI mode changed → "+(state.aiOn?"ON":"OFF"));
-
+/* === EMERGENCY BRAKE === */
+if(document.getElementById("btnBrake")){
+   document.getElementById("btnBrake").addEventListener("click",()=>{
+        const ok = prompt("Type EMERGENCY to confirm:");
+        if(ok==="EMERGENCY"){
+            state.brake=true;
+            state.aiOn=false;
+            state.manual=true;
+            pushLog("🚨 EMERGENCY BRAKE ACTIVATED");
             render();
-        });
-    }
+        }
+   });
+}
+
+/* === SAFE MODE RESET === */
+if(document.getElementById("btnSafe")){
+    document.getElementById("btnSafe").addEventListener("click",()=>{
+        state.brake=false;
+        pushLog("SAFE MODE RESTORED");
+        render();
+    });
+}
 
 });
 </script>
-
+<!-- CHIP CORE ENGINE -->
+<script src="assets/chip-core.js"></script>
 </body>
 </html>
+
