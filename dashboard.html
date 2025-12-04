@@ -871,7 +871,45 @@
      });
    }
  </script>
-<!-- CHIP CORE SCRIPT -->
+</main>
+
+<!-- 1) Chip Core Engine (hlava systému) -->
 <script src="assets/chip-core.js"></script>
+
+<!-- 2) Dashboard vizualizační layer – čte data z jádra -->
+<script>
+document.addEventListener("DOMContentLoaded",()=>{
+
+    setInterval(()=>{
+        if(!window.AYAS7ChipCore) return;
+
+        let S = AYAS7ChipCore.state;
+
+        update("#db_latency", S.db.latency+" ms");
+        update("#pool_yield", S.pool.yield.toFixed(1)+" %");
+        update("#rpc_latency", S.chain.rpc.toFixed(2)+" s");
+        update("#ops", S.throughput.ops);
+        update("#queue", S.throughput.queue);
+        update("#sync", Math.round(S.chain.sync*100)+" %");
+
+        pulse("#chip_heartbeat");
+    },450);
+
+    function update(sel,val){
+        const el=document.querySelector(sel);
+        if(el) el.textContent=val;
+    }
+    function pulse(sel){
+        let el=document.querySelector(sel);
+        if(!el) return;
+        el.style.opacity="0.5";
+        setTimeout(()=>el.style.opacity="1",200);
+    }
+});
+</script>
+
+</body>
+</html>
+
 </body>
 </html>
