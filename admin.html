@@ -5,6 +5,7 @@
 <title>AYAS-7 – Admin Control Room</title>
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
 :root{
   --max-w:1200px;
@@ -13,6 +14,15 @@
   --accent-blue:#4fa3ff;
   --accent-green:#22c55e;
   --accent-green-soft:#4ade80;
+  --accent-yellow:#f6d365;
+  --accent-red:#ff6b6b;
+  --accent-cyan:#7de2ff;
+  --accent-mint:#9adabf;
+  --accent-peach:#ffd6a5;
+  --accent-sky:#7de2ff;
+  --accent-indigo:#7fb7ff;
+  --accent-violet:#a6b8ff;
+  --accent-ice:#b9d7ff;
   --muted:#9ca3af;
   --text:#e5e7eb;
   --card-bg: linear-gradient(circle at 10% 10%, rgba(255,255,255,0.012), rgba(255,255,255,0.01));
@@ -22,21 +32,20 @@
   --led-radius:999px;
   --pad:18px;
   --dot:7px;
-  --chip-glow: rgba(79,163,255,0.18);
+  --chip-glow: rgba(79,163,255,0.08);
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html,#msg_body {
   height:100%;
   font-family:"Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  background:
-    radial-gradient(circle at 40% 0%, #0f172a 0%, #020617 55%, #000 100%);
+  background:radial-gradient(circle at 40% 0%, #0f172a 0%, #020617 55%, #000 100%);
   color:var(--text);
-  -webkit-font-smoothing:antialiased;
+  -webkit-font-smoothing:antialiased
 }
 a{color:inherit;text-decoration:none}
 small{color:var(--muted);font-size:12px}
 
-/* Remove site menu – standalone velín */
+/* Remove site menu: standalone velín */
 header.topbar{display:none}
 
 /* Main container */
@@ -44,34 +53,26 @@ main{
   max-width:var(--max-w);
   margin:22px auto;
   padding:0 var(--pad) 60px;
-  position:relative;
+  position:relative
 }
-
-/* ambient bez "čáry" – jemné rozptýlené světlo */
 .ambient{
   position:absolute;
   left:50%;
-  top:2vh;
+  top:6vh;
   transform:translateX(-50%);
-  width:1100px;
-  height:500px;
-  background:
-    radial-gradient(circle at 50% 0%, rgba(79,163,255,0.32) 0%, transparent 52%),
-    radial-gradient(circle at 10% 40%, rgba(56,189,248,0.28) 0%, transparent 55%),
-    radial-gradient(circle at 90% 35%, rgba(34,197,94,0.25) 0%, transparent 55%);
-  filter:blur(68px);
-  opacity:.5;
-  pointer-events:none;
-  z-index:0;
+  width:900px;
+  height:420px;
+  filter:blur(110px);
+  opacity:.13;
+  background:radial-gradient(circle,#4fa3ff 0%,transparent 55%);
+  z-index:0
 }
 
-/* Header text */
 .hdr{
   display:flex;
   flex-direction:column;
   gap:8px;
-  z-index:2;
-  position:relative;
+  z-index:2
 }
 .kicker{
   font-size:12px;
@@ -80,88 +81,32 @@ main{
   letter-spacing:.12em;
   display:flex;
   align-items:center;
-  gap:8px;
+  gap:8px
 }
 .kicker .dot{
   width:8px;
   height:8px;
   border-radius:999px;
   background:var(--accent-green);
-  box-shadow:0 0 8px rgba(34,197,94,0.9);
+  box-shadow:0 0 8px rgba(34,197,94,0.9)
 }
 .title{font-size:26px;font-weight:800}
-.subtitle{color:var(--muted);max-width:1000px;line-height:1.5;font-size:13px}
+.subtitle{color:var(--muted);max-width:1000px;line-height:1.5}
 
-/* Panel identity – AYAS-7 / Control Room / Chip LED */
-.panel-id{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin:10px 0 4px 0;
-  position:relative;
-  z-index:2;
-}
-.panel-chip{
-  width:130px;
-  height:44px;
-  border-radius:10px;
-  background:linear-gradient(180deg,rgba(255,255,255,0.03),rgba(15,23,42,0.8));
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  border:1px solid rgba(148,163,184,0.28);
-  box-shadow:
-    0 8px 30px var(--chip-glow),
-    0 0 16px rgba(15,23,42,0.9);
-  font-weight:900;
-  color:#e0f2fe;
-  letter-spacing:.10em;
-  font-size:18px;
-}
-.panel-center-label{
-  font-size:14px;
-  letter-spacing:.18em;
-  color:var(--muted);
-  text-transform:uppercase;
-  font-weight:700;
-}
-.panel-chip-led-wrap{
-  display:flex;
-  align-items:center;
-  gap:10px;
-}
-#chipLed{
-  width:11px;
-  height:11px;
-  border-radius:50%;
-  background:#22ff77;
-  box-shadow:
-    0 0 8px #22ff77,
-    0 0 16px #22ff77,
-    0 0 26px rgba(34,255,119,0.9);
-}
-.panel-sub{
-  font-size:12px;
-  color:var(--muted);
-  text-align:center;
-  margin-bottom:10px;
-}
-
-/* Grid 3x3 */
+/* GRID 3×3 */
 .cards{
   display:grid;
   grid-template-columns:repeat(3,1fr);
   gap:18px;
-  margin-top:8px;
-  z-index:2;
-  position:relative;
+  margin-top:16px;
+  z-index:2
 }
 
-/* Base card */
+/* ZÁKLADNÍ KARTA */
 .card{
   background:var(--card-bg);
   border-radius:14px;
-  padding:16px 14px 14px 14px;
+  padding:14px;
   border:1px solid var(--border);
   box-shadow:0 18px 40px rgba(2,6,23,0.7);
   min-height:170px;
@@ -170,50 +115,107 @@ main{
   display:flex;
   flex-direction:column;
   justify-content:space-between;
-  transition:
-    transform .18s ease,
-    box-shadow .18s ease,
-    border-color .18s ease,
-    background .18s ease;
+  transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease;
 }
 .card:hover{
-  transform:translateY(-5px);
-  box-shadow:0 26px 72px rgba(2,6,23,0.9);
-  border-color:rgba(79,163,255,0.15);
+  transform:translateY(-6px);
+  box-shadow:0 28px 80px rgba(2,6,23,0.9);
+  border-color:rgba(79,163,255,0.18);
 }
 
-/* card-badge */
+/* INDEX „01“ VPRAVO NAHOŘE – KLIKACÍ */
+.card-index{
+  position:absolute;
+  top:10px;
+  right:10px;
+  padding:8px 10px;
+  border-radius:12px;
+  border:1px solid rgba(148,163,184,0.5);
+  background:radial-gradient(circle at 0% 0%,rgba(255,255,255,0.12),rgba(15,23,42,0.96));
+  display:flex;
+  flex-direction:column;
+  align-items:flex-end;
+  gap:2px;
+  cursor:pointer;
+  box-shadow:0 10px 30px rgba(15,23,42,0.95);
+  transition:transform .14s ease, box-shadow .14s ease, border-color .14s ease, background .14s ease;
+}
+.card-index span.num{
+  font-size:15px;
+  font-weight:900;
+  letter-spacing:.16em;
+}
+.card-index span.label{
+  font-size:9px;
+  color:var(--muted);
+  letter-spacing:.16em;
+}
+
+/* Barvy indexů podle typu boxu */
+.card-index[data-accent="blue"] .num{color:var(--accent-blue);}
+.card-index[data-accent="amber"] .num{color:var(--accent-yellow);}
+.card-index[data-accent="cyan"] .num{color:var(--accent-cyan);}
+.card-index[data-accent="mint"] .num{color:var(--accent-mint);}
+.card-index[data-accent="peach"] .num{color:var(--accent-peach);}
+.card-index[data-accent="sky"] .num{color:var(--accent-sky);}
+.card-index[data-accent="indigo"] .num{color:var(--accent-indigo);}
+.card-index[data-accent="violet"] .num{color:var(--accent-violet);}
+.card-index[data-accent="ice"] .num{color:var(--accent-ice);}
+
+.card-index:hover{
+  transform:translateY(-1px) scale(1.03);
+  box-shadow:0 16px 42px rgba(0,0,0,1);
+  border-color:rgba(248,250,252,0.9);
+  background:radial-gradient(circle at 0% 0%,rgba(255,255,255,0.18),rgba(15,23,42,0.96));
+}
+
+/* Rozbalená karta přes celou šířku */
+.card.expanded{
+  grid-column:span 3;
+  background:linear-gradient(180deg, rgba(255,255,255,0.018), rgba(10,16,35,0.96));
+}
+
+/* badge nahoře v kartě */
 .card .badge{
   display:inline-flex;
   align-items:center;
   gap:8px;
   padding:6px 10px;
   border-radius:999px;
-  background:rgba(11,17,32,0.72);
-  border:1px solid rgba(148,163,184,0.2);
+  background:rgba(11,17,32,0.45);
+  border:1px solid rgba(148,163,184,0.16);
   font-size:12px;
-  color:var(--muted);
+  color:var(--muted)
 }
-.card h3{margin-top:8px;font-size:15px;color:var(--text);letter-spacing:.02em}
-.card p.sub{color:var(--muted);font-size:13px;min-height:36px}
+.card h3{
+  margin-top:8px;
+  font-size:15px;
+  color:var(--text);
+  letter-spacing:.02em
+}
+.card p.sub{
+  color:var(--muted);
+  font-size:13px;
+  min-height:36px
+}
 
-/* LED strip */
+/* LED pásky */
 .led-strip{
   height:var(--led-height);
   border-radius:var(--led-radius);
-  background:rgba(15,23,42,0.95);
+  background:rgba(255,255,255,0.02);
   overflow:hidden;
-  border:1px solid rgba(15,23,42,0.9);
+  border:1px solid rgba(255,255,255,0.02);
   position:relative;
   margin-top:10px;
-  box-shadow:inset 0 -6px 18px rgba(0,0,0,0.7);
+  box-shadow:inset 0 -6px 18px rgba(0,0,0,0.4);
 }
 .led-fill{
   height:100%;
   width:0%;
   border-radius:var(--led-radius);
   background:linear-gradient(90deg,var(--accent-blue),var(--accent-green-soft));
-  box-shadow:0 6px 24px rgba(79,163,255,0.08);
+  box-shadow:0 6px 24px rgba(79,163,255,0.12);
   transition:width .6s cubic-bezier(.2,.9,.3,1), box-shadow .2s, background .2s;
   will-change:width,box-shadow,background;
 }
@@ -221,7 +223,7 @@ main{
   height:6px;
   margin-top:6px;
   border-top:1px solid rgba(148,163,184,0.06);
-  opacity:0.9;
+  opacity:0.9
 }
 
 /* metrics */
@@ -229,7 +231,7 @@ main{
   display:flex;
   gap:10px;
   flex-wrap:wrap;
-  margin-top:10px;
+  margin-top:10px
 }
 .metric{
   background:rgba(255,255,255,0.01);
@@ -237,67 +239,82 @@ main{
   padding:8px 10px;
   border-radius:8px;
   min-width:110px;
-  text-align:left;
+  text-align:left
 }
-.metric h4{margin:0;font-size:14px;color:var(--text)}
-.metric p{margin:0;color:var(--muted);font-size:12px}
+.metric h4{
+  margin:0;
+  font-size:14px;
+  color:var(--text)
+}
+.metric p{
+  margin:0;
+  color:var(--muted);
+  font-size:12px
+}
 
-/* Links as buttons */
+/* odkazy / tlačítka */
 .links{
   display:flex;
   gap:8px;
   flex-wrap:wrap;
-  margin-top:12px;
+  margin-top:12px
 }
 .link{
   padding:8px 12px;
   border-radius:999px;
-  border:1px solid rgba(148,163,184,0.22);
-  background:rgba(11,17,32,0.8);
+  border:1px solid rgba(148,163,184,0.18);
+  background:radial-gradient(circle at 0% 0%,rgba(255,255,255,0.06),rgba(11,17,32,0.98));
   font-weight:700;
   cursor:pointer;
   display:inline-flex;
   align-items:center;
   gap:8px;
-  transition:
-    transform .12s,
-    background .12s,
-    box-shadow .12s,
-    border-color .12s;
+  transition:transform .12s, background .12s, box-shadow .12s, border-color .12s;
   font-size:12px;
 }
 .link:hover{
   transform:translateY(-3px);
-  background:rgba(17,24,39,1);
-  box-shadow:0 0 24px rgba(59,130,246,0.45);
-  border-color:rgba(96,165,250,0.7);
+  background:radial-gradient(circle at 0% 0%,rgba(255,255,255,0.16),rgba(15,23,42,1));
+  box-shadow:0 12px 32px rgba(15,23,42,0.95);
+  border-color:rgba(248,250,252,0.8);
 }
+
+/* malé led v tlačítku */
 .link .led{
   width:10px;
   height:10px;
   border-radius:50%;
-  box-shadow:0 0 10px rgba(0,0,0,0.8);
+  box-shadow:0 0 8px rgba(0,0,0,0.4)
 }
 
-/* multisig indicator */
+/* multisig tečky */
 .multisig{
   display:flex;
   align-items:center;
   gap:8px;
-  margin-top:8px;
+  margin-top:8px
 }
 .ms-light{
   width:12px;
   height:12px;
   border-radius:50%;
   box-shadow:0 0 10px rgba(0,0,0,0.4);
-  border:1px solid rgba(255,255,255,0.06);
+  border:1px solid rgba(255,255,255,0.04)
 }
-.ms-green{background:var(--accent-green);box-shadow:0 0 12px rgba(34,197,94,0.8)}
-.ms-yellow{background:#f6d365;box-shadow:0 0 12px rgba(246,211,77,0.8)}
-.ms-red{background:#ff6b6b;box-shadow:0 0 12px rgba(248,113,113,0.9)}
+.ms-green{
+  background:var(--accent-green);
+  box-shadow:0 0 12px rgba(34,197,94,0.6)
+}
+.ms-yellow{
+  background:#f6d365;
+  box-shadow:0 0 10px rgba(246,211,77,0.4)
+}
+.ms-red{
+  background:#ff6b6b;
+  box-shadow:0 0 10px rgba(255,107,107,0.4)
+}
 
-/* Log area */
+/* log area */
 .log{
   background:rgba(255,255,255,0.015);
   border-radius:8px;
@@ -305,1058 +322,953 @@ main{
   border:1px solid rgba(255,255,255,0.02);
   max-height:220px;
   overflow:auto;
-  margin-top:10px;
+  margin-top:10px
 }
 .log-item{
   padding:6px;
-  border-bottom:1px dashed rgba(255,255,255,0.04);
+  border-bottom:1px dashed rgba(255,255,255,0.02);
   color:var(--muted);
-  font-size:13px;
+  font-size:13px
 }
 
-/* === BOX INDEX & EXPAND === */
-.card-index{
-  position:absolute;
-  right:10px;
-  top:10px;
+/* panel identita (AYAS-7 / Control Room / Chip Core) */
+.panel-id{
   display:flex;
-  flex-direction:column;
-  align-items:flex-end;
-  gap:4px;
-  z-index:3;
+  align-items:center;
+  justify-content:space-between;
+  margin:10px 0 4px 0;
+  padding:4px 0;
 }
-.card-index-number{
-  min-width:34px;
-  padding:4px 8px;
-  border-radius:999px;
-  text-align:right;
-  font-size:11px;
-  letter-spacing:.22em;
-  font-weight:900;
-  color:#e0f2fe;
-  background:radial-gradient(circle at 0% 0%,rgba(56,189,248,0.35),transparent 60%);
-  text-shadow:
-    0 0 6px rgba(96,165,250,0.9),
-    0 0 12px rgba(56,189,248,0.8);
-  border:1px solid rgba(148,163,184,0.5);
-}
-
-/* expand button as three dots pod číslem */
-.expand-btn{
-  padding:3px 8px;
-  border-radius:999px;
-  border:1px solid rgba(148,163,184,0.3);
-  background:rgba(15,23,42,0.96);
-  cursor:pointer;
-  font-weight:700;
-  color:var(--muted);
-  font-size:11px;
+.panel-chip{
+  width:130px;
+  height:46px;
+  border-radius:10px;
+  background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));
   display:flex;
   align-items:center;
   justify-content:center;
-  box-shadow:0 0 14px rgba(15,23,42,0.9);
+  border:1px solid rgba(255,255,255,0.03);
+  box-shadow:0 10px 34px var(--chip-glow);
+  font-weight:900;
+  color:var(--text);
+  letter-spacing:.08em;
+  font-size:20px;
 }
-.expand-btn span{
-  letter-spacing:.3em;
-}
-.expand-btn:hover{
-  background:rgba(17,24,39,1);
-  color:#e5e7eb;
-  border-color:rgba(96,165,250,0.95);
-  box-shadow:0 0 22px rgba(59,130,246,0.9);
-}
-
-/* když je card expanded */
-.card.expanded{
-  grid-column:span 3;
-  background:linear-gradient(180deg,rgba(15,23,42,0.95),rgba(15,23,42,0.9));
-  box-shadow:0 30px 90px rgba(0,0,0,0.85);
+.panel-sub{
+  font-size:12px;
+  color:var(--muted)
 }
 
-/* Komunikační centrum */
-.comm-center{
-  margin-top:26px;
-  padding:14px 16px;
-  border-radius:16px;
-  border:1px solid rgba(148,163,184,0.4);
-  background:radial-gradient(circle at 0% 0%,rgba(56,189,248,0.18),rgba(15,23,42,0.98));
+/* spodní řádek: komunikace + manuál */
+.bottom-bar{
   display:flex;
-  justify-content:space-between;
-  align-items:flex-start;
-  gap:14px;
+  gap:18px;
+  margin-top:22px;
 }
-.comm-left-title{
-  font-size:13px;
-  letter-spacing:.18em;
-  text-transform:uppercase;
-  color:#bfdbfe;
-}
-.comm-contact{
-  margin-top:6px;
+.bottom-card{
+  flex:1;
+  padding:14px;
+  border-radius:14px;
+  border:1px solid rgba(148,163,184,0.18);
+  background:radial-gradient(circle at 10% 10%,rgba(255,255,255,0.02),rgba(15,23,42,0.96));
+  box-shadow:0 18px 40px rgba(2,6,23,0.7);
   font-size:13px;
   color:var(--muted);
 }
-.comm-tag{
+.bottom-card h4{
+  margin-bottom:6px;
+  font-size:14px;
+  color:var(--text);
+}
+.bottom-pill{
   display:inline-flex;
   align-items:center;
-  gap:6px;
-  margin-top:6px;
-  font-size:12px;
-  color:var(--muted);
-}
-.comm-led{
-  width:9px;
-  height:9px;
-  border-radius:50%;
-  background:#22ff77;
-  box-shadow:0 0 12px rgba(34,255,119,0.9);
-}
-.comm-actions{
-  display:flex;
   gap:8px;
-  flex-wrap:wrap;
-}
-.comm-btn{
-  padding:8px 12px;
+  padding:7px 11px;
   border-radius:999px;
-  border:1px solid rgba(191,219,254,0.8);
-  background:rgba(15,23,42,0.98);
+  border:1px solid rgba(148,163,184,0.18);
+  background:radial-gradient(circle at 0% 0%,rgba(255,255,255,0.06),rgba(11,17,32,0.98));
+  font-size:12px;
+  margin-top:6px;
   cursor:pointer;
-  font-size:12px;
-  font-weight:700;
-  display:inline-flex;
-  align-items:center;
-  gap:7px;
-  color:#dbeafe;
-  box-shadow:0 0 24px rgba(59,130,246,0.6);
+  transition:all .12s;
 }
-.comm-btn:hover{
-  background:#1e293b;
-  border-color:#93c5fd;
+.bottom-pill:hover{
+  transform:translateY(-2px);
+  border-color:rgba(248,250,252,0.85);
+  box-shadow:0 10px 28px rgba(15,23,42,0.9);
 }
-
-/* Footer */
-footer{
-  text-align:center;
-  margin-top:16px;
-  color:var(--muted);
-  font-size:12px;
+.bottom-pill .dot{
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:var(--accent-green);
+  box-shadow:0 0 8px rgba(34,197,94,0.9);
 }
 
-/* Responsive */
+/* responsive */
 @media (max-width:1100px){
   .cards{grid-template-columns:repeat(2,1fr)}
 }
 @media (max-width:700px){
   .cards{grid-template-columns:1fr}
-  .panel-id{flex-direction:column;gap:8px}
   .panel-chip{width:140px}
   .title{font-size:20px}
-  .comm-center{flex-direction:column;align-items:flex-start}
+  .bottom-bar{flex-direction:column}
 }
 </style>
 </head>
 <body>
 <main>
-  <div class="ambient" aria-hidden="true"></div>
+ <div class="ambient" aria-hidden="true"></div>
 
-  <div class="hdr">
-    <div class="kicker">
-      <span class="dot"></span> Řídicí panel · Velín
-    </div>
-    <div class="title">AYAS-7 Admin Control Room</div>
-    <div class="subtitle">
-      Napojeno na AYAS-7 engine — LED lišty, živá simulace, ovládání režimů a stavových modulů. Demo: vizuální kontrola chování enginu pro prezentace investorům a partnery.
-    </div>
-  </div>
+ <div class="hdr">
+   <div class="kicker"><span class="dot"></span> Řídicí panel · Velín</div>
+   <div class="title">AYAS-7 Admin Control Room</div>
+   <div class="subtitle">Plně navazuje na dashboard — stejné LED lišty, plynulá simulace, interaktivní ovládací prvky. Demo: živý velín připravený na ostré napojení na AYAS-7 Chip Core.</div>
+ </div>
 
-  <!-- TOP PANEL: AYAS-7 / CONTROL ROOM / CHIP CORE ONLINE -->
-  <div class="panel-id" role="banner" aria-label="AYAS-7 control identity">
-    <div class="panel-chip">AYAS-7</div>
+ <!-- AYAS-7 / CONTROL ROOM / CHIP CORE ONLINE -->
+ <div class="panel-id" role="banner" aria-label="panel identity">
+   <!-- LEVÁ STRANA: AYAS-7 -->
+   <div class="panel-chip">
+     AYAS-7
+   </div>
 
-    <div class="panel-center-label">Control Room</div>
+   <!-- STŘED: Control Room -->
+   <div style="
+        font-size:14px;
+        letter-spacing:.06em;
+        color:var(--muted);
+        text-transform:uppercase;
+        font-weight:700;
+      ">
+     Control Room
+   </div>
 
-    <div class="panel-chip-led-wrap">
-      <div id="chipLed"></div>
-      <div style="font-size:12px;color:var(--muted);letter-spacing:.04em;">
-        Chip Core · ONLINE
-      </div>
-    </div>
-  </div>
+   <!-- PRAVÁ STRANA: LED + ONLINE TEXT -->
+   <div style="display:flex;align-items:center;gap:10px;">
+     <div id="chipLed" style="
+          width:10px;
+          height:10px;
+          border-radius:50%;
+          background:#22ff77;
+          box-shadow:
+            0 0 8px #22ff77,
+            0 0 14px #22ff77,
+            0 0 20px rgba(34,255,119,0.8);
+        ">
+     </div>
+     <div style="font-size:12px;color:var(--muted);letter-spacing:.04em;">
+       Chip Core · ONLINE
+     </div>
+   </div>
+ </div>
 
-  <div class="panel-sub">
-    Chip Core — heart of engine
-  </div>
+ <div class="panel-sub" style="text-align:center;margin-top:4px;">
+   Chip Core — heart of engine
+ </div>
 
-  <!-- 3×3 GRID – BOX 1–9 -->
-  <section class="cards" id="cardsGrid">
-    
-    <!-- BOX 1: AI CONTROL -->
-    <article class="card" id="card-ai" data-card="ai">
-      <div class="card-index">
-        <div class="card-index-number">01</div>
-        <button class="expand-btn" type="button"><span>•••</span></button>
-      </div>
+ <!-- 3×3 KARTY -->
+ <section class="cards" id="cardsGrid">
 
-      <div>
-        <div class="badge">
-          <span style="width:8px;height:8px;border-radius:999px;background:var(--accent-blue);display:inline-block"></span>
-          &nbsp;AI Control
-        </div>
-        <h3>AI Automatic Control</h3>
-        <p class="sub">
-          Automatický režim řízení enginu. Přepnutí na manuál zastaví automatické zásahy.
-        </p>
+   <!-- 01 · AI CONTROL -->
+   <article class="card" id="card-ai" data-card="ai">
+     <button class="card-index" type="button" data-accent="blue">
+       <span class="num">01</span>
+       <span class="label">AI</span>
+     </button>
 
-        <div class="led-strip" aria-hidden="true">
-          <div class="led-fill" id="aiFill" style="width:74%"></div>
-        </div>
-        <div class="led-grid" aria-hidden="true"></div>
+     <div>
+       <div class="badge"><span style="width:8px;height:8px;border-radius:999px;background:var(--accent-blue);display:inline-block"></span>&nbsp;AI Control</div>
+       <h3>AI Automatic Control</h3>
+       <p class="sub">Automatický režim řízení enginu. Přepnutí na manuál zastaví automatické zásahy.</p>
 
-        <div class="metrics">
-          <div class="metric"><h4 id="aiPercent">74 %</h4><p>Runtime</p></div>
-          <div class="metric"><h4 id="aiInterventions">12</h4><p>Intervence (24h)</p></div>
-          <div class="metric"><h4 id="aiLast">a few sec</h4><p>Poslední zásah</p></div>
-        </div>
+       <div class="led-strip" aria-hidden="true">
+         <div class="led-fill" id="aiFill"></div>
+       </div>
+       <div class="led-grid" aria-hidden="true"></div>
 
-        <div class="links">
-          <a class="link" id="toggleAI" role="button">
-            <span class="led" id="ledAi" style="background:var(--accent-green);"></span>
-            <span id="toggleAiLabel">AI ON</span>
-          </a>
-          <a class="link" id="openAiLog">AI Log</a>
-        </div>
-      </div>
+       <div class="metrics">
+         <div class="metric"><h4 id="aiPercent">74 %</h4><p>Runtime</p></div>
+         <div class="metric"><h4 id="aiInterventions">12</h4><p>Intervence (24h)</p></div>
+         <div class="metric"><h4 id="aiLast">a few sec</h4><p>Poslední zásah</p></div>
+       </div>
 
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px">
-        <div class="multisig" title="AI health">
-          <div class="ms-light ms-green" id="aiMs"></div>
-          <small style="color:var(--muted)">AI Health</small>
-        </div>
-        <div style="font-size:12px;color:var(--muted)">
-          Mode: <strong id="aiMode">AUTO</strong>
-        </div>
-      </div>
-    </article>
+       <div class="links">
+         <a class="link" id="toggleAI" role="button">
+           <span class="led" id="ledAi"></span>
+           <span id="toggleAiLabel">AI ON</span>
+         </a>
+         <a class="link" id="openAiLog">AI Log</a>
+       </div>
+     </div>
 
-    <!-- BOX 2: MANUAL / BRAKE -->
-    <article class="card" id="card-manual" data-card="manual">
-      <div class="card-index">
-        <div class="card-index-number">02</div>
-        <button class="expand-btn" type="button"><span>•••</span></button>
-      </div>
+     <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px">
+       <div class="multisig" title="AI health">
+         <div class="ms-light ms-green" id="aiMs"></div>
+         <small style="color:var(--muted)">AI Health</small>
+       </div>
+       <div style="font-size:12px;color:var(--muted)">Mode: <strong id="aiMode">AUTO</strong></div>
+     </div>
+   </article>
 
-      <div>
-        <div class="badge">
-          <span style="width:8px;height:8px;border-radius:999px;background:#f6d365;display:inline-block"></span>
-          &nbsp;Manual / Brake
-        </div>
-        <h3>Manual Mode &amp; Emergency Brake</h3>
-        <p class="sub">
-          Rychlé přepnutí do ručního režimu a aktivace nouzové brzdy. Demo bezpečné operace.
-        </p>
+   <!-- 02 · MANUAL / BRAKE -->
+   <article class="card" id="card-manual" data-card="manual">
+     <button class="card-index" type="button" data-accent="amber">
+       <span class="num">02</span>
+       <span class="label">MAN</span>
+     </button>
 
-        <div class="led-strip">
-          <div class="led-fill" id="manualFill" style="width:56%;background:linear-gradient(90deg,#f6d365,#ff8a65)"></div>
-        </div>
-        <div class="led-grid"></div>
+     <div>
+       <div class="badge"><span style="width:8px;height:8px;border-radius:999px;background:#f6d365;display:inline-block"></span>&nbsp;Manual / Brake</div>
+       <h3>Manual Mode &amp; Emergency Brake</h3>
+       <p class="sub">Rychlé přepnutí do ručního režimu a aktivace nouzové brzdy. Demo bezpečné operace.</p>
 
-        <div class="metrics">
-          <div class="metric"><h4 id="manualActive">OFF</h4><p>Manual</p></div>
-          <div class="metric"><h4 id="brakeState">DISARMED</h4><p>Brake</p></div>
-          <div class="metric"><h4 id="safeMode">OK</h4><p>Safe Mode</p></div>
-        </div>
+       <div class="led-strip">
+         <div class="led-fill" id="manualFill"></div>
+       </div>
+       <div class="led-grid"></div>
 
-        <div class="links">
-          <a class="link" id="btnManual">ACTIVATE MANUAL</a>
-          <a class="link" id="btnBrake" style="border-color:rgba(231,76,60,0.18);color:#ffdede">SYSTEM BRAKE</a>
-          <a class="link" id="btnSafe">SAFE MODE</a>
-        </div>
-      </div>
+       <div class="metrics">
+         <div class="metric"><h4 id="manualActive">OFF</h4><p>Manual</p></div>
+         <div class="metric"><h4 id="brakeState">DISARMED</h4><p>Brake</p></div>
+         <div class="metric"><h4 id="safeMode">OK</h4><p>Safe Mode</p></div>
+       </div>
 
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px">
-        <div class="multisig">
-          <div class="ms-light ms-yellow" id="manualMs"></div>
-          <small style="color:var(--muted)">Manual Status</small>
-        </div>
-        <div style="font-size:12px;color:var(--muted)"><strong>Admin actions</strong></div>
-      </div>
-    </article>
+       <div class="links">
+         <a class="link" id="btnManual">ACTIVATE MANUAL</a>
+         <a class="link" id="btnBrake" style="border-color:rgba(231,76,60,0.35);">
+           <span class="led" style="background:var(--accent-red);box-shadow:0 0 10px rgba(239,68,68,0.95)"></span>
+           SYSTEM BRAKE
+         </a>
+         <a class="link" id="btnSafe">SAFE MODE</a>
+       </div>
+     </div>
 
-    <!-- BOX 3: POOL OUTPUT -->
-    <article class="card" id="card-pool" data-card="pool">
-      <div class="card-index">
-        <div class="card-index-number">03</div>
-        <button class="expand-btn" type="button"><span>•••</span></button>
-      </div>
+     <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px">
+       <div class="multisig">
+         <div class="ms-light ms-yellow" id="manualMs"></div>
+         <small style="color:var(--muted)">Manual Status</small>
+       </div>
+       <div style="font-size:12px;color:var(--muted)"><strong>Admin actions</strong></div>
+     </div>
+   </article>
 
-      <div>
-        <div class="badge">
-          <span style="width:8px;height:8px;border-radius:999px;background:#7de2ff;display:inline-block"></span>
-          &nbsp;Pool Output
-        </div>
-        <h3>Pool Output Simulation</h3>
-        <p class="sub">
-          Simulace výstupů z poolů: rebalancing, změny TVL a odhad výnosu.
-        </p>
+   <!-- 03 · POOL -->
+   <article class="card" id="card-pool" data-card="pool">
+     <button class="card-index" type="button" data-accent="cyan">
+       <span class="num">03</span>
+       <span class="label">POOL</span>
+     </button>
 
-        <div class="led-strip">
-          <div class="led-fill" id="poolFill" style="width:62%;background:linear-gradient(90deg,#7de2ff,#4fa3ff)"></div>
-        </div>
-        <div class="led-grid"></div>
+     <div>
+       <div class="badge"><span style="width:8px;height:8px;border-radius:999px;background:#7de2ff;display:inline-block"></span>&nbsp;Pool Output</div>
+       <h3>Pool Output Simulation</h3>
+       <p class="sub">Simulace výstupů z poolů: rebalancing, změny TVL a odhad výnosu.</p>
 
-        <div class="metrics">
-          <div class="metric"><h4 id="tvl">1 248 332</h4><p>TVL (USDt.z)</p></div>
-          <div class="metric"><h4 id="tvlChange">+1.5%</h4><p>24h change</p></div>
-          <div class="metric"><h4 id="simYield">4.8%</h4><p>Sim. Yield</p></div>
-        </div>
+       <div class="led-strip">
+         <div class="led-fill" id="poolFill"></div>
+       </div>
+       <div class="led-grid"></div>
 
-        <div class="links">
-          <a class="link" id="runRebalance">Run Rebalance</a>
-          <a class="link" id="viewPools">View Pools</a>
-        </div>
-      </div>
+       <div class="metrics">
+         <div class="metric"><h4 id="tvl">1 248 332</h4><p>TVL (USDt.z)</p></div>
+         <div class="metric"><h4 id="tvlChange">+1.5%</h4><p>24h change</p></div>
+         <div class="metric"><h4 id="simYield">4.8%</h4><p>Sim. Yield</p></div>
+       </div>
 
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px">
-        <div class="multisig">
-          <div class="ms-light ms-green" id="poolMs"></div>
-          <small style="color:var(--muted)">Pool OK</small>
-        </div>
-        <div style="font-size:12px;color:var(--muted)">
-          <strong>Last rebalance</strong><br><small id="poolLast">3h ago</small>
-        </div>
-      </div>
-    </article>
+       <div class="links">
+         <a class="link" id="runRebalance">Run Rebalance</a>
+         <a class="link" id="viewPools">View Pools</a>
+       </div>
+     </div>
 
-    <!-- BOX 4: DATABASE -->
-    <article class="card" id="card-db" data-card="db">
-      <div class="card-index">
-        <div class="card-index-number">04</div>
-        <button class="expand-btn" type="button"><span>•••</span></button>
-      </div>
+     <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px">
+       <div class="multisig">
+         <div class="ms-light ms-green" id="poolMs"></div>
+         <small style="color:var(--muted)">Pool OK</small>
+       </div>
+       <div style="font-size:12px;color:var(--muted)">
+         <strong>Last rebalance</strong> <br><small id="poolLast">3h ago</small>
+       </div>
+     </div>
+   </article>
 
-      <div>
-        <div class="badge">
-          <span style="width:8px;height:8px;border-radius:999px;background:#9adabf;display:inline-block"></span>
-          &nbsp;Database
-        </div>
-        <h3>Supabase · DB Status</h3>
-        <p class="sub">
-          Monitoring latency, writes/min a integrity check. Export report pro audit.
-        </p>
+   <!-- 04 · DATABASE -->
+   <article class="card" id="card-db" data-card="db">
+     <button class="card-index" type="button" data-accent="mint">
+       <span class="num">04</span>
+       <span class="label">DB</span>
+     </button>
 
-        <div class="led-strip">
-          <div class="led-fill" id="dbFill" style="width:92%;background:linear-gradient(90deg,#9adabf,#22c55e)"></div>
-        </div>
-        <div class="led-grid"></div>
+     <div>
+       <div class="badge"><span style="width:8px;height:8px;border-radius:999px;background:#9adabf;display:inline-block"></span>&nbsp;Database</div>
+       <h3>Supabase · DB Status</h3>
+       <p class="sub">Monitoring latency, writes/min a integrity check. Export report pro audit.</p>
 
-        <div class="metrics">
-          <div class="metric"><h4 id="dbLatency">14 ms</h4><p>Latency</p></div>
-          <div class="metric"><h4 id="dbWrites">120</h4><p>Writes / min</p></div>
-          <div class="metric"><h4 id="dbIntegrity">100%</h4><p>Integrity</p></div>
-        </div>
+       <div class="led-strip">
+         <div class="led-fill" id="dbFill"></div>
+       </div>
+       <div class="led-grid"></div>
 
-        <div class="links">
-          <a class="link" id="dbReindex">Trigger Reindex</a>
-          <a class="link" id="exportAudit">Download Audit</a>
-        </div>
-      </div>
+       <div class="metrics">
+         <div class="metric"><h4 id="dbLatency">14 ms</h4><p>Latency</p></div>
+         <div class="metric"><h4 id="dbWrites">120</h4><p>Writes / min</p></div>
+         <div class="metric"><h4 id="dbIntegrity">100%</h4><p>Integrity</p></div>
+       </div>
 
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px">
-        <div class="multisig">
-          <div class="ms-light ms-green" id="dbMs"></div>
-          <small style="color:var(--muted)">DB OK</small>
-        </div>
-        <div style="font-size:12px;color:var(--muted)">
-          <strong>Last checkpoint</strong><br><small id="dbLast">2025-11-27</small>
-        </div>
-      </div>
-    </article>
+       <div class="links">
+         <a class="link" id="dbReindex">Trigger Reindex</a>
+         <a class="link" id="exportAudit">Download Audit</a>
+       </div>
+     </div>
 
-    <!-- BOX 5: MULTI-SIG -->
-    <article class="card" id="card-ms" data-card="ms">
-      <div class="card-index">
-        <div class="card-index-number">05</div>
-        <button class="expand-btn" type="button"><span>•••</span></button>
-      </div>
+     <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px">
+       <div class="multisig">
+         <div class="ms-light ms-green" id="dbMs"></div>
+         <small style="color:var(--muted)">DB OK</small>
+       </div>
+       <div style="font-size:12px;color:var(--muted)">
+         <strong>Last checkpoint</strong> <br><small id="dbLast">2025-11-27</small>
+       </div>
+     </div>
+   </article>
 
-      <div>
-        <div class="badge">
-          <span style="width:8px;height:8px;border-radius:999px;background:#ffd6a5;display:inline-block"></span>
-          &nbsp;Multi-Sig
-        </div>
-        <h3>Multi-Sig Status</h3>
-        <p class="sub">
-          Počet požadovaných podpisů, aktuální počet zaslaných a stav time-locku.
-        </p>
+   <!-- 05 · MULTI-SIG -->
+   <article class="card" id="card-ms" data-card="ms">
+     <button class="card-index" type="button" data-accent="peach">
+       <span class="num">05</span>
+       <span class="label">MSIG</span>
+     </button>
 
-        <div class="led-strip">
-          <div class="led-fill" id="msFill" style="width:50%;background:linear-gradient(90deg,#ffd6a5,#ff8a65)"></div>
-        </div>
-        <div class="led-grid"></div>
+     <div>
+       <div class="badge"><span style="width:8px;height:8px;border-radius:999px;background:#ffd6a5;display:inline-block"></span>&nbsp;Multi-Sig</div>
+       <h3>Multi-Sig Status</h3>
+       <p class="sub">Počet požadovaných podpisů, aktuální počet zaslaných a stav time-locku.</p>
 
-        <div class="metrics">
-          <div class="metric"><h4 id="msRequired">5</h4><p>Required</p></div>
-          <div class="metric"><h4 id="msSubmitted">3</h4><p>Submitted</p></div>
-          <div class="metric"><h4 id="msTimelock">2h</h4><p>Time-lock</p></div>
-        </div>
+       <div class="led-strip">
+         <div class="led-fill" id="msFill"></div>
+       </div>
+       <div class="led-grid"></div>
 
-        <div class="links">
-          <a class="link" id="openMs">Open Multi-Sig</a>
-          <a class="link" id="downloadAudit">Download Audit</a>
-        </div>
-      </div>
+       <div class="metrics">
+         <div class="metric"><h4 id="msRequired">5</h4><p>Required</p></div>
+         <div class="metric"><h4 id="msSubmitted">3</h4><p>Submitted</p></div>
+         <div class="metric"><h4 id="msTimelock">2h</h4><p>Time-lock</p></div>
+       </div>
 
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px">
-        <div class="multisig">
-          <div class="ms-light ms-yellow" id="msLight"></div>
-          <small style="color:var(--muted)">Signatures</small>
-        </div>
-        <div style="font-size:12px;color:var(--muted)">
-          <strong>Last tx</strong><br><small id="msLast">2h ago</small>
-        </div>
-      </div>
-    </article>
+       <div class="links">
+         <a class="link" id="openMs">Open Multi-Sig</a>
+         <a class="link" id="downloadAudit">Download Audit</a>
+       </div>
+     </div>
 
-    <!-- BOX 6: BLOCKCHAIN -->
-    <article class="card" id="card-chain" data-card="chain">
-      <div class="card-index">
-        <div class="card-index-number">06</div>
-        <button class="expand-btn" type="button"><span>•••</span></button>
-      </div>
+     <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px">
+       <div class="multisig">
+         <div class="ms-light ms-yellow" id="msLight"></div>
+         <small style="color:var(--muted)">Signatures</small>
+       </div>
+       <div style="font-size:12px;color:var(--muted)">
+         <strong>Last tx</strong> <br><small id="msLast">2h ago</small>
+       </div>
+     </div>
+   </article>
 
-      <div>
-        <div class="badge">
-          <span style="width:8px;height:8px;border-radius:999px;background:#7de2ff;display:inline-block"></span>
-          &nbsp;Blockchain
-        </div>
-        <h3>Blockchain Connection</h3>
-        <p class="sub">
-          RPC latency, block height a sync status. Monitor on-chain health.
-        </p>
+   <!-- 06 · BLOCKCHAIN -->
+   <article class="card" id="card-chain" data-card="chain">
+     <button class="card-index" type="button" data-accent="sky">
+       <span class="num">06</span>
+       <span class="label">CHAIN</span>
+     </button>
 
-        <div class="led-strip">
-          <div class="led-fill" id="chainFill" style="width:82%;background:linear-gradient(90deg,#7de2ff,#4fa3ff)"></div>
-        </div>
-        <div class="led-grid"></div>
+     <div>
+       <div class="badge"><span style="width:8px;height:8px;border-radius:999px;background:#7de2ff;display:inline-block"></span>&nbsp;Blockchain</div>
+       <h3>Blockchain Connection</h3>
+       <p class="sub">RPC latency, block height a sync status. Monitor on-chain health.</p>
 
-        <div class="metrics">
-          <div class="metric"><h4 id="blockHeight">#23,231,241</h4><p>Last block</p></div>
-          <div class="metric"><h4 id="rpcLatency">3.12 s</h4><p>RPC</p></div>
-          <div class="metric"><h4 id="syncPerc">98%</h4><p>Sync</p></div>
-        </div>
+       <div class="led-strip">
+         <div class="led-fill" id="chainFill"></div>
+       </div>
+       <div class="led-grid"></div>
 
-        <div class="links">
-          <a class="link" id="refreshChain">Refresh</a>
-          <a class="link" id="openExplorer">Explorer</a>
-        </div>
-      </div>
+       <div class="metrics">
+         <div class="metric"><h4 id="blockHeight">#23,231,241</h4><p>Last block</p></div>
+         <div class="metric"><h4 id="rpcLatency">3.12 s</h4><p>RPC</p></div>
+         <div class="metric"><h4 id="syncPerc">98%</h4><p>Sync</p></div>
+       </div>
 
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px">
-        <div class="multisig">
-          <div class="ms-light ms-green" id="chainMs"></div>
-          <small style="color:var(--muted)">On-chain</small>
-        </div>
-        <div style="font-size:12px;color:var(--muted)">
-          <strong>Pairs</strong><br><small id="chainPairs">USDt.z / GUSD</small>
-        </div>
-      </div>
-    </article>
+       <div class="links">
+         <a class="link" id="refreshChain">Refresh</a>
+         <a class="link" id="openExplorer">Explorer</a>
+       </div>
+     </div>
 
-    <!-- BOX 7: ENGINE 7 LAYERS -->
-    <article class="card" id="card-engine" data-card="engine">
-      <div class="card-index">
-        <div class="card-index-number">07</div>
-        <button class="expand-btn" type="button"><span>•••</span></button>
-      </div>
+     <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px">
+       <div class="multisig">
+         <div class="ms-light ms-green" id="chainMs"></div>
+         <small style="color:var(--muted)">On-chain</small>
+       </div>
+       <div style="font-size:12px;color:var(--muted)">
+         <strong>Pairs</strong> <br><small id="chainPairs">USDt.z / GUSD</small>
+       </div>
+     </div>
+   </article>
 
-      <div>
-        <div class="badge">
-          <span style="width:8px;height:8px;border-radius:999px;background:#7fb7ff;display:inline-block"></span>
-          &nbsp;AYAS-7 Engine
-        </div>
-        <h3>Engine Simulation · 7 Layers</h3>
-        <p class="sub">
-          Sedm horizontálních LED pásků znázorňuje výkon každé vrstvy (L1–L7).
-        </p>
+   <!-- 07 · ENGINE 7 LAYERS -->
+   <article class="card" id="card-engine" data-card="engine">
+     <button class="card-index" type="button" data-accent="indigo">
+       <span class="num">07</span>
+       <span class="label">ENGINE</span>
+     </button>
 
-        <div style="display:flex;flex-direction:column;gap:8px;margin-top:10px">
-          <div>
-            <div style="display:flex;justify-content:space-between;font-size:13px">
-              <strong>Layer 1 · Token</strong><span id="L1pct">88%</span>
-            </div>
-            <div class="led-strip"><div class="led-fill mini" id="L1" style="width:88%"></div></div>
-          </div>
-          <div>
-            <div style="display:flex;justify-content:space-between;font-size:13px">
-              <strong>Layer 2 · Liquidity</strong><span id="L2pct">68%</span>
-            </div>
-            <div class="led-strip"><div class="led-fill mini" id="L2" style="width:68%"></div></div>
-          </div>
-          <div>
-            <div style="display:flex;justify-content:space-between;font-size:13px">
-              <strong>Layer 3 · Yield</strong><span id="L3pct">81%</span>
-            </div>
-            <div class="led-strip"><div class="led-fill mini" id="L3" style="width:81%"></div></div>
-          </div>
-          <div>
-            <div style="display:flex;justify-content:space-between;font-size:13px">
-              <strong>Layer 4 · Risk</strong><span id="L4pct">92%</span>
-            </div>
-            <div class="led-strip"><div class="led-fill mini" id="L4" style="width:92%"></div></div>
-          </div>
-          <div>
-            <div style="display:flex;justify-content:space-between;font-size:13px">
-              <strong>Layer 5 · FinTech</strong><span id="L5pct">56%</span>
-            </div>
-            <div class="led-strip"><div class="led-fill mini" id="L5" style="width:56%"></div></div>
-          </div>
-          <div>
-            <div style="display:flex;justify-content:space-between;font-size:13px">
-              <strong>Layer 6 · Core</strong><span id="L6pct">61%</span>
-            </div>
-            <div class="led-strip"><div class="led-fill mini" id="L6" style="width:61%"></div></div>
-          </div>
-          <div>
-            <div style="display:flex;justify-content:space-between;font-size:13px">
-              <strong>Layer 7 · Analytics</strong><span id="L7pct">82%</span>
-            </div>
-            <div class="led-strip"><div class="led-fill mini" id="L7" style="width:82%"></div></div>
-          </div>
-        </div>
+     <div>
+       <div class="badge"><span style="width:8px;height:8px;border-radius:999px;background:#7fb7ff;display:inline-block"></span>&nbsp;AYAS-7 Engine</div>
+       <h3>Engine Simulation · 7 Layers</h3>
+       <p class="sub">Sedm horizontálních LED pásků znázorňuje výkon každé vrstvy (L1–L7).</p>
 
-        <div class="links" style="margin-top:12px">
-          <a class="link" id="engineSim">Run Simulation</a>
-          <a class="link" id="engineReset">Reset</a>
-        </div>
-      </div>
+       <div style="display:flex;flex-direction:column;gap:8px;margin-top:10px">
+         <div>
+           <div style="display:flex;justify-content:space-between;font-size:13px"><strong>Layer 1 · Token</strong><span id="L1pct">88%</span></div>
+           <div class="led-strip"><div class="led-fill mini" id="L1" style="width:88%"></div></div>
+         </div>
+         <div>
+           <div style="display:flex;justify-content:space-between;font-size:13px"><strong>Layer 2 · Liquidity</strong><span id="L2pct">68%</span></div>
+           <div class="led-strip"><div class="led-fill mini" id="L2" style="width:68%"></div></div>
+         </div>
+         <div>
+           <div style="display:flex;justify-content:space-between;font-size:13px"><strong>Layer 3 · Yield</strong><span id="L3pct">81%</span></div>
+           <div class="led-strip"><div class="led-fill mini" id="L3" style="width:81%"></div></div>
+         </div>
+         <div>
+           <div style="display:flex;justify-content:space-between;font-size:13px"><strong>Layer 4 · Risk</strong><span id="L4pct">92%</span></div>
+           <div class="led-strip"><div class="led-fill mini" id="L4" style="width:92%"></div></div>
+         </div>
+         <div>
+           <div style="display:flex;justify-content:space-between;font-size:13px"><strong>Layer 5 · FinTech</strong><span id="L5pct">56%</span></div>
+           <div class="led-strip"><div class="led-fill mini" id="L5" style="width:56%"></div></div>
+         </div>
+         <div>
+           <div style="display:flex;justify-content:space-between;font-size:13px"><strong>Layer 6 · Core</strong><span id="L6pct">61%</span></div>
+           <div class="led-strip"><div class="led-fill mini" id="L6" style="width:61%"></div></div>
+         </div>
+         <div>
+           <div style="display:flex;justify-content:space-between;font-size:13px"><strong>Layer 7 · Analytics</strong><span id="L7pct">82%</span></div>
+           <div class="led-strip"><div class="led-fill mini" id="L7" style="width:82%"></div></div>
+         </div>
+       </div>
 
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px">
-        <div class="multisig">
-          <div class="ms-light ms-green" id="engineMs"></div>
-          <small style="color:var(--muted)">Engine health</small>
-        </div>
-        <div style="font-size:12px;color:var(--muted)">
-          <strong>Mode</strong><br><small id="engineMode">SIM</small>
-        </div>
-      </div>
-    </article>
+       <div class="links" style="margin-top:12px">
+         <a class="link" id="engineSim">Run Simulation</a>
+         <a class="link" id="engineReset">Reset</a>
+       </div>
+     </div>
 
-    <!-- BOX 8: THROUGHPUT -->
-    <article class="card" id="card-throughput" data-card="throughput">
-      <div class="card-index">
-        <div class="card-index-number">08</div>
-        <button class="expand-btn" type="button"><span>•••</span></button>
-      </div>
+     <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px">
+       <div class="multisig">
+         <div class="ms-light ms-green" id="engineMs"></div>
+         <small style="color:var(--muted)">Engine health</small>
+       </div>
+       <div style="font-size:12px;color:var(--muted)">
+         <strong>Mode</strong> <br><small id="engineMode">SIM</small>
+       </div>
+     </div>
+   </article>
 
-      <div>
-        <div class="badge">
-          <span style="width:8px;height:8px;border-radius:999px;background:#a6b8ff;display:inline-block"></span>
-          &nbsp;Throughput
-        </div>
-        <h3>System Throughput</h3>
-        <p class="sub">
-          Operací za sekundu (ops/s), queue depth a propustnost systému.
-        </p>
+   <!-- 08 · THROUGHPUT -->
+   <article class="card" id="card-throughput" data-card="throughput">
+     <button class="card-index" type="button" data-accent="violet">
+       <span class="num">08</span>
+       <span class="label">TPS</span>
+     </button>
 
-        <div class="led-strip">
-          <div class="led-fill" id="tpFill" style="width:70%;background:linear-gradient(90deg,#a6b8ff,#4fa3ff)"></div>
-        </div>
-        <div class="led-grid"></div>
+     <div>
+       <div class="badge"><span style="width:8px;height:8px;border-radius:999px;background:#a6b8ff;display:inline-block"></span>&nbsp;Throughput</div>
+       <h3>System Throughput</h3>
+       <p class="sub">Operací za sekundu (ops/s), queue depth a propustnost systému.</p>
 
-        <div class="metrics">
-          <div class="metric"><h4 id="ops">1 232</h4><p>ops/s</p></div>
-          <div class="metric"><h4 id="queue">24</h4><p>Queue</p></div>
-          <div class="metric"><h4 id="through">320 MB/s</h4><p>Throughput</p></div>
-        </div>
+       <div class="led-strip">
+         <div class="led-fill" id="tpFill"></div>
+       </div>
+       <div class="led-grid"></div>
 
-        <div class="links">
-          <a class="link" id="scaleUp">Scale Up</a>
-          <a class="link" id="scaleDown">Scale Down</a>
-        </div>
-      </div>
+       <div class="metrics">
+         <div class="metric"><h4 id="ops">1 232</h4><p>ops/s</p></div>
+         <div class="metric"><h4 id="queue">24</h4><p>Queue</p></div>
+         <div class="metric"><h4 id="through">320 MB/s</h4><p>Throughput</p></div>
+       </div>
 
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px">
-        <div class="multisig">
-          <div class="ms-light ms-green" id="tpMs"></div>
-          <small style="color:var(--muted)">Node health</small>
-        </div>
-        <div style="font-size:12px;color:var(--muted)">
-          <strong>Cluster</strong><br><small id="clusterNodes">3 nodes</small>
-        </div>
-      </div>
-    </article>
+       <div class="links">
+         <a class="link" id="scaleUp">Scale Up</a>
+         <a class="link" id="scaleDown">Scale Down</a>
+       </div>
+     </div>
 
-    <!-- BOX 9: EVENT LOG -->
-    <article class="card" id="card-log" data-card="log">
-      <div class="card-index">
-        <div class="card-index-number">09</div>
-        <button class="expand-btn" type="button"><span>•••</span></button>
-      </div>
+     <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px">
+       <div class="multisig">
+         <div class="ms-light ms-green" id="tpMs"></div>
+         <small style="color:var(--muted)">Node health</small>
+       </div>
+       <div style="font-size:12px;color:var(--muted)">
+         <strong>Cluster</strong> <br><small id="clusterNodes">3 nodes</small>
+       </div>
+     </div>
+   </article>
 
-      <div>
-        <div class="badge">
-          <span style="width:8px;height:8px;border-radius:999px;background:#b9d7ff;display:inline-block"></span>
-          &nbsp;Event Log
-        </div>
-        <h3>Event Log</h3>
-        <p class="sub">
-          Poslední události systému. Export, filtrovat a popř. stáhnout auditní záznamy.
-        </p>
+   <!-- 09 · EVENT LOG -->
+   <article class="card" id="card-log" data-card="log">
+     <button class="card-index" type="button" data-accent="ice">
+       <span class="num">09</span>
+       <span class="label">LOG</span>
+     </button>
 
-        <div class="log" id="logBox"></div>
+     <div>
+       <div class="badge"><span style="width:8px;height:8px;border-radius:999px;background:#b9d7ff;display:inline-block"></span>&nbsp;Event Log</div>
+       <h3>Event Log</h3>
+       <p class="sub">Poslední události systému. Export, filtrovat a stáhnout auditní záznamy.</p>
 
-        <div class="links" style="margin-top:10px">
-          <a class="link" id="clearLogs">Clear</a>
-          <a class="link" id="exportLogs">Export</a>
-        </div>
-      </div>
+       <div class="log" id="logBox"></div>
 
-      <div style="display:flex;justify-content:flex-end;align-items:center;margin-top:12px">
-        <div style="font-size:12px;color:var(--muted)">
-          <strong>Live</strong> · <small id="logStatus">connected</small>
-        </div>
-      </div>
-    </article>
-  </section>
+       <div class="links" style="margin-top:10px">
+         <a class="link" id="clearLogs">Clear</a>
+         <a class="link" id="exportLogs">Export</a>
+       </div>
+     </div>
 
-  <!-- KOMUNIKAČNÍ CENTRUM POD BOXY -->
-  <section class="comm-center">
-    <div>
-      <div class="comm-left-title">Communication Center</div>
-      <div class="comm-contact">
-        Hlavní kontakt pro AYAS-7 Control Room<br>
-        <strong>Petr Holoubek</strong>
-      </div>
-      <div class="comm-tag">
-        <span class="comm-led"></span>
-        Live operator · Demo ONLINE
-      </div>
-      <div class="comm-contact" style="margin-top:8px;">
-        Email: <strong>petrholoubek39@gmail.com</strong><br>
-        WhatsApp: <strong>+420 778 060 622</strong>
-      </div>
-    </div>
-    <div class="comm-actions">
-      <button class="comm-btn" id="btnContactMail" type="button">
-        ✉️ Send status snapshot
-      </button>
-      <button class="comm-btn" id="btnContactWA" type="button">
-        💬 Open WhatsApp chat
-      </button>
-    </div>
-  </section>
+     <div style="display:flex;justify-content:flex-end;align-items:center;margin-top:12px">
+       <div style="font-size:12px;color:var(--muted)"><strong>Live</strong> · <small id="logStatus">connected</small></div>
+     </div>
+   </article>
+ </section>
 
-  <footer>© 2025 Win-Win Družstvo · AYAS-7 Engine · Demo</footer>
+ <!-- KOMUNIKAČNÍ CENTRUM + MANUÁL -->
+ <section class="bottom-bar">
+   <div class="bottom-card">
+     <h4>AYAS-7 Communication Center</h4>
+     <p>Pro urgentní zásah, eskalace nebo domluvu integrace AYAS-7 Chip Core se spoj přímo s operátorem velínu.</p>
+     <p style="margin-top:6px;">
+       <strong>Email:</strong> <a href="mailto:petrholoubek39@gmail.com">petrholoubek39@gmail.com</a><br>
+       <strong>WhatsApp:</strong> <a href="https://wa.me/420778060622" target="_blank" rel="noreferrer">+420&nbsp;778&nbsp;060&nbsp;622</a>
+     </p>
+     <a class="bottom-pill" href="mailto:petrholoubek39@gmail.com?subject=AYAS-7%20Control%20Room">
+       <span class="dot"></span>
+       Kontaktovat Control Room
+     </a>
+   </div>
+
+   <div class="bottom-card">
+     <h4>Control Room Manual</h4>
+     <p>Detailní technická dokumentace k tomuto velínu: rozložení modulů, význam LED pásek, napojení na Chip Core a databázi.</p>
+     <p style="margin-top:6px;">Po vytvoření manuálu ho stačí nahrát jako <code>manual-control-room.html</code> do stejného repozitáře.</p>
+     <a class="bottom-pill" href="manual-control-room.html">
+       <span class="dot" style="background:var(--accent-blue);box-shadow:0 0 10px rgba(79,163,255,0.9);"></span>
+       Otevřít manuál (demo)
+     </a>
+   </div>
+ </section>
+
+ <footer style="text-align:center;margin-top:18px;color:var(--muted)">© 2025 Win-Win Družstvo · AYAS-7 Engine · Demo</footer>
 </main>
 
 <script>
-/* === SIMULACE & INTERAKCE === */
-
-// Utility
+/* === HELPERY === */
 const $ = s => document.querySelector(s);
 const $$ = s => Array.from(document.querySelectorAll(s));
 const fmt = n => n.toLocaleString('cs-CZ');
 
-// State
+/* === STAV SIMULACE === */
 const state = {
-  aiOn: true,
-  aiRuntime: 0.74,
-  aiInterventions: 12,
-  manual: false,
-  brake: false,
-  pool: {tvl:1248332, change:0.015, yield:4.8},
-  db: {latency:14, writes:120, integrity:100, last:"2025-11-27"},
-  ms: {required:5, submitted:3, timelock:"2h"},
-  chain: {block:23231241, rpc:3.12, sync:0.98},
-  layers: [0.88,0.68,0.81,0.92,0.56,0.61,0.82],
-  throughput: {ops:1232, queue:24, through:"320 MB/s"},
-  logs: []
+ aiOn: true,
+ aiRuntime: 0.74,
+ aiInterventions: 12,
+ manual: false,
+ brake: false,
+ pool: {tvl:1248332, change:0.015, yield:4.8},
+ db: {latency:14, writes:120, integrity:100, last:"2025-11-27"},
+ ms: {required:5, submitted:3, timelock:"2h"},
+ chain: {block:23231241, rpc:3.12, sync:0.98},
+ layers: [0.88,0.68,0.81,0.92,0.56,0.61,0.82],
+ throughput: {ops:1232, queue:24, through:"320 MB/s"},
+ logs: []
 };
 
-// Map DOM
+/* === MAPOVÁNÍ DOM PRVKŮ === */
 const elements = {
-  aiFill: $('#aiFill'),
-  aiPercent: $('#aiPercent'),
-  aiInterventions: $('#aiInterventions'),
-  aiLast: $('#aiLast'),
-  ledAi: $('#ledAi'),
-  toggleAiLabel: $('#toggleAiLabel'),
-  aiMode: $('#aiMode'),
-  aiMs: $('#aiMs'),
+ aiFill: $('#aiFill'),
+ aiPercent: $('#aiPercent'),
+ aiInterventions: $('#aiInterventions'),
+ aiLast: $('#aiLast'),
+ ledAi: $('#ledAi'),
+ toggleAiLabel: $('#toggleAiLabel'),
+ aiMode: $('#aiMode'),
+ aiMs: $('#aiMs'),
 
-  manualFill: $('#manualFill'),
-  manualActive: $('#manualActive'),
-  brakeState: $('#brakeState'),
-  safeMode: $('#safeMode'),
-  manualMs: $('#manualMs'),
+ manualFill: $('#manualFill'),
+ manualActive: $('#manualActive'),
+ brakeState: $('#brakeState'),
+ safeMode: $('#safeMode'),
+ manualMs: $('#manualMs'),
 
-  poolFill: $('#poolFill'),
-  tvl: $('#tvl'),
-  tvlChange: $('#tvlChange'),
-  simYield: $('#simYield'),
-  poolMs: $('#poolMs'),
-  poolLast: $('#poolLast'),
+ poolFill: $('#poolFill'),
+ tvl: $('#tvl'),
+ tvlChange: $('#tvlChange'),
+ simYield: $('#simYield'),
+ poolMs: $('#poolMs'),
+ poolLast: $('#poolLast'),
 
-  dbFill: $('#dbFill'),
-  dbLatency: $('#dbLatency'),
-  dbWrites: $('#dbWrites'),
-  dbIntegrity: $('#dbIntegrity'),
-  dbLast: $('#dbLast'),
-  dbMs: $('#dbMs'),
+ dbFill: $('#dbFill'),
+ dbLatency: $('#dbLatency'),
+ dbWrites: $('#dbWrites'),
+ dbIntegrity: $('#dbIntegrity'),
+ dbLast: $('#dbLast'),
+ dbMs: $('#dbMs'),
 
-  msFill: $('#msFill'),
-  msRequired: $('#msRequired'),
-  msSubmitted: $('#msSubmitted'),
-  msTimelock: $('#msTimelock'),
-  msLast: $('#msLast'),
-  msLight: $('#msLight'),
+ msFill: $('#msFill'),
+ msRequired: $('#msRequired'),
+ msSubmitted: $('#msSubmitted'),
+ msTimelock: $('#msTimelock'),
+ msLast: $('#msLast'),
+ msLight: $('#msLight'),
 
-  chainFill: $('#chainFill'),
-  blockHeight: $('#blockHeight'),
-  rpcLatency: $('#rpcLatency'),
-  syncPerc: $('#syncPerc'),
-  chainMs: $('#chainMs'),
+ chainFill: $('#chainFill'),
+ blockHeight: $('#blockHeight'),
+ rpcLatency: $('#rpcLatency'),
+ syncPerc: $('#syncPerc'),
+ chainMs: $('#chainMs'),
 
-  L: [$('#L1'),$('#L2'),$('#L3'),$('#L4'),$('#L5'),$('#L6'),$('#L7')],
-  Lpct: [$('#L1pct'),$('#L2pct'),$('#L3pct'),$('#L4pct'),$('#L5pct'),$('#L6pct'),$('#L7pct')],
-  engineMode: $('#engineMode'),
-  engineMs: $('#engineMs'),
+ L: [$('#L1'),$('#L2'),$('#L3'),$('#L4'),$('#L5'),$('#L6'),$('#L7')],
+ Lpct: [$('#L1pct'),$('#L2pct'),$('#L3pct'),$('#L4pct'),$('#L5pct'),$('#L6pct'),$('#L7pct')],
+ engineMode: $('#engineMode'),
+ engineMs: $('#engineMs'),
 
-  tpFill: $('#tpFill'),
-  ops: $('#ops'),
-  queue: $('#queue'),
-  through: $('#through'),
-  tpMs: $('#tpMs'),
+ tpFill: $('#tpFill'),
+ ops: $('#ops'),
+ queue: $('#queue'),
+ through: $('#through'),
+ tpMs: $('#tpMs'),
 
-  logBox: $('#logBox'),
-  logStatus: $('#logStatus'),
-  cardsGrid: $('#cardsGrid')
+ logBox: $('#logBox'),
+ logStatus: $('#logStatus'),
+ cardsGrid: $('#cardsGrid')
 };
 
+/* === FUNKCE PRO LED A MULTISIG === */
 function setFill(el, pct){
-  if(!el) return;
-  pct = Math.max(0, Math.min(100, pct));
-  el.style.width = pct + '%';
-  if(pct >= 90) el.style.background = 'linear-gradient(90deg,#ff6b6b,#ff8a65)';
-  else if(pct >= 75) el.style.background = 'linear-gradient(90deg,#f6d365,#ff8a65)';
-  else el.style.background = 'linear-gradient(90deg,var(--accent-blue),var(--accent-green-soft))';
-  const glow = Math.min(1.0, pct/100);
-  el.style.boxShadow = `0 6px ${18*glow}px rgba(79,163,255,${0.06 + glow*0.12})`;
+ if(!el) return;
+ pct = Math.max(0, Math.min(100, pct));
+ el.style.width = pct + '%';
+ if(pct >= 90) el.style.background = 'linear-gradient(90deg,#ff6b6b,#ff8a65)';
+ else if(pct >= 75) el.style.background = 'linear-gradient(90deg,#f6d365,#ff8a65)';
+ else el.style.background = 'linear-gradient(90deg,var(--accent-blue),var(--accent-green-soft))';
+ const glow = Math.min(1.0, pct/100);
+ el.style.boxShadow = `0 6px ${18*glow}px rgba(79,163,255,${0.08 + glow*0.14})`;
 }
 
 function setMsLight(el, pct){
-  el.classList.remove('ms-green','ms-yellow','ms-red');
-  if(pct >= 0.75) el.classList.add('ms-green');
-  else if(pct >= 0.4) el.classList.add('ms-yellow');
-  else el.classList.add('ms-red');
+ el.classList.remove('ms-green','ms-yellow','ms-red');
+ if(pct >= 0.75) el.classList.add('ms-green');
+ else if(pct >= 0.4) el.classList.add('ms-yellow');
+ else el.classList.add('ms-red');
 }
 
-// Logs
+/* === LOGY === */
 function pushLog(msg){
-  const ts = new Date().toLocaleTimeString();
-  state.logs.push({ts,msg});
-  if(state.logs.length > 300) state.logs.shift();
-  renderLogs();
+ const ts = new Date().toLocaleTimeString();
+ state.logs.push({ts,msg});
+ if(state.logs.length > 300) state.logs.shift();
+ renderLogs();
 }
 function renderLogs(){
-  elements.logBox.innerHTML = '';
-  state.logs.slice().reverse().forEach(l => {
-    const d = document.createElement('div');
-    d.className = 'log-item';
-    d.textContent = `${l.ts} · ${l.msg}`;
-    elements.logBox.appendChild(d);
-  });
-  elements.logStatus.textContent = 'connected';
+ elements.logBox.innerHTML = '';
+ state.logs.slice().reverse().forEach(l => {
+   const d = document.createElement('div');
+   d.className = 'log-item';
+   d.textContent = `${l.ts} · ${l.msg}`;
+   elements.logBox.appendChild(d);
+ });
+ elements.logStatus.textContent = 'connected';
 }
 
-// Render UI
+/* === RENDER CELÉHO UI ZE STAVU === */
 function render(){
-  // AI
-  const targetAiPct = Math.round(state.aiRuntime*100);
-  setFill(elements.aiFill, targetAiPct);
-  elements.aiPercent.textContent = targetAiPct + ' %';
-  elements.aiInterventions.textContent = state.aiInterventions;
-  elements.aiLast.textContent = 'a few sec';
-  elements.ledAi.style.background = state.aiOn ? 'var(--accent-green)' : '#ff6b6b';
-  elements.toggleAiLabel.textContent = state.aiOn ? 'AI ON' : 'AI OFF';
-  elements.aiMode.textContent = state.aiOn ? 'AUTO' : (state.manual ? 'MANUAL' : 'OFF');
-  setMsLight(elements.aiMs, state.aiRuntime);
+ // AI
+ const targetAiPct = Math.round(state.aiRuntime*100);
+ setFill(elements.aiFill, targetAiPct);
+ elements.aiPercent.textContent = targetAiPct + ' %';
+ elements.aiInterventions.textContent = state.aiInterventions;
+ elements.aiLast.textContent = 'a few sec';
+ elements.ledAi.style.background = state.aiOn ? 'var(--accent-green)' : '#ff6b6b';
+ elements.ledAi.style.boxShadow = state.aiOn
+   ? '0 0 10px rgba(34,197,94,0.9)'
+   : '0 0 10px rgba(239,68,68,0.95)';
+ elements.toggleAiLabel.textContent = state.aiOn ? 'AI ON' : 'AI OFF';
+ elements.aiMode.textContent = state.aiOn ? 'AUTO' : (state.manual ? 'MANUAL' : 'OFF');
+ setMsLight(elements.aiMs, state.aiRuntime);
 
-  // Manual / Brake
-  setFill(elements.manualFill, state.manual ? 80 : 30);
-  elements.manualActive.textContent = state.manual ? 'ON' : 'OFF';
-  elements.brakeState.textContent = state.brake ? 'ARMED' : 'DISARMED';
-  elements.safeMode.textContent = state.brake ? 'SAFE' : 'OK';
-  setMsLight(elements.manualMs, state.manual ? 0.8 : 0.4);
+ // Manual / Brake
+ setFill(elements.manualFill, state.manual ? 80 : 30);
+ elements.manualActive.textContent = state.manual ? 'ON' : 'OFF';
+ elements.brakeState.textContent = state.brake ? 'ARMED' : 'DISARMED';
+ elements.safeMode.textContent = state.brake ? 'SAFE' : 'OK';
+ setMsLight(elements.manualMs, state.manual ? 0.8 : 0.4);
 
-  // Pool
-  const poolPct = Math.min(100, Math.max(0, (state.pool.change + 0.05)*100));
-  setFill(elements.poolFill, poolPct);
-  elements.tvl.textContent = fmt(state.pool.tvl);
-  elements.tvlChange.textContent = (state.pool.change >= 0 ? '+' : '') + (state.pool.change*100).toFixed(2) + '%';
-  elements.simYield.textContent = state.pool.yield.toFixed(1) + '%';
-  setMsLight(elements.poolMs, 0.8);
+ // Pool
+ const poolPct = Math.min(100, Math.max(0, (state.pool.change + 0.05)*100));
+ setFill(elements.poolFill, poolPct);
+ elements.tvl.textContent = fmt(state.pool.tvl);
+ elements.tvlChange.textContent = (state.pool.change >= 0 ? '+' : '') + (state.pool.change*100).toFixed(2) + '%';
+ elements.simYield.textContent = state.pool.yield.toFixed(1) + '%';
+ setMsLight(elements.poolMs, 0.8);
 
-  // DB
-  const dbPct = Math.max(0, Math.min(100, 100 - state.db.latency));
-  setFill(elements.dbFill, dbPct);
-  elements.dbLatency.textContent = state.db.latency + ' ms';
-  elements.dbWrites.textContent = state.db.writes;
-  elements.dbIntegrity.textContent = state.db.integrity + '%';
-  elements.dbLast.textContent = state.db.last;
-  setMsLight(elements.dbMs, state.db.integrity/100);
+ // DB
+ const dbPct = Math.max(0, Math.min(100, 100 - state.db.latency));
+ setFill(elements.dbFill, dbPct);
+ elements.dbLatency.textContent = state.db.latency + ' ms';
+ elements.dbWrites.textContent = state.db.writes;
+ elements.dbIntegrity.textContent = state.db.integrity + '%';
+ elements.dbLast.textContent = state.db.last;
+ setMsLight(elements.dbMs, state.db.integrity/100);
 
-  // Multi-sig
-  const msPct = state.ms.submitted / Math.max(1, state.ms.required);
-  setFill(elements.msFill, Math.round(msPct*100));
-  elements.msRequired.textContent = state.ms.required;
-  elements.msSubmitted.textContent = state.ms.submitted;
-  elements.msTimelock.textContent = state.ms.timelock;
-  elements.msLast.textContent = '2h ago';
-  setMsLight(elements.msLight, msPct);
+ // Multi-sig
+ const msPct = state.ms.submitted / Math.max(1, state.ms.required);
+ setFill(elements.msFill, Math.round(msPct*100));
+ elements.msRequired.textContent = state.ms.required;
+ elements.msSubmitted.textContent = state.ms.submitted;
+ elements.msTimelock.textContent = state.ms.timelock;
+ elements.msLast.textContent = '2h ago';
+ setMsLight(elements.msLight, msPct);
 
-  // Chain
-  setFill(elements.chainFill, Math.round(state.chain.sync*100));
-  elements.blockHeight.textContent = '#' + fmt(state.chain.block);
-  elements.rpcLatency.textContent = state.chain.rpc.toFixed(2) + ' s';
-  elements.syncPerc.textContent = Math.round(state.chain.sync*100) + '%';
-  setMsLight(elements.chainMs, state.chain.sync);
+ // Chain
+ setFill(elements.chainFill, Math.round(state.chain.sync*100));
+ elements.blockHeight.textContent = '#' + fmt(state.chain.block);
+ elements.rpcLatency.textContent = state.chain.rpc.toFixed(2) + ' s';
+ elements.syncPerc.textContent = Math.round(state.chain.sync*100) + '%';
+ setMsLight(elements.chainMs, state.chain.sync);
 
-  // Layers
-  state.layers.forEach((val, i) => {
-    const pct = Math.round(val*100);
-    setFill(elements.L[i], pct);
-    elements.Lpct[i].textContent = pct + '%';
-    const pulse = 1 + (Math.sin(Date.now()/300 + i)*0.002*(pct/20));
-    elements.L[i].style.transform = `scaleY(${pulse})`;
-  });
+ // 7 vrstvy enginu
+ state.layers.forEach((val, i) => {
+   const pct = Math.round(val*100);
+   setFill(elements.L[i], pct);
+   elements.Lpct[i].textContent = pct + '%';
+   const pulse = 1 + (Math.sin(Date.now()/300 + i)*0.002*(pct/20));
+   elements.L[i].style.transform = `scaleY(${pulse})`;
+ });
 
-  // Throughput
-  setFill(elements.tpFill, Math.min(100, (state.throughput.ops/2000)*100));
-  elements.ops.textContent = fmt(state.throughput.ops);
-  elements.queue.textContent = state.throughput.queue;
-  elements.through.textContent = state.throughput.through;
-  setMsLight(elements.tpMs, 0.85);
+ // Throughput
+ setFill(elements.tpFill, Math.min(100, (state.throughput.ops/2000)*100));
+ elements.ops.textContent = fmt(state.throughput.ops);
+ elements.queue.textContent = state.throughput.queue;
+ elements.through.textContent = state.throughput.through;
+ setMsLight(elements.tpMs, 0.85);
 }
 
-// Tick
+/* === SIMULAČNÍ LOOP === */
 function tick(){
-  state.aiRuntime = Math.max(0.25, Math.min(0.99, state.aiRuntime + (Math.random()-0.5)*0.02));
-  if(Math.random() > 0.88) state.aiInterventions += 1;
-  state.pool.tvl = Math.max(300000, state.pool.tvl + Math.round((Math.random()-0.45)*12000));
-  state.pool.change = Math.max(-0.05, Math.min(0.1, state.pool.change + (Math.random()-0.5)*0.0025));
-  state.chain.block += Math.round(Math.random()*4);
-  state.chain.sync = Math.max(0.7, Math.min(1, state.chain.sync + (Math.random()-0.5)*0.012));
-  state.chain.rpc = Math.max(0.8, Math.min(8, state.chain.rpc + (Math.random()-0.5)*0.12));
-  state.db.latency = Math.max(5, Math.min(300, Math.round(state.db.latency + (Math.random()-0.5)*6)));
-  state.db.writes = Math.max(10, state.db.writes + Math.round((Math.random()-0.5)*8));
-  state.ms.submitted = Math.max(0, Math.min(state.ms.required, state.ms.submitted + (Math.random()>0.86?1:0)));
-  state.layers = state.layers.map(l => Math.max(0.02, Math.min(1, l + (Math.random()-0.5)*0.045)));
-  state.throughput.ops = Math.max(120, Math.min(5000, state.throughput.ops + Math.round((Math.random()-0.5)*140)));
-  state.throughput.queue = Math.max(1, state.throughput.queue + Math.round((Math.random()-0.3)*6));
+ state.aiRuntime = Math.max(0.25, Math.min(0.99, state.aiRuntime + (Math.random()-0.5)*0.02));
+ if(Math.random() > 0.88) state.aiInterventions += 1;
 
-  if(Math.random() < 0.2){
-    const ev = [
-      'AI decision made (sim)',
-      'Pool rebalanced (sim)',
-      'Multisig signature received',
-      'DB checkpoint created',
-      'RPC latency spike detected',
-      'Telemetry snapshot saved',
-      'Manual override performed',
-      'Emergency brake checked (sim)'
-    ];
-    pushLog(ev[Math.floor(Math.random()*ev.length)]);
-  }
+ state.pool.tvl = Math.max(300000, state.pool.tvl + Math.round((Math.random()-0.45)*12000));
+ state.pool.change = Math.max(-0.05, Math.min(0.1, state.pool.change + (Math.random()-0.5)*0.0025));
 
-  render();
+ state.chain.block += Math.round(Math.random()*4);
+ state.chain.sync = Math.max(0.7, Math.min(1, state.chain.sync + (Math.random()-0.5)*0.012));
+ state.chain.rpc = Math.max(0.8, Math.min(8, state.chain.rpc + (Math.random()-0.5)*0.12));
+
+ state.db.latency = Math.max(5, Math.min(300, Math.round(state.db.latency + (Math.random()-0.5)*6)));
+ state.db.writes = Math.max(10, state.db.writes + Math.round((Math.random()-0.5)*8));
+
+ state.ms.submitted = Math.max(0, Math.min(state.ms.required, state.ms.submitted + (Math.random()>0.86?1:0)));
+
+ state.layers = state.layers.map(l => Math.max(0.02, Math.min(1, l + (Math.random()-0.5)*0.045)));
+
+ state.throughput.ops = Math.max(120, Math.min(5000, state.throughput.ops + Math.round((Math.random()-0.5)*140)));
+ state.throughput.queue = Math.max(1, state.throughput.queue + Math.round((Math.random()-0.3)*6));
+
+ if(Math.random() < 0.2){
+   const ev = [
+     'AI decision made (sim)',
+     'Pool rebalanced (sim)',
+     'Multisig signature received',
+     'DB checkpoint created',
+     'RPC latency spike detected',
+     'Telemetry snapshot saved',
+     'Manual override performed',
+     'Emergency brake checked (sim)'
+   ];
+   pushLog(ev[Math.floor(Math.random()*ev.length)]);
+ }
+
+ render();
 }
 
-// Interakce – AI / Manual / Brake
+/* === INTERAKCE TLAČÍTEK === */
 $('#toggleAI').addEventListener('click', e=>{
-  e.preventDefault();
-  state.aiOn = !state.aiOn;
-  if(!state.aiOn) state.manual = true;
-  pushLog(state.aiOn ? 'AI enabled by admin' : 'AI disabled - manual mode');
-  render();
+ e.preventDefault();
+ state.aiOn = !state.aiOn;
+ if(!state.aiOn) state.manual = true;
+ pushLog(state.aiOn ? 'AI enabled by admin' : 'AI disabled - manual mode');
+ render();
 });
 $('#btnManual').addEventListener('click', e=>{
-  e.preventDefault();
-  state.manual = !state.manual;
-  pushLog(state.manual ? 'Manual mode activated' : 'Manual mode deactivated');
-  render();
+ e.preventDefault();
+ state.manual = !state.manual;
+ pushLog(state.manual ? 'Manual mode activated' : 'Manual mode deactivated');
+ render();
 });
 $('#btnBrake').addEventListener('click', e=>{
-  e.preventDefault();
-  const ok = prompt('Emergency Brake — napište EMERGENCY pro potvrzení:');
-  if(ok !== 'EMERGENCY'){
-    alert('Zrušeno');
-    pushLog('Brake cancelled');
-    return;
-  }
-  state.brake = true;
-  state.layers = state.layers.map(()=>0.02);
-  state.aiRuntime = 0.02;
-  pushLog('EMERGENCY BRAKE activated - safe mode');
-  render();
+ e.preventDefault();
+ const ok = prompt('Emergency Brake — napište EMERGENCY pro potvrzení:');
+ if(ok !== 'EMERGENCY'){ alert('Zrušeno'); pushLog('Brake cancelled'); return; }
+ state.brake = true;
+ state.layers = state.layers.map(()=>0.02);
+ state.aiRuntime = 0.02;
+ state.aiOn = false;
+ pushLog('EMERGENCY BRAKE activated - safe mode');
+ render();
 });
 $('#btnSafe').addEventListener('click', e=>{
-  e.preventDefault();
-  state.brake = false;
-  pushLog('Safe mode toggled');
-  render();
+ e.preventDefault();
+ state.brake = false;
+ pushLog('Safe mode toggled');
+ render();
 });
 
-// Pool
 $('#runRebalance').addEventListener('click', e=>{
-  e.preventDefault();
-  state.pool.change += 0.01;
-  pushLog('Rebalance executed (sim)');
-  render();
+ e.preventDefault();
+ state.pool.change += 0.01;
+ pushLog('Rebalance executed (sim)');
+ render();
 });
 $('#viewPools').addEventListener('click', e=>{
-  e.preventDefault();
-  alert('Pools view (demo)');
-  pushLog('Pools viewed');
+ e.preventDefault();
+ alert('Pools view (demo)');
+ pushLog('Pools viewed');
 });
 
-// DB
 $('#dbReindex').addEventListener('click', e=>{
-  e.preventDefault();
-  state.db.latency += 5;
-  pushLog('Reindex triggered (sim)');
-  render();
+ e.preventDefault();
+ state.db.latency += 5;
+ pushLog('Reindex triggered (sim)');
+ render();
 });
 $('#exportAudit').addEventListener('click', e=>{
-  e.preventDefault();
-  pushLog('Audit export requested');
-  alert('Audit export (demo)');
+ e.preventDefault();
+ pushLog('Audit export requested');
+ alert('Audit export (demo)');
 });
 
-// Multi-Sig
 $('#openMs').addEventListener('click', e=>{
-  e.preventDefault();
-  pushLog('Multi-sig opened (sim)');
-  alert('Multi-sig (demo)');
+ e.preventDefault();
+ pushLog('Multi-sig opened (sim)');
+ alert('Multi-sig (demo)');
 });
 $('#downloadAudit').addEventListener('click', e=>{
-  e.preventDefault();
-  pushLog('Audit downloaded');
-  alert('Audit (demo)');
+ e.preventDefault();
+ pushLog('Audit downloaded');
+ alert('Audit (demo)');
 });
 
-// Chain
 $('#refreshChain').addEventListener('click', e=>{
-  e.preventDefault();
-  state.chain.block += 1;
-  pushLog('Chain refreshed (sim)');
-  render();
+ e.preventDefault();
+ state.chain.block += 1;
+ pushLog('Chain refreshed (sim)');
+ render();
 });
 $('#openExplorer').addEventListener('click', e=>{
-  e.preventDefault();
-  pushLog('Explorer opened');
-  alert('Explorer (demo)');
+ e.preventDefault();
+ pushLog('Explorer opened');
+ alert('Explorer (demo)');
 });
 
-// Engine
 $('#engineSim').addEventListener('click', e=>{
-  e.preventDefault();
-  state.layers = state.layers.map(v => Math.min(1, v + 0.05));
-  pushLog('Engine simulation step');
-  render();
+ e.preventDefault();
+ state.layers = state.layers.map(v => Math.min(1, v + 0.05));
+ pushLog('Engine simulation step');
+ render();
 });
 $('#engineReset').addEventListener('click', e=>{
-  e.preventDefault();
-  state.layers = [0.88,0.68,0.81,0.92,0.56,0.61,0.82];
-  pushLog('Engine reset');
-  render();
+ e.preventDefault();
+ state.layers = [0.88,0.68,0.81,0.92,0.56,0.61,0.82];
+ pushLog('Engine reset');
+ render();
 });
 
-// Throughput
 $('#scaleUp').addEventListener('click', e=>{
-  e.preventDefault();
-  state.throughput.ops += 200;
-  pushLog('Scale up requested');
-  render();
+ e.preventDefault();
+ state.throughput.ops += 200;
+ pushLog('Scale up requested');
+ render();
 });
 $('#scaleDown').addEventListener('click', e=>{
-  e.preventDefault();
-  state.throughput.ops = Math.max(200, state.throughput.ops - 200);
-  pushLog('Scale down requested');
-  render();
+ e.preventDefault();
+ state.throughput.ops = Math.max(200, state.throughput.ops - 200);
+ pushLog('Scale down requested');
+ render();
 });
 
-// Log panel
+/* LOG tlačítka */
 $('#clearLogs').addEventListener('click', e=>{
-  e.preventDefault();
-  state.logs = [];
-  renderLogs();
-  pushLog('Logs cleared');
+ e.preventDefault();
+ state.logs = [];
+ renderLogs();
+ pushLog('Logs cleared');
 });
 $('#exportLogs').addEventListener('click', e=>{
-  e.preventDefault();
-  const txt = state.logs.map(l => `${l.ts} - ${l.msg}`).join('\n');
-  const blob = new Blob([txt],{type:'text/plain'});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'ayas7_logs.txt';
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-  URL.revokeObjectURL(url);
-  pushLog('Logs exported');
+ e.preventDefault();
+ const txt = state.logs.map(l => `${l.ts} - ${l.msg}`).join('\n');
+ const blob = new Blob([txt],{type:'text/plain'});
+ const url = URL.createObjectURL(blob);
+ const a = document.createElement('a');
+ a.href = url;
+ a.download = 'ayas7_logs.txt';
+ document.body.appendChild(a);
+ a.click();
+ a.remove();
+ URL.revokeObjectURL(url);
+ pushLog('Logs exported');
 });
 
-// Expand – tři tečky
-$$('.expand-btn').forEach(btn=>{
-  btn.addEventListener('click', e=>{
-    const card = e.target.closest('.card');
-    card.classList.toggle('expanded');
-    if(card.classList.contains('expanded')){
-      card.scrollIntoView({behavior:'smooth',block:'center'});
-    }
-  });
+/* === ROZBALOVÁNÍ BOXŮ PŘES ČÍSLA 01–09 === */
+const indexPills = $$('.card-index');
+indexPills.forEach(pill=>{
+ pill.addEventListener('click', ()=>{
+   const card = pill.closest('.card');
+   const already = card.classList.contains('expanded');
+   $$('.card.expanded').forEach(c=>c.classList.remove('expanded'));
+   if(!already){
+     card.classList.add('expanded');
+     card.scrollIntoView({behavior:'smooth',block:'center'});
+   }
+ });
+});
+document.addEventListener('keydown', e=>{
+ if(e.key === 'Escape'){
+   $$('.card.expanded').forEach(c=>c.classList.remove('expanded'));
+ }
 });
 
-// Hover efekty
+/* Hover efekt */
 $$('.card').forEach(c=>{
-  c.addEventListener('mouseenter', ()=>{
-    c.style.boxShadow='0 30px 80px rgba(2,6,23,0.95)';
-  });
-  c.addEventListener('mouseleave', ()=>{
-    c.style.boxShadow='0 18px 40px rgba(2,6,23,0.7)';
-  });
+ c.addEventListener('mouseenter', ()=>{ c.style.boxShadow='0 30px 80px rgba(2,6,23,0.95)'; });
+ c.addEventListener('mouseleave', ()=>{ c.style.boxShadow='0 18px 40px rgba(2,6,23,0.7)'; });
 });
 
-// Komunikační centrum – mailto + WhatsApp
-$('#btnContactMail').addEventListener('click', ()=>{
-  const subject = encodeURIComponent('AYAS-7 · Control Room · Status snapshot');
-  const body = encodeURIComponent('Dobrý den,\n\nzasílám status snapshot z AYAS-7 Control Room (demo).\n\nS pozdravem\nAYAS-7 Engine');
-  window.location.href = `mailto:petrholoubek39@gmail.com?subject=${subject}&body=${body}`;
-});
-$('#btnContactWA').addEventListener('click', ()=>{
-  const text = encodeURIComponent('Dobrý den, píšu z AYAS-7 Control Room (demo).');
-  window.open(`https://wa.me/420778060622?text=${text}`,'_blank');
-});
-
-// Seed logy
+/* Seed logů */
 pushLog('AYAS-7 admin initialized');
 pushLog('Telemetry link established (demo)');
 pushLog('Simulations active');
 
-// Loop
+/* Loop */
 render();
-const loopInterval = 280;
-setInterval(tick, loopInterval);
+setInterval(tick, 280);
 
-// Keyboard zkratky
+/* Klávesové zkratky */
 document.addEventListener('keydown', (e)=>{
-  if(e.key === 'm') { $('#btnManual').click(); }
-  if(e.key === 'a') { $('#toggleAI').click(); }
-  if(e.key === 'b') { $('#btnBrake').click(); }
+ if(e.key === 'm') { $('#btnManual').click(); }
+ if(e.key === 'a') { $('#toggleAI').click(); }
+ if(e.key === 'b') { $('#btnBrake').click(); }
 });
 </script>
+<script src="assets/chip-core.js"></script>
 </body>
 </html>
