@@ -443,6 +443,121 @@ main{
   .title{font-size:20px}
   .bottom-bar{flex-direction:column}
 }
+/* ================================
+   S2 – GLASS + NEON CONTROL ROOM UPGRADE
+   ================================= */
+
+/* Pozadí ultra-clean (odstraní pruh/cáru) */
+body {
+    background: radial-gradient(circle at 50% 0%, #001529, #000811 60%, #000000 100%);
+    background-attachment: fixed;
+}
+
+/* GRID – velikost vrácena na původní scale */
+#cardsGrid {
+    width: 95%;
+    max-width: 1480px;
+    margin: 0 auto;
+}
+
+/* ★ BOX CORE – high clarity + sklo + neon */
+.card {
+    backdrop-filter: blur(22px) saturate(140%);
+    -webkit-backdrop-filter: blur(22px) saturate(140%);
+    background: rgba(0, 17, 37, 0.45);
+    border: 1px solid rgba(0,255,255,0.06);
+    box-shadow: 0 18px 40px rgba(0,0,0,0.72);
+    transition: transform .35s ease, box-shadow .35s ease;
+}
+
+/* HOVER — větší hloubka, luxusní efekt */
+.card:hover {
+    transform: translateY(-4px) scale(1.015);
+    box-shadow: 0 38px 100px rgba(0,200,255,0.5);
+}
+
+/* EXPAND — hluboké zvětšení */
+.card.expanded {
+    transform: scale(1.08);
+    z-index: 20;
+    box-shadow: 0 42px 110px rgba(0,255,255,0.58);
+}
+
+/* INDEX 01-09 — nová SVÍTÍCÍ varianta */
+.card-index .num {
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: .04em;
+    text-shadow: 0 0 12px currentColor, 0 0 25px currentColor;
+    filter: drop-shadow(0 0 8px currentColor);
+}
+
+/* Při najetí MYSÍ — index funguje jako tlačítko */
+.card-index:hover .num {
+    transform: scale(1.18);
+}
+
+/* Individuální LED barvy 01–09 (možno měnit později) */
+.card-index[data-accent="blue"] .num { color:#4fa3ff; }
+.card-index[data-accent="yellow"] .num { color:#f6d365; }
+.card-index[data-accent="cyan"] .num { color:#7de2ff; }
+.card-index[data-accent="green"] .num { color:#00ff9d; }
+.card-index[data-accent="red"] .num { color:#ff6b6b; }
+.card-index[data-accent="purple"] .num { color:#c77dff; }
+.card-index[data-accent="teal"] .num { color:#00e7c4; }
+.card-index[data-accent="orange"] .num { color:#ff9f43; }
+.card-index[data-accent="white"] .num { color:#c9e6ff; }
+
+/* LED ACTION FEEDBAR — teď svítí mnohem víc */
+.led-bar > div {
+    transition: width .25s linear, background .25s, box-shadow .45s;
+}
+/* ========================================================
+   S2-STEP-2 – REALTIME UI GLOW + LED SIGNAL ANIMATION
+   ======================================================== */
+
+
+/***  🔵 AI LIVE GLOW ***/
+.card[data-card="ai"] .led{
+    filter: drop-shadow(0 0 10px rgba(34,197,94,.9));
+    animation:pulseGreen 2.4s infinite ease-in-out;
+}
+@keyframes pulseGreen{
+    0%   {box-shadow:0 0 4px rgba(34,197,94,.4);}
+    50%  {box-shadow:0 0 16px rgba(34,197,94,.9);}
+    100% {box-shadow:0 0 4px rgba(34,197,94,.4);}
+}
+
+/***  🔥 PROVOZ / ENGINE – živý tep systému ***/
+.engine-bar{
+    transition:width 0.35s ease-out,background 0.5s,box-shadow 0.5s;
+    animation:layerPulse 4s infinite ease-in-out;
+    transform-origin:bottom;
+}
+@keyframes layerPulse{
+    0%{transform:scaleY(1);}
+    50%{transform:scaleY(1.08);}
+    100%{transform:scaleY(1);}
+}
+
+/***  🟦 HOVER UPGRADE – jemné rozsvícení panelu ***/
+.card{
+  transition:box-shadow .45s,transform .45s;
+}
+.card:hover{
+  transform:translateY(-6px);
+  box-shadow:0px 30px 85px rgba(10,16,60,.85);
+}
+
+/*** 🟢 LED + STATUS STRIP silnější jas ***/
+.led-fill{
+    transition:width .45s,box-shadow .45s;
+    filter: drop-shadow(0 0 8px rgba(79,163,255,.8));
+}
+.led-fill:hover{
+    filter:drop-shadow(0 0 12px rgba(79,163,255,1));
+}
+
 </style>
 </head>
 <body>
@@ -931,7 +1046,35 @@ document.addEventListener("keydown",e=>{
             .forEach(c=>c.classList.remove("expanded"));
   }
 });
-</script>
 
+</script>
+document.addEventListener("DOMContentLoaded", ()=>{
+
+    /* === FIX: OTEVÍRÁNÍ BOXŮ 01–09 === */
+    document.querySelectorAll(".card-index").forEach(pill=>{
+        pill.addEventListener("click",()=>{
+            const card = pill.closest(".card");
+            const open = card.classList.contains("expanded");
+
+            document.querySelectorAll(".card.expanded")
+                .forEach(c=>c.classList.remove("expanded"));
+
+            if(!open){
+                card.classList.add("expanded");
+                card.scrollIntoView({behavior:"smooth", block:"center"});
+            }
+        });
+    });
+
+    /* ESC zavře */
+    document.addEventListener("keydown", e=>{
+        if(e.key==="Escape"){
+            document.querySelectorAll(".card.expanded")
+              .forEach(c=>c.classList.remove("expanded"));
+        }
+    });
+
+});
+</script>
 </body>
 </html>
