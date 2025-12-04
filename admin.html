@@ -1047,34 +1047,55 @@ document.addEventListener("keydown",e=>{
   }
 });
 
-</script>
-document.addEventListener("DOMContentLoaded", ()=>{
+<script>
+window.addEventListener("load", ()=>{
 
-    /* === FIX: OTEVÍRÁNÍ BOXŮ 01–09 === */
-    document.querySelectorAll(".card-index").forEach(pill=>{
-        pill.addEventListener("click",()=>{
-            const card = pill.closest(".card");
-            const open = card.classList.contains("expanded");
+  console.log("AYAS7 UI → Expand listener ACTIVE"); // pro ověření v konzoli
 
-            document.querySelectorAll(".card.expanded")
-                .forEach(c=>c.classList.remove("expanded"));
+  document.querySelectorAll(".card-index").forEach(pill=>{
+    pill.addEventListener("click", ()=>{
+        const card = pill.closest(".card");
+        const already = card.classList.contains("expanded");
 
-            if(!open){
-                card.classList.add("expanded");
-                card.scrollIntoView({behavior:"smooth", block:"center"});
-            }
-        });
-    });
-
-    /* ESC zavře */
-    document.addEventListener("keydown", e=>{
-        if(e.key==="Escape"){
-            document.querySelectorAll(".card.expanded")
+        document.querySelectorAll(".card.expanded")
               .forEach(c=>c.classList.remove("expanded"));
+
+        if(!already){
+            card.classList.add("expanded");
+            card.scrollIntoView({behavior:"smooth", block:"center"});
         }
     });
+  });
 
+  // ESC = zavře rozbalené boxy
+  document.addEventListener("keydown", e=>{
+      if(e.key==="Escape"){
+        document.querySelectorAll(".card.expanded")
+              .forEach(c=>c.classList.remove("expanded"));
+      }
+  });
+
+});
+</script>
+
+<!-- CHIP CORE -->
+<script src="assets/js/chip-core.js"></script>
+
+<!-- FIX OTVÍRÁNÍ BOXŮ -->
+<script>
+document.querySelectorAll(".card-index").forEach(pill=>{
+    pill.addEventListener("click",()=>{
+        const card=pill.closest(".card");
+        const open=card.classList.contains("expanded");
+        document.querySelectorAll(".card.expanded").forEach(c=>c.classList.remove("expanded"));
+        if(!open) card.classList.add("expanded");
+    });
+});
+
+document.addEventListener("keydown",e=>{
+    if(e.key==="Escape"){ document.querySelectorAll(".card.expanded").forEach(c=>c.classList.remove("expanded")); }
 });
 </script>
 </body>
 </html>
+
