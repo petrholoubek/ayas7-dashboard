@@ -884,33 +884,41 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
 });
-/* -------------------  BIND NA CHIP CORE ------------------- */
+/* ==================== BIND NA CHIP-CORE ==================== */
+
+function safeUpdate(fn){
+  try { fn(); } catch(e){ /* ticho = žádná chyba na UI */ }
+}
 
 if(window.AYASCore){
-    console.log("🧠 CORE DETECTED – LIVE MODE 🔥");
+  console.log("🧠 CORE DETECTED – LIVE MODE 🔥");
 
-    AYASCore.subscribe(state=>{
-        updateCharts(state);
-        updateLED(state);
-    });
+  AYASCore.subscribe(state=>{
+    safeUpdate(()=>updateCharts(state));
+    safeUpdate(()=>updateLED(state));
+  });
 
-    // 🔥 Aktivace engine až po detekci – bezpečné
-    AYASCore.setMode("ACTIVE");   // zapnutí motoru
-    AYASCore.adjustNodes(5);      // počet uzlů → LED ožijí
-    AYASCore.adjustYield(45);     // výnos → graf se rozběhne
+  // Aktivace enginu – jen pokud existuje!
+  AYASCore.setMode("ACTIVE");
+  AYASCore.adjustNodes(5);
+  AYASCore.adjustYield(50);
 
 } else {
 
-    console.warn("⚠ CORE NOT FOUND – fallback activated.");
+  console.warn("⚠ CORE NOT FOUND – fallback activated.");
 
-    setInterval(()=>{
-        const d = chartUsdtz.data.datasets[0].data;
-        d.push((d[d.length-1]||5.4)+(Math.random()-0.5)*.15);
-        if(d.length>32) d.shift();
-        chartUsdtz.update("none");
-    },1300);
+  setInterval(()=>safeUpdate(()=>{
+      const d=chartUsdtz.data?.datasets?.[0]?.data;
+      const g=chartGusd.data?.datasets?.[0]?.data;
+      if(!d||!g) return;
+
+      d.push((d.at(-1)+Math.random()*.1).toFixed(2)); if(d.length>32) d.shift();
+      g.push((g.at(-1)+Math.random()*.05).toFixed(2)); if(g.length>32) g.shift();
+
+      chartUsdtz.update("none");
+      chartGusd.update("none");
+  }),1300);
 }
-
 </script>
 <script src="assets/chip-core.js"></script>
 
