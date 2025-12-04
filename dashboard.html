@@ -863,6 +863,92 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
+  <!-- 2) DASHBOARD – NAPOJENÍ NA CORE + GRAFY + LED PÁSKY -->
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+  // helper pro náhradní generování (fallback)
+  function generateSeries(base, vol, len = 16) {
+    const arr = [];
+    let current = base;
+    for (let i = 0; i < len; i++) {
+      const delta = (Math.random() - 0.5) * vol;
+      current = Math.max(base - 0.6, current + delta);
+      arr.push(Number(current.toFixed(2)));
+    }
+    return arr;
+  }
+
+  const ctxUsdtz = document.getElementById('chartUsdtz');
+  const ctxGusd  = document.getElementById('chartGusd');
+
+  // pokud plátna neexistují, nic neděláme
+  if (!ctxUsdtz || !ctxGusd) return;
+
+  // inicializační data (fallback, když není CORE)
+  const initUsdtz = generateSeries(5.4, 0.25);
+  const initGusd  = generateSeries(3.2, 0.18);
+
+  const chartUsdtz = new Chart(ctxUsdtz.getContext('2d'), {
+    type: 'line',
+    data: {
+      labels: initUsdtz.map((_, i) => 'T' + (i + 1)),
+      datasets: [{
+        data: initUsdtz,
+        borderColor: '#4fa3ff',
+        backgroundColor: 'rgba(79,163,255,0.05)',
+        borderWidth: 2,
+        tension: 0.35,
+        pointRadius: 0
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: {
+          grid: { color: 'rgba(148,163,184,0.25)' },
+          ticks: { display: false }
+        },
+        y: {
+          grid: { color: 'rgba(148,163,184,0.25)' },
+          ticks: { display: false }
+        }
+      }
+    }
+  });
+
+  const chartGusd = new Chart(ctxGusd.getContext('2d'), {
+    type: 'line',
+    data: {
+      labels: initGusd.map((_, i) => 'T' + (i + 1)),
+      datasets: [{
+        data: initGusd,
+        borderColor: '#22c55e',
+        backgroundColor: 'rgba(34,197,94,0.05)',
+        borderWidth: 2,
+        tension: 0.35,
+        pointRadius: 0
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: {
+          grid: { color: 'rgba(148,163,184,0.25)' },
+          ticks: { display: false }
+        },
+        y: {
+          grid: { color: 'rgba(148,163,184,0.25)' },
+          ticks: { display: false }
+        }
+      }
+    }
+  });
+
   // FUNKCE: aktualizace grafů z Core.history
   function updateChartsFromCore(state) {
     if (!state || !Array.isArray(state.history) || state.history.length === 0) return;
@@ -874,22 +960,48 @@ document.addEventListener("DOMContentLoaded", () => {
     chartUsdtz.data.datasets[0].data = h.map(p => (p.yieldRate ?? 0));
     chartUsdtz.update('none');
 
-    // třeba GUSD svážeme na nodesOnline (jen vizuální mapping)
+    // GUSD – mapnuto na nodesOnline (jen vizuálně pro demo)
     chartGusd.data.labels = labels;
     chartGusd.data.datasets[0].data = h.map(p => (p.nodesOnline ?? 0) * 0.3 + 3);
     chartGusd.update('none');
   }
 
-  // Pokud máme AYASCore (z chip-core.js), napojíme se:
+  // FUNKCE: realtime update LED pásek (card-bar-fill) z Core stavu
+  function updateLedBarsFromCore(state) {
+    if (!state) return;
+
+    const layers = [
+      { sel: ".cards-grid .dash-card:nth-child(1) .card-bar-fill", value: state.yieldRate       }, // L1 Token
+      { sel: ".cards-grid .dash-card:nth-child(2) .card-bar-fill", value: state.yieldRate * 0.87}, // L2 Liquidity
+      { sel: ".cards-grid .dash-card:nth-child(3) .card-bar-fill", value: state.yieldRate * 1.20}, // L3 Yield
+      { sel: ".cards-grid .dash-card:nth-child(4) .card-bar-fill", value: 100 - state.yieldRate }, // L4 Risk
+      { sel: ".cards-grid .dash-card:nth-child(5) .card-bar-fill", value: state.nodesOnline * 3 }, // L5 FinTech / online
+      { sel: ".cards-grid .dash-card:nth-child(6) .card-bar-fill", value: state.nodesOnline * 2 }, // L6 Core
+      { sel: ".cards-grid .dash-card:nth-child(7) .card-bar-fill", value: state.yieldRate * 1.4 }, // L7 Analytics
+      { sel: ".cards-grid .dash-card:nth-child(8) .card-bar-fill", value: state.yieldRate       }, // USDt.z graf karta
+      { sel: ".cards-grid .dash-card:nth-child(9) .card-bar-fill", value: state.nodesOnline * 2 }  // GUSD graf karta
+    ];
+
+    layers.forEach(L => {
+      const el = document.querySelector(L.sel);
+      if (!el) return;
+      let v = Number(L.value || 0);
+      if (isNaN(v)) v = 0;
+      v = Math.max(0, Math.min(100, v));
+      el.style.setProperty("--fill", v + "%");
+    });
+  }
+
+  // NAPOJENÍ NA AYASCore
   if (window.AYASCore && typeof AYASCore.subscribe === "function") {
     AYASCore.subscribe((state) => {
+      // grafy
       updateChartsFromCore(state);
-
-      // volitelně: můžeš sem doplnit i další live metriky podle state.*
-      // např. update nějakého textu, LED indikátorů atd.
+      // LED pásky
+      updateLedBarsFromCore(state);
     });
   } else {
-    // fallback – drobná animace grafů jako dosud, když Core neběží
+    // fallback – jemná animace grafů, když Core neběží
     setInterval(() => {
       const d1 = chartUsdtz.data.datasets[0].data;
       const last1 = d1[d1.length - 1] ?? 5.4;
@@ -907,6 +1019,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 });
 </script>
+
 
 </body>
 </html>
