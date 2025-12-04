@@ -854,6 +854,10 @@ document.addEventListener("DOMContentLoaded",()=>{
       chartUsdtz.update("none");
     },1300);
   }
+// 🔥 Aktivace engine při načtení stránky
+AYASCore.setMode("ACTIVE");     // motor běží
+AYASCore.adjustNodes(5);        // rozsvítí LED podle počtu uzlů
+AYASCore.adjustYield(45);       // rozjede graf i výnosové bar
 
 });
 </script>
