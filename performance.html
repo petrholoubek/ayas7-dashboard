@@ -900,6 +900,72 @@ html, #msg_body {
      }
    });
  </script>
+<!-- 🔥 AYAS-7 Performance Engine Runtime -->
+<script>
+document.addEventListener("DOMContentLoaded",()=>{
+
+    console.log("📈 Performance Engine INIT");
+
+    // KONTROLA CORE
+    const coreLive = (window.AYASCore && typeof AYASCore.subscribe==="function");
+    if(coreLive) console.log("🧠 CORE CONNECTED → LIVE DATA MODE");
+    else console.warn("⚠ CORE NOT FOUND → fallback simulation running");
+
+    /* 🧠 LIVE DATA – pokud existuje AYAS-7 Core */
+    if(coreLive){
+
+      AYASCore.subscribe(state=>{
+        updateMainChart(state);
+        updateLayers(state);
+      });
+
+    } else {
+
+      /* 🟡  SIMULACE – bez chip-core.js */
+      setInterval(()=>{
+        perfMainChart.data.datasets[0].data.push(
+          perfMainChart.data.datasets[0].data.slice(-1)[0] + (Math.random()*25)
+        );
+        perfMainChart.data.datasets[1].data.push(
+          perfMainChart.data.datasets[1].data.slice(-1)[0] + (Math.random()*10)
+        );
+        if(perfMainChart.data.datasets[0].data.length>12){
+          perfMainChart.data.datasets[0].data.shift();
+          perfMainChart.data.datasets[1].data.shift();
+        }
+        perfMainChart.update("none");
+      },1000);
+
+      setInterval(()=>{
+        let L = layersChart.data.datasets[0].data;
+        let i = Math.floor(Math.random()*7);
+        L[i] = Math.max(2,Math.min(7, L[i] + (Math.random()-0.5)));
+        layersChart.update("none");
+      },900);
+    }
+
+    /* 🔥 FUNKCE – UPDATE grafů na základě CORE state */
+    function updateMainChart(state){
+      if(!state.history?.length) return;
+      const h = state.history.slice(-12);
+      perfMainChart.data.datasets[0].data = h.map(p=>10000+(p.yieldRate*120));   // USDt.z
+      perfMainChart.data.datasets[1].data = h.map(p=>10000+(p.nodesOnline*80));  // GUSD
+      perfMainChart.update("none");
+    }
+    function updateLayers(state){
+      const L = layersChart.data.datasets[0].data;
+      L[0]=state.yieldRate*0.08;
+      L[1]=state.yieldRate*0.09;
+      L[2]=state.yieldRate*0.07;
+      L[3]=5-(state.yieldRate*0.03);
+      L[4]=state.nodesOnline*0.5;
+      L[5]=state.nodesOnline*0.35;
+      L[6]=state.yieldRate*0.06;
+      layersChart.update("none");
+    }
+
+});
+</script>
 
 </body>
 </html>
