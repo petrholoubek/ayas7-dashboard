@@ -875,5 +875,44 @@ document.addEventListener("DOMContentLoaded", () => {
 
 });
 </script>
+<script>
+document.addEventListener("DOMContentLoaded",()=>{
+
+/* ====== ŽIVÝ ENGINE PRO LED BAR + % ====== */
+
+let bars = [];
+document.querySelectorAll(".card-bar-wrap").forEach((wrap,i)=>{
+    const bar = wrap.querySelector(".card-bar-fill");
+    const label = wrap.querySelector(".card-bar-label span:last-child");
+
+    if(bar && label){
+        // inicializace
+        let v = parseFloat(bar.style.getPropertyValue("--fill")) || 50;
+
+        // nahradíme statický text živým ukazatelem
+        label.innerHTML = `<b id="pct-${i}" style="color:#4ade80">${Math.round(v)}%</b>`;
+
+        bars.push({el:bar, id:`pct-${i}`, val:v});
+    }
+});
+
+/* ====== Hlavní živý pulsovací loop ====== */
+
+setInterval(()=>{
+    bars.forEach(b=>{
+        // generujeme nový výkon (živý puls)
+        let delta = (Math.random() - 0.5) * 6;       // jemný pohyb ±6 %
+        b.val = Math.max(10, Math.min(95, b.val + delta));
+
+        // aplikujeme do LED i textu
+        b.el.style.setProperty("--fill", b.val+"%");
+        document.getElementById(b.id).innerText = Math.round(b.val)+"%";
+
+    });
+},900);   // rychlost animace – zrychlení = snížit hodnotu
+
+});
+</script>
+
 </body>
 </html>
