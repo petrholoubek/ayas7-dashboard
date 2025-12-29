@@ -657,9 +657,9 @@ p, span, label, td, th, li, a, div {
          <span class="page-eyebrow-dot"></span>
          Layer 1 · Token Layer
        </div>
-       <h1 class="page-title">Token Layer – USDt.z, GUSD &amp; WW-KEY</h1>
+       <h1 class="page-title">Token Layer – WW-UNIT, WW-RESERVE &amp; WW-KEY</h1>
        <p class="page-subtitle">
-         Základní vrstva AYAS-7. Definuje emisi, distribuci a propojení tokenů USDt.z, GUSD a interního klíče WW-KEY.
+         Základní vrstva AYAS-7. Definuje emisi, distribuci a propojení tokenů WW-UNIT, WW-RESERVE a interního klíče WW-KEY.
        </p>
      </div>
 
@@ -683,17 +683,17 @@ p, span, label, td, th, li, a, div {
 
          <table class="token-stats">
            <tr>
-             <td class="token-stats-label">USDt.z – celková emise</td>
+             <td class="token-stats-label">WW-UNIT – celková emise</td>
              <td class="token-stats-value">
                <span>1&nbsp;000&nbsp;000&nbsp;000</span>
-               <span class="token-stats-tag">USDt.z</span>
+               <span class="token-stats-tag">WW-UNIT</span>
              </td>
            </tr>
            <tr>
-             <td class="token-stats-label">GUSD – rezervní stablecoin</td>
+             <td class="token-stats-label">WW-RESERVE – rezervní stablecoin</td>
              <td class="token-stats-value">
                <span>100&nbsp;000&nbsp;000</span>
-               <span class="token-stats-tag">GUSD</span>
+               <span class="token-stats-tag">WW-RESERVE</span>
              </td>
            </tr>
            <tr>
@@ -704,13 +704,13 @@ p, span, label, td, th, li, a, div {
              </td>
            </tr>
            <tr>
-             <td class="token-stats-label">Průměrné zhodnocení USDt.z</td>
+             <td class="token-stats-label">Průměrné zhodnocení WW-UNIT</td>
              <td class="token-stats-value">
                <span>+5,2&nbsp;%</span>
              </td>
            </tr>
            <tr>
-             <td class="token-stats-label">Průměrné zhodnocení GUSD</td>
+             <td class="token-stats-label">Průměrné zhodnocení WW-RESERVE</td>
              <td class="token-stats-value">
                <span>+3,1&nbsp;%</span>
              </td>
@@ -774,7 +774,7 @@ p, span, label, td, th, li, a, div {
          </div>
 
          <p class="token-card-text">
-           Interní model: 1 WW-KEY = 25 CZK. V ostré verzi lze navázat na živý kurz USDT / GUSD.
+           Interní model: 1 WW-KEY = 25 CZK. V ostré verzi lze navázat na živý kurz WW-UNIT / WW-RESERVE.
          </p>
 
          <div class="form-group">
@@ -809,7 +809,7 @@ p, span, label, td, th, li, a, div {
        <article class="chart-card">
          <div class="chart-title">Vývoj tokenového portfolia (model)</div>
          <div class="chart-subtitle">
-           Křivkový graf ukazuje modelovaný růst kombinace USDt.z + GUSD + reinvestované WW-KEY.
+           Křivkový graf ukazuje modelovaný růst kombinace WW-UNIT + WW-RESRVE + reinvestované WW-KEY.
          </div>
 
          <div class="chart-wrap">
@@ -828,13 +828,13 @@ p, span, label, td, th, li, a, div {
            <div class="info-block-title">Tok: vklad → token → výkon</div>
            <p>
              1. Člen vloží kapitál ve FIAT nebo kryptu.  
-             2. Token Layer přepočte vklad na WW-KEY a rozdělí USDt.z / GUSD mezi člena a rezervy.  
+             2. Token Layer přepočte vklad na WW-KEY a rozdělí WW-UNIT / WW-RESERVE mezi člena a rezervy.  
              3. WW-KEY putují do výkonného motoru (Layer 2–7), kde generují výnos.
            </p>
 
            <ul class="info-list">
-             <li><b>USDt.z</b> – hlavní výkonný stablecoin pro strategie AYAS-7.</li>
-             <li><b>GUSD</b> – rezervní stabilizační token pro řízení rizika.</li>
+             <li><b>WW-UNIT</b> – hlavní výkonný stablecoin pro strategie AYAS-7.</li>
+             <li><b>WW-RESERVE</b> – rezervní stabilizační token pro řízení rizika.</li>
              <li><b>WW-KEY</b> – klíč, podle kterého se rozdělují benefity zpět členům.</li>
            </ul>
 
@@ -890,7 +890,7 @@ p, span, label, td, th, li, a, div {
      data: {
        labels: ['M1','M2','M3','M4','M5','M6','M7','M8','M9','M10','M11','M12'],
        datasets: [{
-         label: 'Kombinace USDt.z + GUSD + WW-KEY',
+         label: 'Kombinace WW-UNIT + WW-RESERVE + WW-KEY',
          data: [100, 102, 104.5, 107.2, 110.5, 114.3, 118.9, 123.4, 128.7, 134.2, 140.8, 147.5],
          borderColor: '#4fa3ff',
          backgroundColor: 'rgba(79,163,255,0.18)',
