@@ -644,11 +644,11 @@ p, span, label, td, th, li, a, div {
            Rozdělení likvidity mezi hlavní páry na DEXu. V ostré verzi napojíme přímo na on-chain data.
          </p>
          <div class="liq-row">
-           <span class="liq-label">Pool USDt.z / BUSD</span>
+           <span class="liq-label">Pool WW-UNIT / BUSD</span>
            <span class="liq-value">45&nbsp;%</span>
          </div>
          <div class="liq-row">
-           <span class="liq-label">Pool GUSD / BUSD</span>
+           <span class="liq-label">Pool WW-RESERVE / BUSD</span>
            <span class="liq-value">30&nbsp;%</span>
          </div>
          <div class="liq-row">
@@ -699,7 +699,7 @@ p, span, label, td, th, li, a, div {
            </div>
          </div>
          <p class="liq-card-text">
-           Liquidity Engine přepíná kapitál mezi USDt.z, GUSD a dalšími páry podle spreadu, fee a rizika.
+           Liquidity Engine přepíná kapitál mezi WW-UNIT, WW-RESERVE a dalšími páry podle spreadu, fee a rizika.
          </p>
          <div class="liq-row">
            <span class="liq-label">Target výnos (p.a.)</span>
@@ -800,7 +800,7 @@ p, span, label, td, th, li, a, div {
            </div>
            <div class="sim-result" id="sim-result-text">
              Při vkladu <b>100&nbsp;000&nbsp;CZK</b> a risk profilu <b>5/10</b> jde:
-             <b>50&nbsp;%</b> do poolu USDt.z, <b>30&nbsp;%</b> do GUSD a <b>20&nbsp;%</b> do rezervy.
+             <b>50&nbsp;%</b> do poolu WW-UNIT, <b>30&nbsp;%</b> do WW-RESERVE a <b>20&nbsp;%</b> do rezervy.
            </div>
          </div>
 
@@ -867,7 +867,7 @@ p, span, label, td, th, li, a, div {
    const liqChart = new Chart(ctx, {
      type: 'doughnut',
      data: {
-       labels: ['USDt.z pool', 'GUSD pool', 'Rezervní fond'],
+       labels: ['WW-UNIT pool', 'WW-RESERVE pool', 'Rezervní fond'],
        datasets: [{
          data: [initialSplit.usd, initialSplit.gusd, initialSplit.reserve],
          backgroundColor: ['#22c55e', '#4f8edc', '#6b7280'],
@@ -895,8 +895,8 @@ p, span, label, td, th, li, a, div {
      const fmt = new Intl.NumberFormat('cs-CZ');
      resultText.innerHTML =
        `Při vkladu <b>${fmt.format(amount)}&nbsp;CZK</b> a risk profilu <b>${risk}/10</b> jde: ` +
-       `<b>${split.usd}&nbsp;%</b> do poolu USDt.z, ` +
-       `<b>${split.gusd}&nbsp;%</b> do GUSD a <b>${split.reserve}&nbsp;%</b> do rezervy.`;
+       `<b>${split.usd}&nbsp;%</b> do poolu WW-UNIT, ` +
+       `<b>${split.gusd}&nbsp;%</b> do WW-RESERVE a <b>${split.reserve}&nbsp;%</b> do rezervy.`;
 
      liqChart.data.datasets[0].data = [split.usd, split.gusd, split.reserve];
      liqChart.update();
