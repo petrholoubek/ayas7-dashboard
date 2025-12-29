@@ -522,7 +522,7 @@
     <h1 class="dash-title">AYAS-7 Dashboard · Přehled vrstev &amp; tokenů</h1>
     <p class="dash-sub">
       Devět karet – sedm vrstev výkonného motoru AYAS-7, plus živý přehled tokenů
-      <b>USDt.z</b> a <b>GUSD</b>. Každá karta má svůj vlastní „puls“ výkonu.
+      <b>WW-UNIT</b> a <b>WW-RESRVE</b>. Každá karta má svůj vlastní „puls“ výkonu.
     </p>
   </header>
 
@@ -535,7 +535,7 @@
       </div>
       <h2 class="card-title">Distribuce tokenů</h2>
       <p class="card-sub">
-        Primární vrstva správy USDt.z a GUSD – přidělení mezi členské účty a rezervy družstva.
+        Primární vrstva správy WW-UNIT a WW-RESRVE – přidělení mezi členské účty a rezervy družstva.
       </p>
       <div class="card-bar-wrap">
         <div class="card-bar-label">
@@ -546,8 +546,8 @@
       </div>
       <div class="card-footer-row">
         <div>
-          <div class="card-metric-main">Aktivní alokace: 1 000 000 USDt.z</div>
-          <div>Rezerva GUSD: 250 000</div>
+          <div class="card-metric-main">Aktivní alokace: 1 000 000 WW-UNIT</div>
+          <div>Rezerva WW-RESRVE: 250 000</div>
         </div>
         <a href="token-layer.html" class="card-link">Detail vrstvy</a>
       </div>
@@ -573,7 +573,7 @@
       <div class="card-footer-row">
         <div>
           <div class="card-metric-main">TVL: 2.4&nbsp;mil. USD</div>
-          <div>LP pooly: USDt.z / GUSD / BNB</div>
+          <div>LP pooly: WW-UNIT / WW-RESRVE / BNB</div>
         </div>
         <a href="liquidity-engine.html" class="card-link">Detail vrstvy</a>
       </div>
@@ -709,15 +709,15 @@
       </div>
     </article>
 
-    <!-- 8: USDt.z graf -->
+    <!-- 8: WW-UNIT graf -->
     <article class="dash-card">
       <div class="card-badge">
         <span class="card-dot"></span>
-        Token USDt.z · Výkon
+        Token WW-UNIT · Výkon
       </div>
-      <h2 class="card-title">USDt.z – výnosový profil</h2>
+      <h2 class="card-title">WW-UNIT – výnosový profil</h2>
       <p class="card-sub">
-        Křivkový graf modelovaného vývoje USDt.z v čase – základní motor zhodnocení členů.
+        Křivkový graf modelovaného vývoje WW-UNIT v čase – základní motor zhodnocení členů.
       </p>
       <div class="card-chart-wrap">
         <canvas id="chartUsdtz"></canvas>
@@ -731,15 +731,15 @@
       </div>
     </article>
 
-    <!-- 9: GUSD graf -->
+    <!-- 9: WW-RESRVE graf -->
     <article class="dash-card">
       <div class="card-badge">
         <span class="card-dot"></span>
-        Token GUSD · Rezerva
+        Token WW-RESRVE · Rezerva
       </div>
-      <h2 class="card-title">GUSD – rezervní vrstva</h2>
+      <h2 class="card-title">WW-RESRVE – rezervní vrstva</h2>
       <p class="card-sub">
-        Rezervní token kryjící USDt.z. Sleduje se stabilita a rezerva pro krizové scénáře.
+        Rezervní token kryjící WW-UNIT. Sleduje se stabilita a rezerva pro krizové scénáře.
       </p>
       <div class="card-chart-wrap">
         <canvas id="chartGusd"></canvas>
@@ -798,7 +798,7 @@ document.addEventListener("DOMContentLoaded", () => {
     return arr;
   }
 
-  // USDt.z chart
+  // WW-UNIT chart
   const ctxUsdtz = document.getElementById('chartUsdtz');
   const ctxGusd  = document.getElementById('chartGusd');
   if (!ctxUsdtz || !ctxGusd) return;
