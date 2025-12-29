@@ -159,6 +159,25 @@ footer{
   );
   box-shadow:0 0 12px rgba(56,189,248,.45);
 }
+.section-live{
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+
+.led-dot{
+  width:6px;
+  height:6px;
+  border-radius:50%;
+  background:#ef4444; /* offline default */
+  box-shadow:0 0 6px rgba(239,68,68,.6);
+  transition:background .3s ease, box-shadow .3s ease;
+}
+
+.led-dot.live{
+  background:#22c55e;
+  box-shadow:0 0 6px rgba(34,197,94,.8);
+}
 
 </style>
 </head>
@@ -211,22 +230,27 @@ footer{
 
 </section>
 
-<!-- GRAPH -->
+<!-- OPERATIONAL STATUS -->
 <section class="section">
-  <div class="section-label">System Health · Snapshot</div>
+  <div class="section-label section-live">
+    <span class="led-dot" id="sectionLed"></span>
+    Operational Status · Snapshot
+  </div>
+
   <div class="card">
     <div class="health-bar-wrap">
-  <div class="health-bar-label">
-    <span>System Health</span>
-    <span id="healthValue">—</span>
-  </div>
+      <div class="health-bar-label">
+        <span>Operational Status</span>
+        <span id="healthValue">—</span>
+      </div>
 
-  <div class="health-bar-bg">
-    <div class="health-bar-fill" id="healthBar"></div>
+      <div class="health-bar-bg">
+        <div class="health-bar-fill" id="healthBar"></div>
+      </div>
+    </div>
   </div>
-</div>
-
 </section>
+
 
 <footer>
   AYAS-7 · Truth Snapshot · Read Only
@@ -359,6 +383,22 @@ function updateHealthBar(v){
       ? "0 0 10px #22c55e"
       : "0 0 10px #ef4444";
   }
+function updateNet(online) {
+  const heroDot = document.querySelector(".hero-dot");
+  const sectionDot = document.getElementById("sectionLed");
+
+  if (heroDot) {
+    heroDot.style.background = online ? "#22c55e" : "#ef4444";
+    heroDot.style.boxShadow = online
+      ? "0 0 10px #22c55e"
+      : "0 0 10px #ef4444";
+  }
+
+  if (sectionDot) {
+    sectionDot.classList.toggle("live", online);
+  }
+}
+
 
   loadSnapshot();
   setInterval(loadSnapshot, 30000); // klidný refresh
