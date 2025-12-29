@@ -241,7 +241,11 @@ footer{
     <div class="health-bar-wrap">
       <div class="health-bar-label">
         <span>Operational Status</span>
-        <span id="healthValue">—</span>
+        <span>
+  <span id="healthValue">—</span>
+  <span id="healthState" style="margin-left:8px;color:#9ca3af;font-weight:600"></span>
+</span>
+
       </div>
 
       <div class="health-bar-bg">
@@ -250,6 +254,15 @@ footer{
     </div>
   </div>
 </section>
+<p style="
+  margin-top:32px;
+  font-size:11px;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:#64748b
+">
+Read-only operational view · No execution · No custody
+</p>
 
 
 <footer>
@@ -317,6 +330,8 @@ function updateHealthBar(v){
     set("sysMode",   s.meta?.mode ?? "—");
     set("sysHealth", formatPct(s.meta?.health));
     updateHealthBar(s.meta?.health);
+    set("healthState", healthStateLabel(s.meta?.health, true));
+
     set("sysUptime", s.meta?.uptime ?? "—");
     set("snapTime",  formatTime(s.meta?.generatedAt));
 
@@ -333,10 +348,19 @@ function updateHealthBar(v){
   }
 
   function renderError() {
+    set("healthState", "OFFLINE");
+
     set("sysMode", "offline");
     set("sysHealth", "—");
     set("snapTime", "—");
   }
+function healthStateLabel(v, online){
+  if(!online) return "OFFLINE";
+  if(v >= 75) return "STABLE";
+  if(v >= 40) return "ACTIVE";
+  return "LIMITED";
+}
+
 
   /* ===== HELPERS ===== */
 
@@ -359,6 +383,16 @@ function updateHealthBar(v){
     if (v == null) return "—";
     return Number(v).toFixed(2) + " %";
   }
+function snapshotAge(ts){
+  if(!ts) return "—";
+
+  const diff = Math.floor((Date.now() - new Date(ts).getTime()) / 1000);
+
+  if(diff < 60) return diff + " s ago";
+  if(diff < 3600) return Math.floor(diff/60) + " min ago";
+  return Math.floor(diff/3600) + " h ago";
+}
+
 
   // ✅ SPRÁVNÝ ČAS – STEJNÝ NA PC I iPHONU
   function formatTime(t) {
