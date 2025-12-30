@@ -571,7 +571,7 @@
       </div>
       <h1 class="page-title">Výkon &amp; výnos motoru AYAS-7</h1>
       <p class="page-subtitle">
-        Přehled zhodnocení USDt.z, GUSD a rozdělení výnosů přes 7 vrstev motoru. Údaje jsou modelované,
+        Přehled zhodnocení WW-UNIT, WW-RESERVE a rozdělení výnosů přes 7 vrstev motoru. Údaje jsou modelované,
         připravené na napojení na živá data.
       </p>
     </div>
@@ -582,14 +582,14 @@
       <!-- Hlavní performance graf -->
       <article class="card">
         <div class="card-header">
-          <div class="card-title">Celkový výkon – USDt.z &amp; GUSD</div>
+          <div class="card-title">Celkový výkon – WW-UNIT &amp; WW-RESERVE</div>
           <div class="card-pill">
             <span class="pill-dot"></span>
             Modelované zhodnocení 12M
           </div>
         </div>
         <p class="card-text">
-          Křivka ukazuje, jak by se vyvíjel kapitál 10&nbsp;000&nbsp;EUR rozdělený mezi USDt.z a GUSD
+          Křivka ukazuje, jak by se vyvíjel kapitál 10&nbsp;000&nbsp;EUR rozdělený mezi WW-UNIT a WW-RESERVE
           při konzervativním modelu. V ostré verzi lze napojit přímo data z DEX a interního routingu.
         </p>
         <div class="chart-wrap">
@@ -613,11 +613,11 @@
 
         <div class="kpi-grid">
           <div class="kpi-row">
-            <span class="kpi-label">Očekávaný roční výnos USDt.z</span>
+            <span class="kpi-label">Očekávaný roční výnos WW-UNIT</span>
             <span class="kpi-value">+5,8&nbsp;%</span>
           </div>
           <div class="kpi-row">
-            <span class="kpi-label">Očekávaný roční výnos GUSD</span>
+            <span class="kpi-label">Očekávaný roční výnos WW-RESERVE</span>
             <span class="kpi-value">+3,2&nbsp;%</span>
           </div>
           <div class="kpi-row">
@@ -706,7 +706,7 @@
           diverzifikací a scénáři stresových testů.
         </p>
         <div class="mini-stat-row">
-          <span class="mini-label">Cílová volatilita USDt.z</span>
+          <span class="mini-label">Cílová volatilita WW-UNIT</span>
           <span class="mini-value">nízká</span>
         </div>
         <div class="mini-stat-row">
@@ -736,7 +736,7 @@
           přes likviditu, routing, risk až po finální analytiku.
         </p>
         <ul class="info-list">
-          <li><b>Layer 1–2:</b> tokeny USDt.z &amp; GUSD, likvidita a pooly na DEX.</li>
+          <li><b>Layer 1–2:</b> tokeny WW-UNIT &amp; WW-RESERVE, likvidita a pooly na DEX.</li>
           <li><b>Layer 3–4:</b> routing výnosu, řízení rizika a limity expozic.</li>
           <li><b>Layer 5–6:</b> FinTech rozhraní, reporting a výpočetní jádro.</li>
           <li><b>Layer 7:</b> tato stránka – konsolidovaný pohled na výkon a výnos.</li>
@@ -800,7 +800,7 @@ document.addEventListener("DOMContentLoaded", () => {
       labels: months,
       datasets: [
         {
-          label: "USDt.z",
+          label: "WW-UNIT",
           data: baseUsd.slice(),
           borderColor: "#4fa3ff",
           backgroundColor: "rgba(79,163,255,0.12)",
@@ -809,7 +809,7 @@ document.addEventListener("DOMContentLoaded", () => {
           pointRadius: 0
         },
         {
-          label: "GUSD",
+          label: "WW-RESERVE",
           data: baseGusd.slice(),
           borderColor: "#22c55e",
           backgroundColor: "rgba(34,197,94,0.10)",
@@ -972,12 +972,12 @@ document.addEventListener("DOMContentLoaded", () => {
   let layerVals  = baseLayers.slice();
 
   function updateCharts() {
-    // USDt.z – jemné dýchání kolem základní křivky
+    // WW-UNIT – jemné dýchání kolem základní křivky
     factorUsd  = drift(factorUsd,  0.98, 1.06, 0.006);
-    factorGusd = drift(factorGusd, 0.99, 1.04, 0.004);
+    factorGusd = drift(factorWW-RESERVE, 0.99, 1.04, 0.004);
 
     perfChart.data.datasets[0].data = baseUsd.map(v  => Number((v  * factorUsd ).toFixed(0)));
-    perfChart.data.datasets[1].data = baseGusd.map(v => Number((v * factorGusd).toFixed(0)));
+    perfChart.data.datasets[1].data = baseGusd.map(v => Number((v * factorWW-RESERVE).toFixed(0)));
     perfChart.update("none");
 
     // Sloupcový graf – každá vrstva kolem své základní hodnoty
