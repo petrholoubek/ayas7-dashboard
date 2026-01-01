@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<title>AYAS-7 · Certifikát WW-KEY</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+/* =========================
+   RESET & BASE
+========================= */
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{
+  width:100%;
+  height:100%;
+  background:#0b1120;
+  font-family:"Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  color:#e5e7eb;
+}
+
+/* =========================
+   A4 PAGE
+========================= */
+.page{
+  width:210mm;
+  height:297mm;
+  margin:20px auto;
+  background:
+    radial-gradient(circle at 50% 0%, #1e293b 0%, #020617 55%, #000 100%);
+  border:1px solid rgba(148,163,184,.35);
+  position:relative;
+  overflow:hidden;
+}
+
+/* FRAME */
+.page::before{
+  content:"";
+  position:absolute;
+  inset:18mm;
+  border:1px solid rgba(148,163,184,.35);
+  border-radius:6px;
+  pointer-events:none;
+}
+
+/* =========================
+   HEADER
+========================= */
+.header{
+  text-align:center;
+  margin-top:28mm;
+}
+.logo{
+  font-size:32px;
+  font-weight:700;
+  letter-spacing:.22em;
+}
+.subtitle{
+  margin-top:6px;
+  font-size:12px;
+  letter-spacing:.28em;
+  color:#9ca3af;
+  text-transform:uppercase;
+}
+
+/* =========================
+   TITLE
+========================= */
+.title{
+  text-align:center;
+  margin-top:32mm;
+}
+.title h1{
+  font-size:28px;
+  font-weight:600;
+  letter-spacing:.12em;
+}
+.title p{
+  margin-top:10px;
+  font-size:13px;
+  color:#9ca3af;
+}
+
+/* =========================
+   CONTENT
+========================= */
+.content{
+  margin:34mm 32mm 0;
+  font-size:14px;
+  line-height:1.8;
+}
+.row{
+  display:flex;
+  justify-content:space-between;
+  margin-bottom:12px;
+}
+.label{
+  color:#9ca3af;
+}
+.value{
+  font-weight:600;
+}
+
+/* =========================
+   KEY BOX
+========================= */
+.key-box{
+  margin-top:26mm;
+  padding:18px;
+  border:1px solid rgba(34,197,94,.45);
+  border-radius:8px;
+  text-align:center;
+  background:rgba(34,197,94,.06);
+}
+.key-box .count{
+  font-size:36px;
+  font-weight:700;
+  color:#22c55e;
+}
+.key-box .unit{
+  margin-top:4px;
+  font-size:12px;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:#bbf7d0;
+}
+
+/* =========================
+   FOOTER
+========================= */
+.footer{
+  position:absolute;
+  bottom:24mm;
+  left:32mm;
+  right:32mm;
+  font-size:11px;
+  color:#9ca3af;
+  line-height:1.6;
+}
+.footer hr{
+  border:none;
+  border-top:1px solid rgba(148,163,184,.25);
+  margin-bottom:10px;
+}
+.hash{
+  margin-top:6px;
+  font-family:monospace;
+  font-size:10px;
+  color:#64748b;
+}
+
+/* PRINT */
+@media print{
+  body{background:#000}
+  .page{margin:0;border:none}
+}
+</style>
+</head>
+
+<body>
+
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="logo">AYAS-7</div>
+    <div class="subtitle">Win-Win Cooperative</div>
+  </div>
+
+  <!-- TITLE -->
+  <div class="title">
+    <h1>CERTIFIKÁT WW-KEY</h1>
+    <p>Potvrzení o přidělení členských jednotek</p>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="content">
+    <div class="row">
+      <span class="label">Jméno člena</span>
+      <span class="value">Jan Novák</span>
+    </div>
+
+    <div class="row">
+      <span class="label">Datum vydání</span>
+      <span class="value">15. 01. 2026</span>
+    </div>
+
+    <div class="row">
+      <span class="label">Výše vkladu</span>
+      <span class="value">15 000 CZK</span>
+    </div>
+
+    <div class="row">
+      <span class="label">Kurz WW-KEY</span>
+      <span class="value">1 WW-KEY = 25 CZK</span>
+    </div>
+
+    <!-- KEY -->
+    <div class="key-box">
+      <div class="count">600</div>
+      <div class="unit">WW-KEY přiděleno</div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <hr>
+    Tento certifikát slouží výhradně jako potvrzení o přidělení členských
+    jednotek WW-KEY v rámci systému AYAS-7 (Win-Win Cooperative).
+    Nejedná se o investiční smlouvu, cenný papír ani příslib výnosu.
+    <div class="hash">
+      Certificate ID: WWKEY-2026-000124<br>
+      Hash: 9f2c1e8b7a4d3c2e1a…
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>
