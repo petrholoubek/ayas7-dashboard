@@ -5,15 +5,13 @@
 <title>AYAS-7 · Truth Snapshot</title>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 
-<link rel="manifest" href="/manifest.json">
-<link rel="icon" sizes="192x192" href="/ayas7-192.png">
-<link rel="apple-touch-icon" href="/ayas7-192.png">
-<meta name="theme-color" content="#020617"/>
+<meta name="theme-color" content="#020617">
 
 <style>
 /* =========================================================
-   AYAS-7 · TRUTH SNAPSHOT (FINAL REFERENCE)
-   READ ONLY · SILENT AUTHORITY · NO UI NOISE
+   AYAS-7 · FINAL APPLICATION SCENE
+   HERO = WALLPAPER
+   CONTENT = SILENT TRUTH
 ========================================================= */
 
 :root{
@@ -25,45 +23,23 @@
   --yellow:#facc15;
 }
 
+*{box-sizing:border-box}
+
 html,body{
   margin:0;
+  padding:0;
   background:var(--bg);
   font-family:"Segoe UI",Tahoma,Verdana,sans-serif;
   color:var(--text);
 }
 
 /* =========================
-   HERO (ONLY LIGHT SOURCE)
+   HERO – FULL WALLPAPER
 ========================= */
 .hero{
-  height:72vh;
-  min-height:520px;
+  height:100vh;
   background:
-    radial-gradient(ellipse at center bottom, rgba(56,189,248,.35), transparent 65%),
-    url("/ayas7-hero.jpg") center/cover no-repeat;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  text-align:center;
-}
-
-.hero img{
-  width:120px;
-  margin-bottom:18px;
-}
-
-.hero h1{
-  font-size:34px;
-  letter-spacing:.12em;
-  margin:0;
-}
-
-.hero span{
-  margin-top:8px;
-  font-size:13px;
-  letter-spacing:.2em;
-  color:#9ca3af;
+    url("ayas7-hero-new.jpg") center top / cover no-repeat;
 }
 
 /* =========================
@@ -71,18 +47,27 @@ html,body{
 ========================= */
 main{
   max-width:420px;
-  margin:-120px auto 120px;
-  padding:0 18px;
+  margin:0 auto;
+  padding:0 18px 120px;
+}
+
+/* anchor exactly below light horizon (~25vh) */
+.content-anchor{
+  height:25vh;
 }
 
 /* =========================
-   SILENT PANEL
+   SILENT PANELS
 ========================= */
 .panel{
   margin-top:22px;
   padding:22px 24px;
   border-radius:22px;
-  background:linear-gradient(180deg,rgba(15,23,42,.55),rgba(2,6,23,.85));
+  background:linear-gradient(
+    180deg,
+    rgba(15,23,42,.55),
+    rgba(2,6,23,.88)
+  );
 }
 
 /* =========================
@@ -144,7 +129,7 @@ main{
 }
 
 /* =========================
-   FOOT
+   FOOTER
 ========================= */
 footer{
   margin-top:40px;
@@ -158,14 +143,13 @@ footer{
 
 <body>
 
-<header class="ayas-hero">
-  <!-- TODO: dosadit finální hero podle návrhu -->
-  <img src="/ayas7-hero-new.jpg" alt="AYAS-7 System Engine">
-</header>
-  <span>NEXT GENERATION</span>
-</section>
+<!-- HERO SCENE -->
+<section class="hero"></section>
 
+<!-- CONTENT -->
 <main>
+
+<div class="content-anchor"></div>
 
 <section class="panel">
   <div class="panel-title">
