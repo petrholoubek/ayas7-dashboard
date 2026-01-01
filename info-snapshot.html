@@ -13,15 +13,17 @@
 <meta name="theme-color" content="#020617">
 
 <style>
-/* ======================================
-   AYAS-7 • SCENIC PROJECTION (SÍLA)
-====================================== */
+/* =========================================================
+   AYAS-7 • TRUTH PROJECTION (SCENIC / SÍLA)
+   READ ONLY • SYSTEM VIEW
+========================================================= */
 
 :root{
   --bg:#020617;
   --blue:#38bdf8;
   --cyan:#7dd3fc;
   --green:#22c55e;
+  --yellow:#facc15;
   --red:#ef4444;
   --text:#e5e7eb;
   --muted:#9ca3af;
@@ -40,24 +42,29 @@ html,body{
   color:var(--text);
 }
 
-/* HERO SCENE */
+/* =========================
+   HERO SCENE
+========================= */
 .ayas-hero{
   position:relative;
-  height:65vh;
-  min-height:520px;
+  height:68vh;
+  min-height:540px;
   overflow:hidden;
 }
 .ayas-hero img{
   width:100%;
   height:100%;
   object-fit:cover;
+  object-position:center top;
   filter:brightness(1.05) contrast(1.1);
 }
+
+/* světelný horizont */
 .ayas-hero::after{
   content:"";
   position:absolute;
-  inset:auto 0 0 0;
-  height:260px;
+  left:0;right:0;bottom:0;
+  height:300px;
   background:
     linear-gradient(
       to bottom,
@@ -67,35 +74,39 @@ html,body{
     );
 }
 
-/* FLOW */
+/* =========================
+   FLOW
+========================= */
 main{
   max-width:1200px;
-  margin:-240px auto 160px;
+  margin:-220px auto 160px;
   padding:0 18px;
   position:relative;
   z-index:3;
 }
 
-/* SCENIC BOX (NOT A CARD) */
+/* =========================
+   SCENIC BOX (NOT CARD)
+========================= */
 .ayas-box{
   position:relative;
-  margin-bottom:36px;
-  padding:32px 34px 36px;
+  margin-bottom:26px; /* zmenšené mezery */
+  padding:30px 34px 34px;
   border-radius:28px;
   background:
     linear-gradient(
       180deg,
       rgba(255,255,255,.08),
-      rgba(15,23,42,.85),
-      rgba(2,6,23,.98)
+      rgba(15,23,42,.82),
+      rgba(2,6,23,.97)
     );
   box-shadow:
-    0 40px 120px rgba(0,0,0,.85),
+    0 50px 140px rgba(0,0,0,.9),
     inset 0 1px 0 rgba(255,255,255,.15);
   overflow:hidden;
 }
 
-/* LIGHT BLEED */
+/* světelný nádech shora */
 .ayas-box::before{
   content:"";
   position:absolute;
@@ -104,16 +115,16 @@ main{
     radial-gradient(
       ellipse at 50% -30%,
       rgba(56,189,248,.45),
-      transparent 55%
+      transparent 60%
     );
   pointer-events:none;
 }
 
-/* CORE SYSTEM BOX */
+/* CORE BOX */
 .ayas-box.core{
   box-shadow:
     0 0 0 1px rgba(125,211,252,.35),
-    0 60px 160px rgba(0,0,0,.95);
+    0 70px 180px rgba(0,0,0,.95);
 }
 
 /* TITLES */
@@ -121,7 +132,7 @@ main{
   display:flex;
   align-items:center;
   gap:12px;
-  font-size:13px;
+  font-size:12px;
   letter-spacing:.22em;
   text-transform:uppercase;
   color:#c7d2fe;
@@ -146,7 +157,7 @@ main{
 .grid{
   display:grid;
   grid-template-columns:1fr 1fr;
-  gap:26px;
+  gap:24px;
 }
 @media(max-width:900px){
   .grid{grid-template-columns:1fr;}
@@ -159,14 +170,14 @@ main{
   font-size:14px;
   margin-bottom:8px;
 }
-.metric span:first-child{color:#9ca3af}
+.metric span:first-child{color:var(--muted)}
 .value{
   font-weight:900;
   font-variant-numeric:tabular-nums;
 }
 
-/* HEALTH BAR */
-.health-bar-wrap{margin-top:10px}
+/* HEALTH */
+.health-bar-wrap{margin-top:6px}
 .health-bar-bg{
   width:100%;
   height:16px;
@@ -194,8 +205,10 @@ footer{
 
 <body>
 
+<!-- HERO -->
 <header class="ayas-hero">
-  <img src="/ayas7-hero.jpg" alt="AYAS-7 System Engine">
+  <!-- TODO: dosadit finální hero podle návrhu -->
+  <img src="/ayas7-hero-new.jpg" alt="AYAS-7 System Engine">
 </header>
 
 <main>
@@ -203,7 +216,7 @@ footer{
 <!-- SYSTEM CORE -->
 <section class="ayas-box core">
   <div class="ayas-box-title">
-    <span class="led-dot"></span>
+    <span class="led-dot" id="ledSystem"></span>
     System · Truth Snapshot
   </div>
 
@@ -216,7 +229,7 @@ footer{
 <!-- OPERATIONAL -->
 <section class="ayas-box">
   <div class="ayas-box-title">
-    <span class="led-dot"></span>
+    <span class="led-dot" id="ledOp"></span>
     Operational Status
   </div>
 
@@ -264,9 +277,13 @@ footer{
 const SNAPSHOT_URL="https://snapshot.ayas7.com/api/snapshot";
 const CACHE_KEY="AYAS_SNAPSHOT_CACHE";
 
+const leds=[
+  document.getElementById("ledSystem"),
+  document.getElementById("ledOp")
+];
+
 function updateNet(online){
-  document.querySelectorAll('.led-dot')
-    .forEach(d=>d.classList.toggle('live',online));
+  leds.forEach(d=>d && d.classList.toggle("live",online));
 }
 
 function updateHealthBar(v){
@@ -300,7 +317,7 @@ async function loadSnapshot(){
 
 function render(s){
   set("sysMode",s.meta?.mode);
-  set("sysHealth",s.meta?.health?.toFixed(2)+" %");
+  set("sysHealth",fmtPct(s.meta?.health));
   updateHealthBar(s.meta?.health);
   set("sysUptime",s.meta?.uptime);
   set("snapTime",fmtTime(s.meta?.generatedAt));
