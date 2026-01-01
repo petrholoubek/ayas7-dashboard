@@ -554,12 +554,18 @@ tr.innerHTML = `
   <td>${(row.deposit ?? 0).toLocaleString('cs-CZ')}</td>
   <td>${row.ww_key ?? 0}</td>
   <td>
-    <a href="${certUrl}" target="_blank">
-      <button class="btn-link">
-        <span class="btn-link-dot"></span>
-        Certifikát
-      </button>
-    </a>
+    ${
+      row.paid === true
+      ? `<a href="${certUrl}" target="_blank">
+           <button class="btn-link">
+             <span class="btn-link-dot"></span>
+             Certifikát
+           </button>
+         </a>`
+      : `<span style="color:#9ca3af;font-size:11px;">
+           Čeká na potvrzení platby
+         </span>`
+    }
   </td>
 `;
 
