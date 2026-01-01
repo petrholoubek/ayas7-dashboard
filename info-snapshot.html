@@ -5,33 +5,18 @@
 <title>AYAS-7 · Truth Snapshot</title>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 
-
 <!-- PWA -->
 <link rel="manifest" href="/manifest.json">
-
 <link rel="icon" sizes="192x192" href="/ayas7-192.png">
 <link rel="icon" sizes="512x512" href="/ayas7-512.png">
 <link rel="apple-touch-icon" href="/ayas7-192.png">
-
-
 <meta name="theme-color" content="#020617">
 
 <style>
-/* =========================================================
-   AYAS-7 • TRUTH SNAPSHOT
-   READ ONLY • FINTECH • CALM
-========================================================= */
-
 :root{
   --bg:#020617;
-  --panel:#0f172acc;
   --border:#94a3b833;
-
   --blue:#38bdf8;
-  --green:#22c55e;
-  --yellow:#facc15;
-  --purple:#a855f7;
-
   --text:#e5e7eb;
   --muted:#9ca3af;
 }
@@ -44,101 +29,87 @@ html,body{
     radial-gradient(circle at 30% -10%, #0f172a 0%, transparent 45%),
     radial-gradient(circle at 80% 20%, #02081a 0%, transparent 50%),
     radial-gradient(circle at 50% 120%, #020617 0%, #000 65%);
-  background-attachment:fixed;
   font-family:"Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   color:var(--text);
 }
 
+/* HERO */
+.ayas-hero{
+  height:52vh;
+  min-height:420px;
+  overflow:hidden;
+  position:relative;
+}
+.ayas-hero img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+}
+.ayas-hero::after{
+  content:"";
+  position:absolute;
+  bottom:0;left:0;right:0;
+  height:120px;
+  background:linear-gradient(to bottom, rgba(2,6,23,0), #020617);
+}
+
+/* MAIN */
 main{
   max-width:1200px;
-  margin:48px auto 140px;
+  margin:-80px auto 140px;
   padding:0 18px;
+  position:relative;
+  z-index:2;
 }
 
-/* HERO */
-.hero{margin-bottom:42px}
-.hero-kicker{
-  display:flex;align-items:center;gap:8px;
-  font-size:11px;letter-spacing:.18em;
-  text-transform:uppercase;color:var(--muted)
-}
-.hero-dot{
-  width:8px;height:8px;border-radius:50%;
-  background:var(--blue);box-shadow:0 0 10px var(--blue)
-}
-.hero-title{margin-top:12px;font-size:32px;font-weight:800}
-.hero-sub{
-  margin-top:8px;max-width:880px;
-  font-size:14px;line-height:1.6;color:#9ca3b5
-}
-
-/* LAYOUT */
-.section{margin-top:40px}
-.section-label{
-  font-size:11px;letter-spacing:.18em;
-  text-transform:uppercase;color:var(--muted);
-  margin-bottom:12px
-}
-.card{
-  background:linear-gradient(180deg,rgba(15,23,42,.9),rgba(2,6,23,.96));
-  border:1px solid var(--border);
+/* UNIVERSAL BOX */
+.ayas-box{
+  background:linear-gradient(180deg, rgba(15,23,42,.88), rgba(2,6,23,.96));
+  border:1px solid rgba(148,163,184,.25);
   border-radius:18px;
-  padding:18px 20px 22px
+  padding:22px 24px 26px;
+  margin-bottom:24px;
 }
+.ayas-box-title{
+  font-size:12px;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:var(--muted);
+  margin-bottom:14px;
+}
+
+/* GRID */
 .grid{
   display:grid;
   grid-template-columns:1fr 1fr;
-  gap:22px
+  gap:22px;
 }
-@media(max-width:900px){.grid{grid-template-columns:1fr}}
+@media(max-width:900px){
+  .grid{grid-template-columns:1fr;}
+}
 
+/* METRICS */
 .metric{
-  display:flex;justify-content:space-between;
-  font-size:13px;margin-bottom:6px
+  display:flex;
+  justify-content:space-between;
+  font-size:13px;
+  margin-bottom:6px;
 }
-.metric span:first-child{color:#9ca3af}
+.metric span:first-child{color:var(--muted)}
 .value{font-weight:800;font-variant-numeric:tabular-nums}
 
-/* GRAPH */
-.graph{
-  height:300px;border-radius:14px;
-  background:#020617;
-  border:1px solid rgba(255,255,255,.06);
-  overflow:hidden
-}
-canvas{width:100%;height:100%;display:block}
-
-/* FOOTER */
-footer{
-  margin-top:72px;padding-top:14px;
-  border-top:1px solid var(--border);
-  font-size:11px;letter-spacing:.16em;
-  text-transform:uppercase;color:#64748b
-}
-/* =========================
-   SYSTEM HEALTH BAR
-========================= */
-
-.health-bar-wrap{
-  padding:28px 24px 30px;
-}
-
+/* HEALTH BAR */
+.health-bar-wrap{padding:10px 0}
 .health-bar-label{
   display:flex;
   justify-content:space-between;
   margin-bottom:12px;
-  font-size:13px;
+  font-size:12px;
   letter-spacing:.12em;
   text-transform:uppercase;
-  color:#9ca3af;
+  color:var(--muted);
 }
-
-.health-bar-label span:last-child{
-  font-weight:800;
-  color:#e5e7eb;
-  letter-spacing:normal;
-}
-
 .health-bar-bg{
   width:100%;
   height:14px;
@@ -146,124 +117,81 @@ footer{
   border-radius:10px;
   overflow:hidden;
 }
-
 .health-bar-fill{
   height:100%;
   width:0%;
   border-radius:10px;
   transition:width 1.2s ease;
-  background:linear-gradient(
-    90deg,
-    #22c55e,
-    #38bdf8
-  );
-  box-shadow:0 0 12px rgba(56,189,248,.45);
-}
-.section-live{
-  display:flex;
-  align-items:center;
-  gap:8px;
 }
 
-.led-dot{
-  width:6px;
-  height:6px;
-  border-radius:50%;
-  background:#ef4444; /* offline default */
-  box-shadow:0 0 6px rgba(239,68,68,.6);
-  transition:background .3s ease, box-shadow .3s ease;
+/* FOOTER */
+footer{
+  margin-top:64px;
+  padding-top:14px;
+  border-top:1px solid var(--border);
+  font-size:11px;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+  color:#64748b;
+  text-align:center;
 }
-
-.led-dot.live{
-  background:#22c55e;
-  box-shadow:0 0 6px rgba(34,197,94,.8);
-}
-
 </style>
 </head>
 
 <body>
 
+<header class="ayas-hero">
+  <img src="/ayas7-hero.jpg" alt="AYAS-7 System Engine">
+</header>
+
 <main>
 
-<!-- HERO -->
-<section class="hero">
-  <div class="hero-kicker">
-    <span class="hero-dot"></span>
-    Truth Snapshot · Read Only
-  </div>
-  <div class="hero-title">AYAS-7 · Stav systému</div>
-  <div class="hero-sub">
-    Klidný, neměnný pohled na skutečný stav architektury AYAS-7.
-    Tato obrazovka nic neřídí – pouze zobrazuje pravdu systému.
+<section class="ayas-box">
+  <div class="ayas-box-title">System · Truth Snapshot</div>
+  <div class="metric"><span>Mode</span><span id="sysMode" class="value">—</span></div>
+  <div class="metric"><span>Health</span><span id="sysHealth" class="value">—</span></div>
+  <div class="metric"><span>Uptime</span><span id="sysUptime" class="value">—</span></div>
+  <div class="metric"><span>Snapshot</span><span id="snapTime" class="value">—</span></div>
+</section>
+
+<section class="ayas-box">
+  <div class="ayas-box-title">Operational Status</div>
+  <div class="health-bar-wrap">
+    <div class="health-bar-label">
+      <span>Status</span>
+      <span><span id="healthValue">—</span> <span id="healthState"></span></span>
+    </div>
+    <div class="health-bar-bg">
+      <div class="health-bar-fill" id="healthBar"></div>
+    </div>
   </div>
 </section>
 
-<!-- SYSTEM -->
-<section class="section">
-  <div class="section-label">System</div>
-  <div class="card">
-    <div class="metric"><span>Mode</span><span id="sysMode" class="value">—</span></div>
-    <div class="metric"><span>Health</span><span id="sysHealth" class="value">—</span></div>
-    <div class="metric"><span>Uptime</span><span id="sysUptime" class="value">—</span></div>
-    <div class="metric"><span>Snapshot</span><span id="snapTime" class="value">—</span></div>
-  </div>
-</section>
-
-<!-- LIQUIDITY + TOKENS -->
-<section class="section grid">
-
-  <div class="card">
-    <div class="section-label">Liquidity</div>
+<div class="grid">
+  <section class="ayas-box">
+    <div class="ayas-box-title">Liquidity</div>
     <div class="metric"><span>TVL</span><span id="liqTVL" class="value">—</span></div>
     <div class="metric"><span>Utilization</span><span id="liqUtil" class="value">—</span></div>
     <div class="metric"><span>Depth</span><span id="liqDepth" class="value">—</span></div>
     <div class="metric"><span>Slippage</span><span id="liqSlip" class="value">—</span></div>
-  </div>
+  </section>
 
-  <div class="card">
-    <div class="section-label">Tokens</div>
+  <section class="ayas-box">
+    <div class="ayas-box-title">Tokens</div>
     <div class="metric"><span>WW-UNIT</span><span id="unitSupply" class="value">—</span></div>
     <div class="metric"><span>WW-RESERVE</span><span id="reserveSupply" class="value">—</span></div>
     <div class="metric"><span>WW-KEY</span><span id="keySupply" class="value">—</span></div>
-  </div>
+  </section>
+</div>
 
+<section class="ayas-box">
+  <div class="ayas-box-title">Audit & Certification</div>
+  <ul style="padding-left:18px;color:#9ca3af">
+    <li>System Integrity Verification</li>
+    <li>Liquidity & Accounting Audit</li>
+    <li>Multisig & Governance Validation</li>
+  </ul>
 </section>
-
-<!-- OPERATIONAL STATUS -->
-<section class="section">
-  <div class="section-label section-live">
-    <span class="led-dot" id="sectionLed"></span>
-    Operational Status · Snapshot
-  </div>
-
-  <div class="card">
-    <div class="health-bar-wrap">
-      <div class="health-bar-label">
-        <span>Operational Status</span>
-        <span>
-  <span id="healthValue">—</span>
-  <span id="healthState" style="margin-left:8px;color:#9ca3af;font-weight:600"></span>
-</span>
-
-      </div>
-
-      <div class="health-bar-bg">
-        <div class="health-bar-fill" id="healthBar"></div>
-      </div>
-    </div>
-  </div>
-</section>
-<p style="
-  margin-top:32px;
-  font-size:11px;
-  letter-spacing:.14em;
-  text-transform:uppercase;
-  color:#64748b
-">
-Read-only operational view · No execution · No custody
-</p>
-
 
 <footer>
   AYAS-7 · Truth Snapshot · Read Only
