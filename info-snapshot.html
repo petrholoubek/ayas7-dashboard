@@ -13,6 +13,10 @@
 <meta name="theme-color" content="#020617">
 
 <style>
+/* ===============================
+   AYAS-7 • SYSTEM ENGINE APP
+================================ */
+
 :root{
   --bg:#020617;
   --border:#94a3b833;
@@ -36,11 +40,11 @@ html,body{
   color:var(--text);
 }
 
-/* HERO */
+/* HERO = SYSTEM SPACE */
 .ayas-hero{
-  height:52vh;
-  min-height:420px;
   position:relative;
+  height:60vh;
+  min-height:460px;
   overflow:hidden;
 }
 .ayas-hero img{
@@ -52,57 +56,60 @@ html,body{
 .ayas-hero::after{
   content:"";
   position:absolute;
-  bottom:0;left:0;right:0;
-  height:140px;
+  inset:auto 0 0 0;
+  height:200px;
   background:linear-gradient(to bottom, rgba(2,6,23,0), #020617);
 }
 
-/* MAIN FLOW */
+/* MAIN FLOW (NO PAGE BREAK) */
 main{
   max-width:1200px;
-  margin:-120px auto 140px;
+  margin:-180px auto 160px; /* klíčové napojení */
   padding:0 18px;
   position:relative;
-  z-index:2;
+  z-index:3;
 }
 
-/* BOX SYSTEM */
+/* SYSTEM SEGMENTS */
 .ayas-box{
-  background:linear-gradient(180deg, rgba(15,23,42,.88), rgba(2,6,23,.96));
-  border:1px solid rgba(148,163,184,.25);
-  border-radius:20px;
-  padding:22px 24px 26px;
-  margin-bottom:26px;
-  transition:transform .35s ease, box-shadow .35s ease;
+  background:linear-gradient(180deg, rgba(15,23,42,.90), rgba(2,6,23,.97));
+  border:1px solid rgba(148,163,184,.22);
+  border-radius:22px;
+  padding:24px 26px 28px;
+  margin-bottom:28px;
 }
-.ayas-box:first-of-type{
+
+/* CORE BOX – první systémová vrstva */
+.ayas-box.core{
   box-shadow:
-    0 0 0 1px rgba(56,189,248,.18),
-    0 30px 80px rgba(2,6,23,.9);
+    0 0 0 1px rgba(56,189,248,.25),
+    0 40px 120px rgba(2,6,23,.95);
 }
+
+/* TITLES + LED */
 .ayas-box-title{
+  display:flex;
+  align-items:center;
+  gap:10px;
   font-size:12px;
   letter-spacing:.18em;
   text-transform:uppercase;
   color:var(--muted);
-  margin-bottom:14px;
-  display:flex;
-  align-items:center;
-  gap:8px;
+  margin-bottom:16px;
 }
 
 /* LED */
 .led-dot{
-  width:8px;
-  height:8px;
+  width:9px;
+  height:9px;
   border-radius:50%;
   background:var(--red);
-  box-shadow:0 0 6px rgba(239,68,68,.7);
+  box-shadow:0 0 8px rgba(239,68,68,.8);
   transition:background .35s ease, box-shadow .35s ease;
 }
 .led-dot.live{
   background:var(--green);
-  box-shadow:0 0 8px rgba(34,197,94,.9);
+  box-shadow:0 0 10px rgba(34,197,94,.95);
 }
 
 /* GRID */
@@ -178,7 +185,8 @@ footer{
 
 <main>
 
-<section class="ayas-box">
+<!-- SYSTEM CORE -->
+<section class="ayas-box core">
   <div class="ayas-box-title">
     <span class="led-dot"></span>
     System · Truth Snapshot
@@ -189,6 +197,7 @@ footer{
   <div class="metric"><span>Snapshot</span><span id="snapTime" class="value">—</span></div>
 </section>
 
+<!-- OPERATIONAL STATUS -->
 <section class="ayas-box">
   <div class="ayas-box-title">
     <span class="led-dot"></span>
@@ -209,6 +218,7 @@ footer{
   </div>
 </section>
 
+<!-- LIQUIDITY + TOKENS -->
 <div class="grid">
   <section class="ayas-box">
     <div class="ayas-box-title">Liquidity</div>
@@ -226,6 +236,7 @@ footer{
   </section>
 </div>
 
+<!-- AUDIT -->
 <section class="ayas-box">
   <div class="ayas-box-title">Audit & Certification</div>
   <ul style="padding-left:18px;color:#9ca3af">
@@ -242,86 +253,73 @@ footer{
 </main>
 
 <script>
-(async function () {
+(async function(){
 
- const SNAPSHOT_URL = "https://snapshot.ayas7.com/api/snapshot";
- const CACHE_KEY = "AYAS_SNAPSHOT_CACHE";
+const SNAPSHOT_URL="https://snapshot.ayas7.com/api/snapshot";
+const CACHE_KEY="AYAS_SNAPSHOT_CACHE";
 
- function updateHealthBar(v){
-  if(v == null || isNaN(v)) return;
-  const val = Math.max(0, Math.min(100, Number(v)));
-  const bar = document.getElementById("healthBar");
-  const txt = document.getElementById("healthValue");
-  if(!bar || !txt) return;
-  bar.style.width = val + "%";
-  txt.textContent = val.toFixed(1) + " %";
+function updateNet(online){
+  document.querySelectorAll('.led-dot')
+    .forEach(d=>d.classList.toggle('live',online));
+}
 
-  if(val >= 70){
-    bar.style.background = "linear-gradient(90deg,#22c55e,#4ade80)";
-  }else if(val >= 40){
-    bar.style.background = "linear-gradient(90deg,#facc15,#fde047)";
-  }else{
-    bar.style.background = "linear-gradient(90deg,#ef4444,#f87171)";
-  }
- }
+function updateHealthBar(v){
+  if(v==null||isNaN(v))return;
+  const val=Math.max(0,Math.min(100,Number(v)));
+  const bar=document.getElementById("healthBar");
+  const txt=document.getElementById("healthValue");
+  bar.style.width=val+"%";
+  txt.textContent=val.toFixed(1)+" %";
 
- function updateNet(online){
-  document.querySelectorAll('.led-dot').forEach(dot=>{
-    dot.classList.toggle('live', online);
-  });
- }
+  if(val>=70) bar.style.background="linear-gradient(90deg,#22c55e,#4ade80)";
+  else if(val>=40) bar.style.background="linear-gradient(90deg,#facc15,#fde047)";
+  else bar.style.background="linear-gradient(90deg,#ef4444,#f87171)";
+}
 
- function healthStateLabel(v){
-  if(v >= 75) return "STABLE";
-  if(v >= 40) return "ACTIVE";
-  return "LIMITED";
- }
+function healthStateLabel(v){
+  if(v>=75)return"STABLE";
+  if(v>=40)return"ACTIVE";
+  return"LIMITED";
+}
 
- async function loadSnapshot(){
+async function loadSnapshot(){
   try{
-    const res = await fetch(SNAPSHOT_URL,{cache:"no-store"});
-    if(!res.ok) throw 0;
-    const data = await res.json();
-    localStorage.setItem(CACHE_KEY, JSON.stringify(data));
-    render(data);
-    updateNet(true);
-  }catch(e){
-    const cached = localStorage.getItem(CACHE_KEY);
-    if(cached){
-      render(JSON.parse(cached));
-    }
+    const r=await fetch(SNAPSHOT_URL,{cache:"no-store"});
+    if(!r.ok)throw 0;
+    const d=await r.json();
+    localStorage.setItem(CACHE_KEY,JSON.stringify(d));
+    render(d);updateNet(true);
+  }catch{
+    const c=localStorage.getItem(CACHE_KEY);
+    if(c)render(JSON.parse(c));
     updateNet(false);
   }
- }
+}
 
- function render(s){
-  set("sysMode", s.meta?.mode);
-  set("sysHealth", s.meta?.health?.toFixed(2)+" %");
+function render(s){
+  set("sysMode",s.meta?.mode);
+  set("sysHealth",s.meta?.health?.toFixed(2)+" %");
   updateHealthBar(s.meta?.health);
-  set("healthState", healthStateLabel(s.meta?.health));
-  set("sysUptime", s.meta?.uptime);
-  set("snapTime", formatTime(s.meta?.generatedAt));
-  set("liqTVL", formatUSD(s.pools?.liquidityUSD));
-  set("liqUtil", formatPct(s.pools?.utilization));
-  set("liqDepth", s.pools?.depth);
-  set("liqSlip", formatPct(s.pools?.slippage));
-  set("unitSupply", formatNum(s.tokens?.WW_UNIT?.supply));
-  set("reserveSupply", formatUSD(s.tokens?.WW_RESERVE?.balance));
-  set("keySupply", formatNum(s.tokens?.WW_KEY?.holders));
- }
+  set("healthState",healthStateLabel(s.meta?.health));
+  set("sysUptime",s.meta?.uptime);
+  set("snapTime",fmtTime(s.meta?.generatedAt));
+  set("liqTVL",fmtUSD(s.pools?.liquidityUSD));
+  set("liqUtil",fmtPct(s.pools?.utilization));
+  set("liqDepth",s.pools?.depth);
+  set("liqSlip",fmtPct(s.pools?.slippage));
+  set("unitSupply",fmtNum(s.tokens?.WW_UNIT?.supply));
+  set("reserveSupply",fmtUSD(s.tokens?.WW_RESERVE?.balance));
+  set("keySupply",fmtNum(s.tokens?.WW_KEY?.holders));
+}
 
- function set(id,val){
-  const el=document.getElementById(id);
-  if(el) el.textContent=val??"—";
- }
+function set(id,v){const e=document.getElementById(id);if(e)e.textContent=v??"—";}
+const fmtUSD=v=>v==null?"—":"$"+Number(v).toLocaleString("en-US",{maximumFractionDigits:2});
+const fmtNum=v=>v==null?"—":Number(v).toLocaleString("en-US");
+const fmtPct=v=>v==null?"—":Number(v).toFixed(2)+" %";
+const fmtTime=t=>t?new Date(t).toLocaleString("cs-CZ"):"—";
 
- function formatUSD(v){return v==null?"—":"$"+Number(v).toLocaleString("en-US",{maximumFractionDigits:2});}
- function formatNum(v){return v==null?"—":Number(v).toLocaleString("en-US");}
- function formatPct(v){return v==null?"—":Number(v).toFixed(2)+" %";}
- function formatTime(t){return t?new Date(t).toLocaleString("cs-CZ"):"—";}
-
- loadSnapshot();
- setInterval(loadSnapshot,30000);
+loadSnapshot();
+setInterval(loadSnapshot,30000);
 
 })();
 </script>
