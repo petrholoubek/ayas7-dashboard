@@ -176,7 +176,8 @@ html,body{
   <div class="content">
     <div class="row">
       <span class="label">Jméno člena</span>
-      <span class="value">Jan Novák</span>
+      <span class="value" data-name></span>
+
     </div>
 
     <div class="row">
@@ -214,6 +215,21 @@ html,body{
   </div>
 
 </div>
+<script>
+  const params = new URLSearchParams(window.location.search);
+
+  const name   = params.get('name')   || '—';
+  const amount = params.get('amount') || '—';
+  const keys   = params.get('keys')   || '—';
+  const date   = params.get('date')   || '—';
+  const id     = params.get('id')     || '—';
+
+  document.querySelectorAll('[data-name]').forEach(e => e.textContent = name);
+  document.querySelectorAll('[data-amount]').forEach(e => e.textContent = amount + ' CZK');
+  document.querySelectorAll('[data-keys]').forEach(e => e.textContent = keys);
+  document.querySelectorAll('[data-date]').forEach(e => e.textContent = date);
+  document.querySelectorAll('[data-id]').forEach(e => e.textContent = id);
+</script>
 
 </body>
 </html>
