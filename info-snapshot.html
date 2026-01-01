@@ -2,199 +2,152 @@
 <html lang="cs">
 <head>
 <meta charset="utf-8"/>
-<title>AYAS-7 · Truth Projection</title>
+<title>AYAS-7 · Truth Snapshot</title>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 
-<!-- PWA -->
 <link rel="manifest" href="/manifest.json">
 <link rel="icon" sizes="192x192" href="/ayas7-192.png">
-<link rel="icon" sizes="512x512" href="/ayas7-512.png">
 <link rel="apple-touch-icon" href="/ayas7-192.png">
-<meta name="theme-color" content="#020617">
+<meta name="theme-color" content="#020617"/>
 
 <style>
 /* =========================================================
-   AYAS-7 • TRUTH PROJECTION (SCENIC / SÍLA)
-   READ ONLY • SYSTEM VIEW
+   AYAS-7 · TRUTH SNAPSHOT (FINAL REFERENCE)
+   READ ONLY · SILENT AUTHORITY · NO UI NOISE
 ========================================================= */
 
 :root{
   --bg:#020617;
-  --blue:#38bdf8;
-  --cyan:#7dd3fc;
-  --green:#22c55e;
-  --yellow:#facc15;
-  --red:#ef4444;
   --text:#e5e7eb;
   --muted:#9ca3af;
+  --green:#22c55e;
+  --red:#ef4444;
+  --yellow:#facc15;
 }
 
-/* BASE */
 html,body{
   margin:0;
-  padding:0;
-  min-height:100%;
-  background:
-    radial-gradient(ellipse at 50% -20%, #0b2a55 0%, transparent 45%),
-    radial-gradient(circle at 70% 30%, #020c2a 0%, transparent 55%),
-    radial-gradient(circle at 30% 80%, #020617 0%, #000 70%);
-  font-family:"Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background:var(--bg);
+  font-family:"Segoe UI",Tahoma,Verdana,sans-serif;
   color:var(--text);
 }
 
 /* =========================
-   HERO SCENE
+   HERO (ONLY LIGHT SOURCE)
 ========================= */
-.ayas-hero{
-  position:relative;
-  height:68vh;
-  min-height:540px;
-  overflow:hidden;
-}
-.ayas-hero img{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  object-position:center top;
-  filter:brightness(1.05) contrast(1.1);
-}
-
-/* světelný horizont */
-.ayas-hero::after{
-  content:"";
-  position:absolute;
-  left:0;right:0;bottom:0;
-  height:300px;
+.hero{
+  height:72vh;
+  min-height:520px;
   background:
-    linear-gradient(
-      to bottom,
-      rgba(2,6,23,0),
-      rgba(2,6,23,.85),
-      #020617
-    );
-}
-
-/* =========================
-   FLOW
-========================= */
-main{
-  max-width:1200px;
-  margin:-220px auto 160px;
-  padding:0 18px;
-  position:relative;
-  z-index:3;
-}
-
-/* =========================
-   SCENIC BOX (NOT CARD)
-========================= */
-.ayas-box{
-  position:relative;
-  margin-bottom:26px; /* zmenšené mezery */
-  padding:30px 34px 34px;
-  border-radius:28px;
-  background:
-    linear-gradient(
-      180deg,
-      rgba(255,255,255,.08),
-      rgba(15,23,42,.82),
-      rgba(2,6,23,.97)
-    );
-  box-shadow:
-    0 50px 140px rgba(0,0,0,.9),
-    inset 0 1px 0 rgba(255,255,255,.15);
-  overflow:hidden;
-}
-
-/* světelný nádech shora */
-.ayas-box::before{
-  content:"";
-  position:absolute;
-  inset:0;
-  background:
-    radial-gradient(
-      ellipse at 50% -30%,
-      rgba(56,189,248,.45),
-      transparent 60%
-    );
-  pointer-events:none;
-}
-
-/* CORE BOX */
-.ayas-box.core{
-  box-shadow:
-    0 0 0 1px rgba(125,211,252,.35),
-    0 70px 180px rgba(0,0,0,.95);
-}
-
-/* TITLES */
-.ayas-box-title{
+    radial-gradient(ellipse at center bottom, rgba(56,189,248,.35), transparent 65%),
+    url("/ayas7-hero.jpg") center/cover no-repeat;
   display:flex;
+  flex-direction:column;
   align-items:center;
-  gap:12px;
-  font-size:12px;
-  letter-spacing:.22em;
-  text-transform:uppercase;
-  color:#c7d2fe;
+  justify-content:center;
+  text-align:center;
+}
+
+.hero img{
+  width:120px;
   margin-bottom:18px;
 }
 
-/* LED */
-.led-dot{
-  width:10px;
-  height:10px;
+.hero h1{
+  font-size:34px;
+  letter-spacing:.12em;
+  margin:0;
+}
+
+.hero span{
+  margin-top:8px;
+  font-size:13px;
+  letter-spacing:.2em;
+  color:#9ca3af;
+}
+
+/* =========================
+   CONTENT FLOW
+========================= */
+main{
+  max-width:420px;
+  margin:-120px auto 120px;
+  padding:0 18px;
+}
+
+/* =========================
+   SILENT PANEL
+========================= */
+.panel{
+  margin-top:22px;
+  padding:22px 24px;
+  border-radius:22px;
+  background:linear-gradient(180deg,rgba(15,23,42,.55),rgba(2,6,23,.85));
+}
+
+/* =========================
+   PANEL HEADER
+========================= */
+.panel-title{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  font-size:11px;
+  letter-spacing:.22em;
+  text-transform:uppercase;
+  color:var(--muted);
+  margin-bottom:16px;
+}
+
+.led{
+  width:8px;
+  height:8px;
   border-radius:50%;
   background:var(--red);
-  box-shadow:0 0 10px rgba(239,68,68,.9);
-  transition:background .35s ease, box-shadow .35s ease;
+  box-shadow:0 0 8px rgba(239,68,68,.6);
 }
-.led-dot.live{
+
+.led.live{
   background:var(--green);
-  box-shadow:0 0 14px rgba(34,197,94,1);
+  box-shadow:0 0 8px rgba(34,197,94,.8);
 }
 
-/* GRID */
-.grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:24px;
-}
-@media(max-width:900px){
-  .grid{grid-template-columns:1fr;}
-}
-
-/* METRICS */
-.metric{
+/* =========================
+   METRICS
+========================= */
+.row{
   display:flex;
   justify-content:space-between;
-  font-size:14px;
   margin-bottom:8px;
-}
-.metric span:first-child{color:var(--muted)}
-.value{
-  font-weight:900;
-  font-variant-numeric:tabular-nums;
+  font-size:14px;
 }
 
-/* HEALTH */
-.health-bar-wrap{margin-top:6px}
-.health-bar-bg{
-  width:100%;
-  height:16px;
+.row span:first-child{color:var(--muted);}
+.row span:last-child{font-weight:700;}
+
+/* =========================
+   HEALTH BAR
+========================= */
+.bar{
+  margin-top:14px;
+  height:12px;
   background:rgba(255,255,255,.08);
-  border-radius:12px;
+  border-radius:10px;
   overflow:hidden;
 }
-.health-bar-fill{
+
+.bar-fill{
   height:100%;
   width:0%;
-  border-radius:12px;
-  transition:width 1.2s ease;
+  background:linear-gradient(90deg,#facc15,#fde047);
+  transition:width 1s ease;
 }
 
-/* FOOTER */
+/* =========================
+   FOOT
+========================= */
 footer{
-  margin-top:80px;
+  margin-top:40px;
   text-align:center;
   font-size:11px;
   letter-spacing:.18em;
@@ -205,140 +158,99 @@ footer{
 
 <body>
 
-<!-- HERO -->
-<header class="ayas-hero">
-  <!-- TODO: dosadit finální hero podle návrhu -->
-  <img src="/ayas7-hero-new.jpg" alt="AYAS-7 System Engine">
-</header>
+<section class="hero">
+  <img src="/ayas7-hero-new.jpg" alt="AYAS-7"/>
+  <h1>AYAS-7</h1>
+  <span>NEXT GENERATION</span>
+</section>
 
 <main>
 
-<!-- SYSTEM CORE -->
-<section class="ayas-box core">
-  <div class="ayas-box-title">
-    <span class="led-dot" id="ledSystem"></span>
-    System · Truth Snapshot
+<section class="panel">
+  <div class="panel-title">
+    <span class="led" id="ledSystem"></span>
+    SYSTEM · TRUTH SNAPSHOT
   </div>
 
-  <div class="metric"><span>Mode</span><span id="sysMode" class="value">—</span></div>
-  <div class="metric"><span>Health</span><span id="sysHealth" class="value">—</span></div>
-  <div class="metric"><span>Uptime</span><span id="sysUptime" class="value">—</span></div>
-  <div class="metric"><span>Snapshot</span><span id="snapTime" class="value">—</span></div>
+  <div class="row"><span>Mode</span><span id="sysMode">—</span></div>
+  <div class="row"><span>Health</span><span id="sysHealth">—</span></div>
+  <div class="row"><span>Uptime</span><span id="sysUptime">—</span></div>
+  <div class="row"><span>Snapshot</span><span id="snapTime">—</span></div>
 </section>
 
-<!-- OPERATIONAL -->
-<section class="ayas-box">
-  <div class="ayas-box-title">
-    <span class="led-dot" id="ledOp"></span>
-    Operational Status
+<section class="panel">
+  <div class="panel-title">
+    <span class="led" id="ledStatus"></span>
+    OPERATIONAL STATUS
   </div>
 
-  <div class="health-bar-wrap">
-    <div class="health-bar-bg">
-      <div class="health-bar-fill" id="healthBar"></div>
-    </div>
-    <div class="metric" style="margin-top:10px">
-      <span>Status</span>
-      <span>
-        <span id="healthValue"></span>
-        <span id="healthState"></span>
-      </span>
-    </div>
+  <div class="row">
+    <span>Status</span>
+    <span><span id="healthValue">—</span> % ACTIVE</span>
+  </div>
+
+  <div class="bar">
+    <div class="bar-fill" id="healthBar"></div>
   </div>
 </section>
 
-<!-- DATA -->
-<div class="grid">
-  <section class="ayas-box">
-    <div class="ayas-box-title">Liquidity</div>
-    <div class="metric"><span>TVL</span><span id="liqTVL" class="value">—</span></div>
-    <div class="metric"><span>Utilization</span><span id="liqUtil" class="value">—</span></div>
-    <div class="metric"><span>Depth</span><span id="liqDepth" class="value">—</span></div>
-    <div class="metric"><span>Slippage</span><span id="liqSlip" class="value">—</span></div>
-  </section>
+<section class="panel">
+  <div class="panel-title">LIQUIDITY</div>
 
-  <section class="ayas-box">
-    <div class="ayas-box-title">Tokens</div>
-    <div class="metric"><span>WW-UNIT</span><span id="unitSupply" class="value">—</span></div>
-    <div class="metric"><span>WW-RESERVE</span><span id="reserveSupply" class="value">—</span></div>
-    <div class="metric"><span>WW-KEY</span><span id="keySupply" class="value">—</span></div>
-  </section>
-</div>
+  <div class="row"><span>TVL</span><span id="liqTVL">—</span></div>
+  <div class="row"><span>Utilization</span><span id="liqUtil">—</span></div>
+  <div class="row"><span>Depth</span><span id="liqDepth">—</span></div>
+  <div class="row"><span>Slippage</span><span id="liqSlip">—</span></div>
+</section>
+
+<section class="panel">
+  <div class="panel-title">TOKENS</div>
+
+  <div class="row"><span>WW-UNIT</span><span id="unitSupply">—</span></div>
+  <div class="row"><span>WW-RESERVE</span><span id="reserveSupply">—</span></div>
+  <div class="row"><span>WW-KEY</span><span id="keySupply">—</span></div>
+</section>
 
 <footer>
-  AYAS-7 · Truth Projection · Read Only
+  READ-ONLY · NO EXECUTION · NO CUSTODY
 </footer>
 
 </main>
 
 <script>
-(async function(){
-
-const SNAPSHOT_URL="https://snapshot.ayas7.com/api/snapshot";
-const CACHE_KEY="AYAS_SNAPSHOT_CACHE";
-
-const leds=[
-  document.getElementById("ledSystem"),
-  document.getElementById("ledOp")
-];
-
-function updateNet(online){
-  leds.forEach(d=>d && d.classList.toggle("live",online));
-}
-
-function updateHealthBar(v){
-  if(v==null||isNaN(v))return;
-  const val=Math.max(0,Math.min(100,Number(v)));
-  const bar=document.getElementById("healthBar");
-  bar.style.width=val+"%";
-
-  if(val>=70) bar.style.background="linear-gradient(90deg,#22c55e,#4ade80)";
-  else if(val>=40) bar.style.background="linear-gradient(90deg,#facc15,#fde047)";
-  else bar.style.background="linear-gradient(90deg,#ef4444,#f87171)";
-
-  document.getElementById("healthValue").textContent=val.toFixed(1)+" % ";
-  document.getElementById("healthState").textContent=
-    val>=75?"STABLE":val>=40?"ACTIVE":"LIMITED";
-}
-
-async function loadSnapshot(){
-  try{
-    const r=await fetch(SNAPSHOT_URL,{cache:"no-store"});
-    if(!r.ok)throw 0;
-    const d=await r.json();
-    localStorage.setItem(CACHE_KEY,JSON.stringify(d));
-    render(d);updateNet(true);
-  }catch{
-    const c=localStorage.getItem(CACHE_KEY);
-    if(c)render(JSON.parse(c));
-    updateNet(false);
-  }
-}
-
-function render(s){
-  set("sysMode",s.meta?.mode);
-  set("sysHealth",fmtPct(s.meta?.health));
-  updateHealthBar(s.meta?.health);
-  set("sysUptime",s.meta?.uptime);
-  set("snapTime",fmtTime(s.meta?.generatedAt));
-  set("liqTVL",fmtUSD(s.pools?.liquidityUSD));
-  set("liqUtil",fmtPct(s.pools?.utilization));
-  set("liqDepth",s.pools?.depth);
-  set("liqSlip",fmtPct(s.pools?.slippage));
-  set("unitSupply",fmtNum(s.tokens?.WW_UNIT?.supply));
-  set("reserveSupply",fmtUSD(s.tokens?.WW_RESERVE?.balance));
-  set("keySupply",fmtNum(s.tokens?.WW_KEY?.holders));
-}
+(async ()=>{
+const API="https://snapshot.ayas7.com/api/snapshot";
 
 function set(id,v){const e=document.getElementById(id);if(e)e.textContent=v??"—";}
-const fmtUSD=v=>v==null?"—":"$"+Number(v).toLocaleString("en-US",{maximumFractionDigits:2});
-const fmtNum=v=>v==null?"—":Number(v).toLocaleString("en-US");
-const fmtPct=v=>v==null?"—":Number(v).toFixed(2)+" %";
-const fmtTime=t=>t?new Date(t).toLocaleString("cs-CZ"):"—";
+function pct(v){return v==null?"—":Number(v).toFixed(2);}
+function usd(v){return v==null?"—":"$"+Number(v).toLocaleString();}
+function time(t){return t?new Date(t).toLocaleString("cs-CZ"):"—";}
 
-loadSnapshot();
-setInterval(loadSnapshot,30000);
+try{
+  const r=await fetch(API,{cache:"no-store"});
+  const s=await r.json();
 
+  document.getElementById("ledSystem").classList.add("live");
+  document.getElementById("ledStatus").classList.add("live");
+
+  set("sysMode",s.meta?.mode);
+  set("sysHealth",pct(s.meta?.health)+" %");
+  set("sysUptime",s.meta?.uptime);
+  set("snapTime",time(s.meta?.generatedAt));
+
+  set("healthValue",pct(s.meta?.health));
+  document.getElementById("healthBar").style.width=Math.min(100,s.meta?.health)+"%";
+
+  set("liqTVL",usd(s.pools?.liquidityUSD));
+  set("liqUtil",pct(s.pools?.utilization)+" %");
+  set("liqDepth",s.pools?.depth);
+  set("liqSlip",pct(s.pools?.slippage)+" %");
+
+  set("unitSupply",s.tokens?.WW_UNIT?.supply);
+  set("reserveSupply",usd(s.tokens?.WW_RESERVE?.balance));
+  set("keySupply",s.tokens?.WW_KEY?.holders);
+
+}catch(e){}
 })();
 </script>
 
