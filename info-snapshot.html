@@ -17,10 +17,13 @@
   --bg:#020617;
   --border:#94a3b833;
   --blue:#38bdf8;
+  --green:#22c55e;
+  --red:#ef4444;
   --text:#e5e7eb;
   --muted:#9ca3af;
 }
 
+/* BASE */
 html,body{
   margin:0;
   padding:0;
@@ -37,8 +40,8 @@ html,body{
 .ayas-hero{
   height:52vh;
   min-height:420px;
-  overflow:hidden;
   position:relative;
+  overflow:hidden;
 }
 .ayas-hero img{
   width:100%;
@@ -50,26 +53,32 @@ html,body{
   content:"";
   position:absolute;
   bottom:0;left:0;right:0;
-  height:120px;
+  height:140px;
   background:linear-gradient(to bottom, rgba(2,6,23,0), #020617);
 }
 
-/* MAIN */
+/* MAIN FLOW */
 main{
   max-width:1200px;
-  margin:-80px auto 140px;
+  margin:-120px auto 140px;
   padding:0 18px;
   position:relative;
   z-index:2;
 }
 
-/* UNIVERSAL BOX */
+/* BOX SYSTEM */
 .ayas-box{
   background:linear-gradient(180deg, rgba(15,23,42,.88), rgba(2,6,23,.96));
   border:1px solid rgba(148,163,184,.25);
-  border-radius:18px;
+  border-radius:20px;
   padding:22px 24px 26px;
-  margin-bottom:24px;
+  margin-bottom:26px;
+  transition:transform .35s ease, box-shadow .35s ease;
+}
+.ayas-box:first-of-type{
+  box-shadow:
+    0 0 0 1px rgba(56,189,248,.18),
+    0 30px 80px rgba(2,6,23,.9);
 }
 .ayas-box-title{
   font-size:12px;
@@ -77,6 +86,23 @@ main{
   text-transform:uppercase;
   color:var(--muted);
   margin-bottom:14px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+
+/* LED */
+.led-dot{
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:var(--red);
+  box-shadow:0 0 6px rgba(239,68,68,.7);
+  transition:background .35s ease, box-shadow .35s ease;
+}
+.led-dot.live{
+  background:var(--green);
+  box-shadow:0 0 8px rgba(34,197,94,.9);
 }
 
 /* GRID */
@@ -100,7 +126,7 @@ main{
 .value{font-weight:800;font-variant-numeric:tabular-nums}
 
 /* HEALTH BAR */
-.health-bar-wrap{padding:10px 0}
+.health-bar-wrap{padding-top:6px}
 .health-bar-label{
   display:flex;
   justify-content:space-between;
@@ -108,6 +134,12 @@ main{
   font-size:12px;
   letter-spacing:.12em;
   text-transform:uppercase;
+  color:var(--muted);
+}
+.health-state{
+  margin-left:6px;
+  font-size:11px;
+  letter-spacing:.12em;
   color:var(--muted);
 }
 .health-bar-bg{
@@ -147,7 +179,10 @@ footer{
 <main>
 
 <section class="ayas-box">
-  <div class="ayas-box-title">System · Truth Snapshot</div>
+  <div class="ayas-box-title">
+    <span class="led-dot"></span>
+    System · Truth Snapshot
+  </div>
   <div class="metric"><span>Mode</span><span id="sysMode" class="value">—</span></div>
   <div class="metric"><span>Health</span><span id="sysHealth" class="value">—</span></div>
   <div class="metric"><span>Uptime</span><span id="sysUptime" class="value">—</span></div>
@@ -155,11 +190,18 @@ footer{
 </section>
 
 <section class="ayas-box">
-  <div class="ayas-box-title">Operational Status</div>
+  <div class="ayas-box-title">
+    <span class="led-dot"></span>
+    Operational Status
+  </div>
+
   <div class="health-bar-wrap">
     <div class="health-bar-label">
       <span>Status</span>
-      <span><span id="healthValue">—</span> <span id="healthState"></span></span>
+      <span>
+        <span id="healthValue">—</span>
+        <span id="healthState" class="health-state"></span>
+      </span>
     </div>
     <div class="health-bar-bg">
       <div class="health-bar-fill" id="healthBar"></div>
@@ -198,172 +240,88 @@ footer{
 </footer>
 
 </main>
+
 <script>
 (async function () {
 
  const SNAPSHOT_URL = "https://snapshot.ayas7.com/api/snapshot";
  const CACHE_KEY = "AYAS_SNAPSHOT_CACHE";
 
-  
-function updateHealthBar(v){
+ function updateHealthBar(v){
   if(v == null || isNaN(v)) return;
-
   const val = Math.max(0, Math.min(100, Number(v)));
   const bar = document.getElementById("healthBar");
   const txt = document.getElementById("healthValue");
-
   if(!bar || !txt) return;
-
   bar.style.width = val + "%";
   txt.textContent = val.toFixed(1) + " %";
 
-  // barva podle stavu
   if(val >= 70){
     bar.style.background = "linear-gradient(90deg,#22c55e,#4ade80)";
-    bar.style.boxShadow = "0 0 14px rgba(34,197,94,.45)";
   }else if(val >= 40){
     bar.style.background = "linear-gradient(90deg,#facc15,#fde047)";
-    bar.style.boxShadow = "0 0 14px rgba(250,204,21,.35)";
   }else{
     bar.style.background = "linear-gradient(90deg,#ef4444,#f87171)";
-    bar.style.boxShadow = "0 0 14px rgba(239,68,68,.45)";
   }
-}
+ }
 
+ function updateNet(online){
+  document.querySelectorAll('.led-dot').forEach(dot=>{
+    dot.classList.toggle('live', online);
+  });
+ }
 
-  async function loadSnapshot() {
-    try {
-      const res = await fetch(SNAPSHOT_URL, { cache: "no-store" });
-      if (!res.ok) throw new Error("API error");
-
-      const data = await res.json();
-      localStorage.setItem(CACHE_KEY, JSON.stringify(data));
-      render(data);
-      updateNet(true);
-
-    } catch (err) {
-      const cached = localStorage.getItem(CACHE_KEY);
-      if (cached) {
-        render(JSON.parse(cached));
-        updateNet(false);
-      } else {
-        renderError();
-        updateNet(false);
-      }
-    }
-  }
-
-  function render(s) {
-    /* SYSTEM */
-    set("sysMode",   s.meta?.mode ?? "—");
-    set("sysHealth", formatPct(s.meta?.health));
-    updateHealthBar(s.meta?.health);
-    set("healthState", healthStateLabel(s.meta?.health, true));
-
-    set("sysUptime", s.meta?.uptime ?? "—");
-    set("snapTime",  formatTime(s.meta?.generatedAt));
-
-    /* LIQUIDITY */
-    set("liqTVL",  formatUSD(s.pools?.liquidityUSD));
-    set("liqUtil", formatPct(s.pools?.utilization));
-    set("liqDepth", s.pools?.depth ?? "—");
-    set("liqSlip", formatPct(s.pools?.slippage));
-
-    /* TOKENS */
-    set("unitSupply",     formatNum(s.tokens?.WW_UNIT?.supply));
-    set("reserveSupply",  formatUSD(s.tokens?.WW_RESERVE?.balance));
-    set("keySupply",      formatNum(s.tokens?.WW_KEY?.holders));
-  }
-
-  function renderError() {
-    set("healthState", "OFFLINE");
-
-    set("sysMode", "offline");
-    set("sysHealth", "—");
-    set("snapTime", "—");
-  }
-function healthStateLabel(v, online){
-  if(!online) return "OFFLINE";
+ function healthStateLabel(v){
   if(v >= 75) return "STABLE";
   if(v >= 40) return "ACTIVE";
   return "LIMITED";
-}
+ }
 
-
-  /* ===== HELPERS ===== */
-
-  function set(id, val) {
-    const el = document.getElementById(id);
-    if (el) el.textContent = val ?? "—";
+ async function loadSnapshot(){
+  try{
+    const res = await fetch(SNAPSHOT_URL,{cache:"no-store"});
+    if(!res.ok) throw 0;
+    const data = await res.json();
+    localStorage.setItem(CACHE_KEY, JSON.stringify(data));
+    render(data);
+    updateNet(true);
+  }catch(e){
+    const cached = localStorage.getItem(CACHE_KEY);
+    if(cached){
+      render(JSON.parse(cached));
+    }
+    updateNet(false);
   }
+ }
 
-  function formatUSD(v) {
-    if (v == null) return "—";
-    return "$" + Number(v).toLocaleString("en-US", { maximumFractionDigits: 2 });
-  }
+ function render(s){
+  set("sysMode", s.meta?.mode);
+  set("sysHealth", s.meta?.health?.toFixed(2)+" %");
+  updateHealthBar(s.meta?.health);
+  set("healthState", healthStateLabel(s.meta?.health));
+  set("sysUptime", s.meta?.uptime);
+  set("snapTime", formatTime(s.meta?.generatedAt));
+  set("liqTVL", formatUSD(s.pools?.liquidityUSD));
+  set("liqUtil", formatPct(s.pools?.utilization));
+  set("liqDepth", s.pools?.depth);
+  set("liqSlip", formatPct(s.pools?.slippage));
+  set("unitSupply", formatNum(s.tokens?.WW_UNIT?.supply));
+  set("reserveSupply", formatUSD(s.tokens?.WW_RESERVE?.balance));
+  set("keySupply", formatNum(s.tokens?.WW_KEY?.holders));
+ }
 
-  function formatNum(v) {
-    if (v == null) return "—";
-    return Number(v).toLocaleString("en-US");
-  }
+ function set(id,val){
+  const el=document.getElementById(id);
+  if(el) el.textContent=val??"—";
+ }
 
-  function formatPct(v) {
-    if (v == null) return "—";
-    return Number(v).toFixed(2) + " %";
-  }
-function snapshotAge(ts){
-  if(!ts) return "—";
+ function formatUSD(v){return v==null?"—":"$"+Number(v).toLocaleString("en-US",{maximumFractionDigits:2});}
+ function formatNum(v){return v==null?"—":Number(v).toLocaleString("en-US");}
+ function formatPct(v){return v==null?"—":Number(v).toFixed(2)+" %";}
+ function formatTime(t){return t?new Date(t).toLocaleString("cs-CZ"):"—";}
 
-  const diff = Math.floor((Date.now() - new Date(ts).getTime()) / 1000);
-
-  if(diff < 60) return diff + " s ago";
-  if(diff < 3600) return Math.floor(diff/60) + " min ago";
-  return Math.floor(diff/3600) + " h ago";
-}
-
-
-  // ✅ SPRÁVNÝ ČAS – STEJNÝ NA PC I iPHONU
-  function formatTime(t) {
-    if (!t) return "—";
-    return new Date(t).toLocaleString("cs-CZ", {
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit"
-    });
-  }
-
-  // ✅ ONLINE / OFFLINE → HERO LED
-  function updateNet(online) {
-    const dot = document.querySelector(".hero-dot");
-    if (!dot) return;
-
-    dot.style.background = online ? "#22c55e" : "#ef4444";
-    dot.style.boxShadow = online
-      ? "0 0 10px #22c55e"
-      : "0 0 10px #ef4444";
-  }
-function updateNet(online) {
-  const heroDot = document.querySelector(".hero-dot");
-  const sectionDot = document.getElementById("sectionLed");
-
-  if (heroDot) {
-    heroDot.style.background = online ? "#22c55e" : "#ef4444";
-    heroDot.style.boxShadow = online
-      ? "0 0 10px #22c55e"
-      : "0 0 10px #ef4444";
-  }
-
-  if (sectionDot) {
-    sectionDot.classList.toggle("live", online);
-  }
-}
-
-
-  loadSnapshot();
-  setInterval(loadSnapshot, 30000); // klidný refresh
+ loadSnapshot();
+ setInterval(loadSnapshot,30000);
 
 })();
 </script>
