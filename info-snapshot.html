@@ -1,243 +1,186 @@
 <!doctype html>
 <html lang="cs">
 <head>
-<meta charset="utf-8"/>
+<meta charset="utf-8">
 <title>AYAS-7 · Truth Snapshot</title>
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
 <meta name="theme-color" content="#020617">
 
 <style>
-/* =========================================================
-   AYAS-7 · FINAL APPLICATION SCENE
-   HERO = WALLPAPER
-   CONTENT = SILENT TRUTH
-========================================================= */
+/* ================================
+   AYAS-7 • SINGLE SCENE APP
+================================ */
 
-:root{
-  --bg:#020617;
-  --text:#e5e7eb;
-  --muted:#9ca3af;
-  --green:#22c55e;
-  --red:#ef4444;
-  --yellow:#facc15;
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background: #020617;
+  color: #e5e7eb;
+  overflow-x: hidden;
 }
 
-*{box-sizing:border-box}
-
-html,body{
-  margin:0;
-  padding:0;
-  background:var(--bg);
-  font-family:"Segoe UI",Tahoma,Verdana,sans-serif;
-  color:var(--text);
-}
-
-/* =========================
-   HERO – FULL WALLPAPER
-========================= */
-.hero{
-  height:100vh;
+/* === HERO SCENE === */
+.hero {
+  position: relative;
+  min-height: 100vh;
+  width: 100%;
   background:
+    linear-gradient(to bottom, rgba(2,6,23,.25), rgba(2,6,23,.95)),
     url("ayas7-hero-new.jpg") center top / cover no-repeat;
 }
 
-/* =========================
-   CONTENT FLOW
-========================= */
-main{
-  max-width:420px;
-  margin:0 auto;
-  padding:0 18px 120px;
+/* === OVERLAY WRAPPER === */
+.overlay {
+  position: relative;
+  max-width: 420px;
+  margin: 0 auto;
+  padding: 48vh 14px 80px;
 }
 
-/* anchor exactly below light horizon (~25vh) */
-.content-anchor{
-  height:25vh;
-}
-
-/* =========================
-   SILENT PANELS
-========================= */
-.panel{
-  margin-top:22px;
-  padding:22px 24px;
-  border-radius:22px;
-  background:linear-gradient(
+/* === GLASS BOX === */
+.box {
+  background: linear-gradient(
     180deg,
-    rgba(15,23,42,.55),
-    rgba(2,6,23,.88)
+    rgba(15,23,42,.85),
+    rgba(2,6,23,.95)
   );
+  border-radius: 22px;
+  padding: 18px 20px 20px;
+  margin-bottom: 18px;
+  box-shadow:
+    inset 0 0 0 1px rgba(148,163,184,.25),
+    0 20px 40px rgba(0,0,0,.45);
+  backdrop-filter: blur(10px);
 }
 
-/* =========================
-   PANEL HEADER
-========================= */
-.panel-title{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  font-size:11px;
-  letter-spacing:.22em;
-  text-transform:uppercase;
-  color:var(--muted);
-  margin-bottom:16px;
+/* === BOX HEADER === */
+.box-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: #cbd5f5;
+  margin-bottom: 14px;
 }
 
-.led{
-  width:8px;
-  height:8px;
-  border-radius:50%;
-  background:var(--red);
-  box-shadow:0 0 8px rgba(239,68,68,.6);
+/* LED */
+.led {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #22c55e;
+  box-shadow: 0 0 10px rgba(34,197,94,.9);
 }
 
-.led.live{
-  background:var(--green);
-  box-shadow:0 0 8px rgba(34,197,94,.8);
+/* === METRIC ROW === */
+.row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  margin-bottom: 6px;
 }
 
-/* =========================
-   METRICS
-========================= */
-.row{
-  display:flex;
-  justify-content:space-between;
-  margin-bottom:8px;
-  font-size:14px;
+.row span:first-child {
+  color: #9ca3af;
 }
 
-.row span:first-child{color:var(--muted);}
-.row span:last-child{font-weight:700;}
-
-/* =========================
-   HEALTH BAR
-========================= */
-.bar{
-  margin-top:14px;
-  height:12px;
-  background:rgba(255,255,255,.08);
-  border-radius:10px;
-  overflow:hidden;
+.value {
+  font-weight: 700;
 }
 
-.bar-fill{
-  height:100%;
-  width:0%;
-  background:linear-gradient(90deg,#facc15,#fde047);
-  transition:width 1s ease;
+/* === STATUS BAR === */
+.bar {
+  height: 14px;
+  background: rgba(255,255,255,.08);
+  border-radius: 8px;
+  overflow: hidden;
+  margin-top: 10px;
 }
 
-/* =========================
-   FOOTER
-========================= */
-footer{
-  margin-top:40px;
-  text-align:center;
-  font-size:11px;
-  letter-spacing:.18em;
-  color:#64748b;
+.bar-fill {
+  height: 100%;
+  width: 62%;
+  background: linear-gradient(90deg,#facc15,#fde047);
+  box-shadow: 0 0 14px rgba(250,204,21,.6);
+}
+
+/* === FOOT NOTE === */
+.note {
+  text-align: center;
+  margin-top: 22px;
+  font-size: 11px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: #64748b;
 }
 </style>
 </head>
 
 <body>
 
-<!-- HERO SCENE -->
-<section class="hero"></section>
+<div class="hero">
+  <div class="overlay">
 
-<!-- CONTENT -->
-<main>
+    <!-- SYSTEM -->
+    <div class="box">
+      <div class="box-title">
+        <span class="led"></span>
+        SYSTEM · TRUTH SNAPSHOT
+      </div>
 
-<div class="content-anchor"></div>
+      <div class="row"><span>Mode</span><span class="value">LIVE</span></div>
+      <div class="row"><span>Health</span><span class="value">62.17 %</span></div>
+      <div class="row"><span>Uptime</span><span class="value">9814</span></div>
+      <div class="row"><span>Snapshot</span><span class="value">1. 1. 2026 17:11:50</span></div>
+    </div>
 
-<section class="panel">
-  <div class="panel-title">
-    <span class="led" id="ledSystem"></span>
-    SYSTEM · TRUTH SNAPSHOT
+    <!-- OPERATIONAL -->
+    <div class="box">
+      <div class="box-title">
+        <span class="led"></span>
+        OPERATIONAL STATUS
+      </div>
+
+      <div class="row">
+        <span>Status</span>
+        <span class="value">62.2 % ACTIVE</span>
+      </div>
+
+      <div class="bar">
+        <div class="bar-fill"></div>
+      </div>
+    </div>
+
+    <!-- LIQUIDITY -->
+    <div class="box">
+      <div class="box-title">LIQUIDITY</div>
+
+      <div class="row"><span>TVL</span><span class="value">$48,210.55</span></div>
+      <div class="row"><span>Utilization</span><span class="value">42.00 %</span></div>
+      <div class="row"><span>Depth</span><span class="value">128000</span></div>
+      <div class="row"><span>Slippage</span><span class="value">0.35 %</span></div>
+    </div>
+
+    <!-- TOKENS -->
+    <div class="box">
+      <div class="box-title">TOKENS</div>
+
+      <div class="row"><span>WW-UNIT</span><span class="value">1,000,000</span></div>
+      <div class="row"><span>WW-RESERVE</span><span class="value">$25,432.12</span></div>
+      <div class="row"><span>WW-KEY</span><span class="value">7</span></div>
+    </div>
+
+    <div class="note">
+      READ-ONLY · TRUTH SNAPSHOT · AYAS-7
+    </div>
+
   </div>
-
-  <div class="row"><span>Mode</span><span id="sysMode">—</span></div>
-  <div class="row"><span>Health</span><span id="sysHealth">—</span></div>
-  <div class="row"><span>Uptime</span><span id="sysUptime">—</span></div>
-  <div class="row"><span>Snapshot</span><span id="snapTime">—</span></div>
-</section>
-
-<section class="panel">
-  <div class="panel-title">
-    <span class="led" id="ledStatus"></span>
-    OPERATIONAL STATUS
-  </div>
-
-  <div class="row">
-    <span>Status</span>
-    <span><span id="healthValue">—</span> % ACTIVE</span>
-  </div>
-
-  <div class="bar">
-    <div class="bar-fill" id="healthBar"></div>
-  </div>
-</section>
-
-<section class="panel">
-  <div class="panel-title">LIQUIDITY</div>
-
-  <div class="row"><span>TVL</span><span id="liqTVL">—</span></div>
-  <div class="row"><span>Utilization</span><span id="liqUtil">—</span></div>
-  <div class="row"><span>Depth</span><span id="liqDepth">—</span></div>
-  <div class="row"><span>Slippage</span><span id="liqSlip">—</span></div>
-</section>
-
-<section class="panel">
-  <div class="panel-title">TOKENS</div>
-
-  <div class="row"><span>WW-UNIT</span><span id="unitSupply">—</span></div>
-  <div class="row"><span>WW-RESERVE</span><span id="reserveSupply">—</span></div>
-  <div class="row"><span>WW-KEY</span><span id="keySupply">—</span></div>
-</section>
-
-<footer>
-  READ-ONLY · NO EXECUTION · NO CUSTODY
-</footer>
-
-</main>
-
-<script>
-(async ()=>{
-const API="https://snapshot.ayas7.com/api/snapshot";
-
-function set(id,v){const e=document.getElementById(id);if(e)e.textContent=v??"—";}
-function pct(v){return v==null?"—":Number(v).toFixed(2);}
-function usd(v){return v==null?"—":"$"+Number(v).toLocaleString();}
-function time(t){return t?new Date(t).toLocaleString("cs-CZ"):"—";}
-
-try{
-  const r=await fetch(API,{cache:"no-store"});
-  const s=await r.json();
-
-  document.getElementById("ledSystem").classList.add("live");
-  document.getElementById("ledStatus").classList.add("live");
-
-  set("sysMode",s.meta?.mode);
-  set("sysHealth",pct(s.meta?.health)+" %");
-  set("sysUptime",s.meta?.uptime);
-  set("snapTime",time(s.meta?.generatedAt));
-
-  set("healthValue",pct(s.meta?.health));
-  document.getElementById("healthBar").style.width=Math.min(100,s.meta?.health)+"%";
-
-  set("liqTVL",usd(s.pools?.liquidityUSD));
-  set("liqUtil",pct(s.pools?.utilization)+" %");
-  set("liqDepth",s.pools?.depth);
-  set("liqSlip",pct(s.pools?.slippage)+" %");
-
-  set("unitSupply",s.tokens?.WW_UNIT?.supply);
-  set("reserveSupply",usd(s.tokens?.WW_RESERVE?.balance));
-  set("keySupply",s.tokens?.WW_KEY?.holders);
-
-}catch(e){}
-})();
-</script>
+</div>
 
 </body>
 </html>
