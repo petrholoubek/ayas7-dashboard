@@ -539,13 +539,30 @@
            ? new Date(row.created_at).toLocaleDateString('cs-CZ')
            : '-';
 
-         tr.innerHTML = `
-           <td>${created}</td>
-           <td>${row.name ?? ''}</td>
-           <td>${row.email ?? ''}</td>
-           <td>${(row.deposit ?? 0).toLocaleString('cs-CZ')}</td>
-           <td>${row.ww_key ?? 0}</td>
-         `;
+        const certUrl =
+  `certificate.html` +
+  `?name=${encodeURIComponent(row.name ?? '')}` +
+  `&amount=${row.deposit ?? 0}` +
+  `&keys=${row.ww_key ?? 0}` +
+  `&date=${created}` +
+  `&id=WWKEY-${row.id ?? ''}`;
+
+tr.innerHTML = `
+  <td>${created}</td>
+  <td>${row.name ?? ''}</td>
+  <td>${row.email ?? ''}</td>
+  <td>${(row.deposit ?? 0).toLocaleString('cs-CZ')}</td>
+  <td>${row.ww_key ?? 0}</td>
+  <td>
+    <a href="${certUrl}" target="_blank">
+      <button class="btn-link">
+        <span class="btn-link-dot"></span>
+        Certifikát
+      </button>
+    </a>
+  </td>
+`;
+
          tbody.appendChild(tr);
        });
 
