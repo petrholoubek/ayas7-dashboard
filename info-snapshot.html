@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
 <meta charset="utf-8"/>
-<title>AYAS-7 · Truth Snapshot</title>
+<title>AYAS-7 · Truth Projection</title>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 
 <!-- PWA -->
@@ -13,14 +13,14 @@
 <meta name="theme-color" content="#020617">
 
 <style>
-/* ===============================
-   AYAS-7 • SYSTEM ENGINE APP
-================================ */
+/* ======================================
+   AYAS-7 • SCENIC PROJECTION (SÍLA)
+====================================== */
 
 :root{
   --bg:#020617;
-  --border:#94a3b833;
   --blue:#38bdf8;
+  --cyan:#7dd3fc;
   --green:#22c55e;
   --red:#ef4444;
   --text:#e5e7eb;
@@ -33,90 +33,120 @@ html,body{
   padding:0;
   min-height:100%;
   background:
-    radial-gradient(circle at 30% -10%, #0f172a 0%, transparent 45%),
-    radial-gradient(circle at 80% 20%, #02081a 0%, transparent 50%),
-    radial-gradient(circle at 50% 120%, #020617 0%, #000 65%);
+    radial-gradient(ellipse at 50% -20%, #0b2a55 0%, transparent 45%),
+    radial-gradient(circle at 70% 30%, #020c2a 0%, transparent 55%),
+    radial-gradient(circle at 30% 80%, #020617 0%, #000 70%);
   font-family:"Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   color:var(--text);
 }
 
-/* HERO = SYSTEM SPACE */
+/* HERO SCENE */
 .ayas-hero{
   position:relative;
-  height:60vh;
-  min-height:460px;
+  height:65vh;
+  min-height:520px;
   overflow:hidden;
 }
 .ayas-hero img{
   width:100%;
   height:100%;
   object-fit:cover;
-  display:block;
+  filter:brightness(1.05) contrast(1.1);
 }
 .ayas-hero::after{
   content:"";
   position:absolute;
   inset:auto 0 0 0;
-  height:200px;
-  background:linear-gradient(to bottom, rgba(2,6,23,0), #020617);
+  height:260px;
+  background:
+    linear-gradient(
+      to bottom,
+      rgba(2,6,23,0),
+      rgba(2,6,23,.85),
+      #020617
+    );
 }
 
-/* MAIN FLOW (NO PAGE BREAK) */
+/* FLOW */
 main{
   max-width:1200px;
-  margin:-180px auto 160px; /* klíčové napojení */
+  margin:-240px auto 160px;
   padding:0 18px;
   position:relative;
   z-index:3;
 }
 
-/* SYSTEM SEGMENTS */
+/* SCENIC BOX (NOT A CARD) */
 .ayas-box{
-  background:linear-gradient(180deg, rgba(15,23,42,.90), rgba(2,6,23,.97));
-  border:1px solid rgba(148,163,184,.22);
-  border-radius:22px;
-  padding:24px 26px 28px;
-  margin-bottom:28px;
+  position:relative;
+  margin-bottom:36px;
+  padding:32px 34px 36px;
+  border-radius:28px;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255,255,255,.08),
+      rgba(15,23,42,.85),
+      rgba(2,6,23,.98)
+    );
+  box-shadow:
+    0 40px 120px rgba(0,0,0,.85),
+    inset 0 1px 0 rgba(255,255,255,.15);
+  overflow:hidden;
 }
 
-/* CORE BOX – první systémová vrstva */
+/* LIGHT BLEED */
+.ayas-box::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:
+    radial-gradient(
+      ellipse at 50% -30%,
+      rgba(56,189,248,.45),
+      transparent 55%
+    );
+  pointer-events:none;
+}
+
+/* CORE SYSTEM BOX */
 .ayas-box.core{
   box-shadow:
-    0 0 0 1px rgba(56,189,248,.25),
-    0 40px 120px rgba(2,6,23,.95);
+    0 0 0 1px rgba(125,211,252,.35),
+    0 60px 160px rgba(0,0,0,.95);
 }
 
-/* TITLES + LED */
+/* TITLES */
 .ayas-box-title{
   display:flex;
   align-items:center;
-  gap:10px;
-  font-size:12px;
-  letter-spacing:.18em;
+  gap:12px;
+  font-size:13px;
+  letter-spacing:.22em;
   text-transform:uppercase;
-  color:var(--muted);
-  margin-bottom:16px;
+  color:#c7d2fe;
+  margin-bottom:18px;
 }
 
 /* LED */
 .led-dot{
-  width:9px;
-  height:9px;
+  width:10px;
+  height:10px;
   border-radius:50%;
   background:var(--red);
-  box-shadow:0 0 8px rgba(239,68,68,.8);
+  box-shadow:0 0 10px rgba(239,68,68,.9);
   transition:background .35s ease, box-shadow .35s ease;
 }
 .led-dot.live{
   background:var(--green);
-  box-shadow:0 0 10px rgba(34,197,94,.95);
+  box-shadow:0 0 14px rgba(34,197,94,1);
 }
 
 /* GRID */
 .grid{
   display:grid;
   grid-template-columns:1fr 1fr;
-  gap:22px;
+  gap:26px;
 }
 @media(max-width:900px){
   .grid{grid-template-columns:1fr;}
@@ -126,53 +156,38 @@ main{
 .metric{
   display:flex;
   justify-content:space-between;
-  font-size:13px;
-  margin-bottom:6px;
+  font-size:14px;
+  margin-bottom:8px;
 }
-.metric span:first-child{color:var(--muted)}
-.value{font-weight:800;font-variant-numeric:tabular-nums}
+.metric span:first-child{color:#9ca3af}
+.value{
+  font-weight:900;
+  font-variant-numeric:tabular-nums;
+}
 
 /* HEALTH BAR */
-.health-bar-wrap{padding-top:6px}
-.health-bar-label{
-  display:flex;
-  justify-content:space-between;
-  margin-bottom:12px;
-  font-size:12px;
-  letter-spacing:.12em;
-  text-transform:uppercase;
-  color:var(--muted);
-}
-.health-state{
-  margin-left:6px;
-  font-size:11px;
-  letter-spacing:.12em;
-  color:var(--muted);
-}
+.health-bar-wrap{margin-top:10px}
 .health-bar-bg{
   width:100%;
-  height:14px;
-  background:rgba(255,255,255,.06);
-  border-radius:10px;
+  height:16px;
+  background:rgba(255,255,255,.08);
+  border-radius:12px;
   overflow:hidden;
 }
 .health-bar-fill{
   height:100%;
   width:0%;
-  border-radius:10px;
+  border-radius:12px;
   transition:width 1.2s ease;
 }
 
 /* FOOTER */
 footer{
-  margin-top:64px;
-  padding-top:14px;
-  border-top:1px solid var(--border);
-  font-size:11px;
-  letter-spacing:.16em;
-  text-transform:uppercase;
-  color:#64748b;
+  margin-top:80px;
   text-align:center;
+  font-size:11px;
+  letter-spacing:.18em;
+  color:#64748b;
 }
 </style>
 </head>
@@ -191,13 +206,14 @@ footer{
     <span class="led-dot"></span>
     System · Truth Snapshot
   </div>
+
   <div class="metric"><span>Mode</span><span id="sysMode" class="value">—</span></div>
   <div class="metric"><span>Health</span><span id="sysHealth" class="value">—</span></div>
   <div class="metric"><span>Uptime</span><span id="sysUptime" class="value">—</span></div>
   <div class="metric"><span>Snapshot</span><span id="snapTime" class="value">—</span></div>
 </section>
 
-<!-- OPERATIONAL STATUS -->
+<!-- OPERATIONAL -->
 <section class="ayas-box">
   <div class="ayas-box-title">
     <span class="led-dot"></span>
@@ -205,20 +221,20 @@ footer{
   </div>
 
   <div class="health-bar-wrap">
-    <div class="health-bar-label">
-      <span>Status</span>
-      <span>
-        <span id="healthValue">—</span>
-        <span id="healthState" class="health-state"></span>
-      </span>
-    </div>
     <div class="health-bar-bg">
       <div class="health-bar-fill" id="healthBar"></div>
+    </div>
+    <div class="metric" style="margin-top:10px">
+      <span>Status</span>
+      <span>
+        <span id="healthValue"></span>
+        <span id="healthState"></span>
+      </span>
     </div>
   </div>
 </section>
 
-<!-- LIQUIDITY + TOKENS -->
+<!-- DATA -->
 <div class="grid">
   <section class="ayas-box">
     <div class="ayas-box-title">Liquidity</div>
@@ -236,18 +252,8 @@ footer{
   </section>
 </div>
 
-<!-- AUDIT -->
-<section class="ayas-box">
-  <div class="ayas-box-title">Audit & Certification</div>
-  <ul style="padding-left:18px;color:#9ca3af">
-    <li>System Integrity Verification</li>
-    <li>Liquidity & Accounting Audit</li>
-    <li>Multisig & Governance Validation</li>
-  </ul>
-</section>
-
 <footer>
-  AYAS-7 · Truth Snapshot · Read Only
+  AYAS-7 · Truth Projection · Read Only
 </footer>
 
 </main>
@@ -267,19 +273,15 @@ function updateHealthBar(v){
   if(v==null||isNaN(v))return;
   const val=Math.max(0,Math.min(100,Number(v)));
   const bar=document.getElementById("healthBar");
-  const txt=document.getElementById("healthValue");
   bar.style.width=val+"%";
-  txt.textContent=val.toFixed(1)+" %";
 
   if(val>=70) bar.style.background="linear-gradient(90deg,#22c55e,#4ade80)";
   else if(val>=40) bar.style.background="linear-gradient(90deg,#facc15,#fde047)";
   else bar.style.background="linear-gradient(90deg,#ef4444,#f87171)";
-}
 
-function healthStateLabel(v){
-  if(v>=75)return"STABLE";
-  if(v>=40)return"ACTIVE";
-  return"LIMITED";
+  document.getElementById("healthValue").textContent=val.toFixed(1)+" % ";
+  document.getElementById("healthState").textContent=
+    val>=75?"STABLE":val>=40?"ACTIVE":"LIMITED";
 }
 
 async function loadSnapshot(){
@@ -300,7 +302,6 @@ function render(s){
   set("sysMode",s.meta?.mode);
   set("sysHealth",s.meta?.health?.toFixed(2)+" %");
   updateHealthBar(s.meta?.health);
-  set("healthState",healthStateLabel(s.meta?.health));
   set("sysUptime",s.meta?.uptime);
   set("snapTime",fmtTime(s.meta?.generatedAt));
   set("liqTVL",fmtUSD(s.pools?.liquidityUSD));
