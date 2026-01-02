@@ -600,13 +600,16 @@ tr.innerHTML = `
   <td>
     ${
       row.paid === true
-? `<button class="btn-link" onclick='issueCertificate(${JSON.stringify(row)})'>
-     <span class="btn-link-dot"></span>
-     Stáhnout certifikát
-   </button>`
+? `<a href="${certUrl}" target="_blank">
+     <button class="btn-link">
+       <span class="btn-link-dot"></span>
+       Certifikát
+     </button>
+   </a>`
 : `<span style="color:#9ca3af;font-size:11px;">
      Čeká na potvrzení platby
    </span>`
+
 
     }
   </td>
