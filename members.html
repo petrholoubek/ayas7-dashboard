@@ -584,9 +584,7 @@ table.members-table tbody tr:nth-child(odd){
        }
 
        tbody.innerHTML = '';
-       
-window.__LAST_ROW__ = row;
-
+       data.forEach(row => {
   const tr = document.createElement('tr');
 
   const created = row.created_at
@@ -643,6 +641,7 @@ tr.innerHTML = `
 
    // Small UX: refresh table every 30s (so admin sees new regs)
    setInterval(loadMembersTable, 30000);
+
 async function issueCertificate(row) {
   if (!supabaseClient) {
     alert("Databáze není dostupná.");
