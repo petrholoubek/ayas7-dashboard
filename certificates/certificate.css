@@ -1,0 +1,140 @@
+/* ======================================================
+   AYAS-7 • WW-KEY CERTIFICATE
+   deterministic print layout (A4)
+   ====================================================== */
+
+@page {
+  size: A4;
+  margin: 0;
+}
+
+/* ===== RESET ===== */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  width: 210mm;
+  height: 297mm;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background: #000;
+  color: #e5e7eb;
+}
+
+/* ===== CERTIFICATE WRAPPER ===== */
+.certificate {
+  position: relative;
+  width: 210mm;
+  height: 297mm;
+
+  /* 🔑 PODKLAD */
+  background: url("certificate-bg.jpg") no-repeat center center;
+  background-size: cover;
+
+  overflow: hidden;
+}
+
+/* ===== GENERIC TEXT STYLE ===== */
+.cert-text {
+  position: absolute;
+  text-align: center;
+  width: 100%;
+  color: #e5e7eb;
+  letter-spacing: 0.04em;
+}
+
+/* ===== HEADER ===== */
+.cert-title {
+  top: 70mm;
+  font-size: 26px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+/* ===== MEMBER NAME ===== */
+.cert-name {
+  top: 92mm;
+  font-size: 34px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+/* ===== DESCRIPTION ===== */
+.cert-desc {
+  top: 112mm;
+  padding: 0 25mm;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #cbd5f5;
+}
+
+/* ===== WW-KEY VALUE ===== */
+.cert-keys {
+  top: 150mm;
+  font-size: 42px;
+  font-weight: 800;
+  color: #60a5fa;
+  text-shadow: 0 0 20px rgba(96,165,250,0.7);
+}
+
+.cert-keys span {
+  font-size: 18px;
+  font-weight: 500;
+  display: block;
+  margin-top: 6px;
+  color: #93c5fd;
+}
+
+/* ===== META BLOCK ===== */
+.cert-meta {
+  position: absolute;
+  bottom: 55mm;
+  left: 25mm;
+  right: 25mm;
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: #9ca3af;
+}
+
+.cert-meta div {
+  max-width: 48%;
+  word-break: break-all;
+}
+
+/* ===== DATE ===== */
+.cert-date {
+  position: absolute;
+  bottom: 38mm;
+  width: 100%;
+  text-align: center;
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  color: #cbd5f5;
+}
+
+/* ===== FOOTER HASH ===== */
+.cert-hash {
+  position: absolute;
+  bottom: 20mm;
+  left: 20mm;
+  right: 20mm;
+  font-size: 10px;
+  color: #64748b;
+  text-align: center;
+  word-break: break-all;
+}
+
+/* ===== PRINT SAFETY ===== */
+@media print {
+  body {
+    background: none;
+  }
+
+  .certificate {
+    box-shadow: none;
+  }
+}
