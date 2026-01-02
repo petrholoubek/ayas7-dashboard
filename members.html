@@ -645,7 +645,7 @@ row.paid === true
    // Small UX: refresh table every 30s (so admin sees new regs)
    setInterval(loadMembersTable, 30000);
 
-aasync function issueCertificate(memberId) {
+async function issueCertificate(memberId) {
   if (!supabaseClient) {
     alert("Databáze není dostupná.");
     return;
