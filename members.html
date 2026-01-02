@@ -630,42 +630,6 @@ tr.innerHTML = `
 
    // Small UX: refresh table every 30s (so admin sees new regs)
    setInterval(loadMembersTable, 30000);
-async function ensureCertificateForMember(member) {
-  const certificateId = `WWKEY-${member.id}`;
-
-  // 1️⃣ zjistíme, zda certifikát už existuje
-  const { data: existing } = await supabaseClient
-    .from('certificates')
-    .select('id')
-    .eq('member_id', member.id)
-    .maybeSingle();
-
-  if (existing) return; // certifikát už existuje → STOP
-
-  // 2️⃣ vytvoření deterministického hashe
-  const payload =
-    `${member.name}|${member.deposit}|${member.ww_key}|${member.created_at}|${certificateId}|AYAS7`;
-
-  const buf = await crypto.subtle.digest(
-    "SHA-256",
-    new TextEncoder().encode(payload)
-  );
-
-  const hash = [...new Uint8Array(buf)]
-    .map(b => b.toString(16).padStart(2, '0'))
-    .join('');
-
-  // 3️⃣ zápis do tabulky certificates
-  await supabaseClient
-    .from('certificates')
-    .insert({
-      member_id: member.id,
-      certificate_id: certificateId,
-      ww_keys: member.ww_key,
-      deposit_czk: member.deposit,
-      hash_sha256: hash
-    });
-}
 async function issueCertificate(row) {
   if (!supabaseClient) {
     alert("Databáze není dostupná.");
