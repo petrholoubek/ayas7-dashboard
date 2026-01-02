@@ -580,10 +580,7 @@ table.members-table tbody tr:nth-child(odd){
     ? new Date(row.created_at).toLocaleDateString('cs-CZ')
     : '-';
 
-  if (row.paid === true) {
-    ensureCertificateForMember(row);
-
-        const certificateId = `WWKEY-${row.id}`;
+         const certificateId = `WWKEY-${row.id}`;
 
 const certUrl =
   `/certificates/certificate.html` +
@@ -667,6 +664,7 @@ async function ensureCertificateForMember(member) {
       hash_sha256: hash
     });
 }
+
 
  </script>
 
