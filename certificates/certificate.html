@@ -32,17 +32,34 @@ html,body{
   margin:20px auto;
   position:relative;
   overflow:hidden;
+
+  /* JPG PODKLAD */
   background:
-    radial-gradient(120% 40% at 50% -10%, rgba(79,163,255,.12), rgba(2,6,23,0) 60%),
-    linear-gradient(180deg,#0b1120 0%, #020617 65%, #000 100%);
+    url("certificate-bg.jpg") center center / cover no-repeat,
+
+    /* jemné světlo */
+    radial-gradient(
+      120% 40% at 50% -10%,
+      rgba(79,163,255,.10),
+      rgba(2,6,23,0) 60%
+    ),
+
+    /* lehké ztmavení spodku */
+    linear-gradient(
+      180deg,
+      rgba(2,6,23,0) 0%,
+      rgba(2,6,23,.35) 100%
+    );
 }
 
+/* vnitřní autoritativní rám */
 .page::before{
   content:"";
   position:absolute;
   inset:22mm;
   border:1px solid rgba(148,163,184,.28);
   border-radius:8px;
+  pointer-events:none;
 }
 
 /* =========================
@@ -115,8 +132,16 @@ html,body{
   border-radius:999px;
   position:relative;
   background:
-    radial-gradient(circle at 50% 20%, rgba(79,163,255,.18), rgba(79,163,255,.06) 55%, rgba(79,163,255,.02) 70%, transparent 75%),
-    radial-gradient(circle at 50% 50%, rgba(255,255,255,.04), transparent 60%);
+    radial-gradient(circle at 50% 20%,
+      rgba(79,163,255,.18),
+      rgba(79,163,255,.06) 55%,
+      rgba(79,163,255,.02) 70%,
+      transparent 75%
+    ),
+    radial-gradient(circle at 50% 50%,
+      rgba(255,255,255,.04),
+      transparent 60%
+    );
   border:1px solid rgba(79,163,255,.35);
   display:flex;
   align-items:center;
@@ -176,10 +201,16 @@ html,body{
   word-break:break-all;
 }
 
-/* PRINT */
+/* =========================
+   PRINT
+========================= */
 @media print{
   body{background:#000}
-  .page{margin:0}
+  .page{
+    margin:0;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
 }
 </style>
 </head>
@@ -220,8 +251,8 @@ html,body{
 
   <div class="footer">
     <hr>
-    Tento certifikát slouží výhradně jako potvrzení o přidělení členských jednotek WW-KEY
-    v rámci Win-Win Cooperative.
+    Tento certifikát slouží výhradně jako potvrzení o přidělení
+    členských jednotek WW-KEY v rámci Win-Win Cooperative.
     <div class="hash">
       Certificate ID: <span data-id></span><br>
       HASH (SHA-256): <span data-hash></span>
@@ -242,18 +273,27 @@ html,body{
     id:     p.get('id')     || ''
   };
 
-  Object.keys(data).forEach(k=>{
-    document.querySelectorAll(`[data-${k}]`).forEach(e=>e.textContent=data[k] + (k==='amount'?' CZK':''));
-  });
+  document.querySelectorAll('[data-name]').forEach(e=>e.textContent=data.name);
+  document.querySelectorAll('[data-date]').forEach(e=>e.textContent=data.date);
+  document.querySelectorAll('[data-keys]').forEach(e=>e.textContent=data.keys);
+  document.querySelectorAll('[data-id]').forEach(e=>e.textContent=data.id);
+  document.querySelectorAll('[data-amount]').forEach(e=>e.textContent=data.amount + ' CZK');
 
+  /* 🔐 DETERMINISTICKÝ HASH */
   const payload = `${data.name}|${data.amount}|${data.keys}|${data.date}|${data.id}|AYAS7`;
 
-  const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(payload));
-  const hash = [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,'0')).join('');
+  const buf = await crypto.subtle.digest(
+    "SHA-256",
+    new TextEncoder().encode(payload)
+  );
+
+  const hash = [...new Uint8Array(buf)]
+    .map(b=>b.toString(16).padStart(2,'0'))
+    .join('');
 
   document.querySelector('[data-hash]').textContent = hash;
 
-  // 👉 TENTO HASH SI UKLÁDÁŠ DO DATABÁZE
+  /* 👉 TENTO HASH UKLÁDÁŠ DO DATABÁZE */
 })();
 </script>
 
