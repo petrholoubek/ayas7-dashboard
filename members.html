@@ -614,13 +614,12 @@ tr.innerHTML = `
   <td>${row.ww_key ?? 0}</td>
   <td>
     ${
-      row.paid === true
-? `<a href="${certUrl}" target="_blank">
-     <button class="btn-link">
-       <span class="btn-link-dot"></span>
-       Certifikát
-     </button>
-   </a>`
+row.paid === true
+? `<button class="btn-link" onclick="issueCertificate(${row.id})">
+     <span class="btn-link-dot"></span>
+     Vydat certifikát
+   </button>`
+
 : `<span style="color:#9ca3af;font-size:11px;">
      Čeká na potvrzení platby
    </span>`
@@ -646,9 +645,20 @@ tr.innerHTML = `
    // Small UX: refresh table every 30s (so admin sees new regs)
    setInterval(loadMembersTable, 30000);
 
-async function issueCertificate(row) {
+aasync function issueCertificate(memberId) {
   if (!supabaseClient) {
     alert("Databáze není dostupná.");
+    return;
+  }
+
+  const { data: row, error } = await supabaseClient
+    .from("members_data")
+    .select("*")
+    .eq("id", memberId)
+    .single();
+
+  if (error || !row) {
+    alert("Člen nenalezen");
     return;
   }
 
