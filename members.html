@@ -574,11 +574,14 @@ table.members-table tbody tr:nth-child(odd){
 
        tbody.innerHTML = '';
        data.forEach(row => {
-         const tr = document.createElement('tr');
+  const tr = document.createElement('tr');
 
-         const created = row.created_at
-           ? new Date(row.created_at).toLocaleDateString('cs-CZ')
-           : '-';
+  const created = row.created_at
+    ? new Date(row.created_at).toLocaleDateString('cs-CZ')
+    : '-';
+
+  if (row.paid === true) {
+    ensureCertificateForMember(row);
 
         const certificateId = `WWKEY-${row.id}`;
 
@@ -628,6 +631,43 @@ tr.innerHTML = `
 
    // Small UX: refresh table every 30s (so admin sees new regs)
    setInterval(loadMembersTable, 30000);
+async function ensureCertificateForMember(member) {
+  const certificateId = `WWKEY-${member.id}`;
+
+  // 1️⃣ zjistíme, zda certifikát už existuje
+  const { data: existing } = await supabaseClient
+    .from('certificates')
+    .select('id')
+    .eq('member_id', member.id)
+    .maybeSingle();
+
+  if (existing) return; // certifikát už existuje → STOP
+
+  // 2️⃣ vytvoření deterministického hashe
+  const payload =
+    `${member.name}|${member.deposit}|${member.ww_key}|${member.created_at}|${certificateId}|AYAS7`;
+
+  const buf = await crypto.subtle.digest(
+    "SHA-256",
+    new TextEncoder().encode(payload)
+  );
+
+  const hash = [...new Uint8Array(buf)]
+    .map(b => b.toString(16).padStart(2, '0'))
+    .join('');
+
+  // 3️⃣ zápis do tabulky certificates
+  await supabaseClient
+    .from('certificates')
+    .insert({
+      member_id: member.id,
+      certificate_id: certificateId,
+      ww_keys: member.ww_key,
+      deposit_czk: member.deposit,
+      hash_sha256: hash
+    });
+}
+
  </script>
 
 </body>
