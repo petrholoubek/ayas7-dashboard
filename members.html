@@ -674,11 +674,15 @@ async function issueCertificate(row) {
       .select()
       .single();
 
-    if (error) {
-      console.error(error);
-      alert("Nepodařilo se vydat certifikát.");
-      return;
-    }
+  if (error) {
+  console.error("CERTIFICATE INSERT ERROR:", error);
+  alert(
+    "Nepodařilo se vydat certifikát:\n" +
+    error.message
+  );
+  return;
+}
+
 
     cert = inserted;
   }
