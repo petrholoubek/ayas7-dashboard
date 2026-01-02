@@ -686,35 +686,14 @@ p, span, label, td, th, li, a, div {
            se data ukládají do <b>members_data</b> a <b>members_rewards</b> a jsou připravena pro audit.
          </p>
 
-         <table class="audit-table">
-           <thead>
-             <tr>
-               <th>Datum</th>
-               <th>Noví členové</th>
-               <th>Vklad celkem (CZK)</th>
-               <th>Přidělené WW-KEY</th>
-             </tr>
-           </thead>
-           <tbody>
-             <tr>
-               <td>2025-11-29</td>
-               <td>7</td>
-               <td>105&nbsp;000</td>
-               <td>4&nbsp;200</td>
-             </tr>
-             <tr>
-               <td>2025-11-28</td>
-               <td>5</td>
-               <td>75&nbsp;000</td>
-               <td>3&nbsp;000</td>
-             </tr>
-             <tr>
-               <td>2025-11-27</td>
-               <td>3</td>
-               <td>45&nbsp;000</td>
-               <td>1&nbsp;800</td>
-             </tr>
-           </tbody>
+         <tbody id="auditDailyBody">
+  <tr>
+    <td colspan="4" style="color:#9ca3af;font-size:12px;">
+      Načítám auditní data…
+    </td>
+  </tr>
+</tbody>
+
          </table>
 
          <div class="audit-strip">
@@ -905,6 +884,117 @@ p, span, label, td, th, li, a, div {
  <footer>
    © 2025 Win-Win Družstvo · AYAS-7 Engine · Audit &amp; Governance Layer
  </footer>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+/* =========================
+   SUPABASE KONFIGURACE
+   ========================= */
+const supabaseUrl = 'https://hurayrwshmsvsylhwlbj.supabase.co';
+const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh1cmF5cndzaG1zdnN5bGh3bGJqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQyMTk4MzEsImV4cCI6MjA3OTc5NTgzMX0.Q0KpZX_Dln9_9OwZcCty-bbyw8drX84ax098Uy03VUI';
+
+const supabaseClient = window.supabase.createClient(
+  supabaseUrl,
+  supabaseAnonKey,
+  {
+    auth: {
+      persistSession: false,
+      autoRefreshToken: false,
+      detectSessionInUrl: false
+    }
+  }
+);
+
+/* =========================
+   DENNÍ AUDIT – AGREGACE
+   ========================= */
+async function loadDailyAudit() {
+  const tbody = document.getElementById('auditDailyBody');
+  if (!tbody) return;
+
+  tbody.innerHTML = `
+    <tr>
+      <td colspan="4" style="color:#9ca3af;font-size:12px;">
+        Načítám data z databáze…
+      </td>
+    </tr>
+  `;
+
+  const { data, error } = await supabaseClient
+    .from('certificates')
+    .select('issued_at, deposit_czk, ww_keys');
+
+  if (error) {
+    console.error('Audit select error:', error);
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="4" style="color:#f87171;font-size:12px;">
+          Chyba při načítání auditních dat
+        </td>
+      </tr>
+    `;
+    return;
+  }
+
+  if (!data || data.length === 0) {
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="4" style="color:#9ca3af;font-size:12px;">
+          Zatím nebyly vydány žádné certifikáty
+        </td>
+      </tr>
+    `;
+    return;
+  }
+
+  /* =========================
+     SESKUPENÍ PODLE DNŮ
+     ========================= */
+  const byDay = {};
+
+  data.forEach(row => {
+    if (!row.issued_at) return;
+
+    const day = new Date(row.issued_at).toISOString().slice(0, 10);
+
+    if (!byDay[day]) {
+      byDay[day] = {
+        count: 0,
+        deposit: 0,
+        keys: 0
+      };
+    }
+
+    byDay[day].count += 1;
+    byDay[day].deposit += Number(row.deposit_czk || 0);
+    byDay[day].keys += Number(row.ww_keys || 0);
+  });
+
+  /* =========================
+     VYKRESLENÍ TABULKY
+     ========================= */
+  const days = Object.keys(byDay).sort((a, b) => b.localeCompare(a));
+  tbody.innerHTML = '';
+
+  days.forEach(day => {
+    const d = byDay[day];
+    const tr = document.createElement('tr');
+
+    tr.innerHTML = `
+      <td>${day}</td>
+      <td>${d.count}</td>
+      <td>${d.deposit.toLocaleString('cs-CZ')}</td>
+      <td>${d.keys.toLocaleString('cs-CZ')}</td>
+    `;
+
+    tbody.appendChild(tr);
+  });
+}
+
+/* =========================
+   START
+   ========================= */
+loadDailyAudit();
+</script>
 
 </body>
 </html>
