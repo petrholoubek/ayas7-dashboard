@@ -584,7 +584,9 @@ table.members-table tbody tr:nth-child(odd){
        }
 
        tbody.innerHTML = '';
-       data.forEach(row => {
+       
+window.__LAST_ROW__ = row;
+
   const tr = document.createElement('tr');
 
   const created = row.created_at
