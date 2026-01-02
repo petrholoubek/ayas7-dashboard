@@ -384,37 +384,47 @@ p, span, label, td, th, li, a, div {
      background: rgba(15, 23, 42, 0.4);
    }
 
-   .audit-strip {
-     margin-top: 6px;
-     padding: 6px 8px;
-     border-radius: 999px;
-     background: linear-gradient(to right, rgba(34, 197, 94, 0.15), rgba(59, 130, 246, 0.18));
-     display: flex;
-     align-items: center;
-     justify-content: space-between;
-     gap: 10px;
-     font-size: 11px;
-     color: var(--text-muted);
-   }
+.audit-strip {
+  margin-top: 6px;
+  padding: 8px 10px;
+  border-radius: 12px;
+  background: linear-gradient(
+    to right,
+    rgba(34,197,94,0.15),
+    rgba(59,130,246,0.18)
+  );
 
-   .audit-strip-left {
-     display: flex;
-     align-items: center;
-     gap: 6px;
-   }
+  display: block;
+  font-size: 11px;
+}
 
-   .strip-dot {
-     width: 7px;
-     height: 7px;
-     border-radius: 999px;
-     background: var(--accent);
-     box-shadow: 0 0 8px rgba(34, 197, 94, 0.9);
-   }
+.audit-strip-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+}
 
-   .strip-value {
-     font-weight: 600;
-     color: var(--text-main);
-   }
+.strip-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: var(--accent);
+  box-shadow: 0 0 8px rgba(34,197,94,0.9);
+  flex-shrink: 0;
+}
+
+.strip-text {
+  color: var(--text-muted);
+}
+
+.strip-value {
+  font-weight: 600;
+  color: var(--text-main);
+  font-size: 12px;
+}
+
+
 
    .btn-mini {
   padding: 6px 10px;
@@ -696,13 +706,14 @@ p, span, label, td, th, li, a, div {
 </table>
 
 
-         <div class="audit-strip">
-           <div class="audit-strip-left">
-             <span class="strip-dot"></span>
-             <span>Integrita dat (hash / kontrolní součty)</span>
-           </div>
-           <div class="strip-value">99,98&nbsp;% bez nesouladu</div>
-         </div>
+       <div class="audit-strip">
+  <div class="audit-strip-row">
+    <span class="strip-dot"></span>
+    <span class="strip-text">Integrita dat (hash / kontrolní součty)</span>
+  </div>
+  <div class="strip-value">99,98&nbsp;% bez nesouladu</div>
+</div>
+
 
      <div style="margin-top:10px; display:flex; gap:8px; flex-wrap:wrap; align-items:flex-start;">
   <button class="btn-mini" type="button" onclick="exportDailyAuditCSV()">
