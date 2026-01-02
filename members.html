@@ -600,15 +600,14 @@ tr.innerHTML = `
   <td>
     ${
       row.paid === true
-      ? `<a href="${certUrl}" target="_blank">
-           <button class="btn-link">
-             <span class="btn-link-dot"></span>
-             Certifikát
-           </button>
-         </a>`
-      : `<span style="color:#9ca3af;font-size:11px;">
-           Čeká na potvrzení platby
-         </span>`
+? `<button class="btn-link" onclick='issueCertificate(${JSON.stringify(row)})'>
+     <span class="btn-link-dot"></span>
+     Stáhnout certifikát
+   </button>`
+: `<span style="color:#9ca3af;font-size:11px;">
+     Čeká na potvrzení platby
+   </span>`
+
     }
   </td>
 `;
@@ -664,6 +663,76 @@ async function ensureCertificateForMember(member) {
       hash_sha256: hash
     });
 }
+async function issueCertificate(row) {
+  if (!supabaseClient) {
+    alert("Databáze není dostupná.");
+    return;
+  }
+
+  // 1️⃣ zkontrolujeme, jestli už certifikát existuje
+  const { data: existing } = await supabaseClient
+    .from("certificates")
+    .select("*")
+    .eq("member_id", row.id)
+    .limit(1);
+
+  let cert;
+
+  if (existing && existing.length > 0) {
+    cert = existing[0]; // už existuje
+  } else {
+    // 2️⃣ vygenerujeme nový certifikát
+    const certificateId = `WWKEY-${crypto.randomUUID()}`;
+
+    const payload =
+      `${row.name}|${row.deposit}|${row.ww_key}|${row.created_at}|${certificateId}|AYAS7`;
+
+    const buf = await crypto.subtle.digest(
+      "SHA-256",
+      new TextEncoder().encode(payload)
+    );
+
+    const hash = [...new Uint8Array(buf)]
+      .map(b => b.toString(16).padStart(2, "0"))
+      .join("");
+
+    // 3️⃣ uložíme do tabulky certificates
+    const { data: inserted, error } = await supabaseClient
+      .from("certificates")
+      .insert({
+        member_id: row.id,
+        certificate_id: certificateId,
+        ww_keys: row.ww_key,
+        deposit_czk: row.deposit,
+        hash_sha256: hash,
+        version: "v1.0"
+      })
+      .select()
+      .single();
+
+    if (error) {
+      console.error(error);
+      alert("Nepodařilo se vydat certifikát.");
+      return;
+    }
+
+    cert = inserted;
+  }
+
+  // 4️⃣ otevřeme certifikát
+  const date = new Date(cert.issued_at).toLocaleDateString("cs-CZ");
+
+  const url =
+    `/certificates/certificate.html` +
+    `?name=${encodeURIComponent(row.name)}` +
+    `&amount=${row.deposit}` +
+    `&keys=${row.ww_key}` +
+    `&date=${date}` +
+    `&id=${cert.certificate_id}`;
+
+  window.open(url, "_blank");
+}
+
 
 
  </script>
