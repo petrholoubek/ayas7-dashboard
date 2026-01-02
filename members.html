@@ -599,17 +599,14 @@ tr.innerHTML = `
   <td>${row.ww_key ?? 0}</td>
   <td>
     ${
-      row.paid === true
-? `<a href="${certUrl}" target="_blank">
-     <button class="btn-link">
-       <span class="btn-link-dot"></span>
-       Certifikát
-     </button>
-   </a>`
+row.paid === true
+? `<button class="btn-link" onclick='issueCertificate(${JSON.stringify(row)})'>
+     <span class="btn-link-dot"></span>
+     Certifikát
+   </button>`
 : `<span style="color:#9ca3af;font-size:11px;">
      Čeká na potvrzení platby
    </span>`
-
 
     }
   </td>
