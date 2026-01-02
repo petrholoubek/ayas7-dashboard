@@ -584,14 +584,18 @@ table.members-table tbody tr:nth-child(odd){
        }
 
        tbody.innerHTML = '';
-       data.forEach(row => {
+data.forEach(row => {
+
+  window.__LAST_ROW__ = row; // 👈 DŮLEŽITÉ
+
   const tr = document.createElement('tr');
 
   const created = row.created_at
     ? new Date(row.created_at).toLocaleDateString('cs-CZ')
     : '-';
 
-         const certificateId = `WWKEY-${row.id}`;
+  const certificateId = `WWKEY-${row.id}`;
+
 
 const certUrl =
   `/certificates/certificate.html` +
