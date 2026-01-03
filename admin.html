@@ -340,7 +340,7 @@ loadAll();
 
 async function generateOfficialAudit(){
   const res = await fetch(
-    "https://hurayrwshmsvsylhwlbj.supabase.co/functions/v1/generate-official-audit",
+    "https://hurayrwshmsvsylhwlbj.supabase.co/functions/v1/generate-audit",
     { method: "POST" }
   );
   const data = await res.json();
