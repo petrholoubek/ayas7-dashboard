@@ -1,258 +1,147 @@
-<!DOCTYPE html>
-<html lang="cs">
-<head>
-<meta charset="UTF-8" />
-<title>AYAS-7 Audit Report</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-<style>
-@page { size: A4; margin: 20mm; }
-
-body{
-  font-family:"Segoe UI",Tahoma,Verdana,sans-serif;
-  background:#fff;
-  color:#000;
-  font-size:11px;
-  line-height:1.45;
-}
-
-h1{font-size:20px;margin:0}
-h2{
-  font-size:14px;
-  margin-top:18px;
-  border-bottom:1px solid #000;
-  padding-bottom:4px
-}
-
-.section{margin-top:16px}
-
-.print-btn{
-  position:fixed;
-  top:10px;
-  right:10px;
-  font-size:11px;
-  padding:6px 12px;
-  cursor:pointer
-}
-
-.audit-header-box{
-  border:1px solid #000;
-  padding:10px 12px;
-  margin-top:12px;
-  font-size:11px
-}
-
-.ah-row{
-  display:flex;
-  justify-content:space-between;
-  gap:16px;
-  margin-bottom:4px
-}
-
-.ah-row > div{flex:1}
-
-.ah-hash{
-  margin-top:6px;
-  font-size:10px;
-  word-break:break-all;
-  line-height:1.35
-}
-
-.meta-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:6px 24px;
-  font-size:11px
-}
-
-.meta-row{
-  display:flex;
-  justify-content:space-between;
-  border-bottom:1px dotted #999
-}
-
-.meta-label{font-weight:600}
-
-table{
-  width:100%;
-  border-collapse:collapse;
-  font-size:10.5px;
-  margin-top:10px
-}
-
-th,td{
-  border:1px solid #000;
-  padding:4px 6px;
-  vertical-align:top
-}
-
-th{background:#f0f0f0}
-
-.day-header td{
-  background:#e5e7eb;
-  font-weight:600
-}
-
-.small{font-size:9px;line-height:1.3}
-
-.footer{
-  margin-top:20px;
-  font-size:10px;
-  border-top:1px solid #000;
-  padding-top:6px
-}
-
-@media print{
-  .print-btn{display:none}
-  .audit-header-box{page-break-inside:avoid}
-  .day-header{page-break-before:always}
-}
-</style>
-</head>
-
-<body>
-
-<button class="print-btn" onclick="window.print()">Exportovat do PDF</button>
-
-<h1>AYAS-7 AUDIT REPORT</h1>
-<div style="font-size:11px;margin-bottom:6px">
-GOVERNANCE · CONTROL · EXECUTION INTEGRITY<br>
-Deterministic FSM · SSOT · Multisignature Governance
-</div>
-
-<div class="audit-header-box">
-  <div class="ah-row">
-    <div><strong>Družstvo:</strong> WIN.WIN</div>
-    <div><strong>Systém:</strong> AYAS-7</div>
-  </div>
-  <div class="ah-row">
-    <div><strong>Snapshot ID:</strong> <span id="snapshotId"></span></div>
-    <div><strong>System State:</strong> STABLE</div>
-  </div>
-  <div class="ah-row">
-    <div><strong>Generated (local):</strong> <span id="localTime"></span></div>
-    <div><strong>Generated (UTC):</strong> <span id="utcTime"></span></div>
-  </div>
-  <div class="ah-hash">
-    <strong>Audit Hash (SHA-256):</strong>
-    <span id="auditHash"></span>
-  </div>
-</div>
-
-<div class="section">
-<h2>Executive Overview</h2>
-<div class="meta-grid">
-  <div class="meta-row"><span class="meta-label">Celkem vydané WW-KEY</span><span id="sumKeys">—</span></div>
-  <div class="meta-row"><span class="meta-label">Celkový objem vkladů (CZK)</span><span id="sumDeposit">—</span></div>
-  <div class="meta-row"><span class="meta-label">Počet certifikátů</span><span id="sumCerts">—</span></div>
-  <div class="meta-row"><span class="meta-label">Auditované období</span><span id="auditRange">—</span></div>
-</div>
-</div>
-
-<div class="section">
-<h2>Issued Certificates – Detail</h2>
-<table>
-<thead>
-<tr>
-  <th>#</th>
-  <th>Certificate ID</th>
-  <th>Member ID</th>
-  <th>WW-KEY</th>
-  <th>Deposit (CZK)</th>
-  <th>Hash (SHA-256)</th>
-  <th>Issued At</th>
-</tr>
-</thead>
-<tbody id="certTable">
-<tr><td colspan="7">Načítám data…</td></tr>
-</tbody>
-</table>
-</div>
-
-<div class="footer">
-This audit snapshot is read-only and derived directly from issued certificates
-stored in the AYAS-7 system database.
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-const supabaseUrl = "https://hurayrwshmsvsylhwlbj.supabase.co";
-const supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh1cmF5cndzaG1zdnN5bGh3bGJqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQyMTk4MzEsImV4cCI6MjA3OTc5NTgzMX0.Q0KpZX_Dln9_9OwZcCty-bbyw8drX84ax098Uy03VUI";
+/* ================= ENDPOINTY ================= */
+const READ =
+  "https://hurayrwshmsvsylhwlbj.supabase.co/functions/v1/smart-endpoint";
+const APPROVE_MEMBER =
+  "https://hurayrwshmsvsylhwlbj.supabase.co/functions/v1/approve-member";
+const ADD_AGENT =
+  "https://hurayrwshmsvsylhwlbj.supabase.co/functions/v1/add-agent";
+const APPROVE_AGENT =
+  "https://hurayrwshmsvsylhwlbj.supabase.co/functions/v1/approve-agent";
+const GENERATE_PROMO =
+  "https://hurayrwshmsvsylhwlbj.supabase.co/functions/v1/generate-promo";
 
-const db = supabase.createClient(supabaseUrl, supabaseAnonKey, {
-  auth:{persistSession:false}
-});
+/* ================= DATA ================= */
+let DATA={members:[],certificates:[],agents:[],promo:[]};
 
-const now=new Date();
-document.getElementById("localTime").textContent=now.toLocaleString("cs-CZ");
-document.getElementById("utcTime").textContent=now.toISOString();
-document.getElementById("snapshotId").textContent=
-  "AYAS7-AUDIT-"+now.toISOString().replace(/[-:.TZ]/g,"").slice(0,14);
+async function loadAll(){
+  const r = await fetch(READ,{method:"POST"});
+  DATA = await r.json();
 
-(async()=>{
-  const {data,error}=await db
-    .from("certificates")
-    .select("*")
-    .order("issued_at",{ascending:true});
+  membersTable.innerHTML = DATA.members.map(m=>`
+<tr>
+<td>${m.id}</td>
+<td>${m.name}<br><small>${m.email}</small></td>
+<td>${m.deposit.toLocaleString()} CZK</td>
+<td>${m.ww_key}</td>
+<td class="status-${m.status}">${m.status}</td>
+<td>
+${m.status==="approved"
+  ? "<span class='status-approved'>schváleno</span>"
+  : `<button class="approve" onclick="approveMember(${m.id})">Schválit</button>`}
+</td>
+</tr>`).join("");
 
-  const tbody=document.getElementById("certTable");
-  if(error||!data){
-    tbody.innerHTML="<tr><td colspan='7'>Chyba načítání dat</td></tr>";
-    return;
-  }
+  certTable.innerHTML = DATA.certificates.map(c=>`
+<tr>
+<td>${c.certificate_id}</td>
+<td>${c.ww_keys}</td>
+<td>${c.deposit_czk.toLocaleString()}</td>
+<td>${new Date(c.issued_at).toLocaleDateString()}</td>
+</tr>`).join("");
 
-  let totalKeys=0,totalDeposit=0,concat="";
-  const byDay={};
+  agentsTable.innerHTML = DATA.agents.map(a=>`
+<tr>
+<td>${a.id}</td>
+<td>${a.name}</td>
+<td>${a.email}</td>
+<td class="status-${a.status}">${a.status}</td>
+<td>
+${a.status==="active"
+  ? `<button onclick="generatePromo(${a.id})">🎟 Promo</button>`
+  : `<button class="approve" onclick="approveAgent(${a.id})">Schválit</button>`}
+</td>
+</tr>`).join("");
 
-  data.forEach(c=>{
-    const day=c.issued_at.slice(0,10);
-    if(!byDay[day]) byDay[day]={rows:[],keys:0,dep:0};
-    byDay[day].rows.push(c);
-    byDay[day].keys+=Number(c.ww_keys||0);
-    byDay[day].dep+=Number(c.deposit_czk||0);
-    totalKeys+=Number(c.ww_keys||0);
-    totalDeposit+=Number(c.deposit_czk||0);
-    concat+=c.hash_sha256;
+  promoTable.innerHTML = DATA.promo.map(p=>`
+<tr>
+<td>${p.code}</td>
+<td>${p.agent_id}</td>
+<td>${p.commission_pct ?? "-"}</td>
+<td>${p.used_count ?? 0}</td>
+<td>${p.status ?? "-"}</td>
+<td>${p.created_at ? new Date(p.created_at).toLocaleDateString() : "-"}</td>
+</tr>`).join("");
+}
+
+/* ================= AKCE ================= */
+async function approveMember(id){
+  await fetch(APPROVE_MEMBER,{
+    method:"POST",
+    headers:{ "Content-Type":"application/json" },
+    body:JSON.stringify({member_id:id})
   });
+  loadAll();
+}
 
-  tbody.innerHTML="";
-  let idx=1;
-
-  Object.keys(byDay).forEach(day=>{
-    const h=document.createElement("tr");
-    h.className="day-header";
-    h.innerHTML=`
-      <td colspan="7">
-        ${day} — ${byDay[day].rows.length} certifikátů ·
-        ${byDay[day].keys} WW-KEY ·
-        ${byDay[day].dep.toLocaleString("cs-CZ")} CZK
-      </td>`;
-    tbody.appendChild(h);
-
-    byDay[day].rows.forEach(c=>{
-      const tr=document.createElement("tr");
-      tr.innerHTML=`
-        <td>${idx++}</td>
-        <td>${c.certificate_id}</td>
-        <td>${c.member_id}</td>
-        <td>${c.ww_keys}</td>
-        <td>${c.deposit_czk.toLocaleString("cs-CZ")}</td>
-        <td class="small">${c.hash_sha256}</td>
-        <td>${new Date(c.issued_at).toLocaleString("cs-CZ")}</td>`;
-      tbody.appendChild(tr);
-    });
+async function addAgent(){
+  await fetch(ADD_AGENT,{
+    method:"POST",
+    headers:{ "Content-Type":"application/json" },
+    body:JSON.stringify({
+      name:aName.value,
+      email:aEmail.value,
+      phone:aPhone.value
+    })
   });
+  aName.value=aEmail.value=aPhone.value="";
+  loadAll();
+}
 
-  document.getElementById("sumKeys").textContent=totalKeys.toLocaleString("cs-CZ");
-  document.getElementById("sumDeposit").textContent=totalDeposit.toLocaleString("cs-CZ");
-  document.getElementById("sumCerts").textContent=data.length;
-  document.getElementById("auditRange").textContent=Object.keys(byDay).join(" → ");
+async function approveAgent(id){
+  await fetch(APPROVE_AGENT,{
+    method:"POST",
+    headers:{ "Content-Type":"application/json" },
+    body:JSON.stringify({agent_id:id})
+  });
+  loadAll();
+}
 
-  const buf=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(concat));
-  document.getElementById("auditHash").textContent=
-    [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,"0")).join("");
-})();
+async function generatePromo(id){
+  const r = await fetch(GENERATE_PROMO,{
+    method:"POST",
+    headers:{ "Content-Type":"application/json" },
+    body:JSON.stringify({agent_id:id})
+  });
+  const j = await r.json();
+  alert("Promo kód: " + (j.code || "nenalezen"));
+  loadAll();
+}
+
+/* ================= PDF EXPORT (HTML PRINT) ================= */
+/* používá audit-print.html – jednotná AYAS-7 šablona */
+
+function pdfMembers(){
+  window.open(
+    "/audit-print.html?view=members&print=1",
+    "_blank"
+  );
+}
+
+function pdfCertificates(){
+  window.open(
+    "/audit-print.html?view=certificates&print=1",
+    "_blank"
+  );
+}
+
+function pdfPromo(){
+  window.open(
+    "/audit-print.html?view=promo&print=1",
+    "_blank"
+  );
+}
+
+function generateOfficialAudit(){
+  window.open(
+    "/audit-print.html?view=official&print=1",
+    "_blank"
+  );
+}
+
+
+loadAll();
+
 </script>
-
 </body>
 </html>
