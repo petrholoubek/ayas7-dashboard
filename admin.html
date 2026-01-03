@@ -195,7 +195,14 @@ const GENERATE_PROMO =
   "https://hurayrwshmsvsylhwlbj.supabase.co/functions/v1/generate-promo";
 
 /* ================= DATA ================= */
-let DATA={members:[],certificates:[],agents:[],promo:[]};
+let DATA={
+  members:[],
+  certificates:[],
+  agents:[],
+  promo:[],
+  commissions:[]
+};
+
 
 async function loadAll(){
   const r = await fetch(READ,{method:"POST"});
