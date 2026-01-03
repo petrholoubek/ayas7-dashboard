@@ -341,8 +341,18 @@ loadAll();
 async function generateOfficialAudit(){
   const res = await fetch(
     "https://hurayrwshmsvsylhwlbj.supabase.co/functions/v1/generate-official-audit",
-    { method: "POST" }
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        source: "admin",
+        audit_type: "SYSTEM"
+      })
+    }
   );
+
   const data = await res.json();
 
   alert(
