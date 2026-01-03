@@ -99,8 +99,9 @@ input{
   <div class="process">Rozhodovací, administrativní a auditní procesy</div>
 </div>
 
+<!-- OFICIÁLNÍ AUDIT -->
 <div class="card">
-  <button onclick="generateOfficialAudit()" style="padding:10px 16px;font-weight:600;">
+  <button onclick="generateOfficialAudit()">
     GENEROVAT OFICIÁLNÍ AUDIT (PDF)
   </button>
 </div>
@@ -144,7 +145,7 @@ input{
 <div class="actions">
 <input id="aName" placeholder="Jméno">
 <input id="aEmail" placeholder="Email">
-<input id="aPhone" p/* ================= PDF ================= */laceholder="Telefon">
+<input id="aPhone" placeholder="Telefon">
 <button onclick="addAgent()">Přidat obchodníka</button>
 </div>
 
@@ -255,8 +256,7 @@ async function approveMember(id){
     headers:{ "Content-Type":"application/json" },
     body:JSON.stringify({member_id:id})
   });
-  window.onload = loadAll;
-
+  loadAll();
 }
 
 async function addAgent(){
@@ -292,44 +292,70 @@ async function generatePromo(id){
   alert("Promo kód: " + (j.code || "nenalezen"));
   loadAll();
 }
-function auditHash(label, count){
-  const base = `${label}|${count}|${Date.now()}`;
-  let hash = 0;
-  for(let i=0;i<base.length;i++){
-    hash = ((hash<<5)-hash) + base.charCodeAt(i);
-    hash |= 0;
-  }
-  return "AYAS7-" + Math.abs(hash);
+
+/* ================= PDF ================= */
+const { jsPDF } = window.jspdf;
+
+function pdfHeader(d,title){
+  const n=new Date();
+  d.setFontSize(14);
+  d.text("AYAS-7 ENGINE",14,14);
+  d.setFontSize(10);
+  d.text(title,14,22);
+  d.text("Vygenerováno: "+n.toLocaleString(),14,28);
+  d.line(14,32,196,32);
 }
+
+function pdfMembers(){
+  const d=new jsPDF();
+  pdfHeader(d,"Seznam členů");
+  let y=40;
+  DATA.members.forEach(m=>{
+    d.text(`${m.name} | ${m.deposit} CZK | ${m.status}`,14,y); y+=7;
+  });
+  d.save("AYAS7_clenove.pdf");
+}
+
+function pdfCertificates(){
+  const d=new jsPDF();
+  pdfHeader(d,"Certifikáty");
+  let y=40;
+  DATA.certificates.forEach(c=>{
+    d.text(`${c.certificate_id} | ${c.deposit_czk} CZK`,14,y); y+=7;
+  });
+  d.save("AYAS7_certifikaty.pdf");
+}
+
+function pdfPromo(){
+  const d=new jsPDF();
+  pdfHeader(d,"Promo kódy");
+  let y=40;
+  DATA.promo.forEach(p=>{
+    d.text(`${p.code} | agent ${p.agent_id}`,14,y); y+=7;
+  });
+  d.save("AYAS7_promo_kody.pdf");
+}
+
+loadAll();
+
 async function generateOfficialAudit(){
-  try {
-    const res = await fetch(
-      "https://hurayrwshmsvsylhwlbj.supabase.co/functions/v1/generate-official-audit",
-      { method: "POST" }
-    );
+  const res = await fetch(
+    "https://hurayrwshmsvsylhwlbj.supabase.co/functions/v1/generate-official-audit",
+    { method: "POST" }
+  );
+  const data = await res.json();
 
-    const data = await res.json();
+  alert(
+    "Oficiální audit vytvořen\n\n" +
+    "Snapshot ID: " + data.snapshot_id + "\n" +
+    "SHA-256: " + data.sha256
+  );
 
-    if(!data.ok){
-      alert("Chyba při generování oficiálního auditu");
-      return;
-    }
+  const url =
+    "https://hurayrwshmsvsylhwlbj.supabase.co/storage/v1/object/" +
+    "audit-reports/" + data.file;
 
-    alert(
-      "Oficiální audit vytvořen\n\n" +
-      "Snapshot ID: " + data.snapshot_id + "\n" +
-      "SHA-256: " + data.sha256
-    );
-
-    const url =
-      "https://hurayrwshmsvsylhwlbj.supabase.co/storage/v1/object/" +
-      "audit-reports/" + data.file;
-
-    window.open(url, "_blank");
-
-  } catch(e){
-    alert("Chyba spojení s auditním serverem");
-  }
+  window.open(url, "_blank");
 }
 
 </script>
