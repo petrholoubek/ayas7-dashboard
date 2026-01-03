@@ -298,30 +298,6 @@ async function generatePromo(id){
   loadAll();
 }
 
-/* ================= PDF EXPORT (HTML PRINT) ================= */
-/* používá audit-print.html – jednotná AYAS-7 šablona */
-
-function pdfMembers(){
-  window.open(
-    "/audit-print.html?view=members&print=1",
-    "_blank"
-  );
-}
-
-function pdfCertificates(){
-  window.open(
-    "/audit-print.html?view=certificates&print=1",
-    "_blank"
-  );
-}
-
-function pdfPromo(){
-  window.open(
-    "/audit-print.html?view=promo&print=1",
-    "_blank"
-  );
-}
-
 function generateOfficialAudit(){
   window.open(
     "/audit-print.html?view=official&print=1",
@@ -365,6 +341,140 @@ function pdfPromo(){
 
 loadAll();
 
+<script>
+/* =========================================================
+   AYAS-7 • UNIFIED PDF EXPORT (ADMIN)
+   STYLE ONLY – NO LOGIC CHANGES
+   ========================================================= */
+
+const { jsPDF } = window.jspdf;
+
+/* ===== ZÁKLADNÍ STYL ===== */
+function ayasHeader(doc, sectionTitle) {
+  doc.setFont("helvetica", "normal");
+
+  // AYAS-7 title
+  doc.setFontSize(20);
+  doc.text("AYAS-7", 14, 20);
+
+  doc.setFontSize(11);
+  doc.text("Audit & Reporting", 14, 27);
+
+  // divider
+  doc.setLineWidth(0.5);
+  doc.line(14, 31, 196, 31);
+
+  // section title
+  doc.setFontSize(14);
+  doc.text(sectionTitle, 14, 42);
+
+  // meta
+  doc.setFontSize(9);
+  doc.text(
+    "Generated: " + new Date().toLocaleString("cs-CZ"),
+    196,
+    20,
+    { align: "right" }
+  );
+}
+
+function ayasFooter(doc, page, total) {
+  doc.setFontSize(9);
+  doc.text(
+    "AYAS-7 • Interní dokument družstva WIN.WIN",
+    14,
+    286
+  );
+  doc.text(
+    `Strana ${page} / ${total}`,
+    196,
+    286,
+    { align: "right" }
+  );
+}
+
+/* ===== PAGE HANDLING ===== */
+function newPageIfNeeded(doc, y) {
+  if (y > 270) {
+    ayasFooter(doc, doc.internal.getCurrentPageInfo().pageNumber, "");
+    doc.addPage();
+    return 50;
+  }
+  return y;
+}
+
+/* =========================================================
+   PDF – ČLENOVÉ
+   ========================================================= */
+function pdfMembers() {
+  const doc = new jsPDF("p", "mm", "a4");
+  ayasHeader(doc, "Členové družstva");
+
+  let y = 55;
+  doc.setFontSize(10);
+
+  DATA.members.forEach((m, i) => {
+    doc.text(
+      `${i + 1}. ${m.name} | ${m.deposit.toLocaleString("cs-CZ")} CZK | ${m.status}`,
+      14,
+      y
+    );
+    y += 6;
+    y = newPageIfNeeded(doc, y);
+  });
+
+  ayasFooter(doc, 1, 1);
+  doc.save("AYAS7_clenove.pdf");
+}
+
+/* =========================================================
+   PDF – CERTIFIKÁTY
+   ========================================================= */
+function pdfCertificates() {
+  const doc = new jsPDF("p", "mm", "a4");
+  ayasHeader(doc, "Vydané certifikáty");
+
+  let y = 55;
+  doc.setFontSize(10);
+
+  DATA.certificates.forEach((c, i) => {
+    doc.text(
+      `${i + 1}. ${c.certificate_id} | ${c.ww_keys} WW-KEY | ${c.deposit_czk.toLocaleString("cs-CZ")} CZK`,
+      14,
+      y
+    );
+    y += 6;
+    y = newPageIfNeeded(doc, y);
+  });
+
+  ayasFooter(doc, 1, 1);
+  doc.save("AYAS7_certifikaty.pdf");
+}
+
+/* =========================================================
+   PDF – PROMO KÓDY
+   ========================================================= */
+function pdfPromo() {
+  const doc = new jsPDF("p", "mm", "a4");
+  ayasHeader(doc, "Promo kódy");
+
+  let y = 55;
+  doc.setFontSize(10);
+
+  DATA.promo.forEach((p, i) => {
+    doc.text(
+      `${i + 1}. ${p.code} | Agent ID: ${p.agent_id} | Stav: ${p.status ?? "-"}`,
+      14,
+      y
+    );
+    y += 6;
+    y = newPageIfNeeded(doc, y);
+  });
+
+  ayasFooter(doc, 1, 1);
+  doc.save("AYAS7_promo_kody.pdf");
+}
 </script>
+
 </body>
 </html>
