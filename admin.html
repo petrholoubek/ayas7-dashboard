@@ -1,334 +1,198 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="cs">
 <head>
-<meta charset="utf-8"/>
-<title>AYAS-7 Engine • Admin</title>
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
-
-<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+<meta charset="utf-8" />
+<title>AYAS-7 • Admin Velín</title>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
 
 <style>
-:root{
-  --bg:#020617;
-  --card:#0f172acc;
-  --border:#94a3b833;
-  --text:#e5e7eb;
-  --muted:#94a3b8;
-  --green:#22c55e;
-  --yellow:#facc15;
-}
-*{box-sizing:border-box}
 html,body{
-  margin:0;padding:0;background:var(--bg);
+  margin:0;padding:0;height:100%;
+  background:#020617;color:#e5e7eb;
   font-family:"Segoe UI",Tahoma,Verdana,sans-serif;
-  color:var(--text);
 }
-.app{
-  max-width:1500px;
-  margin:auto;
-  padding:22px;
-  display:flex;
-  flex-direction:column;
-  gap:18px;
+header{
+  padding:18px 22px;
+  border-bottom:1px solid rgba(148,163,184,.25);
+  background:linear-gradient(180deg,#020617,#030712);
 }
+.header-line{
+  display:flex;align-items:center;gap:10px;
+}
+.led{
+  width:10px;height:10px;border-radius:50%;
+  background:#22c55e;box-shadow:0 0 12px #22c55e;
+}
+h1{margin:6px 0 2px;font-size:22px}
+.sub{font-size:12px;opacity:.7}
 
-/* HEADER */
-.header{display:flex;flex-direction:column;gap:4px}
-.ng{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--muted);letter-spacing:1.4px}
-.led{width:10px;height:10px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green)}
-.engine{font-size:26px;font-weight:600}
-.admin{font-size:13px}
-.process{font-size:11px;color:var(--muted)}
+main{padding:20px;max-width:1300px;margin:auto}
 
-/* CARD */
 .card{
-  background:var(--card);
-  border:1px solid var(--border);
+  background:#0f172a;
+  border:1px solid rgba(148,163,184,.25);
   border-radius:14px;
   padding:16px;
-  display:flex;
-  flex-direction:column;
-  gap:12px;
+  margin-bottom:18px;
 }
 
-h2{margin:0;font-size:14px;letter-spacing:1px}
-p{margin:0;font-size:12px;color:var(--muted)}
-
-/* TABLE */
-table{width:100%;border-collapse:collapse;font-size:12px}
-th,td{padding:8px;border-bottom:1px solid var(--border);text-align:left}
-th{font-size:11px;color:var(--muted)}
-
-/* BUTTONS */
-.actions{display:flex;gap:6px;flex-wrap:wrap}
+table{
+  width:100%;border-collapse:collapse;font-size:13px;
+}
+th,td{
+  padding:8px;border-bottom:1px solid rgba(148,163,184,.15);
+}
+th{text-align:left;color:#94a3b8;font-weight:600}
 button{
-  background:#020617;
-  border:1px solid var(--border);
-  color:var(--text);
-  padding:5px 10px;
-  font-size:11px;
-  border-radius:8px;
-  cursor:pointer
+  background:#1f2937;color:#e5e7eb;
+  border:1px solid rgba(148,163,184,.4);
+  border-radius:999px;
+  padding:5px 12px;
+  cursor:pointer;font-size:12px;
 }
-button.approve{border-color:var(--green);color:var(--green)}
-button.warn{border-color:var(--yellow);color:var(--yellow)}
-.status-pending{color:var(--yellow)}
-.status-approved,.status-active{color:var(--green)}
+button:hover{background:#334155}
 
-input{
-  background:#020617;
-  border:1px solid var(--border);
-  color:var(--text);
-  padding:5px 8px;
-  border-radius:6px;
-  font-size:11px;
+.promo-box{
+  font-size:11px;color:#a5b4fc;margin-top:6px
 }
-
-.footer{text-align:center;font-size:10px;color:var(--muted)}
 </style>
 </head>
 
 <body>
-<div class="app">
 
-<!-- HEADER -->
-<div class="header">
-  <div class="ng"><span class="led"></span><span>Next Generation</span></div>
-  <div class="engine">AYAS-7 Engine</div>
-  <div class="admin">Admin – úřední deska</div>
-  <div class="process">Rozhodovací, administrativní a auditní procesy</div>
+<header>
+  <div class="header-line">
+    <span class="led"></span>
+    <strong>NEXT GENERATION</strong>
+  </div>
+  <h1>AYAS-7 ENGINE</h1>
+  <div class="sub">Administrační & rozhodovací procesy · interní rozhraní</div>
+</header>
+
+<main>
+
+<!-- OBCHODNÍCI -->
+<div class="card">
+<h2>Obchodní zástupci</h2>
+<table id="agentsTable"></table>
 </div>
 
 <!-- ČLENOVÉ -->
 <div class="card">
-<h2>ČLENOVÉ DRUŽSTVA</h2>
-<p>Schvalování členství.</p>
-<table>
-<thead>
-<tr><th>ID</th><th>Člen</th><th>Vklad</th><th>WW-KEY</th><th>Stav</th><th>Akce</th></tr>
-</thead>
-<tbody id="membersTable"></tbody>
-</table>
-<div class="actions">
-<button onclick="pdfMembers()">PDF – členové</button>
-</div>
+<h2>Členové</h2>
+<table id="membersTable"></table>
 </div>
 
-<!-- CERTIFIKÁTY -->
+<!-- PDF -->
 <div class="card">
-<h2>CERTIFIKÁTY</h2>
-<p>Vydané certifikáty.</p>
-<table>
-<thead>
-<tr><th>ID</th><th>WW-KEY</th><th>Vklad</th><th>Datum</th></tr>
-</thead>
-<tbody id="certTable"></tbody>
-</table>
-<div class="actions">
-<button onclick="pdfCertificates()">PDF – certifikáty</button>
-</div>
+<h2>Auditní výstupy</h2>
+<button onclick="generatePDF()">📄 Generovat auditní PDF</button>
 </div>
 
-<!-- OBCHODNÍCI -->
-<div class="card">
-<h2>OBCHODNÍ ZÁSTUPCI</h2>
-<p>Evidence a schvalování.</p>
+</main>
 
-<div class="actions">
-<input id="aName" placeholder="Jméno">
-<input id="aEmail" placeholder="Email">
-<input id="aPhone" placeholder="Telefon">
-<button onclick="addAgent()">Přidat obchodníka</button>
-</div>
-
-<table>
-<thead>
-<tr><th>ID</th><th>Jméno</th><th>Email</th><th>Stav</th><th>Akce</th></tr>
-</thead>
-<tbody id="agentsTable"></tbody>
-</table>
-</div>
-
-<!-- PROMO KÓDY -->
-<div class="card">
-<h2>PROMO KÓDY</h2>
-<p>Přehled vygenerovaných kódů.</p>
-<table>
-<thead>
-<tr>
-  <th>Kód</th>
-  <th>Agent</th>
-  <th>Provize %</th>
-  <th>Použití</th>
-  <th>Stav</th>
-  <th>Datum</th>
-</tr>
-</thead>
-<tbody id="promoTable"></tbody>
-</table>
-
-<div class="actions">
-<button onclick="pdfPromo()">PDF – promo kódy</button>
-</div>
-</div>
-
-<div class="footer">AYAS-7 • interní audit-ready administrační velín</div>
-</div>
-
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 <script>
-/* ================= ENDPOINTY ================= */
-const READ =
-  "https://hurayrwshmsvsylhwlbj.supabase.co/functions/v1/smart-endpoint";
-const APPROVE_MEMBER =
-  "https://hurayrwshmsvsylhwlbj.supabase.co/functions/v1/approve-member";
-const ADD_AGENT =
-  "https://hurayrwshmsvsylhwlbj.supabase.co/functions/v1/add-agent";
-const APPROVE_AGENT =
-  "https://hurayrwshmsvsylhwlbj.supabase.co/functions/v1/approve-agent";
-const GENERATE_PROMO =
-  "https://hurayrwshmsvsylhwlbj.supabase.co/functions/v1/generate-promo";
 
-/* ================= DATA ================= */
-let DATA={members:[],certificates:[],agents:[],promo:[]};
+const SUPABASE_URL = "https://hurayrwshmsvsylhwlbj.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh1cmF5cndzaG1zdnN5bGh3bGJqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQyMTk4MzEsImV4cCI6MjA3OTc5NTgzMX0.Q0KpZX_Dln9_9OwZcCty-bbyw8drX84ax098Uy03VUI";
+
+
+let DATA = { agents:[], members:[], promo:[] };
 
 async function loadAll(){
-  const r = await fetch(READ,{method:"POST"});
-  DATA = await r.json();
-
-  membersTable.innerHTML = DATA.members.map(m=>`
-<tr>
-<td>${m.id}</td>
-<td>${m.name}<br><small>${m.email}</small></td>
-<td>${m.deposit.toLocaleString()} CZK</td>
-<td>${m.ww_key}</td>
-<td class="status-${m.status}">${m.status}</td>
-<td>
-${m.status==="approved"
-  ? "<span class='status-approved'>schváleno</span>"
-  : `<button class="approve" onclick="approveMember(${m.id})">Schválit</button>`}
-</td>
-</tr>`).join("");
-
-  certTable.innerHTML = DATA.certificates.map(c=>`
-<tr>
-<td>${c.certificate_id}</td>
-<td>${c.ww_keys}</td>
-<td>${c.deposit_czk.toLocaleString()}</td>
-<td>${new Date(c.issued_at).toLocaleDateString()}</td>
-</tr>`).join("");
-
-  agentsTable.innerHTML = DATA.agents.map(a=>`
-<tr>
-<td>${a.id}</td>
-<td>${a.name}</td>
-<td>${a.email}</td>
-<td class="status-${a.status}">${a.status}</td>
-<td>
-${a.status==="active"
-  ? `<button onclick="generatePromo(${a.id})">🎟 Promo</button>`
-  : `<button class="approve" onclick="approveAgent(${a.id})">Schválit</button>`}
-</td>
-</tr>`).join("");
-
-  promoTable.innerHTML = DATA.promo.map(p=>`
-<tr>
-<td>${p.code}</td>
-<td>${p.agent_id}</td>
-<td>${p.commission_pct}</td>
-<td>${p.used_count}</td>
-<td>${p.status}</td>
-<td>${new Date(p.created_at).toLocaleDateString()}</td>
-</tr>`).join("");
-}
-
-/* ================= AKCE ================= */
-async function approveMember(id){
-  await fetch(APPROVE_MEMBER,{
-    method:"POST",
-    headers:{ "Content-Type":"application/json" },
-    body:JSON.stringify({member_id:id})
+  const res = await fetch(SUPABASE_URL+"/functions/v1/smart-endpoint",{
+    headers:{ "Authorization":"Bearer "+SUPABASE_ANON_KEY }
   });
-  loadAll();
+  DATA = await res.json();
+  renderAgents();
+  renderMembers();
 }
 
-async function addAgent(){
-  await fetch(ADD_AGENT,{
-    method:"POST",
-    headers:{ "Content-Type":"application/json" },
-    body:JSON.stringify({
-      name:aName.value,
-      email:aEmail.value,
-      phone:aPhone.value
-    })
+function renderAgents(){
+  let html = "<tr><th>Jméno</th><th>Status</th><th>Promo</th></tr>";
+  DATA.agents.forEach(a=>{
+    const promos = DATA.promo.filter(p=>p.agent_id===a.id);
+    html += `
+    <tr>
+      <td>${a.name}</td>
+      <td>${a.status}</td>
+      <td>
+        <button onclick="generatePromo(${a.id})">🎟 Promo</button>
+        <div class="promo-box">
+          ${promos.length ? promos.map(p=>"• "+p.code).join("<br>") : "— žádné promo —"}
+        </div>
+      </td>
+    </tr>`;
   });
-  aName.value=aEmail.value=aPhone.value="";
-  loadAll();
+  document.getElementById("agentsTable").innerHTML = html;
 }
 
-async function approveAgent(id){
-  await fetch(APPROVE_AGENT,{
-    method:"POST",
-    headers:{ "Content-Type":"application/json" },
-    body:JSON.stringify({agent_id:id})
-  });
-  loadAll();
-}
-
-async function generatePromo(id){
-  const r = await fetch(GENERATE_PROMO,{
-    method:"POST",
-    headers:{ "Content-Type":"application/json" },
-    body:JSON.stringify({agent_id:id})
-  });
-  const j = await r.json();
-  alert("Vygenerovaný promo kód: "+j.code);
-  loadAll();
-}
-
-/* ================= PDF ================= */
-const { jsPDF } = window.jspdf;
-
-function pdfHeader(d,title){
-  const n=new Date();
-  d.setFontSize(14);
-  d.text("AYAS-7 ENGINE",14,14);
-  d.setFontSize(10);
-  d.text(title,14,22);
-  d.text("Vygenerováno: "+n.toLocaleString(),14,28);
-  d.line(14,32,196,32);
-}
-
-function pdfMembers(){
-  const d=new jsPDF();
-  pdfHeader(d,"Seznam členů");
-  let y=40;
+function renderMembers(){
+  let html = "<tr><th>Jméno</th><th>Vklad</th><th>Status</th><th>Akce</th></tr>";
   DATA.members.forEach(m=>{
-    d.text(`${m.name} | ${m.deposit} CZK | ${m.status}`,14,y); y+=7;
+    html += `
+    <tr>
+      <td>${m.name}</td>
+      <td>${m.deposit}</td>
+      <td>${m.status}</td>
+      <td>
+        ${m.status==="pending"?
+          `<button onclick="approveMember(${m.id})">Schválit</button>`:"—"}
+      </td>
+    </tr>`;
   });
-  d.save("AYAS7_clenove.pdf");
+  document.getElementById("membersTable").innerHTML = html;
 }
 
-function pdfCertificates(){
-  const d=new jsPDF();
-  pdfHeader(d,"Certifikáty");
-  let y=40;
-  DATA.certificates.forEach(c=>{
-    d.text(`${c.certificate_id} | ${c.deposit_czk} CZK`,14,y); y+=7;
+async function approveMember(id){
+  await fetch(SUPABASE_URL+"/functions/v1/approve-member",{
+    method:"POST",
+    headers:{
+      "Content-Type":"application/json",
+      "Authorization":"Bearer "+SUPABASE_ANON_KEY
+    },
+    body:JSON.stringify({ member_id:id })
   });
-  d.save("AYAS7_certifikaty.pdf");
+  loadAll();
 }
 
-function pdfPromo(){
-  const d=new jsPDF();
-  pdfHeader(d,"Promo kódy");
-  let y=40;
-  DATA.promo.forEach(p=>{
-    d.text(`${p.code} | agent ${p.agent_id} | ${p.commission_pct}%`,14,y); y+=7;
+async function generatePromo(agent_id){
+  const res = await fetch(SUPABASE_URL+"/functions/v1/generate-promo",{
+    method:"POST",
+    headers:{ "Content-Type":"application/json" },
+    body:JSON.stringify({ agent_id })
   });
-  d.save("AYAS7_promo_kody.pdf");
+  const data = await res.json();
+  alert("Promo kód: "+data.code);
+  loadAll();
+}
+
+function generatePDF(){
+  const { jsPDF } = window.jspdf;
+  const pdf = new jsPDF();
+
+  pdf.setFontSize(16);
+  pdf.text("AYAS-7 ENGINE – AUDIT REPORT", 14, 16);
+  pdf.setFontSize(10);
+  pdf.text("Vygenerováno: "+new Date().toLocaleString(),14,24);
+
+  let y = 36;
+  pdf.text("Členové:",14,y); y+=6;
+
+  DATA.members.forEach(m=>{
+    pdf.text(
+      `• ${m.name} | vklad: ${m.deposit} | status: ${m.status}`,
+      14,y
+    );
+    y+=5;
+  });
+
+  pdf.save("AYAS7_AUDIT.pdf");
 }
 
 loadAll();
 </script>
+
 </body>
 </html>
