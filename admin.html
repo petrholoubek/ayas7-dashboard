@@ -227,9 +227,12 @@ let DATA = { members: [], certificates: [], promo: [] };
 
 async function loadAll(){
   const res = await fetch(ENDPOINT, {
+    method: "POST",
     headers:{
-      Authorization: "Bearer " + SUPABASE_ANON_KEY
-    }
+      "Authorization": "Bearer " + SUPABASE_ANON_KEY,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ ping: true })
   });
 
   if(!res.ok){
@@ -251,6 +254,7 @@ async function loadAll(){
     `<tr><td>${p.code}</td><td>${p.owner}</td><td>${p.status}</td></tr>`
   ).join("");
 }
+
 
 /* ===== PDF ===== */
 const { jsPDF } = window.jspdf;
