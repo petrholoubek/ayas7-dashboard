@@ -16,6 +16,7 @@
   --text:#e5e7eb;
   --muted:#94a3b8;
   --green:#22c55e;
+  --yellow:#facc15;
 }
 
 *{box-sizing:border-box}
@@ -28,7 +29,7 @@ html,body{
 }
 
 .app{
-  max-width:1200px;
+  max-width:1300px;
   margin:auto;
   padding:22px;
   display:flex;
@@ -36,7 +37,7 @@ html,body{
   gap:18px;
 }
 
-/* HEADER */
+/* ===== HEADER ===== */
 .header{display:flex;flex-direction:column;gap:4px}
 .ng{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--muted);letter-spacing:1.4px}
 .led{width:10px;height:10px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green)}
@@ -44,7 +45,7 @@ html,body{
 .admin{font-size:13px}
 .process{font-size:11px;color:var(--muted)}
 
-/* CARDS */
+/* ===== CARD ===== */
 .card{
   background:var(--card);
   border:1px solid var(--border);
@@ -55,23 +56,30 @@ html,body{
   gap:12px;
 }
 
-h2{margin:0;font-size:14px}
+h2{margin:0;font-size:14px;letter-spacing:1px}
 p{margin:0;font-size:12px;color:var(--muted)}
 
+/* ===== TABLE ===== */
 table{width:100%;border-collapse:collapse;font-size:12px}
-th,td{padding:8px;border-bottom:1px solid var(--border);text-align:left}
-th{font-size:11px;color:var(--muted)}
+th,td{padding:8px;border-bottom:1px solid var(--border);text-align:left;vertical-align:top}
+th{font-size:11px;color:var(--muted);letter-spacing:1px}
 
-.actions{display:flex;gap:8px}
+/* ===== BUTTONS ===== */
+.actions{display:flex;gap:6px;flex-wrap:wrap}
 button{
   background:#020617;
   border:1px solid var(--border);
   color:var(--text);
-  padding:6px 12px;
+  padding:5px 10px;
   font-size:11px;
   border-radius:8px;
   cursor:pointer;
 }
+button.approve{border-color:var(--green);color:var(--green)}
+button.disabled{opacity:.4;cursor:not-allowed}
+
+.status-pending{color:var(--yellow)}
+.status-approved{color:var(--green)}
 
 .footer{text-align:center;font-size:10px;color:var(--muted)}
 </style>
@@ -80,129 +88,168 @@ button{
 <body>
 <div class="app">
 
-<!-- HEADER -->
+<!-- ===== HEADER ===== -->
 <div class="header">
   <div class="ng"><span class="led"></span><span>Next Generation</span></div>
   <div class="engine">AYAS-7 Engine</div>
   <div class="admin">Admin – úřední deska</div>
-  <div class="process">Rozhodovací a administrativní procesy družstva</div>
+  <div class="process">Rozhodovací, administrativní a auditní procesy družstva</div>
 </div>
 
-<!-- MEMBERS -->
+<!-- ===== MEMBERS ===== -->
 <div class="card">
   <h2>ČLENOVÉ DRUŽSTVA</h2>
-  <p>Aktuální členové a čekající schválení.</p>
+  <p>Formální schvalování členství (nezávislé na platbě a certifikátu).</p>
+
   <table>
     <thead>
-      <tr><th>ID</th><th>Jméno</th><th>Datum</th><th>Stav</th></tr>
+      <tr>
+        <th>ID</th>
+        <th>Člen</th>
+        <th>Vklad</th>
+        <th>WW-KEY</th>
+        <th>Stav</th>
+        <th>Rozhodnutí</th>
+      </tr>
     </thead>
     <tbody id="membersTable"></tbody>
   </table>
+
   <div class="actions">
-    <button onclick="pdfMembers()">PDF – členové</button>
+    <button onclick="pdfMembers()">PDF – členové (audit)</button>
   </div>
 </div>
 
-<!-- CERTIFICATES -->
+<!-- ===== CERTIFICATES ===== -->
 <div class="card">
   <h2>CERTIFIKÁTY</h2>
-  <p>Vydané certifikáty a jejich parametry.</p>
+  <p>Vydané certifikáty (nezávislé na schválení členství).</p>
+
   <table>
     <thead>
-      <tr><th>WWKEY</th><th>WW Keys</th><th>Datum</th><th>Verze</th></tr>
+      <tr>
+        <th>Certifikát</th>
+        <th>WW-KEY</th>
+        <th>Vklad CZK</th>
+        <th>Datum</th>
+      </tr>
     </thead>
     <tbody id="certTable"></tbody>
   </table>
+
   <div class="actions">
-    <button onclick="pdfCertificates()">PDF – certifikáty</button>
+    <button onclick="pdfCertificates()">PDF – certifikáty (audit)</button>
   </div>
 </div>
 
-<!-- PROMO -->
-<div class="card">
-  <h2>PROMO KÓDY</h2>
-  <p>Evidence promo kódů.</p>
-  <table>
-    <thead>
-      <tr><th>Kód</th><th>Vlastník</th><th>Stav</th></tr>
-    </thead>
-    <tbody id="promoTable"></tbody>
-  </table>
+<div class="footer">
+  Interní administrativní systém AYAS-7 • audit-ready
 </div>
-
-<div class="footer">Interní řídicí rozhraní AYAS-7</div>
 
 </div>
 
 <script>
-/* ===== KONFIGURACE ===== */
+/* ================= KONFIG ================= */
 const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_ltaNA7nnVozoSCOcZIjg";
 const ENDPOINT = "https://hurayrwshmsvsylhwlbj.supabase.co/functions/v1/smart-endpoint";
 
-/* ===== DATA ===== */
+/* ================= DATA ================= */
 let DATA = { members: [], certificates: [], promo: [] };
 
 async function loadAll(){
   const res = await fetch(ENDPOINT, {
-    method: "POST",
+    method:"POST",
     headers:{
-      "Authorization": "Bearer " + SUPABASE_PUBLISHABLE_KEY,
-      "Content-Type": "application/json"
+      "Authorization":"Bearer "+SUPABASE_PUBLISHABLE_KEY,
+      "Content-Type":"application/json"
     },
-    body: JSON.stringify({ load: true })
+    body:JSON.stringify({load:true})
   });
 
   DATA = await res.json();
 
-  membersTable.innerHTML = DATA.members.map(m => `
+  /* ===== MEMBERS ===== */
+  membersTable.innerHTML = DATA.members.map(m=>{
+    const approved = m.status === "approved";
+    return `
     <tr>
       <td>${m.id}</td>
-      <td>${m.name}<br><small>${m.email}</small></td>
-      <td>${new Date(m.created_at).toLocaleDateString()}</td>
-      <td>${m.status}</td>
-    </tr>
-  `).join("");
+      <td>
+        ${m.name}<br>
+        <small>${m.email}</small>
+      </td>
+      <td>${m.deposit.toLocaleString()} CZK</td>
+      <td>${m.ww_key}</td>
+      <td class="status-${m.status}">${m.status}</td>
+      <td>
+        ${approved
+          ? `<span class="status-approved">schváleno</span>`
+          : `<button class="approve" onclick="approveMember(${m.id})">Schválit</button>`
+        }
+      </td>
+    </tr>`;
+  }).join("");
 
-  certTable.innerHTML = DATA.certificates.map(c => `
+  /* ===== CERTS ===== */
+  certTable.innerHTML = DATA.certificates.map(c=>`
     <tr>
       <td>${c.certificate_id}</td>
       <td>${c.ww_keys}</td>
+      <td>${c.deposit_czk.toLocaleString()}</td>
       <td>${new Date(c.issued_at).toLocaleDateString()}</td>
-      <td>${c.version}</td>
     </tr>
   `).join("");
-
-  promoTable.innerHTML = DATA.promo.length
-    ? DATA.promo.map(p => `<tr><td>${p.code}</td><td>${p.owner}</td><td>${p.status}</td></tr>`).join("")
-    : `<tr><td colspan="3">Žádné promo kódy</td></tr>`;
 }
 
-/* ===== PDF ===== */
+/* ================= APPROVAL ================= */
+/* 🔒 POZN.: toto je připravené na Edge Function update */
+async function approveMember(id){
+  if(!confirm("Opravdu schválit člena ID "+id+" ?")) return;
+  alert("Schválení připraveno – v dalším kroku napojíme update přes Edge Function.");
+}
+
+/* ================= PDF ================= */
 const { jsPDF } = window.jspdf;
+
+function pdfHeader(doc,title){
+  const now = new Date();
+  doc.setFontSize(14);
+  doc.text("AYAS-7 ENGINE",14,14);
+  doc.setFontSize(10);
+  doc.text("Auditní výstup • "+title,14,22);
+  doc.text("Vygenerováno: "+now.toLocaleString(),14,28);
+  doc.line(14,32,196,32);
+}
 
 function pdfMembers(){
   const d = new jsPDF();
-  d.text("AYAS-7 – Členové družstva",14,16);
-  let y=30;
+  pdfHeader(d,"Seznam členů družstva");
+  let y=40;
   DATA.members.forEach(m=>{
-    d.text(`${m.name} | ${m.email} | ${m.status}`,14,y);
+    d.text(
+      `${m.id} | ${m.name} | ${m.deposit} CZK | WW-KEY ${m.ww_key} | ${m.status}`,
+      14,y
+    );
     y+=7;
   });
-  d.save("clenove_druzstva.pdf");
+  d.save("AYAS7_clenove_audit.pdf");
 }
 
 function pdfCertificates(){
   const d = new jsPDF();
-  d.text("AYAS-7 – Certifikáty",14,16);
-  let y=30;
+  pdfHeader(d,"Seznam certifikátů");
+  let y=40;
   DATA.certificates.forEach(c=>{
-    d.text(`${c.certificate_id} | ${c.ww_keys} | ${c.deposit_czk} CZK`,14,y);
+    d.text(
+      `${c.certificate_id} | WW-KEY ${c.ww_keys} | ${c.deposit_czk} CZK`,
+      14,y
+    );
     y+=7;
   });
-  d.save("certifikaty.pdf");
+  d.save("AYAS7_certifikaty_audit.pdf");
 }
 
-/* START */
+/* ================= INIT ================= */
 loadAll();
 </script>
 </body>
