@@ -511,70 +511,90 @@
 
  
  <main>
-   <section class="login-wrapper">
-     <div class="login-badge">
-       <span class="login-badge-dot"></span>
-       Členská sekce · zabezpečený přístup
-     </div>
+  <section class="login-wrapper">
+    <div class="login-badge">
+      <span class="login-badge-dot"></span>
+      Členská sekce · zabezpečený vstup
+    </div>
 
-     <h1 class="login-title">Přihlášení člena</h1>
-     <p class="login-subtitle">
-       Přístup je určen členům družstva Win-Win a administrátorům AYAS&#8209;7.
-     </p>
+    <h1 class="login-title">Žádost o vstup do družstva</h1>
+    <p class="login-subtitle">
+      Vyplněním formuláře odešleš žádost o členství v družstvu Win-Win.
+      Po schválení administrátorem získáš plný přístup do systému AYAS-7.
+    </p>
 
-     
-     <div class="login-intro">
-       <div class="login-intro-header">
-         <span class="login-intro-dot"></span>
-         <span>Proč se přihlásit do systému AYAS&#8209;7?</span>
-       </div>
-       <p class="login-intro-text">
-         Po přihlášení uvidíš <b>své WW-KEY</b>, historii vkladů a podíl na výnosech
-         napříč <b>7 vrstvami motoru AYAS&#8209;7</b>.  
-         Připravujeme také přímé napojení na <b>on-chain data</b>, denní reporty
-         a přehled výkonu tvého členství.
-       </p>
-     </div>
+    <div class="login-intro">
+      <div class="login-intro-header">
+        <span class="login-intro-dot"></span>
+        <span>Jak proces funguje?</span>
+      </div>
+      <p class="login-intro-text">
+        Po odeslání žádosti je tvůj vstup <b>čekající (pending)</b>.
+        Administrátor družstva žádost posoudí a po schválení obdržíš
+        přístup k <b>WW-KEY</b>, reportům a výkonnostním datům
+        systému <b>AYAS-7</b>.
+      </p>
+    </div>
 
-     <form>
-       <div class="form-group">
-         <label class="form-label" for="login-identity">E-mail nebo uživatelské jméno</label>
-         <input
-           id="login-identity"
-           type="text"
-           class="form-input"
-           placeholder="např. jan.novy@example.com"
-         />
-       </div>
+    <form id="registerForm">
 
-       <div class="form-group">
-         <label class="form-label" for="login-password">Heslo</label>
-         <input
-           id="login-password"
-           type="password"
-           class="form-input"
-           placeholder="Zadej heslo"
-         />
-       </div>
+      <div class="form-group">
+        <label class="form-label" for="login-identity">E-mail</label>
+        <input
+          id="login-identity"
+          type="email"
+          class="form-input"
+          placeholder="např. jan.novy@example.com"
+          required
+        />
+      </div>
 
-       <div class="form-row-between">
-         <label class="form-check">
-           <input type="checkbox" />
-           <span>Zapamatovat přihlášení</span>
-         </label>
-         <span class="link-small">Zapomněl jsem heslo</span>
-       </div>
+      <div class="form-group">
+        <label class="form-label" for="login-password">Heslo</label>
+        <input
+          id="login-password"
+          type="password"
+          class="form-input"
+          placeholder="Zadej heslo (zatím pouze evidenční)"
+          required
+        />
+      </div>
 
-       <button type="submit" class="btn-submit">
-         Přihlásit se
-       </button>
+      <div class="form-group">
+        <label class="form-label" for="deposit">Vklad (CZK)</label>
+        <input
+          id="deposit"
+          type="number"
+          class="form-input"
+          placeholder="např. 20000"
+          min="1"
+          required
+        />
+      </div>
 
-       <div class="login-footer-text">
-         Ještě nejsi členem? <a href="members.html">Požádej o vstup do družstva</a>
-       </div>
-     </form>
-   </section>
- </main>
+      <div class="form-group">
+        <label class="form-label" for="promo">Promo kód (volitelné)</label>
+        <input
+          id="promo"
+          type="text"
+          class="form-input"
+          placeholder="např. AYAS-NOVAK-AB12"
+        />
+      </div>
+
+      <button type="submit" class="btn-submit">
+        Odeslat žádost o vstup
+      </button>
+
+      <div class="login-footer-text">
+        Odesláním formuláře souhlasíš se zpracováním údajů
+        pro účely členství v družstvu Win-Win.
+      </div>
+
+    </form>
+  </section>
+</main>
+
 
  <footer>
    © 2025 Win-Win Družstvo · AYAS-7 Engine · Všechna práva vyhrazena
