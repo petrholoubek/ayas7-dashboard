@@ -1,337 +1,279 @@
 <!doctype html>
 <html lang="cs">
 <head>
-<meta charset="utf-8">
-<title>AYAS-7 • Global DeFi Control Cockpit</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-  <!-- FAVICON / PWA -->
-  <link rel="icon" type="image/png" sizes="192x192" href="/ayas7-192.png">
-  <link rel="icon" type="image/png" sizes="512x512" href="/ayas7-512.png">
-  <link rel="apple-touch-icon" href="/ayas7-192.png">
-  <meta name="theme-color" content="#020617">
+<meta charset="utf-8"/>
+<title>AYAS-7 Engine • Admin</title>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
 
-  <title>AYAS-7 · …</title>
+<!-- LIBRARIES -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+
 <style>
 :root{
- --w:1200px;
- --bg:#020617;
- --panel:#0f172a;
- --border:#94a3b833;
-
- --led:#22c55e;
- --text:#e5e7eb;
- --muted:#9ca3af;
+  --bg:#020617;
+  --card:#0f172acc;
+  --border:#94a3b833;
+  --text:#e5e7eb;
+  --muted:#94a3b8;
+  --green:#22c55e;
 }
 
 *{box-sizing:border-box}
 
-html,#msg_body {
- margin:0;
- padding:0;
- background:
-   radial-gradient(circle at 40% 0%, #0f172a 0%, #020617 65%, #000 100%);
- font-family:"Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
- color:var(--text);
+html,body{
+  margin:0;
+  padding:0;
+  background:var(--bg);
+  font-family:"Segoe UI",Tahoma,Verdana,sans-serif;
+  color:var(--text);
 }
 
-main{
- max-width:var(--w);
- margin:40px auto 120px;
- padding:0 16px;
+.app{
+  max-width:1200px;
+  margin:auto;
+  padding:22px;
+  display:flex;
+  flex-direction:column;
+  gap:18px;
 }
 
-/* ---------------- HERO ---------------- */
-
-.hero{
- margin-bottom:40px;
+/* ===== HEADER ===== */
+.header{
+  display:flex;
+  flex-direction:column;
+  gap:4px;
 }
 
-.hero-kicker{
- display:flex;
- align-items:center;
- gap:8px;
- font-size:11px;
- letter-spacing:.18em;
- text-transform:uppercase;
- color:var(--muted);
+.ng{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  font-size:11px;
+  color:var(--muted);
+  letter-spacing:1.4px;
 }
 
-.hero-led{
- width:9px;
- height:9px;
- border-radius:50%;
- background:var(--led);
- box-shadow:0 0 8px var(--led);
+.led{
+  width:10px;
+  height:10px;
+  border-radius:50%;
+  background:var(--green);
+  box-shadow:0 0 8px var(--green);
 }
 
-.hero-title{
- margin:10px 0 6px;
- font-size:32px;
- font-weight:800;
+.engine{
+  font-size:24px;
+  font-weight:600;
+  letter-spacing:1px;
 }
 
-.hero-sub{
- max-width:900px;
- font-size:14px;
- line-height:1.55;
- color:#cbd5f5;
+.admin{
+  font-size:13px;
+  letter-spacing:1.1px;
 }
 
-.line{
- margin-top:14px;
- height:1px;
- background:linear-gradient(to right, transparent, #38bdf8, transparent);
+.process{
+  font-size:11px;
+  color:var(--muted);
 }
 
-/* ---------------- MAIN BOARD ---------------- */
-
-.main-board{
- margin-top:42px;
+/* ===== CARD ===== */
+.card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:16px;
+  display:flex;
+  flex-direction:column;
+  gap:12px;
 }
 
-.board-frame{
- position:relative;
- padding:18px;
- border-radius:22px;
- background:linear-gradient(180deg,#0f172a,#020617);
- border:1px solid rgba(148,163,184,.35);
- transform:perspective(1400px) rotateX(4deg) rotateY(-4deg);
+h2{
+  margin:0;
+  font-size:14px;
+  letter-spacing:1px;
 }
 
-.board-frame img{
- width:100%;
- display:block;
- border-radius:14px;
- border:1px solid rgba(148,163,184,.25);
+p{
+  margin:0;
+  font-size:12px;
+  color:var(--muted);
 }
 
-.board-led{
- position:absolute;
- top:14px;
- right:14px;
- width:10px;
- height:10px;
- border-radius:50%;
- background:var(--led);
- box-shadow:0 0 10px var(--led);
+/* ===== TABLE ===== */
+table{
+  width:100%;
+  border-collapse:collapse;
+  font-size:12px;
 }
 
-/* ---------------- DESCRIPTION ---------------- */
-
-.desc{
- margin-top:36px;
- display:grid;
- grid-template-columns:1.2fr 1fr;
- gap:28px;
+th,td{
+  padding:8px;
+  border-bottom:1px solid var(--border);
+  text-align:left;
 }
 
-.desc h3{
- margin:0 0 8px;
- font-size:16px;
- letter-spacing:.12em;
- text-transform:uppercase;
+th{
+  font-size:11px;
+  color:var(--muted);
+  letter-spacing:1px;
 }
 
-.desc p{
- margin:0 0 12px;
- font-size:14px;
- line-height:1.6;
- color:#cbd5f5;
+/* ===== BUTTONS ===== */
+.actions{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
 }
 
-.feature{
- display:flex;
- gap:10px;
- margin-bottom:8px;
- font-size:13px;
+button{
+  background:#020617;
+  border:1px solid var(--border);
+  color:var(--text);
+  padding:6px 12px;
+  font-size:11px;
+  border-radius:8px;
+  cursor:pointer;
 }
 
-.feature .dot{
- width:7px;
- height:7px;
- border-radius:50%;
- background:var(--led);
- box-shadow:0 0 6px var(--led);
- margin-top:6px;
+button:hover{
+  border-color:#e5e7eb66;
 }
 
-/* ---------------- SUB SCREENS ---------------- */
-
-.sub-showcase{
- margin-top:46px;
-}
-
-.sub-grid{
- margin-top:22px;
- display:grid;
- grid-template-columns:repeat(4,1fr);
- gap:18px;
-}
-
-.sub-card{
- position:relative;
- padding:12px;
- border-radius:16px;
- background:linear-gradient(180deg,#0f172a,#020617);
- border:1px solid rgba(148,163,184,.3);
- transform:perspective(1200px) rotateX(3deg) rotateY(-3deg);
-}
-
-.sub-card img{
- width:100%;
- border-radius:10px;
- border:1px solid rgba(148,163,184,.25);
- display:block;
-}
-
-.sub-led{
- position:absolute;
- top:10px;
- right:10px;
- width:8px;
- height:8px;
- border-radius:50%;
- background:var(--led);
- box-shadow:0 0 8px var(--led);
-}
-
-.sub-title{
- margin-bottom:6px;
- font-size:12px;
- font-weight:700;
- letter-spacing:.08em;
-}
-
-/* ---------------- FOOTER INFO ---------------- */
-
-.footer-info{
- margin-top:48px;
- padding-top:22px;
- border-top:1px solid rgba(148,163,184,.25);
-}
-
-.footer-info p{
- font-size:13px;
- line-height:1.6;
- color:#9ca3af;
-}
-
-/* ---------------- RESPONSIVE ---------------- */
-
-@media(max-width:1100px){
- .desc{grid-template-columns:1fr}
- .sub-grid{grid-template-columns:repeat(2,1fr)}
-}
-
-@media(max-width:600px){
- .sub-grid{grid-template-columns:1fr}
+.footer{
+  text-align:center;
+  font-size:10px;
+  color:var(--muted);
 }
 </style>
 </head>
 
 <body>
+<div class="app">
 
-<main>
+<!-- ===== HEADER ===== -->
+<div class="header">
+  <div class="ng">
+    <span class="led"></span>
+    <span>Next Generation</span>
+  </div>
+  <div class="engine">AYAS-7 Engine</div>
+  <div class="admin">Admin – úřední deska</div>
+  <div class="process">Rozhodovací, administrativní a správní procesy družstva</div>
+</div>
 
+<!-- ===== MEMBERS ===== -->
+<div class="card">
+  <h2>ČLENOVÉ DRUŽSTVA</h2>
+  <p>Centrální přehled a rozhodovací podklady pro družstvo.</p>
+  <table>
+    <thead>
+      <tr><th>ID</th><th>Jméno</th><th>Datum</th><th>Stav</th></tr>
+    </thead>
+    <tbody id="membersTable"></tbody>
+  </table>
+  <div class="actions">
+    <button onclick="pdfMembers()">PDF – členové družstva</button>
+  </div>
+</div>
 
-<section class="hero">
- <div class="hero-kicker">
-   <span class="hero-led"></span>
-   AYAS-7 Next Generation
- </div>
+<!-- ===== CERTIFICATES ===== -->
+<div class="card">
+  <h2>CERTIFIKÁTY</h2>
+  <p>Vydané certifikáty a auditní kontrola.</p>
+  <table>
+    <thead>
+      <tr><th>ID</th><th>Člen</th><th>Datum</th><th>Stav</th></tr>
+    </thead>
+    <tbody id="certTable"></tbody>
+  </table>
+  <div class="actions">
+    <button onclick="pdfCertificates()">PDF – certifikáty</button>
+  </div>
+</div>
 
- <h1 class="hero-title">Global DeFi Control Cockpit</h1>
+<!-- ===== PROMO ===== -->
+<div class="card">
+  <h2>PROMO KÓDY / PROVIZE</h2>
+  <p>Správa promo kódů a vlastnictví provizí.</p>
+  <table>
+    <thead>
+      <tr><th>Kód</th><th>Obchodník</th><th>Stav</th></tr>
+    </thead>
+    <tbody id="promoTable"></tbody>
+  </table>
+  <div class="actions">
+    <button onclick="pdfPromo()">PDF – promo kódy</button>
+  </div>
+</div>
 
- <p class="hero-sub">
-   AYAS-7 je profesionální softwarová řídicí deska pro správu DeFi ekosystémů,
-   likvidity, poolů, tokenů a governance.  
-   Není to demo – je to skutečná architektura systému navržená jako
-   jednotná „základní deska“ pro finanční infrastrukturu nové generace.
- </p>
+<div class="footer">
+  Interní řídicí rozhraní AYAS-7 • úřední evidence
+</div>
 
- <div class="line"></div>
-</section>
+</div>
 
+<script>
+/* ===== CONFIG ===== */
+const SUPABASE_URL = "VLOZ_SUPABASE_URL";
+const SUPABASE_KEY = "VLOZ_ADMIN_SERVICE_KEY";
+const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const { jsPDF } = window.jspdf;
 
-<section class="main-board">
- <div class="board-frame">
-   <span class="board-led"></span>
-   <img src="assets/img/cockpit.jpeg" alt="AYAS-7 Software Skeleton">
- </div>
-</section>
+/* ===== LOAD ===== */
+async function loadAll(){
+  const m = await db.from("members").select("id,name,created_at,status");
+  membersTable.innerHTML = m.data.map(x =>
+    `<tr><td>${x.id}</td><td>${x.name}</td><td>${new Date(x.created_at).toLocaleDateString()}</td><td>${x.status}</td></tr>`
+  ).join("");
 
+  const c = await db.from("certificates").select("id,member_name,issued_at,status");
+  certTable.innerHTML = c.data.map(x =>
+    `<tr><td>${x.id}</td><td>${x.member_name}</td><td>${new Date(x.issued_at).toLocaleDateString()}</td><td>${x.status}</td></tr>`
+  ).join("");
 
-<section class="desc">
- <div>
-   <h3>Co je AYAS-7</h3>
-   <p>
-     AYAS-7 spojuje lidskou rozhodovací logiku s výpočetní silou AI.
-     Systém je navržen jako centrální řídicí deska, která propojuje
-     on-chain data, databáze, externí API, finanční infrastrukturu a správu rizik.
-   </p>
+  const p = await db.from("promo_codes").select("code,owner,status");
+  promoTable.innerHTML = p.data.map(x =>
+    `<tr><td>${x.code}</td><td>${x.owner}</td><td>${x.status}</td></tr>`
+  ).join("");
+}
 
-   <div class="feature"><span class="dot"></span> Chip Core – výpočetní a rozhodovací jádro</div>
-   <div class="feature"><span class="dot"></span> AI řízení + manuální kontrola</div>
-   <div class="feature"><span class="dot"></span> Správa likvidity, poolů a tokenů</div>
-   <div class="feature"><span class="dot"></span> Telemetrie, monitoring, auditní stopa</div>
- </div>
+/* ===== PDF ===== */
+function basePDF(title){
+  const d = new jsPDF();
+  d.setFontSize(14);
+  d.text("AYAS-7 Engine",14,16);
+  d.setFontSize(10);
+  d.text(title,14,24);
+  return d;
+}
 
- <div>
-   <h3>Proč je výjimečný</h3>
-   <p>
-     AYAS-7 není webová stránka.  
-     Je to software navržený jako operační systém pro DeFi,
-     připravený pro provoz jako samostatná aplikace (EXE),
-     s možností dalšího rozšiřování modulů.
-   </p>
+async function pdfMembers(){
+  const { data } = await db.from("members").select("*");
+  const d = basePDF("Členové družstva");
+  let y=36;
+  data.forEach(x=>{ d.text(`${x.id} | ${x.name} | ${x.status}`,14,y); y+=7; });
+  d.save("AYAS7_clenove_druzstva.pdf");
+}
 
-   <div class="feature"><span class="dot"></span> Jednotná architektura místo chaosu nástrojů</div>
-   <div class="feature"><span class="dot"></span> Připraveno pro multi-sig a governance</div>
-   <div class="feature"><span class="dot"></span> Transparentní vývoj na GitHubu</div>
- </div>
-</section>
+async function pdfCertificates(){
+  const { data } = await db.from("certificates").select("*");
+  const d = basePDF("Certifikáty");
+  let y=36;
+  data.forEach(x=>{ d.text(`${x.id} | ${x.member_name} | ${x.status}`,14,y); y+=7; });
+  d.save("AYAS7_certifikaty.pdf");
+}
 
+async function pdfPromo(){
+  const { data } = await db.from("promo_codes").select("*");
+  const d = basePDF("Promo kódy a provize");
+  let y=36;
+  data.forEach(x=>{ d.text(`${x.code} | ${x.owner} | ${x.status}`,14,y); y+=7; });
+  d.save("AYAS7_promo_kody.pdf");
+}
 
-<section class="sub-showcase">
- <div class="line"></div>
-
- <div class="sub-grid">
-   <div class="sub-card">
-     <span class="sub-led"></span>
-     <div class="sub-title">Skeleton & Web</div>
-     <img src="assets/img/screen1.jpeg">
-   </div>
-
-   <div class="sub-card">
-     <span class="sub-led"></span>
-     <div class="sub-title">AI / Manual Control</div>
-     <img src="assets/img/screen2.jpeg">
-   </div>
-
-   <div class="sub-card">
-     <span class="sub-led"></span>
-     <div class="sub-title">Liquidity Pools</div>
-     <img src="assets/img/screen3.jpeg">
-   </div>
-
-   <div class="sub-card">
-     <span class="sub-led"></span>
-     <div class="sub-title">Dashboard & Telemetry</div>
-     <img src="assets/img/screen4.jpeg">
-   </div>
- </div>
-</section>
-
-
-<section class="footer-info">
- <p>
-   AYAS-7 je vyvíjen jako profesionální nástroj pro správu decentralizované
-   finanční infrastruktury.  
-   Základní deska systému je hotová. Další vrstvy se postupně osazují.
- </p>
-</section>
-
-</main>
-
+loadAll();
+</script>
 </body>
 </html>
