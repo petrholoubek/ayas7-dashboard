@@ -66,6 +66,15 @@ button.approve{border-color:var(--green);color:var(--green)}
 .status-pending{color:var(--yellow)}
 .status-approved{color:var(--green)}
 
+input{
+  background:#020617;
+  border:1px solid var(--border);
+  color:var(--text);
+  padding:5px 8px;
+  border-radius:6px;
+  font-size:11px;
+}
+
 .footer{text-align:center;font-size:10px;color:var(--muted)}
 </style>
 </head>
@@ -81,128 +90,161 @@ button.approve{border-color:var(--green);color:var(--green)}
   <div class="process">Rozhodovací, administrativní a auditní procesy</div>
 </div>
 
-<!-- MEMBERS -->
+<!-- ČLENOVÉ -->
 <div class="card">
-  <h2>ČLENOVÉ DRUŽSTVA</h2>
-  <p>Formální schvalování členství.</p>
-
-  <table>
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Člen</th>
-        <th>Vklad</th>
-        <th>WW-KEY</th>
-        <th>Stav</th>
-        <th>Akce</th>
-      </tr>
-    </thead>
-    <tbody id="membersTable"></tbody>
-  </table>
-
-  <div class="actions">
-    <button onclick="pdfMembers()">PDF – členové (audit)</button>
-  </div>
+<h2>ČLENOVÉ DRUŽSTVA</h2>
+<p>Formální schvalování členství.</p>
+<table>
+<thead>
+<tr>
+  <th>ID</th><th>Člen</th><th>Vklad</th><th>WW-KEY</th><th>Stav</th><th>Akce</th>
+</tr>
+</thead>
+<tbody id="membersTable"></tbody>
+</table>
+<div class="actions">
+<button onclick="pdfMembers()">PDF – členové (audit)</button>
+</div>
 </div>
 
-<!-- CERTIFICATES -->
+<!-- CERTIFIKÁTY -->
 <div class="card">
-  <h2>CERTIFIKÁTY</h2>
-  <p>Vydané certifikáty.</p>
+<h2>CERTIFIKÁTY</h2>
+<p>Ekonomická vrstva – vydané certifikáty.</p>
+<table>
+<thead>
+<tr>
+  <th>Certifikát</th><th>WW-KEY</th><th>Vklad CZK</th><th>Datum</th>
+</tr>
+</thead>
+<tbody id="certTable"></tbody>
+</table>
+<div class="actions">
+<button onclick="pdfCertificates()">PDF – certifikáty (audit)</button>
+</div>
+</div>
 
-  <table>
-    <thead>
-      <tr>
-        <th>Certifikát</th>
-        <th>WW-KEY</th>
-        <th>Vklad CZK</th>
-        <th>Datum</th>
-      </tr>
-    </thead>
-    <tbody id="certTable"></tbody>
-  </table>
+<!-- OBCHODNÍCI -->
+<div class="card">
+<h2>OBCHODNÍ ZÁSTUPCI</h2>
+<p>Centrální evidence a schvalování obchodníků.</p>
 
-  <div class="actions">
-    <button onclick="pdfCertificates()">PDF – certifikáty (audit)</button>
-  </div>
+<div class="actions">
+<input id="aName" placeholder="Jméno">
+<input id="aEmail" placeholder="Email">
+<input id="aPhone" placeholder="Telefon">
+<button onclick="addAgent()">Přidat obchodníka</button>
+</div>
+
+<table>
+<thead>
+<tr>
+  <th>ID</th><th>Jméno</th><th>Email</th><th>Stav</th><th>Akce</th>
+</tr>
+</thead>
+<tbody id="agentsTable"></tbody>
+</table>
+
+<div class="actions">
+<button onclick="pdfAgents()">PDF – obchodníci</button>
+</div>
 </div>
 
 <div class="footer">AYAS-7 • audit-ready administrační rozhraní</div>
 </div>
 
 <script>
-/* ================= KONFIG ================= */
-const SUPABASE_KEY = "PASTE_LEGACY_ANON_KEY_SEM";
-const READ_ENDPOINT = "https://hurayrwshmsvsylhwlbj.supabase.co/functions/v1/smart-endpoint";
-const APPROVE_ENDPOINT = "https://hurayrwshmsvsylhwlbj.supabase.co/functions/v1/approve-member";
+/* ===== ENDPOINTY ===== */
+const READ_ENDPOINT =
+  "https://hurayrwshmsvsylhwlbj.supabase.co/functions/v1/smart-endpoint";
+const APPROVE_MEMBER =
+  "https://hurayrwshmsvsylhwlbj.supabase.co/functions/v1/approve-member";
+const ADD_AGENT =
+  "https://hurayrwshmsvsylhwlbj.supabase.co/functions/v1/add-agent";
+const APPROVE_AGENT =
+  "https://hurayrwshmsvsylhwlbj.supabase.co/functions/v1/approve-agent";
 
-/* ================= DATA ================= */
-let DATA = { members: [], certificates: [] };
+/* ===== DATA ===== */
+let DATA={members:[],certificates:[],agents:[]};
 
 async function loadAll(){
-  const res = await fetch(READ_ENDPOINT,{
-    method:"POST",
-    headers:{
-      "Authorization":"Bearer "+SUPABASE_KEY,
-      "Content-Type":"application/json"
-    },
-    body:JSON.stringify({load:true})
-  });
-
-  DATA = await res.json();
+  const r = await fetch(READ_ENDPOINT,{method:"POST"});
+  DATA = await r.json();
 
   membersTable.innerHTML = DATA.members.map(m=>`
-    <tr>
-      <td>${m.id}</td>
-      <td>${m.name}<br><small>${m.email}</small></td>
-      <td>${m.deposit.toLocaleString()} CZK</td>
-      <td>${m.ww_key}</td>
-      <td class="status-${m.status}">${m.status}</td>
-      <td>
-        ${m.status==="approved"
-          ? "<span class='status-approved'>schváleno</span>"
-          : `<button class="approve" onclick="approveMember(${m.id})">Schválit</button>`
-        }
-      </td>
-    </tr>
-  `).join("");
+<tr>
+<td>${m.id}</td>
+<td>${m.name}<br><small>${m.email}</small></td>
+<td>${m.deposit.toLocaleString()} CZK</td>
+<td>${m.ww_key}</td>
+<td class="status-${m.status}">${m.status}</td>
+<td>
+${m.status==="approved"
+  ? "<span class='status-approved'>schváleno</span>"
+  : `<button class="approve" onclick="approveMember(${m.id})">Schválit</button>`}
+</td>
+</tr>`).join("");
 
   certTable.innerHTML = DATA.certificates.map(c=>`
-    <tr>
-      <td>${c.certificate_id}</td>
-      <td>${c.ww_keys}</td>
-      <td>${c.deposit_czk.toLocaleString()}</td>
-      <td>${new Date(c.issued_at).toLocaleDateString()}</td>
-    </tr>
-  `).join("");
+<tr>
+<td>${c.certificate_id}</td>
+<td>${c.ww_keys}</td>
+<td>${c.deposit_czk.toLocaleString()}</td>
+<td>${new Date(c.issued_at).toLocaleDateString()}</td>
+</tr>`).join("");
+
+  agentsTable.innerHTML = (DATA.agents||[]).map(a=>`
+<tr>
+<td>${a.id}</td>
+<td>${a.name}</td>
+<td>${a.email}</td>
+<td class="status-${a.status}">${a.status}</td>
+<td>
+${a.status==="active"
+  ? "<span class='status-approved'>aktivní</span>"
+  : `<button class="approve" onclick="approveAgent(${a.id})">Schválit</button>`}
+</td>
+</tr>`).join("");
 }
 
-/* ================= SCHVÁLENÍ ČLENA ================= */
+/* ===== AKCE ===== */
 async function approveMember(id){
-  if(!confirm("Opravdu schválit člena ID "+id+"?")) return;
-
-  const res = await fetch(APPROVE_ENDPOINT,{
+  await fetch(APPROVE_MEMBER,{
     method:"POST",
-    headers:{
-      "Authorization":"Bearer "+SUPABASE_KEY,
-      "Content-Type":"application/json"
-    },
-    body:JSON.stringify({ member_id:id })
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({member_id:id})
   });
-
-  if(!res.ok){
-    alert("Chyba při schvalování člena");
-    return;
-  }
-
   loadAll();
 }
 
-/* ================= PDF ================= */
+async function addAgent(){
+  await fetch(ADD_AGENT,{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({
+      name:aName.value,
+      email:aEmail.value,
+      phone:aPhone.value
+    })
+  });
+  aName.value=aEmail.value=aPhone.value="";
+  loadAll();
+}
+
+async function approveAgent(id){
+  await fetch(APPROVE_AGENT,{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({agent_id:id})
+  });
+  loadAll();
+}
+
+/* ===== PDF ===== */
 const { jsPDF } = window.jspdf;
 
 function pdfHeader(doc,title){
-  const now = new Date();
+  const now=new Date();
   doc.setFontSize(14);
   doc.text("AYAS-7 ENGINE",14,14);
   doc.setFontSize(10);
@@ -212,28 +254,38 @@ function pdfHeader(doc,title){
 }
 
 function pdfMembers(){
-  const d = new jsPDF();
+  const d=new jsPDF();
   pdfHeader(d,"Seznam členů družstva");
   let y=40;
   DATA.members.forEach(m=>{
-    d.text(`${m.name} | ${m.deposit} CZK | WW-KEY ${m.ww_key} | ${m.status}`,14,y);
+    d.text(`${m.name} | ${m.deposit} CZK | ${m.status}`,14,y);
     y+=7;
   });
-  d.save("AYAS7_clenove_audit.pdf");
+  d.save("AYAS7_clenove.pdf");
 }
 
 function pdfCertificates(){
-  const d = new jsPDF();
+  const d=new jsPDF();
   pdfHeader(d,"Seznam certifikátů");
   let y=40;
   DATA.certificates.forEach(c=>{
-    d.text(`${c.certificate_id} | WW-KEY ${c.ww_keys} | ${c.deposit_czk} CZK`,14,y);
+    d.text(`${c.certificate_id} | ${c.deposit_czk} CZK`,14,y);
     y+=7;
   });
-  d.save("AYAS7_certifikaty_audit.pdf");
+  d.save("AYAS7_certifikaty.pdf");
 }
 
-/* START */
+function pdfAgents(){
+  const d=new jsPDF();
+  pdfHeader(d,"Seznam obchodníků");
+  let y=40;
+  (DATA.agents||[]).forEach(a=>{
+    d.text(`${a.name} | ${a.email} | ${a.status}`,14,y);
+    y+=7;
+  });
+  d.save("AYAS7_obchodnici.pdf");
+}
+
 loadAll();
 </script>
 </body>
