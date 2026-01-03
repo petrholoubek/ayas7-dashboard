@@ -3,10 +3,9 @@
 <head>
 <meta charset="utf-8"/>
 <title>AYAS-7 Engine • Admin</title>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
 
-<!-- LIBRARIES -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<!-- PDF knihovna -->
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 
 <style>
@@ -38,7 +37,7 @@ html,body{
   gap:18px;
 }
 
-/* ===== HEADER ===== */
+/* ===== HLAVIČKA ===== */
 .header{
   display:flex;
   flex-direction:column;
@@ -78,7 +77,7 @@ html,body{
   color:var(--muted);
 }
 
-/* ===== CARD ===== */
+/* ===== KARTY ===== */
 .card{
   background:var(--card);
   border:1px solid var(--border);
@@ -101,7 +100,7 @@ p{
   color:var(--muted);
 }
 
-/* ===== TABLE ===== */
+/* ===== TABULKY ===== */
 table{
   width:100%;
   border-collapse:collapse;
@@ -120,7 +119,7 @@ th{
   letter-spacing:1px;
 }
 
-/* ===== BUTTONS ===== */
+/* ===== TLAČÍTKA ===== */
 .actions{
   display:flex;
   gap:8px;
@@ -152,7 +151,7 @@ button:hover{
 <body>
 <div class="app">
 
-<!-- ===== HEADER ===== -->
+<!-- ===== HLAVIČKA ===== -->
 <div class="header">
   <div class="ng">
     <span class="led"></span>
@@ -163,10 +162,10 @@ button:hover{
   <div class="process">Rozhodovací, administrativní a správní procesy družstva</div>
 </div>
 
-<!-- ===== MEMBERS ===== -->
+<!-- ===== ČLENOVÉ ===== -->
 <div class="card">
   <h2>ČLENOVÉ DRUŽSTVA</h2>
-  <p>Centrální přehled a rozhodovací podklady pro družstvo.</p>
+  <p>Centrální přehled členů a rozhodovací podklady.</p>
   <table>
     <thead>
       <tr><th>ID</th><th>Jméno</th><th>Datum</th><th>Stav</th></tr>
@@ -178,10 +177,10 @@ button:hover{
   </div>
 </div>
 
-<!-- ===== CERTIFICATES ===== -->
+<!-- ===== CERTIFIKÁTY ===== -->
 <div class="card">
   <h2>CERTIFIKÁTY</h2>
-  <p>Vydané certifikáty a auditní kontrola.</p>
+  <p>Vydané certifikáty a auditní evidence.</p>
   <table>
     <thead>
       <tr><th>ID</th><th>Člen</th><th>Datum</th><th>Stav</th></tr>
@@ -196,7 +195,7 @@ button:hover{
 <!-- ===== PROMO ===== -->
 <div class="card">
   <h2>PROMO KÓDY / PROVIZE</h2>
-  <p>Správa promo kódů a vlastnictví provizí.</p>
+  <p>Evidence promo kódů a obchodníků.</p>
   <table>
     <thead>
       <tr><th>Kód</th><th>Obchodník</th><th>Stav</th></tr>
@@ -215,31 +214,47 @@ button:hover{
 </div>
 
 <script>
-/* ===== CONFIG ===== */
-const SUPABASE_URL = "VLOZ_SUPABASE_URL";
-const SUPABASE_KEY = "VLOZ_ADMIN_SERVICE_KEY";
-const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-const { jsPDF } = window.jspdf;
+/* ===== JEDINÉ MÍSTO, KDE NĚCO VLOŽÍŠ ===== */
+const SUPABASE_ANON_KEY = "sb_publishable_ltaNA7nnVozoSCOcZIjg";
 
-/* ===== LOAD ===== */
+
+/* ===== EDGE FUNCTION ===== */
+const ENDPOINT =
+  "https://hurayrwshmsvsylhwlbj.supabase.co/functions/v1/smart-endpoint";
+
+/* ===== DATA ===== */
+let DATA = { members: [], certificates: [], promo: [] };
+
 async function loadAll(){
-  const m = await db.from("members").select("id,name,created_at,status");
-  membersTable.innerHTML = m.data.map(x =>
-    `<tr><td>${x.id}</td><td>${x.name}</td><td>${new Date(x.created_at).toLocaleDateString()}</td><td>${x.status}</td></tr>`
+  const res = await fetch(ENDPOINT, {
+    headers:{
+      Authorization: "Bearer " + SUPABASE_ANON_KEY
+    }
+  });
+
+  if(!res.ok){
+    alert("Chyba při načítání dat (" + res.status + ")");
+    return;
+  }
+
+  DATA = await res.json();
+
+  membersTable.innerHTML = DATA.members.map(m =>
+    `<tr><td>${m.id}</td><td>${m.name}</td><td>${new Date(m.created_at).toLocaleDateString()}</td><td>${m.status}</td></tr>`
   ).join("");
 
-  const c = await db.from("certificates").select("id,member_name,issued_at,status");
-  certTable.innerHTML = c.data.map(x =>
-    `<tr><td>${x.id}</td><td>${x.member_name}</td><td>${new Date(x.issued_at).toLocaleDateString()}</td><td>${x.status}</td></tr>`
+  certTable.innerHTML = DATA.certificates.map(c =>
+    `<tr><td>${c.id}</td><td>${c.member_name}</td><td>${new Date(c.issued_at).toLocaleDateString()}</td><td>${c.status}</td></tr>`
   ).join("");
 
-  const p = await db.from("promo_codes").select("code,owner,status");
-  promoTable.innerHTML = p.data.map(x =>
-    `<tr><td>${x.code}</td><td>${x.owner}</td><td>${x.status}</td></tr>`
+  promoTable.innerHTML = DATA.promo.map(p =>
+    `<tr><td>${p.code}</td><td>${p.owner}</td><td>${p.status}</td></tr>`
   ).join("");
 }
 
 /* ===== PDF ===== */
+const { jsPDF } = window.jspdf;
+
 function basePDF(title){
   const d = new jsPDF();
   d.setFontSize(14);
@@ -249,30 +264,28 @@ function basePDF(title){
   return d;
 }
 
-async function pdfMembers(){
-  const { data } = await db.from("members").select("*");
+function pdfMembers(){
   const d = basePDF("Členové družstva");
   let y=36;
-  data.forEach(x=>{ d.text(`${x.id} | ${x.name} | ${x.status}`,14,y); y+=7; });
+  DATA.members.forEach(m=>{ d.text(`${m.id} | ${m.name} | ${m.status}`,14,y); y+=7; });
   d.save("AYAS7_clenove_druzstva.pdf");
 }
 
-async function pdfCertificates(){
-  const { data } = await db.from("certificates").select("*");
+function pdfCertificates(){
   const d = basePDF("Certifikáty");
   let y=36;
-  data.forEach(x=>{ d.text(`${x.id} | ${x.member_name} | ${x.status}`,14,y); y+=7; });
+  DATA.certificates.forEach(c=>{ d.text(`${c.id} | ${c.member_name} | ${c.status}`,14,y); y+=7; });
   d.save("AYAS7_certifikaty.pdf");
 }
 
-async function pdfPromo(){
-  const { data } = await db.from("promo_codes").select("*");
+function pdfPromo(){
   const d = basePDF("Promo kódy a provize");
   let y=36;
-  data.forEach(x=>{ d.text(`${x.code} | ${x.owner} | ${x.status}`,14,y); y+=7; });
+  DATA.promo.forEach(p=>{ d.text(`${p.code} | ${p.owner} | ${p.status}`,14,y); y+=7; });
   d.save("AYAS7_promo_kody.pdf");
 }
 
+/* ===== START ===== */
 loadAll();
 </script>
 </body>
