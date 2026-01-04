@@ -256,6 +256,17 @@ table.members-table tbody tr:nth-child(odd){
                  <label class="form-label" for="memberPhone">Telefon</label>
                  <input id="memberPhone" class="form-input" placeholder="+420 123 456 789" required />
                </div>
+<div class="form-group">
+  <label class="form-label" for="memberPromo">
+    Promo kód (volitelné)
+  </label>
+  <input
+    id="memberPromo"
+    class="form-input"
+    placeholder="např. AYAS-NOVAK-AB12"
+  />
+</div>
+
                <div class="form-group">
                  <label class="form-label" for="investmentAmount">Investice (CZK)</label>
                  <input id="investmentAmount" type="number" min="0" class="form-input" placeholder="15000" required />
@@ -511,6 +522,8 @@ table.members-table tbody tr:nth-child(odd){
      const email = document.getElementById('memberEmail').value.trim();
      const phone = document.getElementById('memberPhone').value.trim();
      const amount = Number(document.getElementById('investmentAmount').value);
+     const promo_code = document.getElementById('memberPromo')?.value.trim() || null;
+
 
      if (!name || !email || !phone || !amount || amount <= 0) {
        alert('Vyplň prosím všechny údaje a částku > 0 CZK.');
@@ -542,6 +555,7 @@ table.members-table tbody tr:nth-child(odd){
            deposit: amount,
            ww_key: wwKeyCount,
            paid: false
+           promo_code: promo_code
          });
 
        if (error) {
