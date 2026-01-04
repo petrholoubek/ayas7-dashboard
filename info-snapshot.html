@@ -221,12 +221,30 @@ footer{
     <div class="metric"><span>Slippage</span><span id="liqSlip" class="value">—</span></div>
   </div>
 
-  <div class="card">
-    <div class="section-label">Tokens</div>
-    <div class="metric"><span>WW-UNIT</span><span id="unitSupply" class="value">—</span></div>
-    <div class="metric"><span>WW-RESERVE</span><span id="reserveSupply" class="value">—</span></div>
-    <div class="metric"><span>WW-KEY</span><span id="keySupply" class="value">—</span></div>
+<div class="card">
+  <div class="section-label">Tokens</div>
+
+  <div class="metric">
+    <span>WW-UNIT</span>
+    <span id="unitSupply" class="value">—</span>
   </div>
+
+  <div class="metric">
+    <span>WW-RESERVE</span>
+    <span id="reserveSupply" class="value">—</span>
+  </div>
+
+  <div class="metric">
+    <span>WW-KEY · issued</span>
+    <span id="keyIssued" class="value">—</span>
+  </div>
+
+  <div class="metric">
+    <span>WW-KEY · holders</span>
+    <span id="keyHolders" class="value">—</span>
+  </div>
+</div>
+
 
 </section>
 
@@ -342,9 +360,12 @@ function updateHealthBar(v){
     set("liqSlip", formatPct(s.pools?.slippage));
 
     /* TOKENS */
-    set("unitSupply",     formatNum(s.tokens?.WW_UNIT?.supply));
-    set("reserveSupply",  formatUSD(s.tokens?.WW_RESERVE?.balance));
-    set("keySupply",      formatNum(s.tokens?.WW_KEY?.holders));
+set("unitSupply",     formatNum(s.tokens?.WW_UNIT?.supply));
+set("reserveSupply",  formatUSD(s.tokens?.WW_RESERVE?.balance));
+
+set("keyIssued",      formatNum(s.tokens?.WW_KEY?.issued));
+set("keyHolders",     formatNum(s.tokens?.WW_KEY?.holders));
+
   }
 
   function renderError() {
