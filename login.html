@@ -577,6 +577,42 @@
  <footer>
    © 2025 Win-Win Družstvo · AYAS-7 Engine · Všechna práva vyhrazena
  </footer>
+<script>
+document.getElementById("registerForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const email = document.getElementById("login-identity").value.trim();
+  const password = document.getElementById("login-password").value.trim();
+
+  if (!email || !password) {
+    alert("Vyplň email a heslo");
+    return;
+  }
+
+  const res = await fetch(
+    "https://hurayrwshmsvsylhwlbj.supabase.co/functions/v1/register-member",
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password })
+    }
+  );
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    alert(data.error || "Chyba při odeslání žádosti");
+    return;
+  }
+
+  alert(
+    "Žádost o vstup byla odeslána.\n\n" +
+    "Po schválení administrátorem získáš přístup do systému AYAS-7."
+  );
+
+  document.getElementById("registerForm").reset();
+});
+</script>
 
 </body>
 </html>
