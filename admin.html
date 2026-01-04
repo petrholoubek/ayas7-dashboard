@@ -126,7 +126,14 @@ input{
 <p>Vydané certifikáty.</p>
 <table>
 <thead>
-<tr><th>ID</th><th>WW-KEY</th><th>Vklad</th><th>Datum</th></tr>
+<tr>
+  <th>Certificate ID</th>
+  <th>Člen</th>
+  <th>WW-KEY</th>
+  <th>Vklad</th>
+  <th>Datum</th>
+</tr>
+
 </thead>
 <tbody id="certTable"></tbody>
 </table>
@@ -225,10 +232,12 @@ ${m.status==="approved"
   certTable.innerHTML = DATA.certificates.map(c=>`
 <tr>
 <td>${c.certificate_id}</td>
+<td>${getMemberName(c.member_id)}</td>
 <td>${c.ww_keys}</td>
-<td>${c.deposit_czk.toLocaleString()}</td>
-<td>${new Date(c.issued_at).toLocaleDateString()}</td>
+<td>${c.deposit_czk.toLocaleString("cs-CZ")} CZK</td>
+<td>${new Date(c.issued_at).toLocaleDateString("cs-CZ")}</td>
 </tr>`).join("");
+
 
   agentsTable.innerHTML = DATA.agents.map(a=>`
 <tr>
@@ -437,14 +446,20 @@ function pdfMembers() {
 
   openPdfWindow("Členové družstva", table);
 }
+function getMemberName(memberId){
+  const m = DATA.members.find(x => x.id === memberId);
+  return m ? m.name : "—";
+}
+
 
 /* =========================================================
-   PDF – CERTIFIKÁTY
+   PDF – CERTIFIKÁTY (FINÁLNÍ VERZE)
    ========================================================= */
 function pdfCertificates() {
   let rows = DATA.certificates.map((c,i)=>`
     <tr>
-      <td>${i+1}</td>
+      <td>${i + 1}</td>
+      <td>${getMemberName(c.member_id)}</td>
       <td>${c.certificate_id}</td>
       <td>${c.ww_keys}</td>
       <td>${c.deposit_czk.toLocaleString("cs-CZ")} CZK</td>
@@ -457,13 +472,16 @@ function pdfCertificates() {
 <thead>
 <tr>
   <th>#</th>
+  <th>Člen</th>
   <th>Certificate ID</th>
   <th>WW-KEY</th>
   <th>Vklad</th>
-  <th>Datum</th>
+  <th>Datum vydání</th>
 </tr>
 </thead>
-<tbody>${rows}</tbody>
+<tbody>
+${rows}
+</tbody>
 </table>
 `;
 
