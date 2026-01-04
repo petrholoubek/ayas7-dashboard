@@ -515,60 +515,53 @@ table.members-table tbody tr:nth-child(odd){
    const memberResult      = document.getElementById('memberResult');
    const memberResultText  = document.getElementById('memberResultText');
 
-   memberForm.addEventListener('submit', async (e) => {
-     e.preventDefault();
+ memberForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
 
-     const name  = document.getElementById('memberName').value.trim();
-     const email = document.getElementById('memberEmail').value.trim();
-     const phone = document.getElementById('memberPhone').value.trim();
-     const amount = Number(document.getElementById('investmentAmount').value);
-     const promo_code = document.getElementById('memberPromo')?.value.trim() || null;
+  const name  = document.getElementById('memberName').value.trim();
+  const email = document.getElementById('memberEmail').value.trim();
+  const phone = document.getElementById('memberPhone').value.trim();
+  const amount = Number(document.getElementById('investmentAmount').value);
+
+  const promo_code =
+    document.getElementById('memberPromo')?.value.trim() || null;
+console.log("PROMO:", promo_code);
 
 
-     if (!name || !email || !phone || !amount || amount <= 0) {
-       alert('Vyplň prosím všechny údaje a částku > 0 CZK.');
-       return;
-     }
+  if (!name || !email || !phone || !amount || amount <= 0) {
+    alert('Vyplň prosím všechny údaje a částku > 0 CZK.');
+    return;
+  }
 
-     // Výpočet WW-KEY (1 WW-KEY = 25 CZK)
-     const wwKeyCount = Math.floor(amount / 25);
-     const usdtAmount = (amount / 25).toFixed(2);
+  const wwKeyCount = Math.floor(amount / 25);
 
-     memberResultText.innerHTML =
-       `Člen <b>${name}</b> s vkladem <b>${amount.toLocaleString('cs-CZ')} CZK</b> ` +
-       `získá <b>${wwKeyCount} WW-KEY</b> (cca <b>${usdtAmount} USDT</b>).`;
-     memberResult.style.display = 'block';
-
-     if (!supabaseClient) {
-       console.warn('Supabase klient není k dispozici – lokální simulace.');
-       memberForm.reset();
-       return;
-     }
-
-     try {
-       const { error } = await supabaseClient
-         .from('members_data')
+  try {
+    const { error } = await supabaseClient
+ .from('members_data')
          .insert({
            name: name,
            email: email,
            phone: phone,
            deposit: amount,
            ww_key: wwKeyCount,
+           promo_code: promo_code,           
            paid: false
-           promo_code: promo_code
+           
          });
+    if (error) {
+      console.error('Supabase insert error:', error);
+      alert('Zápis do databáze selhal: ' + error.message);
+      return;
+    }
 
-       if (error) {
-         console.error('Supabase insert error:', error);
-         alert('Zápis do databáze selhal: ' + error.message);
-       } else {
-         await loadMembersTable();
-         memberForm.reset();
-       }
-     } catch (err) {
-       console.error('Supabase insert exception:', err);
-     }
-   });
+    await loadMembersTable();
+    memberForm.reset();
+
+  } catch (err) {
+    console.error('Supabase insert exception:', err);
+  }
+});
+
 
    // Načtení posledních členů
    async function loadMembersTable() {
