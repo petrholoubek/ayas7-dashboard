@@ -538,38 +538,53 @@
 
     <form id="registerForm">
 
-      <div class="form-group">
-        <label class="form-label" for="login-identity">E-mail</label>
-        <input
-          id="login-identity"
-          type="email"
-          class="form-input"
-          placeholder="např. jan.novy@example.com"
-          required
-        />
-      </div>
+  <!-- JMÉNO -->
+  <div class="form-group">
+    <label class="form-label" for="name">Jméno a příjmení</label>
+    <input
+      id="name"
+      type="text"
+      class="form-input"
+      placeholder="např. Jan Novák"
+      required
+    />
+  </div>
 
-      <div class="form-group">
-        <label class="form-label" for="login-password">Heslo</label>
-        <input
-          id="login-password"
-          type="password"
-          class="form-input"
-          placeholder="Zvol si heslo pro budoucí přístup"
-          required
-        />
-      </div>
+  <!-- E-MAIL -->
+  <div class="form-group">
+    <label class="form-label" for="login-identity">E-mail</label>
+    <input
+      id="login-identity"
+      type="email"
+      class="form-input"
+      placeholder="např. jan.novy@example.com"
+      required
+    />
+  </div>
 
-      <button type="submit" class="btn-submit">
-        Odeslat žádost o přístup
-      </button>
+  <!-- HESLO (zatím jen evidenční) -->
+  <div class="form-group">
+    <label class="form-label" for="login-password">Heslo</label>
+    <input
+      id="login-password"
+      type="password"
+      class="form-input"
+      placeholder="Zvol si heslo pro budoucí přístup"
+      required
+    />
+  </div>
 
-      <div class="login-footer-text">
-        Odesláním žádosti souhlasíš se zpracováním údajů
-        pro účely členství v družstvu Win-Win.
-      </div>
+  <button type="submit" class="btn-submit">
+    Odeslat žádost o přístup
+  </button>
 
-    </form>
+  <div class="login-footer-text">
+    Odesláním žádosti souhlasíš se zpracováním údajů
+    pro účely členství v družstvu Win-Win.
+  </div>
+
+</form>
+
   </section>
 </main>
 
@@ -581,11 +596,11 @@
 document.getElementById("registerForm").addEventListener("submit", async (e) => {
   e.preventDefault();
 
+  const name = document.getElementById("name").value.trim();
   const email = document.getElementById("login-identity").value.trim();
-  const password = document.getElementById("login-password").value.trim();
 
-  if (!email || !password) {
-    alert("Vyplň email a heslo");
+  if (!name || !email) {
+    alert("Vyplň prosím jméno a e-mail.");
     return;
   }
 
@@ -594,19 +609,22 @@ document.getElementById("registerForm").addEventListener("submit", async (e) => 
     {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password })
+      body: JSON.stringify({
+        name,
+        email
+      })
     }
   );
 
   const data = await res.json();
 
   if (!res.ok) {
-    alert(data.error || "Chyba při odeslání žádosti");
+    alert("Chyba při odeslání žádosti:\n" + (data.error || "neznámá chyba"));
     return;
   }
 
   alert(
-    "Žádost o vstup byla odeslána.\n\n" +
+    "Žádost byla úspěšně odeslána.\n\n" +
     "Po schválení administrátorem získáš přístup do systému AYAS-7."
   );
 
