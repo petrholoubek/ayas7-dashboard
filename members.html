@@ -518,49 +518,67 @@ table.members-table tbody tr:nth-child(odd){
  memberForm.addEventListener('submit', async (e) => {
   e.preventDefault();
 
-  const name  = document.getElementById('memberName').value.trim();
-  const email = document.getElementById('memberEmail').value.trim();
-  const phone = document.getElementById('memberPhone').value.trim();
+  const name   = document.getElementById('memberName').value.trim();
+  const email  = document.getElementById('memberEmail').value.trim();
+  const phone  = document.getElementById('memberPhone').value.trim();
   const amount = Number(document.getElementById('investmentAmount').value);
-
   const promo_code =
     document.getElementById('memberPromo')?.value.trim() || null;
-console.log("PROMO:", promo_code);
 
-
-  if (!name || !email || !phone || !amount || amount <= 0) {
-    alert('Vyplň prosím všechny údaje a částku > 0 CZK.');
+  if (!name || !email || !phone || amount <= 0) {
+    alert('Vyplň prosím všechny údaje.');
     return;
   }
 
   const wwKeyCount = Math.floor(amount / 25);
 
   try {
-    const { error } = await supabaseClient
- .from('members_data')
-         .insert({
-           name: name,
-           email: email,
-           phone: phone,
-           deposit: amount,
-           ww_key: wwKeyCount,
-           promo_code: promo_code,           
-           paid: false
-           
-         });
-    if (error) {
-      console.error('Supabase insert error:', error);
-      alert('Zápis do databáze selhal: ' + error.message);
-      return;
+    // 1️⃣ zkontrolujeme, zda už člen existuje
+    const { data: existing } = await supabaseClient
+      .from('members_data')
+      .select('id')
+      .eq('email', email)
+      .maybeSingle();
+
+    if (existing) {
+      // 2️⃣ update existujícího člena
+      const { error } = await supabaseClient
+        .from('members_data')
+        .update({
+          deposit: amount,
+          ww_key: wwKeyCount,
+          promo_code: promo_code
+        })
+        .eq('id', existing.id);
+
+      if (error) throw error;
+
+    } else {
+      // 3️⃣ insert nového člena
+      const { error } = await supabaseClient
+        .from('members_data')
+        .insert({
+          name,
+          email,
+          phone,
+          deposit: amount,
+          ww_key: wwKeyCount,
+          promo_code,
+          paid: false
+        });
+
+      if (error) throw error;
     }
 
-    await loadMembersTable();
     memberForm.reset();
+    await loadMembersTable();
 
   } catch (err) {
-    console.error('Supabase insert exception:', err);
+    console.error(err);
+    alert('Chyba při uložení člena.');
   }
 });
+
 
 
    // Načtení posledních členů
