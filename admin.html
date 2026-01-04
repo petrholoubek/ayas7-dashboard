@@ -304,235 +304,207 @@ function generateOfficialAudit(){
     "_blank"
   );
 }
-function pdfCertificates(){
-  const d = new jsPDF();
-  pdfHeader(d,"Certifikáty");
-
-  let y = 40;
-  DATA.certificates.forEach(c=>{
-    d.text(
-      `${c.certificate_id} | ${c.deposit_czk} CZK | ${new Date(c.issued_at).toLocaleDateString()}`,
-      14,
-      y
-    );
-    y += 7;
-  });
-
-  d.save("AYAS7_certifikaty.pdf");
-}
-
-function pdfPromo(){
-  const d = new jsPDF();
-  pdfHeader(d,"Promo kódy");
-
-  let y = 40;
-  DATA.promo.forEach(p=>{
-    d.text(
-      `${p.code} | agent ${p.agent_id} | ${p.used_count ?? 0}`,
-      14,
-      y
-    );
-    y += 7;
-  });
-
-  d.save("AYAS7_promo_kody.pdf");
-}
-
 
 loadAll();
 
 </script>
-<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
-<script>
-const { jsPDF } = window.jspdf;
-
-/* =====================================
-   PDF – ČLENOVÉ DRUŽSTVA (PŘÍMO Z ADMINU)
-   ===================================== */
-function pdfMembers(){
-
-  const doc = new jsPDF("p", "mm", "a4");
-
-  /* HLAVIČKA */
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(16);
-  doc.text("AYAS-7", 14, 18);
-
-  doc.setFontSize(11);
-  doc.text("Admin Report – Členové družstva", 14, 26);
-
-  doc.setLineWidth(0.5);
-  doc.line(14, 30, 196, 30);
-
-  /* TABULKA */
-  let y = 40;
-  doc.setFont("helvetica", "normal");
-  doc.setFontSize(10);
-
-  if (!DATA.members || DATA.members.length === 0) {
-    doc.text("Žádní členové k zobrazení.", 14, y);
-  } else {
-    DATA.members.forEach((m, i) => {
-      doc.text(
-        `${i + 1}. ${m.name} | ${m.deposit.toLocaleString()} CZK | ${m.status}`,
-        14,
-        y
-      );
-      y += 6;
-
-      if (y > 280) {
-        doc.addPage();
-        y = 20;
-      }
-    });
-  }
-
-  /* FOOTER */
-  doc.setFontSize(8);
-  doc.text(
-    "Vygenerováno z AYAS-7 Admin • " + new Date().toLocaleString("cs-CZ"),
-    14,
-    290
-  );
-
-  /* STAŽENÍ */
-  doc.save("AYAS7_Clenove_Druzstva.pdf");
-}
-</script>
 <script>
 /* =========================================================
-   AYAS-7 • UNIFIED PDF EXPORT (ADMIN)
-   STYLE ONLY – NO LOGIC CHANGES
+   AYAS-7 • CLEAN HTML → PDF EXPORT
+   NO jsPDF • NO audit-print.html
    ========================================================= */
 
-const { jsPDF } = window.jspdf;
+/* ===== VYTVOŘENÍ PDF OKNA ===== */
+function openPdfWindow(title, tableHtml) {
+  const w = window.open("", "_blank");
 
-/* ===== ZÁKLADNÍ STYL ===== */
-function ayasHeader(doc, sectionTitle) {
-  doc.setFont("helvetica", "normal");
+  w.document.write(`
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<title>${title}</title>
 
-  // AYAS-7 title
-  doc.setFontSize(20);
-  doc.text("AYAS-7", 14, 20);
+<style>
+@page { size: A4; margin: 20mm; }
 
-  doc.setFontSize(11);
-  doc.text("Audit & Reporting", 14, 27);
-
-  // divider
-  doc.setLineWidth(0.5);
-  doc.line(14, 31, 196, 31);
-
-  // section title
-  doc.setFontSize(14);
-  doc.text(sectionTitle, 14, 42);
-
-  // meta
-  doc.setFontSize(9);
-  doc.text(
-    "Generated: " + new Date().toLocaleString("cs-CZ"),
-    196,
-    20,
-    { align: "right" }
-  );
+body{
+  font-family:"Segoe UI",Tahoma,Verdana,sans-serif;
+  font-size:11px;
+  color:#000;
+  line-height:1.45;
 }
 
-function ayasFooter(doc, page, total) {
-  doc.setFontSize(9);
-  doc.text(
-    "AYAS-7 • Interní dokument družstva WIN.WIN",
-    14,
-    286
-  );
-  doc.text(
-    `Strana ${page} / ${total}`,
-    196,
-    286,
-    { align: "right" }
-  );
+h1{
+  font-size:20px;
+  margin:0;
 }
 
-/* ===== PAGE HANDLING ===== */
-function newPageIfNeeded(doc, y) {
-  if (y > 270) {
-    ayasFooter(doc, doc.internal.getCurrentPageInfo().pageNumber, "");
-    doc.addPage();
-    return 50;
-  }
-  return y;
+.sub{
+  font-size:11px;
+  margin-bottom:10px;
+}
+
+hr{
+  border:none;
+  border-top:1px solid #000;
+  margin:12px 0;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  font-size:10.5px;
+}
+
+th,td{
+  border:1px solid #000;
+  padding:4px 6px;
+  text-align:left;
+}
+
+th{
+  background:#f0f0f0;
+}
+
+.footer{
+  margin-top:18px;
+  font-size:10px;
+  border-top:1px solid #000;
+  padding-top:6px;
+}
+
+@media print{
+  button{display:none;}
+}
+</style>
+</head>
+
+<body>
+
+<button onclick="window.print()">Uložit jako PDF</button>
+
+<h1>AYAS-7</h1>
+<div class="sub">Audit & Reporting • Interní dokument</div>
+
+<hr>
+
+<h2>${title}</h2>
+
+${tableHtml}
+
+<div class="footer">
+Vygenerováno z AYAS-7 Admin • ${new Date().toLocaleString("cs-CZ")}
+</div>
+
+</body>
+</html>
+`);
+
+  w.document.close();
 }
 
 /* =========================================================
    PDF – ČLENOVÉ
    ========================================================= */
 function pdfMembers() {
-  const doc = new jsPDF("p", "mm", "a4");
-  ayasHeader(doc, "Členové družstva");
+  let rows = DATA.members.map((m,i)=>`
+    <tr>
+      <td>${i+1}</td>
+      <td>${m.name}</td>
+      <td>${m.email}</td>
+      <td>${m.deposit.toLocaleString("cs-CZ")} CZK</td>
+      <td>${m.ww_key}</td>
+      <td>${m.status}</td>
+    </tr>
+  `).join("");
 
-  let y = 55;
-  doc.setFontSize(10);
+  const table = `
+<table>
+<thead>
+<tr>
+  <th>#</th>
+  <th>Jméno</th>
+  <th>Email</th>
+  <th>Vklad</th>
+  <th>WW-KEY</th>
+  <th>Stav</th>
+</tr>
+</thead>
+<tbody>${rows}</tbody>
+</table>
+`;
 
-  DATA.members.forEach((m, i) => {
-    doc.text(
-      `${i + 1}. ${m.name} | ${m.deposit.toLocaleString("cs-CZ")} CZK | ${m.status}`,
-      14,
-      y
-    );
-    y += 6;
-    y = newPageIfNeeded(doc, y);
-  });
-
-  ayasFooter(doc, 1, 1);
-  doc.save("AYAS7_clenove.pdf");
+  openPdfWindow("Členové družstva", table);
 }
 
 /* =========================================================
    PDF – CERTIFIKÁTY
    ========================================================= */
 function pdfCertificates() {
-  const doc = new jsPDF("p", "mm", "a4");
-  ayasHeader(doc, "Vydané certifikáty");
+  let rows = DATA.certificates.map((c,i)=>`
+    <tr>
+      <td>${i+1}</td>
+      <td>${c.certificate_id}</td>
+      <td>${c.ww_keys}</td>
+      <td>${c.deposit_czk.toLocaleString("cs-CZ")} CZK</td>
+      <td>${new Date(c.issued_at).toLocaleDateString("cs-CZ")}</td>
+    </tr>
+  `).join("");
 
-  let y = 55;
-  doc.setFontSize(10);
+  const table = `
+<table>
+<thead>
+<tr>
+  <th>#</th>
+  <th>Certificate ID</th>
+  <th>WW-KEY</th>
+  <th>Vklad</th>
+  <th>Datum</th>
+</tr>
+</thead>
+<tbody>${rows}</tbody>
+</table>
+`;
 
-  DATA.certificates.forEach((c, i) => {
-    doc.text(
-      `${i + 1}. ${c.certificate_id} | ${c.ww_keys} WW-KEY | ${c.deposit_czk.toLocaleString("cs-CZ")} CZK`,
-      14,
-      y
-    );
-    y += 6;
-    y = newPageIfNeeded(doc, y);
-  });
-
-  ayasFooter(doc, 1, 1);
-  doc.save("AYAS7_certifikaty.pdf");
+  openPdfWindow("Vydané certifikáty", table);
 }
 
 /* =========================================================
    PDF – PROMO KÓDY
    ========================================================= */
 function pdfPromo() {
-  const doc = new jsPDF("p", "mm", "a4");
-  ayasHeader(doc, "Promo kódy");
+  let rows = DATA.promo.map((p,i)=>`
+    <tr>
+      <td>${i+1}</td>
+      <td>${p.code}</td>
+      <td>${p.agent_id}</td>
+      <td>${p.commission_pct ?? "-"} %</td>
+      <td>${p.used_count ?? 0}</td>
+      <td>${p.status ?? "-"}</td>
+    </tr>
+  `).join("");
 
-  let y = 55;
-  doc.setFontSize(10);
+  const table = `
+<table>
+<thead>
+<tr>
+  <th>#</th>
+  <th>Kód</th>
+  <th>Obchodník (ID)</th>
+  <th>Provize</th>
+  <th>Použití</th>
+  <th>Stav</th>
+</tr>
+</thead>
+<tbody>${rows}</tbody>
+</table>
+`;
 
-  DATA.promo.forEach((p, i) => {
-    doc.text(
-      `${i + 1}. ${p.code} | Agent ID: ${p.agent_id} | Stav: ${p.status ?? "-"}`,
-      14,
-      y
-    );
-    y += 6;
-    y = newPageIfNeeded(doc, y);
-  });
-
-  ayasFooter(doc, 1, 1);
-  doc.save("AYAS7_promo_kody.pdf");
+  openPdfWindow("Promo kódy", table);
 }
 </script>
+
 
 </body>
 </html>
