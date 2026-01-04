@@ -341,6 +341,64 @@ function pdfPromo(){
 
 loadAll();
 
+</script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+<script>
+const { jsPDF } = window.jspdf;
+
+/* =====================================
+   PDF – ČLENOVÉ DRUŽSTVA (PŘÍMO Z ADMINU)
+   ===================================== */
+function pdfMembers(){
+
+  const doc = new jsPDF("p", "mm", "a4");
+
+  /* HLAVIČKA */
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(16);
+  doc.text("AYAS-7", 14, 18);
+
+  doc.setFontSize(11);
+  doc.text("Admin Report – Členové družstva", 14, 26);
+
+  doc.setLineWidth(0.5);
+  doc.line(14, 30, 196, 30);
+
+  /* TABULKA */
+  let y = 40;
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(10);
+
+  if (!DATA.members || DATA.members.length === 0) {
+    doc.text("Žádní členové k zobrazení.", 14, y);
+  } else {
+    DATA.members.forEach((m, i) => {
+      doc.text(
+        `${i + 1}. ${m.name} | ${m.deposit.toLocaleString()} CZK | ${m.status}`,
+        14,
+        y
+      );
+      y += 6;
+
+      if (y > 280) {
+        doc.addPage();
+        y = 20;
+      }
+    });
+  }
+
+  /* FOOTER */
+  doc.setFontSize(8);
+  doc.text(
+    "Vygenerováno z AYAS-7 Admin • " + new Date().toLocaleString("cs-CZ"),
+    14,
+    290
+  );
+
+  /* STAŽENÍ */
+  doc.save("AYAS7_Clenove_Druzstva.pdf");
+}
+</script>
 <script>
 /* =========================================================
    AYAS-7 • UNIFIED PDF EXPORT (ADMIN)
