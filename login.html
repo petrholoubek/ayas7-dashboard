@@ -593,43 +593,46 @@
    © 2025 Win-Win Družstvo · AYAS-7 Engine · Všechna práva vyhrazena
  </footer>
 <script>
-document.getElementById("registerForm").addEventListener("submit", async (e) => {
-  e.preventDefault();
+document
+  .getElementById("registerForm")
+  .addEventListener("submit", async (e) => {
 
-  const name = document.getElementById("name").value.trim();
-  const email = document.getElementById("login-identity").value.trim();
+    e.preventDefault(); // ⬅️ KLÍČOVÉ
 
-  if (!name || !email) {
-    alert("Vyplň prosím jméno a e-mail.");
-    return;
-  }
+    const btn = document.querySelector(".btn-submit");
+    btn.disabled = true;           // ochrana proti dvojkliku
+    btn.textContent = "Odesílám…";
 
-  const res = await fetch(
-    "https://hurayrwshmsvsylhwlbj.supabase.co/functions/v1/register-member",
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        name,
-        email
-      })
+    try {
+      const res = await fetch(
+        "https://hurayrwshmsvsylhwlbj.supabase.co/functions/v1/register-member",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            email: document.getElementById("login-identity").value,
+            password: document.getElementById("login-password").value
+          })
+        }
+      );
+
+      const data = await res.json();
+
+      if (!res.ok) throw data;
+
+      alert("Žádost byla úspěšně odeslána ke schválení.");
+
+      document.getElementById("registerForm").reset();
+
+    } catch (err) {
+      alert("Chyba při odeslání žádosti.");
+      console.error(err);
+    } finally {
+      btn.disabled = false;
+      btn.textContent = "Odeslat žádost o přístup";
     }
-  );
+  });
 
-  const data = await res.json();
-
-  if (!res.ok) {
-    alert("Chyba při odeslání žádosti:\n" + (data.error || "neznámá chyba"));
-    return;
-  }
-
-  alert(
-    "Žádost byla úspěšně odeslána.\n\n" +
-    "Po schválení administrátorem získáš přístup do systému AYAS-7."
-  );
-
-  document.getElementById("registerForm").reset();
-});
 </script>
 <script>
 document.addEventListener("DOMContentLoaded", () => {
