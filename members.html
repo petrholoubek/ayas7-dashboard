@@ -534,79 +534,82 @@ memberForm.addEventListener('submit', async (e) => {
 
   let agent_id = null;
 
-  // 🔗 pokud je promo kód, najdeme obchodníka
-  if (promo_code) {
-    const { data: promoRow, error: promoError } = await supabaseClient
-      .from("promo_codes")
-      .select("agent_id")
-      .eq("code", promo_code)
-      .eq("status", "active")
-      .maybeSingle();
-
-    if (promoError) {
-      console.error("Promo lookup error:", promoError);
-      alert("Neplatný promo kód.");
-      return;
-    }
-
-    if (promoRow) {
-      agent_id = promoRow.agent_id;
-    } else {
-      alert("Promo kód neexistuje nebo není aktivní.");
-      return;
-    }
-  }
-
   try {
-    // 1️⃣ zkontrolujeme, zda už člen existuje podle emailu
-    const { data: existing, error: checkError } = await supabaseClient
-      .from('members_data')
-      .select('id')
-      .eq('email', email)
-      .maybeSingle();
+    /* ===============================
+       PROMO KÓD → NAJDI AGENTA
+       =============================== */
+    if (promo_code) {
+      const { data: promoRow, error: promoErr } = await supabaseClient
+        .from("promo_codes")
+        .select("agent_id")
+        .eq("code", promo_code)
+        .eq("status", "active")
+        .maybeSingle();
 
-    if (checkError) throw checkError;
+      if (promoErr) {
+        alert("Chyba při ověření promo kódu");
+        return;
+      }
+
+      if (!promoRow) {
+        alert("Promo kód je neplatný nebo neaktivní");
+        return;
+      }
+
+      agent_id = promoRow.agent_id;
+    }
+
+    /* ===============================
+       EXISTUJE UŽ ČLEN?
+       =============================== */
+    const { data: existing } = await supabaseClient
+      .from("members_data")
+      .select("id")
+      .eq("email", email)
+      .maybeSingle();
 
     if (existing) {
-      // 2️⃣ update existujícího člena (např. když platí znovu)
-      const { error: updateError } = await supabaseClient
-        .from('members_data')
+      /* UPDATE EXISTUJÍCÍHO */
+      const { error } = await supabaseClient
+        .from("members_data")
         .update({
+          name,
+          phone,
           deposit: amount,
           ww_key: wwKeyCount,
-          promo_code: promo_code,
-          agent_id: agent_id
+          promo_code,
+          agent_id
         })
-        .eq('id', existing.id);
+        .eq("id", existing.id);
 
-      if (updateError) throw updateError;
+      if (error) throw error;
 
     } else {
-      // 3️⃣ insert nového člena
-      const { error: insertError } = await supabaseClient
-        .from('members_data')
+      /* INSERT NOVÉHO */
+      const { error } = await supabaseClient
+        .from("members_data")
         .insert({
-          name: name,
-          email: email,
-          phone: phone,
+          name,
+          email,
+          phone,
           deposit: amount,
           ww_key: wwKeyCount,
-          promo_code: promo_code,
-          agent_id: agent_id,
-          paid: false,
-          status: "pending"
+          promo_code,
+          agent_id,
+          paid: false
         });
 
-      if (insertError) throw insertError;
+      if (error) throw error;
     }
 
     memberForm.reset();
     await loadMembersTable();
-    alert("Žádost byla úspěšně uložena.");
+
+    alert("Člen byl úspěšně uložen");
 
   } catch (err) {
-    console.error("Member save error:", err);
-    alert("Chyba při uložení člena.");
+    console.error(err);
+    alert("Chyba při uložení člena");
   }
 });
 
