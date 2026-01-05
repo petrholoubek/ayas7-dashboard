@@ -902,20 +902,19 @@ p, span, label, td, th, li, a, div {
 /* =========================
    SUPABASE KONFIGURACE
    ========================= */
-const supabaseUrl = 'https://hurayrwshmsvsylhwlbj.supabase.co';
-const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh1cmF5cndzaG1zdnN5bGh3bGJqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQyMTk4MzEsImV4cCI6MjA3OTc5NTgzMX0.Q0KpZX_Dln9_9OwZcCty-bbyw8drX84ax098Uy03VUI';
+<script>
+const supabaseUrl = "https://hurayrwshmsvsylhwlbj.supabase.co";
+const supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh1cmF5cndzaG1zdnN5bGh3bGJqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQyMTk4MzEsImV4cCI6MjA3OTc5NTgzMX0.Q0KpZX_Dln9_9OwZcCty-bbyw8drX84ax098Uy03VUI";
 
-const supabaseClient = window.supabase.createClient(
+const supabaseClient = supabase.createClient(
   supabaseUrl,
-  supabaseAnonKey,
-  {
-    auth: {
-      persistSession: false,
-      autoRefreshToken: false,
-      detectSessionInUrl: false
-    }
-  }
+  supabaseAnonKey
 );
+
+// DEBUG – po ověření můžeš smazat
+console.log("AUDIT SUPABASE OK:", supabaseClient);
+</script>
+
 
 /* =========================
    DENNÍ AUDIT – AGREGACE
@@ -1010,11 +1009,7 @@ loadDailyAudit();
 </script>
 <script>
 (async () => {
-  if (!window.supabaseClient) {
-    console.error("Supabase klient není dostupný");
-    return;
-  }
-
+  
   const tbody = document.getElementById("auditDailyBody");
   if (!tbody) {
     console.error("Chybí auditDailyBody");
