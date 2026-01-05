@@ -4,6 +4,264 @@
 <meta charset="utf-8"/>
 <title>AYAS-7 Engine • Admin</title>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
+<!-- FAVICON / PWA -->
+  <link rel="icon" type="image/png" sizes="192x192" href="/ayas7-192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="/ayas7-512.png">
+  <link rel="apple-touch-icon" href="/ayas7-192.png">
+  <meta name="theme-color" content="#020617">
+
+<style>
+:root{
+  --bg:#020617;
+  --card:#0f172acc;
+  --border:#94a3b833;
+  --text:#e5e7eb;
+  --muted:#94a3b8;
+  --green:#22c55e;
+  --yellow:#facc15;
+}
+
+*{box-sizing:border-box}
+
+html,body{
+  margin:0;
+  padding:0;
+  background:var(--bg);
+  font-family:"Segoe UI",Tahoma,Verdana,sans-serif;
+  color:var(--text);
+}
+
+/* =========================================================
+   ADMIN TOPBAR (SAFE, ISOLATED)
+   ========================================================= */
+.admin-topbar{
+  background:linear-gradient(to right,#060b16,#0a1a33);
+  border-bottom:1px solid var(--border);
+}
+
+.admin-topbar-inner{
+  max-width:1500px;
+  margin:auto;
+  padding:10px 22px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:20px;
+}
+
+.admin-brand{
+  display:flex;
+  flex-direction:column;
+  gap:2px;
+}
+.admin-brand-main{
+  font-size:16px;
+  font-weight:600;
+  letter-spacing:.06em;
+}
+.admin-brand-sub{
+  font-size:10px;
+  letter-spacing:.18em;
+  color:var(--muted);
+}
+
+.admin-nav{
+  flex:1;
+  display:flex;
+  justify-content:center;
+}
+.admin-nav-list{
+  list-style:none;
+  display:flex;
+  gap:20px;
+  padding:0;
+  margin:0;
+}
+.admin-nav-link{
+  font-size:12px;
+  color:#cbd5f5;
+  text-decoration:none;
+}
+.admin-nav-link:hover,
+.admin-nav-link.active{
+  color:#fff;
+  font-weight:600;
+}
+
+.admin-topbar-right{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+.admin-logout{
+  background:#020617;
+  border:1px solid var(--border);
+  color:var(--text);
+  padding:5px 12px;
+  border-radius:999px;
+  font-size:11px;
+  cursor:pointer;
+}
+.admin-logout:hover{
+  border-color:var(--green);
+  color:var(--green);
+}
+.admin-nav-link{
+  position:relative;
+}
+
+.admin-nav-link::after{
+  content:"";
+  position:absolute;
+  left:0;
+  bottom:-4px;
+  width:0;
+  height:2px;
+  border-radius:999px;
+  background:linear-gradient(to right,#22c55e,#4ade80);
+  transition:width .22s ease;
+}
+
+.admin-nav-link:hover::after,
+.admin-nav-link.active::after{
+  width:100%;
+}
+.admin-led{
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:var(--green);
+  box-shadow:0 0 8px var(--green);
+  display:inline-block;
+}
+
+
+/* =========================================================
+   ORIGINAL ADMIN LAYOUT (UNCHANGED)
+   ========================================================= */
+.app{
+  max-width:1500px;
+  margin:auto;
+  padding:22px;
+  display:flex;
+  flex-direction:column;
+  gap:18px;
+}
+
+.header{
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+}
+
+.ng{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  font-size:11px;
+  color:var(--muted);
+  letter-spacing:1.4px
+}
+.led{
+  width:10px;
+  height:10px;
+  border-radius:50%;
+  background:var(--green);
+  box-shadow:0 0 8px var(--green)
+}
+.engine{font-size:26px;font-weight:600}
+.admin{font-size:13px}
+.process{font-size:11px;color:var(--muted)}
+
+.card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:16px;
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+
+h2{margin:0;font-size:14px;letter-spacing:1px}
+p{margin:0;font-size:12px;color:var(--muted)}
+
+table{width:100%;border-collapse:collapse;font-size:12px}
+th,td{padding:8px;border-bottom:1px solid var(--border);text-align:left}
+th{font-size:11px;color:var(--muted)}
+
+.actions{display:flex;gap:6px;flex-wrap:wrap}
+button{
+  background:#020617;
+  border:1px solid var(--border);
+  color:var(--text);
+  padding:5px 10px;
+  font-size:11px;
+  border-radius:8px;
+  cursor:pointer
+}
+button.approve{border-color:var(--green);color:var(--green)}
+button.warn{border-color:var(--yellow);color:var(--yellow)}
+.status-pending{color:var(--yellow)}
+.status-approved,.status-active{color:var(--green)}
+
+input{
+  background:#020617;
+  border:1px solid var(--border);
+  color:var(--text);
+  padding:5px 8px;
+  border-radius:6px;
+  font-size:11px;
+}
+
+.footer{
+  text-align:center;
+  font-size:10px;
+  color:var(--muted)
+}
+</style>
+</head>
+
+<body>
+
+<!-- ===== TOP NAVIGATION ===== -->
+<header class="admin-topbar">
+  <div class="admin-topbar-inner">
+
+    <div class="admin-brand">
+      <div class="admin-brand-main">AYAS-7 Engine</div>
+      <div class="admin-brand-sub">ADMIN CONTROL</div>
+    </div>
+
+    <nav class="admin-nav">
+      <ul class="admin-nav-list">
+        <li><a href="dashboard.html" class="admin-nav-link">Home</a></li>
+        <li><a href="members.html" class="admin-nav-link">Členská sekce</a></li>
+        <li><a href="performance.html" class="admin-nav-link">Výkon &amp; výnos</a></li>
+        <li><a href="admin.html" class="admin-nav-link active">Admin</a></li>
+      </ul>
+    </nav>
+
+    <div class="admin-topbar-right">
+  <button class="admin-logout" id="logoutBtn">
+    <span class="admin-led"></span>
+    Logout
+  </button>
+</div>
+
+  </div>
+</header>
+
+</body>
+</html>
+
+
+<!doctype html>
+<html lang="cs">
+<head>
+<meta charset="utf-8"/>
+<title>AYAS-7 Engine • Admin</title>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
 
 <style>
 :root{
