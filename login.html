@@ -498,12 +498,13 @@
          <span class="lang-sep">|</span>
          <span>EN</span>
        </div>
-       <a href="login.html">
-         <button type="button" class="btn-login">
-           <span class="dot"></span>
-           <span>Login</span>
-         </button>
-       </a>
+       <a href="signin.html">
+  <button type="button" class="btn-login">
+    <span class="dot"></span>
+    <span>Přihlášení</span>
+  </button>
+</a>
+
      </div>
 
    </div>
@@ -517,11 +518,11 @@
       Členská sekce · zabezpečený vstup
     </div>
 
-    <h1 class="login-title">Přihlášení do systému AYAS-7</h1>
+    <h1 class="login-title">Žádost o přístup do systému AYAS-7</h1>
     <p class="login-subtitle">
-      Zadej své přihlašovací údaje pro bezpečný vstup do systému AYAS-7.
+      Vyplněním formuláře odešleš žádost o vytvoření členského účtu
+      v družstvu Win-Win. Přístup je aktivován po schválení administrátorem.
     </p>
-
 
     <div class="login-intro">
       <div class="login-intro-header">
@@ -592,39 +593,95 @@
  <footer>
    © 2025 Win-Win Družstvo · AYAS-7 Engine · Všechna práva vyhrazena
  </footer>
-<script type="module">
-import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+<script>
+document
+  .getElementById("registerForm")
+  .addEventListener("submit", async (e) => {
 
-const supabase = createClient(
-  "https://hurayrwshmsvsylhwlbj.supabase.co",  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh1cmF5cndzaG1zdnN5bGh3bGJqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQyMTk4MzEsImV4cCI6MjA3OTc5NTgzMX0.Q0KpZX_Dln9_9OwZcCty-bbyw8drX84ax098Uy03VUI"
-);
+    e.preventDefault(); // ⬅️ KLÍČOVÉ
 
-const form = document.getElementById("registerForm");
+    const btn = document.querySelector(".btn-submit");
+    btn.disabled = true;           // ochrana proti dvojkliku
+    btn.textContent = "Odesílám…";
 
-form.addEventListener("submit", async (e) => {
-  e.preventDefault();
+    try {
+      const res = await fetch(
+        "https://hurayrwshmsvsylhwlbj.supabase.co/functions/v1/register-member",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            email: document.getElementById("login-identity").value,
+            password: document.getElementById("login-password").value
+          })
+        }
+      );
 
-  const btn = document.querySelector(".btn-submit");
-  btn.disabled = true;
-  btn.textContent = "Přihlašuji…";
+      const data = await res.json();
 
-  const email = document.getElementById("login-identity").value.trim();
-  const password = document.getElementById("login-password").value;
+      if (!res.ok) throw data;
 
-  const { error } = await supabase.auth.signInWithPassword({
-    email,
-    password
+      alert("Žádost byla úspěšně odeslána ke schválení.");
+
+      document.getElementById("registerForm").reset();
+
+    } catch (err) {
+      alert("Chyba při odeslání žádosti.");
+      console.error(err);
+    } finally {
+      btn.disabled = false;
+      btn.textContent = "Odeslat žádost o přístup";
+    }
   });
 
-  if (error) {
-    alert(error.message);
-    btn.disabled = false;
-    btn.textContent = "Přihlásit se";
-    return;
-  }
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
 
-  // ✅ přihlášení OK
-  window.location.href = "/admin.html";
+  const form = document.getElementById("registerForm");
+  if (!form) return;
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const nameInput = form.querySelector("#name");
+    const emailInput = form.querySelector("#login-identity");
+
+    const name = nameInput ? nameInput.value.trim() : "";
+    const email = emailInput ? emailInput.value.trim() : "";
+
+    if (!name || !email) {
+      alert("Vyplň prosím jméno a e-mail.");
+      return;
+    }
+
+    const res = await fetch(
+      "https://hurayrwshmsvsylhwlbj.supabase.co/functions/v1/register-member",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name,
+          email
+        })
+      }
+    );
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      alert("Chyba při odeslání žádosti:\n" + (data.error || "neznámá chyba"));
+      return;
+    }
+
+    alert(
+      "Žádost byla úspěšně odeslána.\n\n" +
+      "Po schválení administrátorem získáš přístup do systému AYAS-7."
+    );
+
+    form.reset();
+  });
+
 });
 </script>
 
