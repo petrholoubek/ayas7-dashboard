@@ -902,7 +902,7 @@ p, span, label, td, th, li, a, div {
 /* =========================
    SUPABASE KONFIGURACE
    ========================= */
-<script>
+
 const supabaseUrl = "https://hurayrwshmsvsylhwlbj.supabase.co";
 const supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh1cmF5cndzaG1zdnN5bGh3bGJqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQyMTk4MzEsImV4cCI6MjA3OTc5NTgzMX0.Q0KpZX_Dln9_9OwZcCty-bbyw8drX84ax098Uy03VUI";
 
@@ -913,7 +913,7 @@ const supabaseClient = supabase.createClient(
 
 // DEBUG – po ověření můžeš smazat
 console.log("AUDIT SUPABASE OK:", supabaseClient);
-</script>
+
 
 
 /* =========================
@@ -1006,8 +1006,7 @@ async function loadDailyAudit() {
    START
    ========================= */
 loadDailyAudit();
-</script>
-<script>
+
 (async () => {
   
   const tbody = document.getElementById("auditDailyBody");
@@ -1065,8 +1064,8 @@ loadDailyAudit();
       tbody.appendChild(tr);
     });
 })();
-</script>
-<script>
+
+
 /* =========================
    AUDIT EXPORT – CSV
    ========================= */
@@ -1157,8 +1156,7 @@ async function exportMonthlyAuditCSV() {
     rows
   );
 }
-</script>
-<script>
+
 function exportMonthlyAuditPDF() {
   window.open("audit-print.html", "_blank");
 }
