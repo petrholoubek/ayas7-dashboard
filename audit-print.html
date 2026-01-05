@@ -197,10 +197,19 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   const tbody = document.getElementById("certTable");
 
-  const { data, error } = await db
-    .from("certificates")
-    .select("*")
-    .order("issued_at", { ascending:true });
+ const { data, error } = await db
+  .from("certificates")
+  .select(`
+    certificate_id,
+    issued_at,
+    ww_keys,
+    deposit_czk,
+    hash_sha256,
+    members_data (
+      name
+    )
+  `)
+  .order("issued_at", { ascending: true });
 
   if (error || !data || data.length === 0) {
     tbody.innerHTML = "<tr><td colspan='7'>Žádná data</td></tr>";
@@ -245,17 +254,18 @@ document.addEventListener("DOMContentLoaded", async () => {
       totalDeposit += Number(c.deposit_czk||0);
       concatHash += c.hash_sha256 || "";
 
-      tbody.insertAdjacentHTML("beforeend", `
-        <tr>
-          <td>${idx++}</td>
-          <td>${c.certificate_id}</td>
-          <td>${c.member_id}</td>
-          <td>${c.ww_keys}</td>
-          <td>${c.deposit_czk.toLocaleString("cs-CZ")}</td>
-          <td>${c.hash_sha256}</td>
-          <td>${new Date(c.issued_at).toLocaleString("cs-CZ")}</td>
-        </tr>
-      `);
+   tbody.insertAdjacentHTML("beforeend", `
+  <tr>
+    <td>${idx++}</td>
+    <td>${c.members_data?.name || "-"}</td>
+    <td>${c.certificate_id}</td>
+    <td>${c.ww_keys}</td>
+    <td>${c.deposit_czk.toLocaleString("cs-CZ")}</td>
+    <td>${c.hash_sha256}</td>
+    <td>${new Date(c.issued_at).toLocaleString("cs-CZ")}</td>
+  </tr>
+`);
+
     });
   });
 
