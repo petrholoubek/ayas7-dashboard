@@ -253,6 +253,24 @@ document.getElementById("snapshotId").textContent=
     [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,"0")).join("");
 })();
 </script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const supabaseUrl = "https://hurayrwshmsvsylhwlbj.supabase.co";
+const supabaseAnonKey = "TVŮJ_ANON_KEY"; // stejný jako všude jinde
+
+const supabaseClient = supabase.createClient(
+  supabaseUrl,
+  supabaseAnonKey
+);
+
+(async () => {
+  const { data: { session } } = await supabaseClient.auth.getSession();
+
+  if (!session) {
+    window.location.href = "signin.html"; // 🔁 nepřihlášen → login
+  }
+})();
+</script>
 
 </body>
 </html>
