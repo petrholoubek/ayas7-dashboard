@@ -183,9 +183,18 @@ stored in the AYAS-7 system database.
 const supabaseUrl = "https://hurayrwshmsvsylhwlbj.supabase.co";
 const supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh1cmF5cndzaG1zdnN5bGh3bGJqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQyMTk4MzEsImV4cCI6MjA3OTc5NTgzMX0.Q0KpZX_Dln9_9OwZcCty-bbyw8drX84ax098Uy03VUI";
 
-const db = supabase.createClient(supabaseUrl, supabaseAnonKey, {
-  auth:{persistSession:false}
-});
+const db = supabase.createClient(
+  supabaseUrl,
+  supabaseAnonKey,
+  {
+    auth: {
+      persistSession: false,
+      autoRefreshToken: false,
+      detectSessionInUrl: false
+    }
+  }
+);
+
 
 const now=new Date();
 document.getElementById("localTime").textContent=now.toLocaleString("cs-CZ");
@@ -257,25 +266,5 @@ document.getElementById("snapshotId").textContent=
     [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,"0")).join("");
 })();
 </script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script>
-const supabaseUrl = "https://hurayrwshmsvsylhwlbj.supabase.co";
-const supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh1cmF5cndzaG1zdnN5bGh3bGJqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQyMTk4MzEsImV4cCI6MjA3OTc5NTgzMX0.Q0KpZX_Dln9_9OwZcCty-bbyw8drX84ax098Uy03VUI";
-
-const supabaseClient = supabase.createClient(
-  supabaseUrl,
-  supabaseAnonKey
-);
-
-(async () => {
-  const { data: { session } } = await supabaseClient.auth.getSession();
-
-  if (!session) {
-    window.location.href = "signin.html";
-  }
-})();
-</script>
-
-
 </body>
 </html>
