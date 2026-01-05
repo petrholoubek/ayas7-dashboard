@@ -1,307 +1,189 @@
 <!DOCTYPE html>
 <html lang="cs">
 <head>
-<meta charset="UTF-8" />
-<title>AYAS-7 Audit Report</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<!-- FAVICON / PWA -->
-  <link rel="icon" type="image/png" sizes="192x192" href="/ayas7-192.png">
-  <link rel="icon" type="image/png" sizes="512x512" href="/ayas7-512.png">
-  <link rel="apple-touch-icon" href="/ayas7-192.png">
-  <meta name="theme-color" content="#020617">
-<style>
-@page { size: A4; margin: 20mm; }
+<meta charset="utf-8">
+<title>AYAS-7 • Audit Print</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
+<style>
 body{
   font-family:"Segoe UI",Tahoma,Verdana,sans-serif;
-  background:#fff;
-  color:#000;
-  font-size:11px;
-  line-height:1.45;
+  background:#020617;
+  color:#e5e7eb;
+  margin:0;
+  padding:24px;
 }
-
-h1{font-size:20px;margin:0}
-h2{
-  font-size:14px;
-  margin-top:18px;
-  border-bottom:1px solid #000;
-  padding-bottom:4px
-}
-
-.section{margin-top:16px}
-
-.print-btn{
-  position:fixed;
-  top:10px;
-  right:10px;
-  font-size:11px;
-  padding:6px 12px;
-  cursor:pointer
-}
-
-.audit-header-box{
-  border:1px solid #000;
-  padding:10px 12px;
-  margin-top:12px;
-  font-size:11px
-}
-
-.ah-row{
-  display:flex;
-  justify-content:space-between;
-  gap:16px;
-  margin-bottom:4px
-}
-
-.ah-row > div{flex:1}
-
-.ah-hash{
-  margin-top:6px;
-  font-size:10px;
-  word-break:break-all;
-  line-height:1.35
-}
-
-.meta-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:6px 24px;
-  font-size:11px
-}
-
-.meta-row{
-  display:flex;
-  justify-content:space-between;
-  border-bottom:1px dotted #999
-}
-
-.meta-label{font-weight:600}
-
+h1{font-size:22px;margin-bottom:4px}
+.meta{font-size:12px;color:#94a3b8;margin-bottom:18px}
 table{
   width:100%;
   border-collapse:collapse;
-  font-size:10.5px;
-  margin-top:10px
+  font-size:12px;
 }
-
 th,td{
-  border:1px solid #000;
-  padding:4px 6px;
-  vertical-align:top
+  border-bottom:1px solid #1e293b;
+  padding:6px 8px;
+  text-align:left;
 }
-
-th{background:#f0f0f0}
-
+th{
+  color:#94a3b8;
+  font-size:11px;
+}
 .day-header td{
-  background:#e5e7eb;
-  font-weight:600
+  background:#020617;
+  color:#22c55e;
+  font-weight:600;
+  border-top:2px solid #22c55e;
 }
-
-.small{font-size:9px;line-height:1.3}
-
-.footer{
-  margin-top:20px;
-  font-size:10px;
-  border-top:1px solid #000;
-  padding-top:6px
+.summary{
+  margin-top:18px;
+  font-size:13px;
 }
-
+.summary span{display:inline-block;margin-right:18px}
+.hash{
+  margin-top:12px;
+  font-size:11px;
+  word-break:break-all;
+  color:#9ca3af;
+}
 @media print{
-  .print-btn{display:none}
-  .audit-header-box{page-break-inside:avoid}
-  .day-header{page-break-before:always}
+  body{background:#fff;color:#000}
+  .day-header td{color:#000}
 }
 </style>
 </head>
 
 <body>
 
-<button class="print-btn" onclick="window.print()">Exportovat do PDF</button>
-
-<h1>AYAS-7 AUDIT REPORT</h1>
-<div style="font-size:11px;margin-bottom:6px">
-GOVERNANCE · CONTROL · EXECUTION INTEGRITY<br>
-Deterministic FSM · SSOT · Multisignature Governance
+<h1>Audit certifikátů AYAS-7</h1>
+<div class="meta">
+  Lokální čas: <span id="localTime"></span> |
+  UTC: <span id="utcTime"></span><br>
+  Snapshot ID: <span id="snapshotId"></span>
 </div>
 
-<div class="audit-header-box">
-  <div class="ah-row">
-    <div><strong>Družstvo:</strong> WIN.WIN</div>
-    <div><strong>Systém:</strong> AYAS-7</div>
-  </div>
-  <div class="ah-row">
-    <div><strong>Snapshot ID:</strong> <span id="snapshotId"></span></div>
-    <div><strong>System State:</strong> STABLE</div>
-  </div>
-  <div class="ah-row">
-    <div><strong>Generated (local):</strong> <span id="localTime"></span></div>
-    <div><strong>Generated (UTC):</strong> <span id="utcTime"></span></div>
-  </div>
-  <div class="ah-hash">
-    <strong>Audit Hash (SHA-256):</strong>
-    <span id="auditHash"></span>
-  </div>
-</div>
-
-<div class="section">
-<h2>Executive Overview</h2>
-<div class="meta-grid">
-  <div class="meta-row"><span class="meta-label">Celkem vydané WW-KEY</span><span id="sumKeys">—</span></div>
-  <div class="meta-row"><span class="meta-label">Celkový objem vkladů (CZK)</span><span id="sumDeposit">—</span></div>
-  <div class="meta-row"><span class="meta-label">Počet certifikátů</span><span id="sumCerts">—</span></div>
-  <div class="meta-row"><span class="meta-label">Auditované období</span><span id="auditRange">—</span></div>
-</div>
-</div>
-
-<div class="section">
-<h2>Issued Certificates – Detail</h2>
 <table>
 <thead>
 <tr>
   <th>#</th>
-  <th>Certificate ID</th>
+  <th>Certifikát</th>
   <th>Member ID</th>
   <th>WW-KEY</th>
-  <th>Deposit (CZK)</th>
-  <th>Hash (SHA-256)</th>
-  <th>Issued At</th>
+  <th>Vklad CZK</th>
+  <th>Hash</th>
+  <th>Vydáno</th>
 </tr>
 </thead>
 <tbody id="certTable">
 <tr><td colspan="7">Načítám data…</td></tr>
 </tbody>
 </table>
+
+<div class="summary">
+  <span>Certifikátů: <b id="sumCerts">0</b></span>
+  <span>WW-KEY: <b id="sumKeys">0</b></span>
+  <span>Vklad CZK: <b id="sumDeposit">0</b></span><br>
+  Rozsah: <span id="auditRange"></span>
 </div>
 
-<div class="footer">
-This audit snapshot is read-only and derived directly from issued certificates
-stored in the AYAS-7 system database.
+<div class="hash">
+  Audit hash: <span id="auditHash"></span>
 </div>
 
+<!-- ================= SUPABASE ================= -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <script>
 document.addEventListener("DOMContentLoaded", async () => {
 
-const supabaseUrl = "https://hurayrwshmsvsylhwlbj.supabase.co";
-const supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh1cmF5cndzaG1zdnN5bGh3bGJqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQyMTk4MzEsImV4cCI6MjA3OTc5NTgzMX0.Q0KpZX_Dln9_9OwZcCty-bbyw8drX84ax098Uy03VUI";
+  const supabaseUrl = "https://hurayrwshmsvsylhwlbj.supabase.co";
+  const supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh1cmF5cndzaG1zdnN5bGh3bGJqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQyMTk4MzEsImV4cCI6MjA3OTc5NTgzMX0.Q0KpZX_Dln9_9OwZcCty-bbyw8drX84ax098Uy03VUI";
 
-window.db = supabase.createClient(
-  supabaseUrl,
-  supabaseAnonKey,
-  {
-    auth: {
-      persistSession: false,
-      autoRefreshToken: false,
-      detectSessionInUrl: false
-    }
-  }
-);
+  const db = supabase.createClient(supabaseUrl, supabaseAnonKey);
 
-console.log("✅ Supabase DB ready:", window.db);
+  const now = new Date();
+  document.getElementById("localTime").textContent = now.toLocaleString("cs-CZ");
+  document.getElementById("utcTime").textContent = now.toISOString();
+  document.getElementById("snapshotId").textContent =
+    "AYAS7-AUDIT-" + now.toISOString().replace(/[-:.TZ]/g,"").slice(0,14);
 
-document.addEventListener("DOMContentLoaded", async () => {
-  console.log("=== AUDIT PRINT TEST START ===");
+  const tbody = document.getElementById("certTable");
 
-  if (!window.db) {
-    console.error("❌ window.db NEEXISTUJE");
-    return;
-  }
-
-  console.log("✅ db existuje:", window.db);
-
-  try {
-    const { data, error } = await window.db
-      .from("certificates")
-      .select("*");
-
-    console.log("📊 AUDIT DATA:", data);
-    console.log("⚠️ AUDIT ERROR:", error);
-
-  } catch (e) {
-    console.error("❌ SUPABASE EXCEPTION:", e);
-  }
-
-  console.log("=== AUDIT PRINT TEST END ===");
-});
-
-
-
-const now=new Date();
-document.getElementById("localTime").textContent=now.toLocaleString("cs-CZ");
-document.getElementById("utcTime").textContent=now.toISOString();
-document.getElementById("snapshotId").textContent=
-  "AYAS7-AUDIT-"+now.toISOString().replace(/[-:.TZ]/g,"").slice(0,14);
-
-(async()=>{
-  const {data,error}=await db
+  const { data, error } = await db
     .from("certificates")
     .select("*")
-    .order("issued_at",{ascending:true});
+    .order("issued_at", { ascending:true });
 
-  const tbody=document.getElementById("certTable");
-  if(error||!data){
-    tbody.innerHTML="<tr><td colspan='7'>Chyba načítání dat</td></tr>";
+  if (error || !data || data.length === 0) {
+    tbody.innerHTML = "<tr><td colspan='7'>Žádná data</td></tr>";
     return;
   }
 
-  let totalKeys=0,totalDeposit=0,concat="";
-  const byDay={};
+  let idx = 1;
+  let totalKeys = 0;
+  let totalDeposit = 0;
+  let concatHash = "";
+  const byDay = {};
 
-  data.forEach(c=>{
-    const day=c.issued_at.slice(0,10);
-    if(!byDay[day]) byDay[day]={rows:[],keys:0,dep:0};
-    byDay[day].rows.push(c);
-    byDay[day].keys+=Number(c.ww_keys||0);
-    byDay[day].dep+=Number(c.deposit_czk||0);
-    totalKeys+=Number(c.ww_keys||0);
-    totalDeposit+=Number(c.deposit_czk||0);
-    concat+=c.hash_sha256;
+  data.forEach(c => {
+    const day = c.issued_at.slice(0,10);
+    if (!byDay[day]) byDay[day] = [];
+    byDay[day].push(c);
   });
 
-  tbody.innerHTML="";
-  let idx=1;
+  tbody.innerHTML = "";
 
-  Object.keys(byDay).forEach(day=>{
-    const h=document.createElement("tr");
-    h.className="day-header";
-    h.innerHTML=`
-      <td colspan="7">
-        ${day} — ${byDay[day].rows.length} certifikátů ·
-        ${byDay[day].keys} WW-KEY ·
-        ${byDay[day].dep.toLocaleString("cs-CZ")} CZK
-      </td>`;
-    tbody.appendChild(h);
+  Object.keys(byDay).forEach(day => {
 
-    byDay[day].rows.forEach(c=>{
-      const tr=document.createElement("tr");
-      tr.innerHTML=`
-        <td>${idx++}</td>
-        <td>${c.certificate_id}</td>
-        <td>${c.member_id}</td>
-        <td>${c.ww_keys}</td>
-        <td>${c.deposit_czk.toLocaleString("cs-CZ")}</td>
-        <td class="small">${c.hash_sha256}</td>
-        <td>${new Date(c.issued_at).toLocaleString("cs-CZ")}</td>`;
-      tbody.appendChild(tr);
+    let dKeys = 0, dDep = 0;
+
+    byDay[day].forEach(c=>{
+      dKeys += Number(c.ww_keys||0);
+      dDep  += Number(c.deposit_czk||0);
+    });
+
+    tbody.insertAdjacentHTML("beforeend", `
+      <tr class="day-header">
+        <td colspan="7">
+          ${day} — ${byDay[day].length} certifikátů ·
+          ${dKeys} WW-KEY ·
+          ${dDep.toLocaleString("cs-CZ")} CZK
+        </td>
+      </tr>
+    `);
+
+    byDay[day].forEach(c=>{
+      totalKeys += Number(c.ww_keys||0);
+      totalDeposit += Number(c.deposit_czk||0);
+      concatHash += c.hash_sha256 || "";
+
+      tbody.insertAdjacentHTML("beforeend", `
+        <tr>
+          <td>${idx++}</td>
+          <td>${c.certificate_id}</td>
+          <td>${c.member_id}</td>
+          <td>${c.ww_keys}</td>
+          <td>${c.deposit_czk.toLocaleString("cs-CZ")}</td>
+          <td>${c.hash_sha256}</td>
+          <td>${new Date(c.issued_at).toLocaleString("cs-CZ")}</td>
+        </tr>
+      `);
     });
   });
 
-  document.getElementById("sumKeys").textContent=totalKeys.toLocaleString("cs-CZ");
-  document.getElementById("sumDeposit").textContent=totalDeposit.toLocaleString("cs-CZ");
-  document.getElementById("sumCerts").textContent=data.length;
-  document.getElementById("auditRange").textContent=Object.keys(byDay).join(" → ");
+  document.getElementById("sumCerts").textContent = data.length;
+  document.getElementById("sumKeys").textContent = totalKeys.toLocaleString("cs-CZ");
+  document.getElementById("sumDeposit").textContent = totalDeposit.toLocaleString("cs-CZ");
+  document.getElementById("auditRange").textContent =
+    Object.keys(byDay)[0] + " → " + Object.keys(byDay).slice(-1)[0];
 
-  const buf=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(concat));
-  document.getElementById("auditHash").textContent=
+  const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(concatHash));
+  document.getElementById("auditHash").textContent =
     [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,"0")).join("");
-  // ⏱ malá jistota, že DOM je přepsaný
-  setTimeout(() => {
-    window.print();
-  }, 300);
 
-})();
+  setTimeout(()=>window.print(),300);
+});
 </script>
-
 
 </body>
 </html>
