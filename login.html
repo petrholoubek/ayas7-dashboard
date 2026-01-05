@@ -517,11 +517,11 @@
       Členská sekce · zabezpečený vstup
     </div>
 
-    <h1 class="login-title">Žádost o přístup do systému AYAS-7</h1>
+    <h1 class="login-title">Přihlášení do systému AYAS-7</h1>
     <p class="login-subtitle">
-      Vyplněním formuláře odešleš žádost o vytvoření členského účtu
-      v družstvu Win-Win. Přístup je aktivován po schválení administrátorem.
+      Zadej své přihlašovací údaje pro bezpečný vstup do systému AYAS-7.
     </p>
+
 
     <div class="login-intro">
       <div class="login-intro-header">
@@ -592,95 +592,40 @@
  <footer>
    © 2025 Win-Win Družstvo · AYAS-7 Engine · Všechna práva vyhrazena
  </footer>
-<script>
-document
-  .getElementById("registerForm")
-  .addEventListener("submit", async (e) => {
+<script type="module">
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-    e.preventDefault(); // ⬅️ KLÍČOVÉ
+const supabase = createClient(
+  "https://hurayrwshmsvsylhwlbj.supabase.co",
+  "TVUJ_PUBLIC_ANON_KEY"
+);
 
-    const btn = document.querySelector(".btn-submit");
-    btn.disabled = true;           // ochrana proti dvojkliku
-    btn.textContent = "Odesílám…";
+const form = document.getElementById("registerForm");
 
-    try {
-      const res = await fetch(
-        "https://hurayrwshmsvsylhwlbj.supabase.co/functions/v1/register-member",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            email: document.getElementById("login-identity").value,
-            password: document.getElementById("login-password").value
-          })
-        }
-      );
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
 
-      const data = await res.json();
+  const btn = document.querySelector(".btn-submit");
+  btn.disabled = true;
+  btn.textContent = "Přihlašuji…";
 
-      if (!res.ok) throw data;
+  const email = document.getElementById("login-identity").value.trim();
+  const password = document.getElementById("login-password").value;
 
-      alert("Žádost byla úspěšně odeslána ke schválení.");
-
-      document.getElementById("registerForm").reset();
-
-    } catch (err) {
-      alert("Chyba při odeslání žádosti.");
-      console.error(err);
-    } finally {
-      btn.disabled = false;
-      btn.textContent = "Odeslat žádost o přístup";
-    }
+  const { error } = await supabase.auth.signInWithPassword({
+    email,
+    password
   });
 
-</script>
-<script>
-document.addEventListener("DOMContentLoaded", () => {
+  if (error) {
+    alert(error.message);
+    btn.disabled = false;
+    btn.textContent = "Přihlásit se";
+    return;
+  }
 
-  const form = document.getElementById("registerForm");
-  if (!form) return;
-
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-
-    const nameInput = form.querySelector("#name");
-    const emailInput = form.querySelector("#login-identity");
-
-    const name = nameInput ? nameInput.value.trim() : "";
-    const email = emailInput ? emailInput.value.trim() : "";
-
-    if (!name || !email) {
-      alert("Vyplň prosím jméno a e-mail.");
-      return;
-    }
-
-    const res = await fetch(
-      "https://hurayrwshmsvsylhwlbj.supabase.co/functions/v1/register-member",
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name,
-          email
-        })
-      }
-    );
-
-    const data = await res.json();
-
-    if (!res.ok) {
-      alert("Chyba při odeslání žádosti:\n" + (data.error || "neznámá chyba"));
-      return;
-    }
-
-    alert(
-      "Žádost byla úspěšně odeslána.\n\n" +
-      "Po schválení administrátorem získáš přístup do systému AYAS-7."
-    );
-
-    form.reset();
-  });
-
+  // ✅ přihlášení OK
+  window.location.href = "/admin.html";
 });
 </script>
 
