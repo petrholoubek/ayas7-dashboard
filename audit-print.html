@@ -199,6 +199,32 @@ window.db = supabase.createClient(
 
 console.log("✅ Supabase DB ready:", window.db);
 
+document.addEventListener("DOMContentLoaded", async () => {
+  console.log("=== AUDIT PRINT TEST START ===");
+
+  if (!window.db) {
+    console.error("❌ window.db NEEXISTUJE");
+    return;
+  }
+
+  console.log("✅ db existuje:", window.db);
+
+  try {
+    const { data, error } = await window.db
+      .from("certificates")
+      .select("*");
+
+    console.log("📊 AUDIT DATA:", data);
+    console.log("⚠️ AUDIT ERROR:", error);
+
+  } catch (e) {
+    console.error("❌ SUPABASE EXCEPTION:", e);
+  }
+
+  console.log("=== AUDIT PRINT TEST END ===");
+});
+
+
 
 const now=new Date();
 document.getElementById("localTime").textContent=now.toLocaleString("cs-CZ");
@@ -275,32 +301,7 @@ document.getElementById("snapshotId").textContent=
 
 })();
 </script>
-<script>
-document.addEventListener("DOMContentLoaded", async () => {
-  console.log("=== AUDIT PRINT TEST START ===");
 
-  if (!window.db) {
-    console.error("❌ window.db NEEXISTUJE");
-    return;
-  }
-
-  console.log("✅ db existuje:", window.db);
-
-  try {
-    const { data, error } = await window.db
-      .from("certificates")
-      .select("*");
-
-    console.log("📊 AUDIT DATA:", data);
-    console.log("⚠️ AUDIT ERROR:", error);
-
-  } catch (e) {
-    console.error("❌ SUPABASE EXCEPTION:", e);
-  }
-
-  console.log("=== AUDIT PRINT TEST END ===");
-});
-</script>
 
 </body>
 </html>
