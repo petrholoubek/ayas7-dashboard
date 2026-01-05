@@ -180,6 +180,8 @@ stored in the AYAS-7 system database.
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
+document.addEventListener("DOMContentLoaded", () => {
+
 const supabaseUrl = "https://hurayrwshmsvsylhwlbj.supabase.co";
 const supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh1cmF5cndzaG1zdnN5bGh3bGJqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQyMTk4MzEsImV4cCI6MjA3OTc5NTgzMX0.Q0KpZX_Dln9_9OwZcCty-bbyw8drX84ax098Uy03VUI";
 
@@ -266,6 +268,5 @@ document.getElementById("snapshotId").textContent=
     [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,"0")).join("");
 })();
 </script>
-  
 </body>
 </html>
