@@ -608,46 +608,33 @@
  <footer>
    © 2025 Win-Win Družstvo · AYAS-7 Engine · Všechna práva vyhrazena
  </footer>
-<script>
-document.getElementById("forgotPassword").addEventListener("click", async (e) => {
-  e.preventDefault();
-
-  const email = document.getElementById("login-identity").value;
-  if (!email) {
-    alert("Nejprve zadej svůj e-mail.");
-    return;
-  }
-
-  const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
-    redirectTo: "https://ayas7.com/reset-password.html"
-  });
-
-  if (error) {
-    alert("Chyba při odeslání e-mailu.");
-  } else {
-    alert("Odkaz pro obnovu hesla byl odeslán.");
-  }
-});
-</script>
-
 <script type="module">
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
 const supabase = createClient(
-  "https://hurayrwshmsvsylhwlbj.supabase.co",  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh1cmF5cndzaG1zdnN5bGh3bGJqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQyMTk4MzEsImV4cCI6MjA3OTc5NTgzMX0.Q0KpZX_Dln9_9OwZcCty-bbyw8drX84ax098Uy03VUI"
+  "https://hurayrwshmsvsylhwlbj.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh1cmF5cndzaG1zdnN5bGh3bGJqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQyMTk4MzEsImV4cCI6MjA3OTc5NTgzMX0.Q0KpZX_Dln9_9OwZcCty-bbyw8drX84ax098Uy03VUI"
 );
 
+// -------------------------
+// SIGN IN
+// -------------------------
 const form = document.getElementById("registerForm");
+const btn = document.querySelector(".btn-submit");
 
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
 
-  const btn = document.querySelector(".btn-submit");
-  btn.disabled = true;
-  btn.textContent = "Přihlašuji…";
-
   const email = document.getElementById("login-identity").value.trim();
   const password = document.getElementById("login-password").value;
+
+  if (!email || !password) {
+    alert("Vyplň e-mail a heslo.");
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = "Přihlašuji…";
 
   const { error } = await supabase.auth.signInWithPassword({
     email,
@@ -661,8 +648,34 @@ form.addEventListener("submit", async (e) => {
     return;
   }
 
-  // ✅ přihlášení OK
+  // ✅ login OK
   window.location.href = "/admin.html";
+});
+
+// -------------------------
+// FORGOT PASSWORD
+// -------------------------
+const forgot = document.getElementById("forgotPassword");
+
+forgot.addEventListener("click", async (e) => {
+  e.preventDefault();
+
+  const email = document.getElementById("login-identity").value.trim();
+
+  if (!email) {
+    alert("Nejprve zadej svůj e-mail.");
+    return;
+  }
+
+  const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: "https://ayas7.com/reset-password.html"
+  });
+
+  if (error) {
+    alert("Chyba při odeslání e-mailu.");
+  } else {
+    alert("Odkaz pro obnovu hesla byl odeslán na e-mail.");
+  }
 });
 </script>
 
