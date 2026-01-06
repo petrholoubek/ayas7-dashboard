@@ -593,69 +593,85 @@
  <footer>
    © 2025 Win-Win Družstvo · AYAS-7 Engine · Všechna práva vyhrazena
  </footer>
-<script>
-document.addEventListener("DOMContentLoaded", () => {
+<script type="module">
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-  const form = document.getElementById("registerForm");
-  if (!form) return;
+const supabase = createClient(
+  "https://hurayrwshmsvsylhwlbj.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh1cmF5cndzaG1zdnN5bGh3bGJqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQyMTk4MzEsImV4cCI6MjA3OTc5NTgzMX0.Q0KpZX_Dln9_9OwZcCty-bbyw8drX84ax098Uy03VUI"
+);
 
-  const btn = form.querySelector(".btn-submit");
+const form = document.getElementById("registerForm");
 
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
 
-    const name = document.getElementById("name").value.trim();
-    const email = document.getElementById("login-identity").value.trim();
-    const password = document.getElementById("login-password").value;
+  const btn = document.querySelector(".btn-submit");
+  btn.disabled = true;
+  btn.textContent = "Odesílám…";
 
-    if (!name || !email || !password) {
-      alert("Vyplň prosím jméno, e-mail a heslo.");
-      return;
-    }
+  const name = document.getElementById("name").value.trim();
+  const email = document.getElementById("login-identity").value.trim();
+  const password = document.getElementById("login-password").value;
 
-    // UX ochrana
-    btn.disabled = true;
-    btn.textContent = "Odesílám…";
+  if (!name || !email || !password) {
+    alert("Vyplň všechna pole.");
+    btn.disabled = false;
+    btn.textContent = "Odeslat žádost o přístup";
+    return;
+  }
 
-    try {
-      const res = await fetch(
-        "https://hurayrwshmsvsylhwlbj.supabase.co/functions/v1/register-member",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            name,
-            email,
-            password
-          })
-        }
-      );
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(data.error || "Neznámá chyba");
-      }
-
-      alert(
-        "Žádost byla úspěšně odeslána.\n\n" +
-        "Po schválení administrátorem získáš přístup do systému AYAS-7."
-      );
-
-      form.reset();
-
-    } catch (err) {
-      console.error(err);
-      alert(
-        "Došlo k chybě při odesílání žádosti.\n" +
-        "Zkontroluj údaje nebo to zkus později."
-      );
-    } finally {
-      btn.disabled = false;
-      btn.textContent = "Odeslat žádost o přístup";
-    }
+  /* ===============================
+     1️⃣ AUTH SIGN UP (KLÍČOVÉ)
+  =============================== */
+  const { data, error } = await supabase.auth.signUp({
+    email,
+    password
   });
 
+  if (error) {
+    alert(error.message);
+    btn.disabled = false;
+    btn.textContent = "Odeslat žádost o přístup";
+    return;
+  }
+
+  const userId = data.user.id;
+
+  /* ===============================
+     2️⃣ ZÁPIS DO members_data
+  =============================== */
+  const res = await fetch(
+    "https://hurayrwshmsvsylhwlbj.supabase.co/functions/v1/register-member",
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        user_id: userId,
+        name,
+        email
+      })
+    }
+  );
+
+  const result = await res.json();
+
+  if (!res.ok) {
+    alert("Chyba při zápisu do databáze.");
+    console.error(result);
+    btn.disabled = false;
+    btn.textContent = "Odeslat žádost o přístup";
+    return;
+  }
+
+  alert(
+    "Žádost byla úspěšně odeslána.\n\n" +
+    "Po schválení administrátorem získáš přístup do systému AYAS-7."
+  );
+
+  form.reset();
+  btn.disabled = false;
+  btn.textContent = "Odeslat žádost o přístup";
 });
 </script>
 
