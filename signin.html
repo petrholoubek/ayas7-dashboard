@@ -524,17 +524,21 @@
 
 
     <div class="login-intro">
-      <div class="login-intro-header">
-        <span class="login-intro-dot"></span>
-        <span>Jak proces funguje?</span>
-      </div>
-      <p class="login-intro-text">
-        Po odeslání žádosti je tvůj účet ve stavu
-        <b>čekající (pending)</b>.
-        Po schválení získáš přístup do systému <b>AYAS-7</b>,
-        kde budou řešeny další kroky členství.
-      </p>
-    </div>
+  <div class="login-intro-header">
+    <span class="login-intro-dot"></span>
+    <span>Jak proces funguje?</span>
+  </div>
+  <p class="login-intro-text">
+    Vytváříš si svůj osobní přístup do systému <b>AYAS-7</b>.
+    Po odeslání žádosti je účet veden ve stavu
+    <b>čekající (pending)</b>.
+    <br><br>
+    Po schválení se do systému přihlašuješ
+    <b>svým e-mailem a heslem</b> a získáš přístup
+    k členské sekci, kde probíhají další kroky členství.
+  </p>
+</div>
+
 
     <form id="registerForm">
 
@@ -578,6 +582,18 @@
     Odeslat žádost o přístup
   </button>
 
+<div style="margin-top:14px;text-align:center;font-size:13px;">
+  <a
+    href="#"
+    id="forgotPassword"
+    style="color:#9ca3af;text-decoration:underline;cursor:pointer;"
+  >
+    Zapomněl(a) jsem heslo
+  </a>
+</div>
+
+
+
   <div class="login-footer-text">
     Odesláním žádosti souhlasíš se zpracováním údajů
     pro účely členství v družstvu Win-Win.
@@ -592,6 +608,28 @@
  <footer>
    © 2025 Win-Win Družstvo · AYAS-7 Engine · Všechna práva vyhrazena
  </footer>
+<script>
+document.getElementById("forgotPassword").addEventListener("click", async (e) => {
+  e.preventDefault();
+
+  const email = document.getElementById("login-identity").value;
+  if (!email) {
+    alert("Nejprve zadej svůj e-mail.");
+    return;
+  }
+
+  const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
+    redirectTo: "https://ayas7.com/reset-password.html"
+  });
+
+  if (error) {
+    alert("Chyba při odeslání e-mailu.");
+  } else {
+    alert("Odkaz pro obnovu hesla byl odeslán.");
+  }
+});
+</script>
+
 <script type="module">
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
