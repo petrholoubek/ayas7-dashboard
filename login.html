@@ -597,37 +597,37 @@
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
 const supabase = createClient(
-  "https://hurayrwshmsvsylhwlbj.supabase.co",  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh1cmF5cndzaG1zdnN5bGh3bGJqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQyMTk4MzEsImV4cCI6MjA3OTc5NTgzMX0.Q0KpZX_Dln9_9OwZcCty-bbyw8drX84ax098Uy03VUI"
+  "https://hurayrwshmsvsylhwlbj.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh1cmF5cndzaG1zdnN5bGh3bGJqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQyMTk4MzEsImV4cCI6MjA3OTc5NTgzMX0.Q0KpZX_Dln9_9OwZcCty-bbyw8drX84ax098Uy03VUI"
 );
 
-const form = document.getElementById("registerForm");
-
-form.addEventListener("submit", async (e) => {
+document.getElementById("registerForm").addEventListener("submit", async (e) => {
   e.preventDefault();
-
-  const btn = document.querySelector(".btn-submit");
-  btn.disabled = true;
-  btn.textContent = "Přihlašuji…";
 
   const email = document.getElementById("login-identity").value.trim();
   const password = document.getElementById("login-password").value;
+  const name = document.getElementById("name").value.trim();
 
-  const { data, error } = await supabase.auth.signInWithPassword({
-    email,
-    password
-  });
+  const res = await fetch(
+    "https://hurayrwshmsvsylhwlbj.supabase.co/functions/v1/register-member",
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password, name }),
+    }
+  );
 
-  if (error) {
-    alert("Přihlášení se nezdařilo: " + error.message);
-    btn.disabled = false;
-    btn.textContent = "Přihlásit se";
+  const data = await res.json();
+
+  if (!res.ok) {
+    alert("Registrace selhala: " + data.error);
     return;
   }
 
-  // ✅ LOGIN OK
-  window.location.href = "/admin.html";
+  alert("Účet vytvořen. Můžeš se přihlásit.");
 });
 </script>
+
 
 
 </body>
