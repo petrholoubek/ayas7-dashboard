@@ -593,76 +593,34 @@
  <footer>
    © 2025 Win-Win Družstvo · AYAS-7 Engine · Všechna práva vyhrazena
  </footer>
+
 <script type="module">
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-const SUPABASE_URL = "https://hurayrwshmsvsylhwlbj.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh1cmF5cndzaG1zdnN5bGh3bGJqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQyMTk4MzEsImV4cCI6MjA3OTc5NTgzMX0.Q0KpZX_Dln9_9OwZcCty-bbyw8drX84ax098Uy03VUI"; // ten co už máš
+const supabase = createClient(
+  "https://hurayrwshmsvsylhwlbj.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh1cmF5cndzaG1zdnN5bGh3bGJqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQyMTk4MzEsImV4cCI6MjA3OTc5NTgzMX0.Q0KpZX_Dln9_9OwZcCty-bbyw8drX84ax098Uy03VUI"
+);
 
-const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-const form = document.getElementById("registerForm");
-
-form.addEventListener("submit", async (e) => {
+document.getElementById("registerForm").addEventListener("submit", async (e) => {
   e.preventDefault();
 
-  const name = document.getElementById("name").value.trim();
   const email = document.getElementById("login-identity").value.trim();
   const password = document.getElementById("login-password").value;
 
-  if (!name || !email || !password) {
-    alert("Vyplň prosím jméno, e-mail a heslo.");
+  const { data, error } = await supabase.auth.signUp({
+    email,
+    password
+  });
+
+  if (error) {
+    alert("Registrace selhala: " + error.message);
     return;
   }
 
-  if (password.length < 6) {
-    alert("Heslo musí mít alespoň 6 znaků.");
-    return;
-  }
-
-  const btn = document.querySelector(".btn-submit");
-  btn.disabled = true;
-  btn.textContent = "Odesílám…";
-
-  try {
-    const res = await fetch(
-      "https://hurayrwshmsvsylhwlbj.supabase.co/functions/v1/register-member",
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name,
-          email,
-          password
-        })
-      }
-    );
-
-    const data = await res.json();
-
-    if (!res.ok) {
-      console.error("REGISTER ERROR:", data);
-      alert("Registrace selhala: " + (data.error || "neznámá chyba"));
-      return;
-    }
-
-    alert(
-      "Žádost byla úspěšně odeslána.\n\n" +
-      "Po schválení administrátorem získáš přístup do systému."
-    );
-
-    form.reset();
-
-  } catch (err) {
-    console.error(err);
-    alert("Chyba při komunikaci se serverem.");
-  } finally {
-    btn.disabled = false;
-    btn.textContent = "Odeslat žádost o přístup";
-  }
+  alert("Registrace proběhla. Po schválení administrátorem se můžeš přihlásit.");
 });
 </script>
-
 
 
 
