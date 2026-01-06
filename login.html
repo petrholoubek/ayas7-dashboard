@@ -594,14 +594,27 @@
    © 2025 Win-Win Družstvo · AYAS-7 Engine · Všechna práva vyhrazena
  </footer>
 <script>
-document
-  .getElementById("registerForm")
-  .addEventListener("submit", async (e) => {
+document.addEventListener("DOMContentLoaded", () => {
 
-    e.preventDefault(); // ⬅️ KLÍČOVÉ
+  const form = document.getElementById("registerForm");
+  if (!form) return;
 
-    const btn = document.querySelector(".btn-submit");
-    btn.disabled = true;           // ochrana proti dvojkliku
+  const btn = form.querySelector(".btn-submit");
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const name = document.getElementById("name").value.trim();
+    const email = document.getElementById("login-identity").value.trim();
+    const password = document.getElementById("login-password").value;
+
+    if (!name || !email || !password) {
+      alert("Vyplň prosím jméno, e-mail a heslo.");
+      return;
+    }
+
+    // UX ochrana
+    btn.disabled = true;
     btn.textContent = "Odesílám…";
 
     try {
@@ -611,75 +624,36 @@ document
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            email: document.getElementById("login-identity").value,
-            password: document.getElementById("login-password").value
+            name,
+            email,
+            password
           })
         }
       );
 
       const data = await res.json();
 
-      if (!res.ok) throw data;
+      if (!res.ok) {
+        throw new Error(data.error || "Neznámá chyba");
+      }
 
-      alert("Žádost byla úspěšně odeslána ke schválení.");
+      alert(
+        "Žádost byla úspěšně odeslána.\n\n" +
+        "Po schválení administrátorem získáš přístup do systému AYAS-7."
+      );
 
-      document.getElementById("registerForm").reset();
+      form.reset();
 
     } catch (err) {
-      alert("Chyba při odeslání žádosti.");
       console.error(err);
+      alert(
+        "Došlo k chybě při odesílání žádosti.\n" +
+        "Zkontroluj údaje nebo to zkus později."
+      );
     } finally {
       btn.disabled = false;
       btn.textContent = "Odeslat žádost o přístup";
     }
-  });
-
-</script>
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-
-  const form = document.getElementById("registerForm");
-  if (!form) return;
-
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-
-    const nameInput = form.querySelector("#name");
-    const emailInput = form.querySelector("#login-identity");
-
-    const name = nameInput ? nameInput.value.trim() : "";
-    const email = emailInput ? emailInput.value.trim() : "";
-
-    if (!name || !email) {
-      alert("Vyplň prosím jméno a e-mail.");
-      return;
-    }
-
-    const res = await fetch(
-      "https://hurayrwshmsvsylhwlbj.supabase.co/functions/v1/register-member",
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name,
-          email
-        })
-      }
-    );
-
-    const data = await res.json();
-
-    if (!res.ok) {
-      alert("Chyba při odeslání žádosti:\n" + (data.error || "neznámá chyba"));
-      return;
-    }
-
-    alert(
-      "Žádost byla úspěšně odeslána.\n\n" +
-      "Po schválení administrátorem získáš přístup do systému AYAS-7."
-    );
-
-    form.reset();
   });
 
 });
