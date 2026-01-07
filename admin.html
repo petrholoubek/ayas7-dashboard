@@ -447,134 +447,191 @@ input{
 </div>
 
 <script>
-/* ================= ENDPOINTY ================= */
+/* ================= ENDPOINTY – NOVÝ PROJEKT ================= */
+const BASE = "https://azfrniqqtetoqploxwgq.supabase.co/functions/v1";
+
 const READ =
-  "https://hurayrwshmsvsylhwlbj.supabase.co/functions/v1/smart-endpoint";
-const APPROVE_MEMBER =
-  "https://hurayrwshmsvsylhwlbj.supabase.co/functions/v1/approve-member";
+  `${BASE}/smart-endpoint`;
+
+const CONFIRM_PAYMENT =
+  `${BASE}/approve-member`;
+
+const ISSUE_CERTIFICATE =
+  `${BASE}/issue-certificate`;
+
 const ADD_AGENT =
-  "https://hurayrwshmsvsylhwlbj.supabase.co/functions/v1/add-agent";
+  `${BASE}/add-agent`;
+
 const APPROVE_AGENT =
-  "https://hurayrwshmsvsylhwlbj.supabase.co/functions/v1/approve-agent";
+  `${BASE}/approve-agent`;
+
 const GENERATE_PROMO =
-  "https://hurayrwshmsvsylhwlbj.supabase.co/functions/v1/generate-promo";
+  `${BASE}/generate-promo`;
+
 
 /* ================= DATA ================= */
-let DATA={
-  members:[],
-  certificates:[],
-  agents:[],
-  promo:[],
-  commissions:[]
+let DATA = {
+  members: [],
+  certificates: [],
+  agents: [],
+  promo: [],
+  commissions: []
 };
 
-
-async function loadAll(){
-  const r = await fetch(READ,{method:"POST"});
+/* ================= LOAD ================= */
+async function loadAll() {
+  const r = await fetch(READ, { method: "POST" });
   DATA = await r.json();
 
-  membersTable.innerHTML = DATA.members.map(m=>`
-<tr>
-<td>${m.id}</td>
-<td>${m.name}<br><small>${m.email}</small></td>
-<td>${m.deposit.toLocaleString()} CZK</td>
-<td>${m.ww_key}</td>
-<td class="status-${m.status}">${m.status}</td>
-<td>
-${m.status==="approved"
-  ? "<span class='status-approved'>schváleno</span>"
-  : `<button class="approve" onclick="approveMember(${m.id})">Schválit</button>`}
-</td>
-</tr>`).join("");
+  membersTable.innerHTML = DATA.members.map(m => {
+    let state = "closed";
+    let text  = "Certifikát vydán (uzavřeno)";
+    let color = "blue";
 
-  certTable.innerHTML = DATA.certificates.map(c=>`
-<tr>
-<td>${c.certificate_id}</td>
-<td>${getMemberName(c.member_id)}</td>
-<td>${c.ww_keys}</td>
-<td>${c.deposit_czk.toLocaleString("cs-CZ")} CZK</td>
-<td>${new Date(c.issued_at).toLocaleDateString("cs-CZ")}</td>
-</tr>`).join("");
+    if (m.status === "approved" && m.paid === false) {
+      state = "confirm-payment";
+      text  = "Klikni pro potvrzení platby";
+      color = "yellow";
+    }
 
+    if (
+      m.paid === true &&
+      !DATA.certificates.find(c => c.member_id === m.id)
+    ) {
+      state = "issue-certificate";
+      text  = "Platba potvrzena – klikni pro vydání certifikátu";
+      color = "green";
+    }
 
-  agentsTable.innerHTML = DATA.agents.map(a=>`
-<tr>
-<td>${a.id}</td>
-<td>${a.name}</td>
-<td>${a.email}</td>
-<td class="status-${a.status}">${a.status}</td>
-<td>
-${a.status==="active"
-  ? `<button onclick="generatePromo(${a.id})">🎟 Promo</button>`
-  : `<button class="approve" onclick="approveAgent(${a.id})">Schválit</button>`}
-</td>
-</tr>`).join("");
+    return `
+<tr class="member-row"
+    onclick="handleMemberAction(${m.id}, '${state}')"
+    style="cursor:${state === 'closed' ? 'default' : 'pointer'}">
 
-  promoTable.innerHTML = DATA.promo.map(p=>`
+  <td>${m.id}</td>
+
+  <td>
+    <div style="display:flex;align-items:center;gap:10px">
+      <span class="led ${color}"></span>
+      <div>
+        <div><b>${m.name}</b></div>
+        <small>${text}</small>
+      </div>
+    </div>
+  </td>
+
+  <td>${m.deposit.toLocaleString("cs-CZ")} CZK</td>
+  <td>${m.ww_key}</td>
+  <td>${m.status}</td>
+</tr>`;
+  }).join("");
+
+  certTable.innerHTML = DATA.certificates.map(c => `
 <tr>
-<td>${p.code}</td>
-<td>${p.agent_id}</td>
-<td>${p.commission_pct ?? "-"}</td>
-<td>${p.used_count ?? 0}</td>
-<td>${p.status ?? "-"}</td>
-<td>${p.created_at ? new Date(p.created_at).toLocaleDateString() : "-"}</td>
-</tr>`).join("");
+  <td>${c.certificate_id}</td>
+  <td>${getMemberName(c.member_id)}</td>
+  <td>${c.ww_keys}</td>
+  <td>${c.deposit_czk.toLocaleString("cs-CZ")} CZK</td>
+  <td>${new Date(c.issued_at).toLocaleDateString("cs-CZ")}</td>
+</tr>
+`).join("");
+
+  agentsTable.innerHTML = DATA.agents.map(a => `
+<tr>
+  <td>${a.id}</td>
+  <td>${a.name}</td>
+  <td>${a.email}</td>
+  <td>${a.status}</td>
+  <td>
+    ${
+      a.status === "active"
+        ? `<button onclick="generatePromo(${a.id})">🎟 Promo</button>`
+        : `<button onclick="approveAgent(${a.id})">Schválit</button>`
+    }
+  </td>
+</tr>
+`).join("");
+
+  promoTable.innerHTML = DATA.promo.map(p => `
+<tr>
+  <td>${p.code}</td>
+  <td>${p.agent_id}</td>
+  <td>${p.commission_pct ?? "-"}</td>
+  <td>${p.used_count ?? 0}</td>
+  <td>${p.status ?? "-"}</td>
+  <td>${p.created_at ? new Date(p.created_at).toLocaleDateString() : "-"}</td>
+</tr>
+`).join("");
 }
 
 /* ================= AKCE ================= */
-async function approveMember(id){
-  await fetch(APPROVE_MEMBER,{
-    method:"POST",
-    headers:{ "Content-Type":"application/json" },
-    body:JSON.stringify({member_id:id})
-  });
-  loadAll();
+async function handleMemberAction(memberId, state) {
+  if (state === "confirm-payment") {
+    await fetch(CONFIRM_PAYMENT, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ member_id: memberId })
+    });
+    loadAll();
+  }
+
+  if (state === "issue-certificate") {
+    await fetch(ISSUE_CERTIFICATE, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ member_id: memberId })
+    });
+    loadAll();
+  }
 }
 
-async function addAgent(){
-  await fetch(ADD_AGENT,{
-    method:"POST",
-    headers:{ "Content-Type":"application/json" },
-    body:JSON.stringify({
-      name:aName.value,
-      email:aEmail.value,
-      phone:aPhone.value
+/* ================= OSTATNÍ ================= */
+async function addAgent() {
+  await fetch(ADD_AGENT, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      name: aName.value,
+      email: aEmail.value,
+      phone: aPhone.value
     })
   });
-  aName.value=aEmail.value=aPhone.value="";
+  aName.value = aEmail.value = aPhone.value = "";
   loadAll();
 }
 
-async function approveAgent(id){
-  await fetch(APPROVE_AGENT,{
-    method:"POST",
-    headers:{ "Content-Type":"application/json" },
-    body:JSON.stringify({agent_id:id})
+async function approveAgent(id) {
+  await fetch(APPROVE_AGENT, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ agent_id: id })
   });
   loadAll();
 }
 
-async function generatePromo(id){
-  const r = await fetch(GENERATE_PROMO,{
-    method:"POST",
-    headers:{ "Content-Type":"application/json" },
-    body:JSON.stringify({agent_id:id})
+async function generatePromo(id) {
+  const r = await fetch(GENERATE_PROMO, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ agent_id: id })
   });
   const j = await r.json();
   alert("Promo kód: " + (j.code || "nenalezen"));
   loadAll();
 }
 
-function generateOfficialAudit(){
-  window.open(
-    "/audit-print.html?view=official&print=1",
-    "_blank"
-  );
+function generateOfficialAudit() {
+  window.open("/audit-print.html?view=official&print=1", "_blank");
+}
+
+function getMemberName(id) {
+  const m = DATA.members.find(x => x.id === id);
+  return m ? m.name : "—";
 }
 
 loadAll();
-
 </script>
+
 <script>
 /* =========================================================
    AYAS-7 • CLEAN HTML → PDF EXPORT
@@ -780,6 +837,7 @@ function pdfPromo() {
   openPdfWindow("Promo kódy", table);
 }
 </script>
+
 <script type="module">
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
@@ -819,7 +877,6 @@ async function waitForSession(maxWait = 1500) {
   }
 })();
 </script>
-
 
 
 </body>
