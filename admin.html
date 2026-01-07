@@ -511,8 +511,9 @@ DATA.certificates = (json.payments || [])
   .map(p => ({
     certificate_uid: p.certificate_uid,
     member_name: p.member_name,
+    member_email: p.email,
     ww_key: p.ww_key_granted,
-    amount: p.amount,
+    amount: p.amount ?? 0,          // ⬅️ fallback
     issued_at: p.confirmed_at
   }));
 
@@ -840,10 +841,10 @@ function pdfCertificates() {
   let rows = DATA.certificates.map((c,i)=>`
     <tr>
       <td>${i + 1}</td>
-      <td>${getMemberName(c.member_id)}</td>
-      <td>${c.certificate_id}</td>
-      <td>${c.ww_keys}</td>
-      <td>${c.deposit_czk.toLocaleString("cs-CZ")} CZK</td>
+      <td>${c.member_name}</td>
+      <td>${c.certificate_uid}</td>
+      <td>${c.ww_key}</td>
+      <td>${(c.amount || 0).toLocaleString("cs-CZ")} CZK</td>
       <td>${new Date(c.issued_at).toLocaleDateString("cs-CZ")}</td>
     </tr>
   `).join("");
