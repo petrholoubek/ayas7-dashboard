@@ -185,9 +185,17 @@ main{
   </div>
 
 </main>
+
 <script>
+const SUPABASE_ANON_KEY =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF6ZnJuaXFxdGV0b3FwbG94d2dxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3MzQ1OTYsImV4cCI6MjA4MzMxMDU5Nn0.QchmzNhs8owd6pkjZCk04u6PJoJ2Bhzz7oGV0KFyqdU";
+
 const params = new URLSearchParams(window.location.search);
 const uid = params.get("uid");
+
+if (!uid) {
+  alert("Chybí ID certifikátu");
+}
 
 async function loadCertificate() {
   const r = await fetch(
@@ -201,7 +209,15 @@ async function loadCertificate() {
   );
 
   const [cert] = await r.json();
-  // tady jen zobrazíš hodnoty
+  if (!cert) {
+    alert("Certifikát nebyl nalezen");
+    return;
+  }
+
+  // PRO ZATÍM JEN TEST
+  console.log("CERTIFIKÁT:", cert);
+
+  // ZDE POZDĚJI DOSADÍŠ DO HTML (jméno, WW-KEY, datum…)
 }
 
 loadCertificate();
