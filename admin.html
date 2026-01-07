@@ -726,44 +726,61 @@ async function addAgent() {
     return;
   }
 
-  /* ===== ZJISTIT PŘIHLÁŠENÉHO ADMINA ===== */
+  /* ===== přihlášený admin ===== */
   const {
     data: { user },
     error: authErr
   } = await supabaseClient.auth.getUser();
 
   if (authErr || !user) {
-    alert("Admin není přihlášen – nelze vytvořit obchodníka");
-    console.error(authErr);
+    alert("Admin není přihlášen");
     return;
   }
 
-  /* ===== INSERT OBCHODNÍKA ===== */
-  const { error } = await supabaseClient
+  /* ===== 1️⃣ vložení agenta ===== */
+  const { data: agent, error: agentErr } = await supabaseClient
     .from("agents")
     .insert({
-      user_id: user.id,     // ⬅️ KLÍČOVÉ
+      user_id: user.id,
       name,
       email,
       phone,
       status: "approved"
-    });
+    })
+    .select()
+    .single();
 
-  if (error) {
+  if (agentErr) {
     alert("Chyba při ukládání obchodníka");
-    console.error(error);
+    console.error(agentErr);
     return;
   }
 
-  // vyčistit inputy
-document.getElementById("aName").value = "";
-document.getElementById("aEmail").value = "";
-document.getElementById("aPhone").value = "";
+  /* ===== 2️⃣ promo kód ===== */
+  const promoCode = generatePromoCode();
 
-// dočasně jen reload admina
-location.reload();
+  const { error: promoErr } = await supabaseClient
+    .from("promo_codes")
+    .insert({
+      agent_id: agent.id,
+      code: promoCode,
+      commission_rate: 0.07,
+      is_active: true
+    });
+
+  if (promoErr) {
+    alert("Obchodník uložen, ale nepodařilo se vytvořit promo kód");
+    console.error(promoErr);
+    return;
+  }
+
+  /* ===== hotovo ===== */
+  document.getElementById("aName").value = "";
+  document.getElementById("aEmail").value = "";
+  document.getElementById("aPhone").value = "";
+
+  location.reload();
 }
-
 
 </script>
 
