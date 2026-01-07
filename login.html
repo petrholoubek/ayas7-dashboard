@@ -595,34 +595,36 @@
  </footer>
 
 <script type="module">
-import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
-
-const supabase = createClient(
-  "https://hurayrwshmsvsylhwlbj.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh1cmF5cndzaG1zdnN5bGh3bGJqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQyMTk4MzEsImV4cCI6MjA3OTc5NTgzMX0.Q0KpZX_Dln9_9OwZcCty-bbyw8drX84ax098Uy03VUI"
-);
-
 document.getElementById("registerForm").addEventListener("submit", async (e) => {
   e.preventDefault();
 
   const email = document.getElementById("login-identity").value.trim();
   const password = document.getElementById("login-password").value;
 
-  const { data, error } = await supabase.auth.signUp({
-    email,
-    password
-  });
+  const res = await fetch(
+    "https://hurayrwshmsvsylhwlbj.supabase.co/functions/v1/register-member",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        email,
+        password
+      })
+    }
+  );
 
-  if (error) {
-    alert("Registrace selhala: " + error.message);
+  const data = await res.json();
+
+  if (!res.ok) {
+    alert("Registrace selhala: " + (data.error || "unknown error"));
     return;
   }
 
   alert("Registrace proběhla. Po schválení administrátorem se můžeš přihlásit.");
 });
 </script>
-
-
 
 </body>
 </html>
