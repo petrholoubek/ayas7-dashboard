@@ -937,23 +937,30 @@
  updateScenarios();
  window.addEventListener('resize', () => updateScenarios());
 </script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script>
-const supabaseUrl = "https://hurayrwshmsvsylhwlbj.supabase.co";
-const supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh1cmF5cndzaG1zdnN5bGh3bGJqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQyMTk4MzEsImV4cCI6MjA3OTc5NTgzMX0.Q0KpZX_Dln9_9OwZcCty-bbyw8drX84ax098Uy03VUI";
+<script type="module">
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-const supabaseClient = supabase.createClient(
-  supabaseUrl,
-  supabaseAnonKey
+const supabase = createClient(
+  "https://azfrniqqtetoqploxwgq.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF6ZnJuaXFxdGV0b3FwbG94d2dxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3MzQ1OTYsImV4cCI6MjA4MzMxMDU5Nn0.QchmzNhs8owd6pkjZCk04u6PJoJ2Bhzz7oGV0KFyqdU"
 );
 
-(async () => {
-  const { data: { session } } = await supabaseClient.auth.getSession();
+let checked = false;
 
-  if (!session) {
-    window.location.href = "signin.html";
+supabase.auth.onAuthStateChange((event, session) => {
+  // vyhodnocuj jen jednou
+  if (checked) return;
+
+  // dokud neexistuje session, NErozhoduj
+  if (!session) return;
+
+  checked = true;
+
+  // kontrola role
+  if (session.user.app_metadata?.role !== "admin") {
+    location.replace("/signin.html");
   }
-})();
+});
 </script>
 
 </body>
