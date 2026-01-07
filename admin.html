@@ -446,29 +446,24 @@ input{
 <div class="footer">AYAS-7 • interní audit-ready administrační velín</div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <script>
-/* ========= SUPABASE CLIENT – JEDINÝ ========= */
+/* ========= SUPABASE – JEDINÝ GLOBÁLNÍ INIT ========= */
 
 const SUPABASE_URL =
   "https://azfrniqqtetoqploxwgq.supabase.co";
+
+const SUPABASE_ANON_KEY =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF6ZnJuaXFxdGV0b3FwbG94d2dxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3MzQ1OTYsImV4cCI6MjA4MzMxMDU5Nn0.QchmzNhs8owd6pkjZCk04u6PJoJ2Bhzz7oGV0KFyqdU";
 
 const supabaseClient = window.supabase.createClient(
   SUPABASE_URL,
   SUPABASE_ANON_KEY
 );
 
-/* =========================================== */
+/* ================================================= */
 </script>
 <script>
-/* =========================================================
-   KONFIGURACE – NEMĚNIT (UŽ JE SPRÁVNĚ)
-   ========================================================= */
-const READ_ENDPOINT_URL =
-  "https://azfrniqqtetoqploxwgq.supabase.co/functions/v1/smart-endpoint";
-
-const SUPABASE_ANON_KEY =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF6ZnJuaXFxdGV0b3FwbG94d2dxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3MzQ1OTYsImV4cCI6MjA4MzMxMDU5Nn0.QchmzNhs8owd6pkjZCk04u6PJoJ2Bhzz7oGV0KFyqdU";
-
 /* =========================================================
    DATA – NA TOM ZÁVISÍ PDF (NEZASAHOVAT)
    ========================================================= */
