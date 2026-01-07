@@ -489,292 +489,57 @@ table.members-table tbody tr:nth-child(odd){
  <footer>© 2025 Win-Win Družstvo · AYAS-7 Engine · Všechna práva vyhrazena</footer>
 
  
- <script>
-  const supabaseUrl = "https://hurayrwshmsvsylhwlbj.supabase.co";
-const supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh1cmF5cndzaG1zdnN5bGh3bGJqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQyMTk4MzEsImV4cCI6MjA3OTc5NTgzMX0.Q0KpZX_Dln9_9OwZcCty-bbyw8drX84ax098Uy03VUI";
+ <script type="module">
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-const supabaseClient = supabase.createClient(
-  supabaseUrl,
-  supabaseAnonKey
+const supabase = createClient(
+  "https://azfrniqqtetoqploxwgq.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF6ZnJuaXFxdGV0b3FwbG94d2dxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3MzQ1OTYsImV4cCI6MjA4MzMxMDU5Nn0.QchmzNhs8owd6pkjZCk04u6PJoJ2Bhzz7oGV0KFyqdU"
 );
 
+(async () => {
+  // 1️⃣ session
+  const { data: { session } } = await supabase.auth.getSession();
 
-     // DOM refs
-   const memberForm        = document.getElementById('memberForm');
-   const memberResult      = document.getElementById('memberResult');
-   const memberResultText  = document.getElementById('memberResultText');
-
-memberForm.addEventListener('submit', async (e) => {
-  e.preventDefault();
-
-  const name   = document.getElementById('memberName').value.trim();
-  const email  = document.getElementById('memberEmail').value.trim();
-  const phone  = document.getElementById('memberPhone').value.trim();
-  const amount = Number(document.getElementById('investmentAmount').value);
-  const promo_code =
-    document.getElementById('memberPromo')?.value.trim() || null;
-
-  if (!name || !email || !phone || amount <= 0) {
-    alert('Vyplň prosím všechny údaje.');
+  if (!session) {
+    location.replace("/signin.html");
     return;
   }
 
-  const wwKeyCount = Math.floor(amount / 25);
+  const userId = session.user.id;
+  const role   = session.user.raw_app_meta_data?.role;
 
-  let agent_id = null;
-
-  try {
-    /* ===============================
-       PROMO KÓD → NAJDI AGENTA
-       =============================== */
-    if (promo_code) {
-      const { data: promoRow, error: promoErr } = await supabaseClient
-        .from("promo_codes")
-        .select("agent_id")
-        .eq("code", promo_code)
-        .eq("status", "active")
-        .maybeSingle();
-
-      if (promoErr) {
-        alert("Chyba při ověření promo kódu");
-        return;
-      }
-
-      if (!promoRow) {
-        alert("Promo kód je neplatný nebo neaktivní");
-        return;
-      }
-
-      agent_id = promoRow.agent_id;
-    }
-
-    /* ===============================
-       EXISTUJE UŽ ČLEN?
-       =============================== */
-    const { data: existing } = await supabaseClient
-      .from("members_data")
-      .select("id")
-      .eq("email", email)
-      .maybeSingle();
-
-    if (existing) {
-      /* UPDATE EXISTUJÍCÍHO */
-      const { error } = await supabaseClient
-        .from("members_data")
-        .update({
-          name,
-          phone,
-          deposit: amount,
-          ww_key: wwKeyCount,
-          promo_code,
-          agent_id
-        })
-        .eq("id", existing.id);
-
-      if (error) throw error;
-
-    } else {
-      /* INSERT NOVÉHO */
-      const { error } = await supabaseClient
-        .from("members_data")
-        .insert({
-          name,
-          email,
-          phone,
-          deposit: amount,
-          ww_key: wwKeyCount,
-          promo_code,
-          agent_id,
-          paid: false
-        });
-
-      if (error) throw error;
-    }
-
-    memberForm.reset();
-    await loadMembersTable();
-
-    alert("Člen byl úspěšně uložen");
-
-  } catch (err) {
-    console.error(err);
-    alert("Chyba při uložení člena");
-  }
-});
-
-
-
-   // Načtení posledních členů
-   async function loadMembersTable() {
-     const tbody = document.getElementById('membersTableBody');
-     if (!supabaseClient) {
-       tbody.innerHTML = '<tr><td colspan="5">Supabase klient není k dispozici.</td></tr>';
-       return;
-     }
-
-     try {
-       const { data, error } = await supabaseClient
-         .from('members_data')
-         .select('*')
-         .order('created_at', { ascending: false })
-         .limit(10);
-
-       if (error) {
-         console.error('Supabase select error:', error);
-         tbody.innerHTML =
-           '<tr><td colspan="5">Chyba při načítání dat: ' + error.message + '</td></tr>';
-         return;
-       }
-
-       if (!data || data.length === 0) {
-         tbody.innerHTML = '<tr><td colspan="5">Zatím zde nejsou žádné záznamy.</td></tr>';
-         return;
-       }
-
-       tbody.innerHTML = '';
-data.forEach(row => {
-
-  window.__LAST_ROW__ = row; // 👈 DŮLEŽITÉ
-
-  const tr = document.createElement('tr');
-
-  const created = row.created_at
-    ? new Date(row.created_at).toLocaleDateString('cs-CZ')
-    : '-';
-
-  const certificateId = `WWKEY-${row.id}`;
-
-
-const certUrl =
-  `/certificates/certificate.html` +
-  `?name=${encodeURIComponent(row.name ?? '')}` +
-  `&amount=${row.deposit ?? 0}` +
-  `&keys=${row.ww_key ?? 0}` +
-  `&date=${created}` +
-  `&id=${certificateId}`;
-
-
-tr.innerHTML = `
-  <td>${created}</td>
-  <td>${row.name ?? ''}</td>
-  <td>${row.email ?? ''}</td>
-  <td>${(row.deposit ?? 0).toLocaleString('cs-CZ')}</td>
-  <td>${row.ww_key ?? 0}</td>
-  <td>
-    ${
-row.paid === true
-? `<button class="btn-link" onclick="issueCertificate(${row.id})">
-     <span class="btn-link-dot"></span>
-     Vydat certifikát
-   </button>`
-
-: `<span style="color:#9ca3af;font-size:11px;">
-     Čeká na potvrzení platby
-   </span>`
-
-
-    }
-  </td>
-`;
-
-         tbody.appendChild(tr);
-       });
-
-     } catch (err) {
-       console.error('Supabase select exception:', err);
-       tbody.innerHTML =
-         '<tr><td colspan="5">Neočekávaná chyba při načítání dat.</td></tr>';
-     }
-   }
-
-   // načtení při otevření stránky
-   loadMembersTable();
-
-   // Small UX: refresh table every 30s (so admin sees new regs)
-   setInterval(loadMembersTable, 30000);
-
-async function issueCertificate(memberId) {
-  if (!supabaseClient) {
-    alert("Databáze není dostupná.");
+  if (role !== "member" && role !== "admin") {
+    location.replace("/signin.html");
     return;
   }
 
-  const { data: row, error } = await supabaseClient
+  // 2️⃣ načtení JEN SVÉHO ZÁZNAMU
+  const { data, error } = await supabase
     .from("members_data")
     .select("*")
-    .eq("id", memberId)
+    .eq("user_id", userId)
     .single();
 
-  if (error || !row) {
-    alert("Člen nenalezen");
+  if (error || !data) {
+    alert("Nepodařilo se načíst tvá členská data.");
+    console.error(error);
     return;
   }
 
-  // 1️⃣ zkontrolujeme, jestli už certifikát existuje
-  const { data: existing } = await supabaseClient
-    .from("certificates")
-    .select("*")
-    .eq("member_id", row.id)
-    .limit(1);
+  console.log("MY MEMBER DATA:", data);
 
-  let cert;
+  // 3️⃣ naplnění UI (příklad)
+  document.getElementById("memberName").textContent   = data.name;
+  document.getElementById("memberEmail").textContent  = data.email;
+  document.getElementById("memberStatus").textContent = data.status;
+  document.getElementById("memberKeys").textContent   = data.ww_key;
+  document.getElementById("memberDeposit").textContent =
+    data.deposit.toLocaleString("cs-CZ") + " CZK";
 
-  if (existing && existing.length > 0) {
-    cert = existing[0]; // už existuje
-  } else {
-    // 2️⃣ vygenerujeme nový certifikát
-    const certificateId = `WWKEY-${crypto.randomUUID()}`;
+})();
+</script>
 
-    const payload =
-      `${row.name}|${row.deposit}|${row.ww_key}|${row.created_at}|${certificateId}|AYAS7`;
-
-    const buf = await crypto.subtle.digest(
-      "SHA-256",
-      new TextEncoder().encode(payload)
-    );
-
-    const hash = [...new Uint8Array(buf)]
-      .map(b => b.toString(16).padStart(2, "0"))
-      .join("");
-
-    // 3️⃣ uložíme do tabulky certificates
-    const { data: inserted, error } = await supabaseClient
-      .from("certificates")
-      .insert({
-        member_id: row.id,
-        certificate_id: certificateId,
-        ww_keys: row.ww_key,
-        deposit_czk: row.deposit,
-        hash_sha256: hash,
-        version: "v1.0"
-      })
-      .select()
-      .single();
-
-    if (error) {
-      console.error(error);
-      alert("Nepodařilo se vydat certifikát.");
-      return;
-    }
-
-    cert = inserted;
-  }
-
-  // 4️⃣ otevřeme certifikát
-  const date = new Date(cert.issued_at).toLocaleDateString("cs-CZ");
-
-  const url =
-    `/certificates/certificate.html` +
-    `?name=${encodeURIComponent(row.name)}` +
-    `&amount=${row.deposit}` +
-    `&keys=${row.ww_key}` +
-    `&date=${date}` +
-    `&id=${cert.certificate_id}`;
-
-  window.open(url, "_blank");
-}
-
- </script>
 <script type="module">
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
