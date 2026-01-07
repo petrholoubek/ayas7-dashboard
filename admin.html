@@ -480,7 +480,14 @@ let DATA = {
 
 /* ================= LOAD ================= */
 async function loadAll() {
-  const r = await fetch(READ, { method: "POST" });
+  const r = await fetch(READ, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF6ZnJuaXFxdGV0b3FwbG94d2dxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3MzQ1OTYsImV4cCI6MjA4MzMxMDU5Nn0.QchmzNhs8owd6pkjZCk04u6PJoJ2Bhzz7oGV0KFyqdU"
+    }
+  });
+
   const json = await r.json();
 
   // ⛑️ OCHRANA PROTI NEKOMPLETNÍM DATŮM
@@ -491,8 +498,6 @@ async function loadAll() {
     promo: json.promo || [],
     commissions: json.commissions || []
   };
-
-
   membersTable.innerHTML = DATA.members.map(m => {
     let state = "closed";
     let text  = "Certifikát vydán (uzavřeno)";
