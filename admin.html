@@ -481,7 +481,7 @@ let DATA = {
 /* ================= LOAD ================= */
 async function loadAll() {
   const r = await fetch(READ, { method: "POST" });
-  DATA = await r.json();
+  const json = await r.json();
 
   // ⛑️ OCHRANA PROTI NEKOMPLETNÍM DATŮM
   DATA = {
@@ -491,6 +491,7 @@ async function loadAll() {
     promo: json.promo || [],
     commissions: json.commissions || []
   };
+
 
   membersTable.innerHTML = DATA.members.map(m => {
     let state = "closed";
