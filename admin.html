@@ -780,7 +780,7 @@ async function addAgent() {
     return;
   }
 
-  /* ===== přihlášený admin ===== */
+  /* ===== 1️⃣ přihlášený admin ===== */
   const {
     data: { user },
     error: authErr
@@ -791,7 +791,7 @@ async function addAgent() {
     return;
   }
 
-  /* ===== 1️⃣ vložení agenta ===== */
+  /* ===== 2️⃣ vytvoření agenta ===== */
   const { data: agent, error: agentErr } = await supabaseClient
     .from("agents")
     .insert({
@@ -810,12 +810,8 @@ async function addAgent() {
     return;
   }
 
-  /* ===== 2️⃣ promo kód ===== */
-  function generatePromoCode() {
-  const rand = Math.random().toString(36).substring(2, 7).toUpperCase();
-  return "WW7-" + rand;
-}
-
+  /* ===== 3️⃣ AUTOMATICKÝ PROMO KÓD ===== */
+  const promoCode = generatePromoCode();
 
   const { error: promoErr } = await supabaseClient
     .from("promo_codes")
@@ -832,12 +828,12 @@ async function addAgent() {
     return;
   }
 
-  /* ===== hotovo ===== */
+  /* ===== 4️⃣ cleanup + reload ===== */
   document.getElementById("aName").value = "";
   document.getElementById("aEmail").value = "";
   document.getElementById("aPhone").value = "";
 
-  location.reload();
+  loadPromoCodes();
 }
 
 </script>
