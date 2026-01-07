@@ -726,9 +726,23 @@ async function addAgent() {
     return;
   }
 
+  /* ===== ZJISTIT PŘIHLÁŠENÉHO ADMINA ===== */
+  const {
+    data: { user },
+    error: authErr
+  } = await supabaseClient.auth.getUser();
+
+  if (authErr || !user) {
+    alert("Admin není přihlášen – nelze vytvořit obchodníka");
+    console.error(authErr);
+    return;
+  }
+
+  /* ===== INSERT OBCHODNÍKA ===== */
   const { error } = await supabaseClient
     .from("agents")
     .insert({
+      user_id: user.id,     // ⬅️ KLÍČOVÉ
       name,
       email,
       phone,
@@ -749,30 +763,6 @@ async function addAgent() {
   loadAgents();
 }
 
-async function loadAgents() {
-  const { data, error } = await supabaseClient
-    .from("agents")
-    .select("id, name, email, status")
-    .order("id");
-
-  if (error) {
-    console.error(error);
-    return;
-  }
-
-  agentsTable.innerHTML = data.map(a => `
-<tr>
-  <td>${a.id}</td>
-  <td>${a.name}</td>
-  <td>${a.email}</td>
-  <td>${a.status}</td>
-  <td>—</td>
-</tr>
-`).join("");
-}
-
-// načíst při otevření admina
-loadAgents();
 </script>
 
 <script>
