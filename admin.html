@@ -676,6 +676,12 @@ async function loadPromoCodes() {
 function renderPromoTable() {
   if (!window.promoTable) return;
 
+  if (!DATA.promo.length) {
+    promoTable.innerHTML =
+      "<tr><td colspan='6'>Žádné promo kódy</td></tr>";
+    return;
+  }
+
   promoTable.innerHTML = DATA.promo.map(p => `
 <tr>
   <td><b>${p.code}</b></td>
@@ -687,6 +693,7 @@ function renderPromoTable() {
 </tr>
 `).join("");
 }
+
 
 
 /* =========================================================
