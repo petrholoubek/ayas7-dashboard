@@ -780,50 +780,43 @@ async function addAgent() {
     return;
   }
 
-  /* ===== 1️⃣ vytvoření agenta ===== */
-  const { data: agent, error: agentErr } = await supabaseClient
-    .from("agents")
-    .insert({
-      name,
-      email,
-      phone,
-      status: "approved"
-    })
-    .select()
-    .single();
+  const r = await fetch(
+    "https://azfrniqqtetoqploxwgq.supabase.co/functions/v1/create-agent",
+    {
+      method: "POST",
+      headers: {
+        "Authorization": "Bearer " + SUPABASE_ANON_KEY,
+        "apikey": SUPABASE_ANON_KEY,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        name,
+        email,
+        phone
+      })
+    }
+  );
 
-  if (agentErr) {
-    alert("Chyba při ukládání obchodníka");
-    console.error(agentErr);
+  const json = await r.json();
+
+  if (!r.ok) {
+    alert(json.error || "Chyba při vytváření obchodníka");
+    console.error(json);
     return;
   }
 
-  /* ===== 2️⃣ AUTOMATICKÝ PROMO KÓD ===== */
-  const promoCode = generatePromoCode();
+  alert(
+    `Obchodník vytvořen\nPromo kód: ${json.promo_code}`
+  );
 
-  const { error: promoErr } = await supabaseClient
-    .from("promo_codes")
-    .insert({
-      agent_id: agent.id,   // ⬅️ KLÍČOVÉ
-      code: promoCode,
-      commission_rate: 0.07,
-      is_active: true
-    });
-
-  if (promoErr) {
-    alert("Obchodník uložen, ale nepodařilo se vytvořit promo kód");
-    console.error(promoErr);
-    return;
-  }
-
-  /* ===== 3️⃣ refresh ===== */
+  // vyčistit inputy
   document.getElementById("aName").value = "";
   document.getElementById("aEmail").value = "";
   document.getElementById("aPhone").value = "";
 
+  // znovu načíst promo kódy
   loadPromoCodes();
 }
-
 </script>
 
 <script>
