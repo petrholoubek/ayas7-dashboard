@@ -492,15 +492,15 @@ async function loadAll() {
        ===================================================== */
     DATA.members = (json.payments || []).map(p => ({
   id: p.member_id,
-  payment_id: p.payment_id,   // ⬅️ NOVÉ
-  account_id: p.account_id,   // ⬅️ NOVÉ
+  payment_id: p.payment_id,
+  account_id: p.account_id,   // ⬅️ DŮLEŽITÉ
   name: p.member_name,
   email: p.email,
   deposit: p.amount,
   ww_key: p.ww_key_granted,
   status: p.member_status,
   paid: p.payment_status === "confirmed",
-  certificate_uid: p.certificate_uid ?? null
+  certificate_uid: null
 }));
 
 
@@ -639,8 +639,8 @@ async function issueCertificate(memberId) {
 
 const payload = {
   member_id: m.id,
-  account_id: m.account_id,   // ⬅️ POVINNÉ
-  payment_id: m.payment_id,   // ⬅️ silně doporučeno
+  account_id: m.account_id,   // ⬅️ TEĎ UŽ NENÍ NULL
+  payment_id: m.payment_id,
   member_name: m.name,
   member_email: m.email,
   ww_key_amount: m.ww_key,
@@ -890,6 +890,9 @@ function pdfPromo() {
   openPdfWindow("Promo kódy", table);
 }
 </script>
+
+
+
 
 </body>
 </html>
