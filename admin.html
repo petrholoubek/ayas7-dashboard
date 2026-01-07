@@ -446,40 +446,72 @@ input{
 <div class="footer">AYAS-7 • interní audit-ready administrační velín</div>
 </div>
 <script>
+/* =========================================================
+   KONFIGURACE – NEMĚNIT (UŽ JE SPRÁVNĚ)
+   ========================================================= */
+const READ_ENDPOINT_URL =
+  "https://azfrniqqtetoqploxwgq.supabase.co/functions/v1/smart-endpoint";
 
-/* ================= DATA ================= */
+const SUPABASE_ANON_KEY =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF6ZnJuaXFxdGV0b3FwbG94d2dxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3MzQ1OTYsImV4cCI6MjA4MzMxMDU5Nn0.QchmzNhs8owd6pkjZCk04u6PJoJ2Bhzz7oGV0KFyqdU";
+
+/* =========================================================
+   DATA – NA TOM ZÁVISÍ PDF (NEZASAHOVAT)
+   ========================================================= */
 let DATA = {
-  members: [],        // ⬅️ PDF NA TOM ZÁVISÍ
+  members: [],
   certificates: [],
   agents: [],
   promo: [],
   commissions: []
 };
 
-/* ================= LOAD ================= */
+/* =========================================================
+   NAČTENÍ DAT PRO ADMINA
+   ========================================================= */
 async function loadAll() {
-  const r = await fetch(READ, { method: "POST" });
-  const json = await r.json();
+  try {
+    const r = await fetch(READ_ENDPOINT_URL, {
+      method: "POST",
+      headers: {
+        "Authorization": "Bearer " + SUPABASE_ANON_KEY,
+        "apikey": SUPABASE_ANON_KEY,
+        "Content-Type": "application/json"
+      }
+    });
 
-  /* =====================================================
-     🔑 KLÍČOVÁ OPRAVA
-     smart-endpoint vrací { payments: [...] }
-     MY Z TOHO NAPLNÍME DATA.members
-     ===================================================== */
+    if (!r.ok) {
+      console.error("READ endpoint error:", await r.text());
+      return;
+    }
 
-  DATA.members = (json.payments || []).map(p => ({
-    id: p.member_id,
-    name: p.member_name,
-    email: p.email,
-    deposit: p.amount,
-    ww_key: p.ww_key_granted,
-    status: p.member_status,
-    paid: p.payment_status === "confirmed"
-  }));
+    const json = await r.json();
 
-  /* =====================================================
-     ZBYTEK ZŮSTÁVÁ STEJNÝ – PDF SE NEROZBIJÍ
-     ===================================================== */
+    /* =====================================================
+       SMART-ENDPOINT → DATA.members
+       ===================================================== */
+    DATA.members = (json.payments || []).map(p => ({
+      id: p.member_id,
+      name: p.member_name,
+      email: p.email,
+      deposit: p.amount,
+      ww_key: p.ww_key_granted,
+      status: p.member_status,
+      paid: p.payment_status === "confirmed"
+    }));
+
+    renderMembersTable();
+
+  } catch (err) {
+    console.error("loadAll failed:", err);
+  }
+}
+
+/* =========================================================
+   VYKRESLENÍ TABULKY ČLENŮ
+   ========================================================= */
+function renderMembersTable() {
+  if (!window.membersTable) return;
 
   membersTable.innerHTML = DATA.members.map(m => {
     let state = "closed";
@@ -503,33 +535,43 @@ async function loadAll() {
     <div style="display:flex;align-items:center;gap:10px">
       <span class="led ${color}"></span>
       <div>
-        <div><b>${m.name}</b></div>
+        <div><b>${m.name ?? "—"}</b></div>
         <small>${text}</small>
       </div>
     </div>
   </td>
 
-  <td>${m.deposit.toLocaleString("cs-CZ")} CZK</td>
-  <td>${m.ww_key}</td>
-  <td>${m.status}</td>
+  <td>${(m.deposit || 0).toLocaleString("cs-CZ")} CZK</td>
+  <td>${m.ww_key ?? "—"}</td>
+  <td>${m.status ?? "—"}</td>
 </tr>`;
   }).join("");
 }
 
-/* ================= AKCE ================= */
+/* =========================================================
+   AKCE ADMINA – POTVRZENÍ PLATBY
+   ========================================================= */
 async function handleMemberAction(memberId, state) {
+  if (state !== "confirm-payment") return;
 
-  if (state === "confirm-payment") {
-    await fetch(CONFIRM_PAYMENT, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ member_id: memberId })
-    });
-    loadAll();
-  }
+  if (!confirm("Potvrdit platbu tohoto člena?")) return;
+
+  await fetch(CONFIRM_PAYMENT, {
+    method: "POST",
+    headers: {
+      "Authorization": "Bearer " + SUPABASE_ANON_KEY,
+      "apikey": SUPABASE_ANON_KEY,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ member_id: memberId })
+  });
+
+  loadAll();
 }
 
-/* ================= OSTATNÍ – BEZE ZMĚNY ================= */
+/* =========================================================
+   PDF FUNKCE – BEZE ZMĚNY
+   ========================================================= */
 function generateOfficialAudit() {
   window.open("/audit-print.html?view=official&print=1", "_blank");
 }
@@ -539,6 +581,9 @@ function getMemberName(id) {
   return m ? m.name : "—";
 }
 
+/* =========================================================
+   INIT
+   ========================================================= */
 loadAll();
 </script>
 
