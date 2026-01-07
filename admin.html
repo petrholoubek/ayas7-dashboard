@@ -788,17 +788,23 @@ const supabase = createClient(
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF6ZnJuaXFxdGV0b3FwbG94d2dxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3MzQ1OTYsImV4cCI6MjA4MzMxMDU5Nn0.QchmzNhs8owd6pkjZCk04u6PJoJ2Bhzz7oGV0KFyqdU"
 );
 
-// 🔒 ADMIN GUARD – BEZ VYHAZOVÁNÍ ADMINA
+let checked = false;
+
 supabase.auth.onAuthStateChange((event, session) => {
+  // ⛔ IGNORUJ INITIAL_SESSION
+  if (event === "INITIAL_SESSION") return;
+
+  // ⛔ zamez vícenásobnému vyhodnocení
+  if (checked) return;
+  checked = true;
+
   if (!session) {
-    window.location.replace("/signin.html");
+    location.replace("/signin.html");
     return;
   }
 
-  const role = session.user.app_metadata?.role;
-
-  if (role !== "admin") {
-    window.location.replace("/signin.html");
+  if (session.user.app_metadata?.role !== "admin") {
+    location.replace("/signin.html");
   }
 });
 </script>
