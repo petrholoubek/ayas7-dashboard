@@ -232,24 +232,56 @@ html,body{
 </div>
 
 <script>
-(async()=>{
-  const p=new URLSearchParams(location.search);
-  const d={
-    name:p.get('name')||'—',
-    date:p.get('date')||'—',
-    amount:(p.get('amount')||'—')+' CZK',
-    keys:p.get('keys')||'—',
-    id:p.get('id')||'—'
-  };
-  Object.keys(d).forEach(k=>{
-    document.querySelectorAll(`[data-${k}]`).forEach(e=>e.textContent=d[k]);
-  });
-  const raw=`${d.name}|${d.amount}|${d.keys}|${d.date}|${d.id}|AYAS7`;
-  const buf=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(raw));
-  document.querySelector('[data-hash]').textContent=
-    [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,'0')).join('');
-})();
+const SUPABASE_ANON_KEY =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF6ZnJuaXFxdGV0b3FwbG94d2dxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3MzQ1OTYsImV4cCI6MjA4MzMxMDU5Nn0.QchmzNhs8owd6pkjZCk04u6PJoJ2Bhzz7oGV0KFyqdU";
+
+const params = new URLSearchParams(location.search);
+const uid = params.get("uid");
+
+if (!uid) {
+  alert("Chybí ID certifikátu");
+}
+
+async function loadCertificate() {
+  const r = await fetch(
+    `https://azfrniqqtetoqploxwgq.supabase.co/rest/v1/member_certificates?certificate_uid=eq.${uid}&select=*`,
+    {
+      headers: {
+        "apikey": SUPABASE_ANON_KEY,
+        "Authorization": "Bearer " + SUPABASE_ANON_KEY
+      }
+    }
+  );
+
+  const [c] = await r.json();
+  if (!c) {
+    alert("Certifikát nebyl nalezen");
+    return;
+  }
+
+  // dosazení do layoutu
+  document.querySelector("[data-name]").textContent = c.member_name;
+  document.querySelector("[data-date]").textContent =
+    new Date(c.issued_at).toLocaleDateString("cs-CZ");
+  document.querySelector("[data-amount]").textContent =
+    `${(c.deposit_amount || c.amount || 0).toLocaleString("cs-CZ")} CZK`;
+  document.querySelector("[data-keys]").textContent = c.ww_key_amount || c.ww_key;
+  document.querySelector("[data-id]").textContent = c.certificate_uid;
+
+  // SHA-256 hash (auditní stopa)
+  const raw = `${c.member_name}|${c.deposit_amount || c.amount}|${c.ww_key_amount || c.ww_key}|${c.issued_at}|${c.certificate_uid}|AYAS7`;
+  const buf = await crypto.subtle.digest(
+    "SHA-256",
+    new TextEncoder().encode(raw)
+  );
+
+  document.querySelector("[data-hash]").textContent =
+    [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2,"0")).join("");
+}
+
+loadCertificate();
 </script>
+
 
 </body>
 </html>
