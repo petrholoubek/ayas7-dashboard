@@ -602,18 +602,20 @@ document.getElementById("registerForm").addEventListener("submit", async (e) => 
   const password = document.getElementById("login-password").value;
 
   const res = await fetch(
-    "https://azfrniqqtetoqploxwgq.supabase.co/functions/v1/register-member",
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        email,
-        password
-      })
-    }
-  );
+  "https://azfrniqqtetoqploxwgq.supabase.co/functions/v1/register-member",
+  {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF6ZnJuaXFxdGV0b3FwbG94d2dxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3MzQ1OTYsImV4cCI6MjA4MzMxMDU5Nn0.QchmzNhs8owd6pkjZCk04u6PJoJ2Bhzz7oGV0KFyqdU"
+    },
+    body: JSON.stringify({
+      email,
+      password
+    })
+  }
+);
+
 
   const text = await res.text();
   console.log("REGISTER RESPONSE STATUS:", res.status);
