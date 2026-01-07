@@ -585,6 +585,47 @@ function getMemberName(id) {
    INIT
    ========================================================= */
 loadAll();
+
+async function issueCertificate(member, payment) {
+  if (!confirm("Opravdu vydat certifikát tomuto členovi?")) return;
+
+  const certificateUid = crypto.randomUUID();
+
+  const payload = {
+    member_id: member.id,
+    account_id: payment.account_id,
+    payment_id: payment.id,
+    member_name: member.name,
+    member_email: member.email,
+    ww_key_amount: payment.ww_key_granted,
+    certificate_uid: certificateUid,
+    issued_at: new Date().toISOString()
+  };
+
+  const r = await fetch(
+    "https://azfrniqqtetoqploxwgq.supabase.co/rest/v1/member_certificates",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "apikey": SUPABASE_ANON_KEY,
+        "Authorization": "Bearer " + SUPABASE_ANON_KEY,
+        "Prefer": "return=minimal"
+      },
+      body: JSON.stringify(payload)
+    }
+  );
+
+  if (!r.ok) {
+    alert("Chyba při vydání certifikátu");
+    console.error(await r.text());
+    return;
+  }
+
+  window.open(`/certificate.html?uid=${certificateUid}`, "_blank");
+  loadAll();
+}
+
 </script>
 
 <script>
@@ -688,14 +729,24 @@ Vygenerováno z AYAS-7 Admin • ${new Date().toLocaleString("cs-CZ")}
    ========================================================= */
 function pdfMembers() {
   let rows = DATA.members.map((m,i)=>`
-    <tr>
-      <td>${i+1}</td>
-      <td>${m.name}</td>
-      <td>${m.email}</td>
-      <td>${m.deposit.toLocaleString("cs-CZ")} CZK</td>
-      <td>${m.ww_key}</td>
-      <td>${m.status}</td>
-    </tr>
+  <tr>
+  <td>${i+1}</td>
+  <td>${m.name}</td>
+  <td>${m.email}</td>
+  <td>${m.deposit.toLocaleString("cs-CZ")} CZK</td>
+  <td>${m.ww_key}</td>
+  <td>${m.status}</td>
+  <td>
+    ${
+      m.status === "approved" && !m.certificate_uid
+        ? `<button onclick="issueCertificate(m)">Vydat certifikát</button>`
+        : m.certificate_uid
+          ? "Certifikát vydán"
+          : "—"
+    }
+  </td>
+</tr>
+
   `).join("");
 
   const table = `
@@ -708,6 +759,7 @@ function pdfMembers() {
   <th>Vklad</th>
   <th>WW-KEY</th>
   <th>Stav</th>
+  <th>Akce</th>
 </tr>
 </thead>
 <tbody>${rows}</tbody>
