@@ -481,7 +481,16 @@ let DATA = {
 /* ================= LOAD ================= */
 async function loadAll() {
   const r = await fetch(READ, { method: "POST" });
-  DATA = await r.json();
+  const json = await r.json();
+
+  // ⛑️ OCHRANA PROTI NEKOMPLETNÍM DATŮM
+  DATA = {
+    members: json.members || [],
+    certificates: json.certificates || [],
+    agents: json.agents || [],
+    promo: json.promo || [],
+    commissions: json.commissions || []
+  };
 
   membersTable.innerHTML = DATA.members.map(m => {
     let state = "closed";
@@ -514,15 +523,15 @@ async function loadAll() {
     <div style="display:flex;align-items:center;gap:10px">
       <span class="led ${color}"></span>
       <div>
-        <div><b>${m.name}</b></div>
+        <div><b>${m.name ?? "—"}</b></div>
         <small>${text}</small>
       </div>
     </div>
   </td>
 
-  <td>${m.deposit.toLocaleString("cs-CZ")} CZK</td>
-  <td>${m.ww_key}</td>
-  <td>${m.status}</td>
+  <td>${(m.deposit ?? 0).toLocaleString("cs-CZ")} CZK</td>
+  <td>${m.ww_key ?? 0}</td>
+  <td>${m.status ?? "-"}</td>
 </tr>`;
   }).join("");
 
