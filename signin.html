@@ -542,18 +542,7 @@
 
     <form id="registerForm">
 
-  <!-- JMÉNO -->
-  <div class="form-group">
-    <label class="form-label" for="name">Jméno a příjmení</label>
-    <input
-      id="name"
-      type="text"
-      class="form-input"
-      placeholder="např. Jan Novák"
-      required
-    />
-  </div>
-
+  
   <!-- E-MAIL -->
   <div class="form-group">
     <label class="form-label" for="login-identity">E-mail</label>
@@ -579,7 +568,7 @@
   </div>
 
   <button type="submit" class="btn-submit">
-    Odeslat žádost o přístup
+    Přihlásit se
   </button>
 
 <div style="margin-top:14px;text-align:center;font-size:13px;">
@@ -663,7 +652,7 @@ form.addEventListener("submit", async (e) => {
   }
 
   if (role === "member") {
-    window.location.href = "/member.html";
+    window.location.href = "/members.html";
     return;
   }
 
