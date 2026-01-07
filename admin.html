@@ -465,7 +465,7 @@ const READ_ENDPOINT_URL =
    SUPABASE CLIENT
    ========================================================= */
 
-const supabaseClient = window.supabase.createClient(
+const supabaseClient = supabase.createClient(
   SUPABASE_URL,
   SUPABASE_ANON_KEY
 );
@@ -639,8 +639,55 @@ async function confirmPayment(memberId) {
     return;
   }
 
-  loadAll();
+ 
 }
+
+/* =========================================================
+   PROMO KÓDY – NAČTENÍ
+   ========================================================= */
+async function loadPromoCodes() {
+  const { data, error } = await supabaseClient
+    .from("promo_codes")
+    .select(`
+      id,
+      code,
+      commission_rate,
+      is_active,
+      created_at,
+      agent:agent_id (
+        id,
+        name
+      )
+    `)
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("loadPromoCodes error:", error);
+    return;
+  }
+
+  DATA.promo = data || [];
+  renderPromoTable();
+}
+
+/* =========================================================
+   PROMO KÓDY – VYKRESLENÍ
+   ========================================================= */
+function renderPromoTable() {
+  if (!window.promoTable) return;
+
+  promoTable.innerHTML = DATA.promo.map(p => `
+<tr>
+  <td><b>${p.code}</b></td>
+  <td>${p.agent?.name ?? "—"}</td>
+  <td>${(p.commission_rate * 100).toFixed(0)} %</td>
+  <td>—</td>
+  <td>${p.is_active ? "aktivní" : "neaktivní"}</td>
+  <td>${new Date(p.created_at).toLocaleDateString("cs-CZ")}</td>
+</tr>
+`).join("");
+}
+
 
 /* =========================================================
    AKCE ADMINA – POTVRZENÍ PLATBY
@@ -660,7 +707,7 @@ async function handleMemberAction(memberId, state) {
     body: JSON.stringify({ member_id: memberId })
   });
 
-  loadAll();
+  
 }
 
 /* =========================================================
@@ -702,7 +749,7 @@ async function issueCertificate(memberId) {
   }
 
   window.open(`/certificate.html?uid=${json.certificate_uid}`, "_blank");
-  loadAll();
+  
 }
 
 /* ⬇️⬇️⬇️ TUTO FUNKCI TAM TEĎ DOPLŇ ⬇️⬇️⬇️ */
@@ -711,7 +758,7 @@ function openCertificate(uid) {
 }
 
 /* ⬇️⬇️⬇️ AŽ ÚPLNĚ POSLEDNÍ ŘÁDEK ⬇️⬇️⬇️ */
-loadAll();
+
 
 </script>
 
@@ -757,7 +804,11 @@ async function addAgent() {
   }
 
   /* ===== 2️⃣ promo kód ===== */
-  const promoCode = generatePromoCode();
+  function generatePromoCode() {
+  const rand = Math.random().toString(36).substring(2, 7).toUpperCase();
+  return "WW7-" + rand;
+}
+
 
   const { error: promoErr } = await supabaseClient
     .from("promo_codes")
@@ -974,10 +1025,10 @@ function pdfPromo() {
     <tr>
       <td>${i+1}</td>
       <td>${p.code}</td>
-      <td>${p.agent_id}</td>
-      <td>${p.commission_pct ?? "-"} %</td>
-      <td>${p.used_count ?? 0}</td>
-      <td>${p.status ?? "-"}</td>
+      <td>${p.agent?.name ?? p.agent_id}</td>
+      <td>${(p.commission_rate * 100).toFixed(0)} %</td>
+      <td>${p.is_active ? "aktivní" : "neaktivní"}</td>
+      <td>${new Date(p.created_at).toLocaleDateString("cs-CZ")}</td>
     </tr>
   `).join("");
 
@@ -987,10 +1038,10 @@ function pdfPromo() {
 <tr>
   <th>#</th>
   <th>Kód</th>
-  <th>Obchodník (ID)</th>
+  <th>Obchodník</th>
   <th>Provize</th>
-  <th>Použití</th>
   <th>Stav</th>
+  <th>Vytvořeno</th>
 </tr>
 </thead>
 <tbody>${rows}</tbody>
@@ -999,9 +1050,9 @@ function pdfPromo() {
 
   openPdfWindow("Promo kódy", table);
 }
+loadAll();
+loadPromoCodes();
 </script>
-
-
 
 
 </body>
