@@ -601,37 +601,34 @@ document.getElementById("registerForm").addEventListener("submit", async (e) => 
   const email = document.getElementById("login-identity").value.trim();
   const password = document.getElementById("login-password").value;
 
-  const res = await fetch(
-  "https://azfrniqqtetoqploxwgq.supabase.co/functions/v1/register-member",
-  {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF6ZnJuaXFxdGV0b3FwbG94d2dxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3MzQ1OTYsImV4cCI6MjA4MzMxMDU5Nn0.QchmzNhs8owd6pkjZCk04u6PJoJ2Bhzz7oGV0KFyqdU"
-    },
-    body: JSON.stringify({
-      email,
-      password
-    })
-  }
-);
-
-
-  const text = await res.text();
-  console.log("REGISTER RESPONSE STATUS:", res.status);
-  console.log("REGISTER RESPONSE BODY:", text);
-
-  let data = {};
   try {
-    data = JSON.parse(text);
-  } catch (e) {}
+    const res = await fetch(
+      "https://azfrniqqtetoqploxwgq.supabase.co/functions/v1/register-member",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF6ZnJuaXFxdGV0b3FwbG94d2dxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3MzQ1OTYsImV4cCI6MjA4MzMxMDU5Nn0.QchmzNhs8owd6pkjZCk04u6PJoJ2Bhzz7oGV0KFyqdU"
+        },
+        body: JSON.stringify({ email, password })
+      }
+    );
 
-  if (!res.ok) {
-    alert("Registrace selhala: " + (data.detail || data.error || text || "unknown error"));
-    return;
+    const text = await res.text();
+    console.log("STATUS:", res.status);
+    console.log("BODY:", text);
+
+    if (!res.ok) {
+      alert("Registrace selhala: " + text);
+      return;
+    }
+
+    alert("Registrace proběhla úspěšně.");
+
+  } catch (err) {
+    console.error("FETCH ERROR:", err);
+    alert("Síťová chyba – request se nedostal na server.");
   }
-
-  alert("Registrace proběhla. Po schválení administrátorem se můžeš přihlásit.");
 });
 </script>
 
