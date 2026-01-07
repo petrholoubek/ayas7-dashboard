@@ -448,27 +448,40 @@ input{
 <script type="module">
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-/* ================= SUPABASE ================= */
+/* =========================================================
+   SUPABASE
+========================================================= */
 const supabase = createClient(
   "https://azfrniqqtetoqploxwgq.supabase.co",
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF6ZnJuaXFxdGV0b3FwbG94d2dxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3MzQ1OTYsImV4cCI6MjA4MzMxMDU5Nn0.QchmzNhs8owd6pkjZCk04u6PJoJ2Bhzz7oGV0KFyqdU"
 );
 
-/* ================= ENDPOINT ================= */
-const READ =
-  "https://azfrniqqtetoqploxwgq.supabase.co/functions/v1/smart-endpoint";
+/* =========================================================
+   ENDPOINTY
+========================================================= */
+const BASE = "https://azfrniqqtetoqploxwgq.supabase.co/functions/v1";
+const READ  = `${BASE}/smart-endpoint`;
 
-/* ================= LOAD ================= */
+/* =========================================================
+   GLOBÁLNÍ DATA – 🔑 KLÍČ K FUNKČNÍM PDF
+========================================================= */
+window.DATA = {
+  members: [],
+  payments: [],
+  certificates: []
+};
+
+/* =========================================================
+   LOAD VŠEHO (JEDINÝ ZDROJ PRAVDY)
+========================================================= */
 async function loadAll() {
-
-  /* 1️⃣ SESSION */
   const { data: { session } } = await supabase.auth.getSession();
+
   if (!session) {
     location.replace("/signin.html");
     return;
   }
 
-  /* 2️⃣ FETCH DATA */
   const r = await fetch(READ, {
     method: "POST",
     headers: {
@@ -477,61 +490,140 @@ async function loadAll() {
   });
 
   if (!r.ok) {
-    console.error("SMART ENDPOINT ERROR:", r.status);
-    console.error(await r.text());
+    console.error("SMART ENDPOINT ERROR:", await r.text());
     return;
   }
 
   const json = await r.json();
-  console.log("SMART DATA:", json);
 
-  /* 3️⃣ DATA SAFE */
-  const members      = json.members      || [];
-  const payments     = json.payments     || [];
-  const certificates = json.certificates || [];
+  /* ⛑️ bezpečné naplnění */
+  DATA.members       = json.members       || [];
+  DATA.payments      = json.payments      || [];
+  DATA.certificates  = json.certificates  || [];
 
-  /* ================= ČLENOVÉ ================= */
-  if (window.membersTable) {
-    membersTable.innerHTML = members.map(m => `
-      <tr>
-        <td>${m.member_id ?? m.id}</td>
-        <td>${m.member_name ?? m.name}</td>
-        <td>${m.email ?? "-"}</td>
-        <td>${m.member_status ?? m.status}</td>
-      </tr>
-    `).join("");
-  }
-
-  /* ================= PLATBY ================= */
-  if (window.paymentsTable) {
-    paymentsTable.innerHTML = payments.map(p => `
-      <tr>
-        <td>${p.payment_id}</td>
-        <td>${p.member_name}</td>
-        <td>${p.email}</td>
-        <td>${p.amount.toLocaleString("cs-CZ")} CZK</td>
-        <td>${p.ww_key_granted}</td>
-        <td>${p.payment_status}</td>
-        <td>${new Date(p.confirmed_at).toLocaleDateString("cs-CZ")}</td>
-      </tr>
-    `).join("");
-  }
-
-  /* ================= CERTIFIKÁTY ================= */
-  if (window.certTable) {
-    certTable.innerHTML = certificates.map(c => `
-      <tr>
-        <td>${c.certificate_uid}</td>
-        <td>${c.member_name}</td>
-        <td>${c.ww_keys}</td>
-        <td>${c.amount.toLocaleString("cs-CZ")} CZK</td>
-        <td>${new Date(c.issued_at).toLocaleDateString("cs-CZ")}</td>
-      </tr>
-    `).join("");
-  }
+  renderMembers();
+  renderCertificates();
 }
 
-/* ================= START ================= */
+/* =========================================================
+   RENDER – ČLENOVÉ + PLATBY
+========================================================= */
+function renderMembers() {
+  const tbody = document.getElementById("membersTable");
+  if (!tbody) return;
+
+  tbody.innerHTML = DATA.payments.map(p => `
+<tr>
+  <td>${p.member_id}</td>
+  <td>
+    <b>${p.member_name}</b><br>
+    <small>${p.email}</small>
+  </td>
+  <td>${p.amount.toLocaleString("cs-CZ")} CZK</td>
+  <td>${p.ww_key_granted}</td>
+  <td>${p.payment_status}</td>
+</tr>
+`).join("");
+}
+
+/* =========================================================
+   RENDER – CERTIFIKÁTY
+========================================================= */
+function renderCertificates() {
+  const tbody = document.getElementById("certTable");
+  if (!tbody) return;
+
+  tbody.innerHTML = DATA.certificates.map(c => `
+<tr>
+  <td>${c.certificate_uid}</td>
+  <td>${c.member_name}</td>
+  <td>${c.ww_key_granted}</td>
+  <td>${c.amount.toLocaleString("cs-CZ")} CZK</td>
+  <td>${new Date(c.issued_at).toLocaleDateString("cs-CZ")}</td>
+</tr>
+`).join("");
+}
+
+/* =========================================================
+   PDF – ČLENOVÉ / PLATBY
+========================================================= */
+window.pdfMembers = function () {
+  let rows = DATA.payments.map((p,i)=>`
+<tr>
+  <td>${i+1}</td>
+  <td>${p.member_name}</td>
+  <td>${p.email}</td>
+  <td>${p.amount.toLocaleString("cs-CZ")} CZK</td>
+  <td>${p.ww_key_granted}</td>
+  <td>${p.payment_status}</td>
+</tr>
+`).join("");
+
+  openPdfWindow("Platby členů", `
+<table>
+<tr>
+  <th>#</th><th>Jméno</th><th>Email</th>
+  <th>Částka</th><th>WW-KEY</th><th>Stav</th>
+</tr>
+${rows}
+</table>
+`);
+};
+
+/* =========================================================
+   PDF – CERTIFIKÁTY
+========================================================= */
+window.pdfCertificates = function () {
+  let rows = DATA.certificates.map((c,i)=>`
+<tr>
+  <td>${i+1}</td>
+  <td>${c.member_name}</td>
+  <td>${c.certificate_uid}</td>
+  <td>${c.ww_key_granted}</td>
+  <td>${c.amount.toLocaleString("cs-CZ")} CZK</td>
+  <td>${new Date(c.issued_at).toLocaleDateString("cs-CZ")}</td>
+</tr>
+`).join("");
+
+  openPdfWindow("Vydané certifikáty", `
+<table>
+<tr>
+  <th>#</th><th>Člen</th><th>Certifikát</th>
+  <th>WW-KEY</th><th>Vklad</th><th>Datum</th>
+</tr>
+${rows}
+</table>
+`);
+};
+
+/* =========================================================
+   PDF OKNO (BEZE ZMĚNY)
+========================================================= */
+function openPdfWindow(title, tableHtml) {
+  const w = window.open("", "_blank");
+  w.document.write(`
+<!doctype html>
+<html><head><meta charset="utf-8">
+<title>${title}</title>
+<style>
+body{font-family:Segoe UI;font-size:11px}
+table{width:100%;border-collapse:collapse}
+th,td{border:1px solid #000;padding:4px}
+th{background:#eee}
+</style>
+</head>
+<body>
+<h1>${title}</h1>
+${tableHtml}
+<script>window.print()</script>
+</body></html>
+`);
+  w.document.close();
+}
+
+/* =========================================================
+   START
+========================================================= */
 loadAll();
 </script>
 
