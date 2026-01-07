@@ -618,7 +618,7 @@ document.getElementById("registerForm").addEventListener("submit", async (e) => 
   const data = await res.json();
 
   if (!res.ok) {
-    alert("Registrace selhala: " + (data.error || "unknown error"));
+    alert("Registrace selhala: " + (data.detail || data.error || "unknown error"));
     return;
   }
 
