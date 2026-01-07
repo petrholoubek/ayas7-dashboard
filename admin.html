@@ -791,24 +791,20 @@ const supabase = createClient(
 let checked = false;
 
 supabase.auth.onAuthStateChange((event, session) => {
-  // ⛔ IGNORUJ INITIAL_SESSION
-  if (event === "INITIAL_SESSION") return;
-
-  // ⛔ zamez vícenásobnému vyhodnocení
+  // vyhodnocuj jen jednou
   if (checked) return;
+
+  // dokud neexistuje session, NErozhoduj
+  if (!session) return;
+
   checked = true;
 
-  if (!session) {
-    location.replace("/signin.html");
-    return;
-  }
-
+  // kontrola role
   if (session.user.app_metadata?.role !== "admin") {
     location.replace("/signin.html");
   }
 });
 </script>
-
 
 
 </body>
