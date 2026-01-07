@@ -185,6 +185,27 @@ main{
   </div>
 
 </main>
+<script>
+const params = new URLSearchParams(window.location.search);
+const uid = params.get("uid");
+
+async function loadCertificate() {
+  const r = await fetch(
+    `https://azfrniqqtetoqploxwgq.supabase.co/rest/v1/member_certificates?certificate_uid=eq.${uid}&select=*`,
+    {
+      headers: {
+        "apikey": SUPABASE_ANON_KEY,
+        "Authorization": "Bearer " + SUPABASE_ANON_KEY
+      }
+    }
+  );
+
+  const [cert] = await r.json();
+  // tady jen zobrazíš hodnoty
+}
+
+loadCertificate();
+</script>
 
 </body>
 </html>
