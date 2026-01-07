@@ -478,29 +478,52 @@ let DATA = {
   commissions: []
 };
 
+type="module">
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+
+/* ================= SUPABASE ================= */
+const supabase = createClient(
+  "https://azfrniqqtetoqploxwgq.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF6ZnJuaXFxdGV0b3FwbG94d2dxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3MzQ1OTYsImV4cCI6MjA4MzMxMDU5Nn0.QchmzNhs8owd6pkjZCk04u6PJoJ2Bhzz7oGV0KFyqdU"
+);
+
+/* ================= ENDPOINTY ================= */
+const BASE = "https://azfrniqqtetoqploxwgq.supabase.co/functions/v1";
+const READ = `${BASE}/smart-endpoint`;
+const CONFIRM_PAYMENT = `${BASE}/approve-member`;
+const ISSUE_CERTIFICATE = `${BASE}/issue-certificate`;
+
+/* ================= DATA ================= */
+let DATA = {
+  members: [],
+  certificates: []
+};
+
 /* ================= LOAD ================= */
 async function loadAll() {
+
+  const { data: { session } } = await supabase.auth.getSession();
+  if (!session) {
+    location.replace("/signin.html");
+    return;
+  }
+
   const r = await fetch(READ, {
     method: "POST",
     headers: {
-      "Content-Type": "application/json",
-      "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF6ZnJuaXFxdGV0b3FwbG94d2dxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3MzQ1OTYsImV4cCI6MjA4MzMxMDU5Nn0.QchmzNhs8owd6pkjZCk04u6PJoJ2Bhzz7oGV0KFyqdU"
+      "Authorization": `Bearer ${session.access_token}`
     }
   });
 
   const json = await r.json();
 
-  // ⛑️ OCHRANA PROTI NEKOMPLETNÍM DATŮM
-  DATA = {
-    members: json.members || [],
-    certificates: json.certificates || [],
-    agents: json.agents || [],
-    promo: json.promo || [],
-    commissions: json.commissions || []
-  };
+  DATA.members = json.members || [];
+  DATA.certificates = json.certificates || [];
+
   membersTable.innerHTML = DATA.members.map(m => {
+
     let state = "closed";
-    let text  = "Certifikát vydán (uzavřeno)";
+    let text  = "Uzavřeno";
     let color = "blue";
 
     if (m.status === "approved" && m.paid === false) {
@@ -514,136 +537,86 @@ async function loadAll() {
       !DATA.certificates.find(c => c.member_id === m.id)
     ) {
       state = "issue-certificate";
-      text  = "Platba potvrzena – klikni pro vydání certifikátu";
+      text  = "Klikni pro vydání certifikátu";
       color = "green";
     }
 
     return `
-<tr class="member-row"
-    onclick="handleMemberAction(${m.id}, '${state}')"
+<tr onclick="handleMemberAction(${m.id}, '${state}')"
     style="cursor:${state === 'closed' ? 'default' : 'pointer'}">
 
   <td>${m.id}</td>
-
   <td>
     <div style="display:flex;align-items:center;gap:10px">
       <span class="led ${color}"></span>
       <div>
-        <div><b>${m.name ?? "—"}</b></div>
+        <b>${m.name}</b><br>
         <small>${text}</small>
       </div>
     </div>
   </td>
-
-  <td>${(m.deposit ?? 0).toLocaleString("cs-CZ")} CZK</td>
+  <td>${m.deposit.toLocaleString("cs-CZ")} CZK</td>
   <td>${m.ww_key ?? 0}</td>
-  <td>${m.status ?? "-"}</td>
+  <td>${m.status}</td>
 </tr>`;
   }).join("");
 
   certTable.innerHTML = DATA.certificates.map(c => `
 <tr>
   <td>${c.certificate_id}</td>
-  <td>${getMemberName(c.member_id)}</td>
+  <td>${DATA.members.find(m => m.id === c.member_id)?.name ?? "—"}</td>
   <td>${c.ww_keys}</td>
   <td>${c.deposit_czk.toLocaleString("cs-CZ")} CZK</td>
   <td>${new Date(c.issued_at).toLocaleDateString("cs-CZ")}</td>
 </tr>
 `).join("");
-
-  agentsTable.innerHTML = DATA.agents.map(a => `
-<tr>
-  <td>${a.id}</td>
-  <td>${a.name}</td>
-  <td>${a.email}</td>
-  <td>${a.status}</td>
-  <td>
-    ${
-      a.status === "active"
-        ? `<button onclick="generatePromo(${a.id})">🎟 Promo</button>`
-        : `<button onclick="approveAgent(${a.id})">Schválit</button>`
-    }
-  </td>
-</tr>
-`).join("");
-
-  promoTable.innerHTML = DATA.promo.map(p => `
-<tr>
-  <td>${p.code}</td>
-  <td>${p.agent_id}</td>
-  <td>${p.commission_pct ?? "-"}</td>
-  <td>${p.used_count ?? 0}</td>
-  <td>${p.status ?? "-"}</td>
-  <td>${p.created_at ? new Date(p.created_at).toLocaleDateString() : "-"}</td>
-</tr>
-`).join("");
 }
+
 /* ================= AKCE ================= */
-async function handleMemberAction(memberId, state) {
+window.handleMemberAction = async function(memberId, state) {
 
-  // 🔐 1️⃣ vezmeme session (JWT)
   const { data: { session } } = await supabase.auth.getSession();
-
-  if (!session) {
-    alert("Session vypršela, přihlas se znovu.");
-    location.replace("/signin.html");
-    return;
-  }
-
   const token = session.access_token;
 
-  /* ================= POTVRZENÍ PLATBY ================= */
   if (state === "confirm-payment") {
     await fetch(CONFIRM_PAYMENT, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json"
       },
       body: JSON.stringify({ member_id: memberId })
     });
-
     loadAll();
   }
 
-  /* ================= VYDÁNÍ CERTIFIKÁTU ================= */
   if (state === "issue-certificate") {
-
     const r = await fetch(ISSUE_CERTIFICATE, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json"
       },
       body: JSON.stringify({ member_id: memberId })
     });
 
     const cert = await r.json();
-
-    // ⛑️ ochrana
-    if (!cert || !cert.certificate_id) {
-      alert("Certifikát nebylo možné vytvořit.");
-      return;
-    }
-
-    /* ================= OTEVŘENÍ CERTIFIKÁTU ================= */
-    const member = DATA.members.find(m => m.id === memberId);
+    const m = DATA.members.find(x => x.id === memberId);
 
     const url =
       `/certificates/certificate.html` +
-      `?name=${encodeURIComponent(member?.name ?? "")}` +
-      `&amount=${member?.deposit ?? 0}` +
-      `&keys=${member?.ww_key ?? 0}` +
+      `?name=${encodeURIComponent(m.name)}` +
+      `&amount=${m.deposit}` +
+      `&keys=${m.ww_key}` +
       `&date=${new Date(cert.issued_at).toLocaleDateString("cs-CZ")}` +
       `&id=${cert.certificate_id}`;
 
-    // 🔥 otevře se nové okno – lze uložit / tisknout
     window.open(url, "_blank");
-
     loadAll();
   }
-}
+};
 
+loadAll();
 </script>
 
 <script>
