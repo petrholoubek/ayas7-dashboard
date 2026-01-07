@@ -262,7 +262,7 @@ input{
 <meta charset="utf-8"/>
 <title>AYAS-7 Engine • Admin</title>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script
+
 <style>
 :root{
   --bg:#020617;
@@ -445,6 +445,8 @@ input{
 
 <div class="footer">AYAS-7 • interní audit-ready administrační velín</div>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <script>
 /* =========================================================
    KONFIGURACE – NEMĚNIT (UŽ JE SPRÁVNĚ)
@@ -697,6 +699,24 @@ loadAll();
 
 </script>
 <script>
+/* ================= SUPABASE CLIENT ================= */
+
+const SUPABASE_URL =
+  "https://azfrniqqtetoqploxwgq.supabase.co";
+
+const SUPABASE_ANON_KEY =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF6ZnJuaXFxdGV0b3FwbG94d2dxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3MzQ1OTYsImV4cCI6MjA4MzMxMDU5Nn0.QchmzNhs8owd6pkjZCk04u6PJoJ2Bhzz7oGV0KFyqdU";
+
+const supabase = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_ANON_KEY
+);
+
+/* =================================================== */
+</script>
+
+
+<script>
 async function addAgent() {
   const name  = document.getElementById("aName").value.trim();
   const email = document.getElementById("aEmail").value.trim();
@@ -754,22 +774,6 @@ async function loadAgents() {
 
 // načíst při otevření admina
 loadAgents();
-</script>
-<script>
-/* ================= SUPABASE CLIENT ================= */
-
-const SUPABASE_URL =
-  "https://azfrniqqtetoqploxwgq.supabase.co";
-
-const SUPABASE_ANON_KEY =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF6ZnJuaXFxdGV0b3FwbG94d2dxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3MzQ1OTYsImV4cCI6MjA4MzMxMDU5Nn0.QchmzNhs8owd6pkjZCk04u6PJoJ2Bhzz7oGV0KFyqdU";
-
-const supabase = window.supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_ANON_KEY
-);
-
-/* =================================================== */
 </script>
 
 <script>
