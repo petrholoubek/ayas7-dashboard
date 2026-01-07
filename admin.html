@@ -445,6 +445,453 @@ input{
 
 <div class="footer">AYAS-7 • interní audit-ready administrační velín</div>
 </div>
+<!doctype html>
+<html lang="cs">
+<head>
+<meta charset="utf-8"/>
+<title>AYAS-7 Engine • Admin</title>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<!-- FAVICON / PWA -->
+  <link rel="icon" type="image/png" sizes="192x192" href="/ayas7-192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="/ayas7-512.png">
+  <link rel="apple-touch-icon" href="/ayas7-192.png">
+  <meta name="theme-color" content="#020617">
+
+<style>
+:root{
+  --bg:#020617;
+  --card:#0f172acc;
+  --border:#94a3b833;
+  --text:#e5e7eb;
+  --muted:#94a3b8;
+  --green:#22c55e;
+  --yellow:#facc15;
+}
+
+*{box-sizing:border-box}
+
+html,body{
+  margin:0;
+  padding:0;
+  background:var(--bg);
+  font-family:"Segoe UI",Tahoma,Verdana,sans-serif;
+  color:var(--text);
+}
+
+/* =========================================================
+   ADMIN TOPBAR (SAFE, ISOLATED)
+   ========================================================= */
+.admin-topbar{
+  background:linear-gradient(to right,#060b16,#0a1a33);
+  border-bottom:1px solid var(--border);
+}
+
+.admin-topbar-inner{
+  max-width:1500px;
+  margin:auto;
+  padding:10px 22px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:20px;
+}
+
+.admin-brand{
+  display:flex;
+  flex-direction:column;
+  gap:2px;
+}
+.admin-brand-main{
+  font-size:16px;
+  font-weight:600;
+  letter-spacing:.06em;
+}
+.admin-brand-sub{
+  font-size:10px;
+  letter-spacing:.18em;
+  color:var(--muted);
+}
+
+.admin-nav{
+  flex:1;
+  display:flex;
+  justify-content:center;
+}
+.admin-nav-list{
+  list-style:none;
+  display:flex;
+  gap:20px;
+  padding:0;
+  margin:0;
+}
+.admin-nav-link{
+  font-size:12px;
+  color:#cbd5f5;
+  text-decoration:none;
+}
+.admin-nav-link:hover,
+.admin-nav-link.active{
+  color:#fff;
+  font-weight:600;
+}
+
+.admin-topbar-right{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+.admin-logout{
+  background:#020617;
+  border:1px solid var(--border);
+  color:var(--text);
+  padding:5px 12px;
+  border-radius:999px;
+  font-size:11px;
+  cursor:pointer;
+}
+.admin-logout:hover{
+  border-color:var(--green);
+  color:var(--green);
+}
+.admin-nav-link{
+  position:relative;
+}
+
+.admin-nav-link::after{
+  content:"";
+  position:absolute;
+  left:0;
+  bottom:-4px;
+  width:0;
+  height:2px;
+  border-radius:999px;
+  background:linear-gradient(to right,#22c55e,#4ade80);
+  transition:width .22s ease;
+}
+
+.admin-nav-link:hover::after,
+.admin-nav-link.active::after{
+  width:100%;
+}
+.admin-led{
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:var(--green);
+  box-shadow:0 0 8px var(--green);
+  display:inline-block;
+}
+
+
+/* =========================================================
+   ORIGINAL ADMIN LAYOUT (UNCHANGED)
+   ========================================================= */
+.app{
+  max-width:1500px;
+  margin:auto;
+  padding:22px;
+  display:flex;
+  flex-direction:column;
+  gap:18px;
+}
+
+.header{
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+}
+
+.ng{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  font-size:11px;
+  color:var(--muted);
+  letter-spacing:1.4px
+}
+.led{
+  width:10px;
+  height:10px;
+  border-radius:50%;
+  background:var(--green);
+  box-shadow:0 0 8px var(--green)
+}
+.engine{font-size:26px;font-weight:600}
+.admin{font-size:13px}
+.process{font-size:11px;color:var(--muted)}
+
+.card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:16px;
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+
+h2{margin:0;font-size:14px;letter-spacing:1px}
+p{margin:0;font-size:12px;color:var(--muted)}
+
+table{width:100%;border-collapse:collapse;font-size:12px}
+th,td{padding:8px;border-bottom:1px solid var(--border);text-align:left}
+th{font-size:11px;color:var(--muted)}
+
+.actions{display:flex;gap:6px;flex-wrap:wrap}
+button{
+  background:#020617;
+  border:1px solid var(--border);
+  color:var(--text);
+  padding:5px 10px;
+  font-size:11px;
+  border-radius:8px;
+  cursor:pointer
+}
+button.approve{border-color:var(--green);color:var(--green)}
+button.warn{border-color:var(--yellow);color:var(--yellow)}
+.status-pending{color:var(--yellow)}
+.status-approved,.status-active{color:var(--green)}
+
+input{
+  background:#020617;
+  border:1px solid var(--border);
+  color:var(--text);
+  padding:5px 8px;
+  border-radius:6px;
+  font-size:11px;
+}
+
+.footer{
+  text-align:center;
+  font-size:10px;
+  color:var(--muted)
+}
+</style>
+</head>
+
+<body>
+
+<!-- ===== TOP NAVIGATION ===== -->
+<header class="admin-topbar">
+  <div class="admin-topbar-inner">
+
+    <div class="admin-brand">
+      <div class="admin-brand-main">AYAS-7 Engine</div>
+      <div class="admin-brand-sub">ADMIN CONTROL</div>
+    </div>
+
+    <nav class="admin-nav">
+      <ul class="admin-nav-list">
+        <li><a href="dashboard.html" class="admin-nav-link">Home</a></li>
+        <li><a href="members.html" class="admin-nav-link">Členská sekce</a></li>
+        <li><a href="performance.html" class="admin-nav-link">Výkon &amp; výnos</a></li>
+        <li><a href="admin.html" class="admin-nav-link active">Admin</a></li>
+      </ul>
+    </nav>
+
+    <div class="admin-topbar-right">
+  <button class="admin-logout" id="logoutBtn">
+    <span class="admin-led"></span>
+    Logout
+  </button>
+</div>
+
+  </div>
+</header>
+
+</body>
+</html>
+
+
+<!doctype html>
+<html lang="cs">
+<head>
+<meta charset="utf-8"/>
+<title>AYAS-7 Engine • Admin</title>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+<style>
+:root{
+  --bg:#020617;
+  --card:#0f172acc;
+  --border:#94a3b833;
+  --text:#e5e7eb;
+  --muted:#94a3b8;
+  --green:#22c55e;
+  --yellow:#facc15;
+}
+*{box-sizing:border-box}
+html,body{
+  margin:0;padding:0;background:var(--bg);
+  font-family:"Segoe UI",Tahoma,Verdana,sans-serif;
+  color:var(--text);
+}
+.app{
+  max-width:1500px;
+  margin:auto;
+  padding:22px;
+  display:flex;
+  flex-direction:column;
+  gap:18px;
+}
+
+/* HEADER */
+.header{display:flex;flex-direction:column;gap:4px}
+.ng{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--muted);letter-spacing:1.4px}
+.led{width:10px;height:10px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green)}
+.engine{font-size:26px;font-weight:600}
+.admin{font-size:13px}
+.process{font-size:11px;color:var(--muted)}
+
+/* CARD */
+.card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:16px;
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+
+h2{margin:0;font-size:14px;letter-spacing:1px}
+p{margin:0;font-size:12px;color:var(--muted)}
+
+/* TABLE */
+table{width:100%;border-collapse:collapse;font-size:12px}
+th,td{padding:8px;border-bottom:1px solid var(--border);text-align:left}
+th{font-size:11px;color:var(--muted)}
+
+/* BUTTONS */
+.actions{display:flex;gap:6px;flex-wrap:wrap}
+button{
+  background:#020617;
+  border:1px solid var(--border);
+  color:var(--text);
+  padding:5px 10px;
+  font-size:11px;
+  border-radius:8px;
+  cursor:pointer
+}
+button.approve{border-color:var(--green);color:var(--green)}
+button.warn{border-color:var(--yellow);color:var(--yellow)}
+.status-pending{color:var(--yellow)}
+.status-approved,.status-active{color:var(--green)}
+
+input{
+  background:#020617;
+  border:1px solid var(--border);
+  color:var(--text);
+  padding:5px 8px;
+  border-radius:6px;
+  font-size:11px;
+}
+
+.footer{text-align:center;font-size:10px;color:var(--muted)}
+</style>
+</head>
+
+<body>
+<div class="app">
+
+<!-- HEADER -->
+<div class="header">
+  <div class="ng"><span class="led"></span><span>Next Generation</span></div>
+  <div class="engine">AYAS-7 Engine</div>
+  <div class="admin">Admin – úřední deska</div>
+  <div class="process">Rozhodovací, administrativní a auditní procesy</div>
+</div>
+
+<!-- OFICIÁLNÍ AUDIT -->
+<div class="card">
+  <button onclick="generateOfficialAudit()">
+    GENEROVAT OFICIÁLNÍ AUDIT (PDF)
+  </button>
+</div>
+
+
+<!-- ČLENOVÉ -->
+<div class="card">
+<h2>ČLENOVÉ DRUŽSTVA</h2>
+<p>Schvalování členství.</p>
+<table>
+<thead>
+<tr><th>ID</th><th>Člen</th><th>Vklad</th><th>WW-KEY</th><th>Stav</th><th>Akce</th></tr>
+</thead>
+<tbody id="membersTable"></tbody>
+</table>
+<div class="actions">
+<button onclick="pdfMembers()">PDF – členové</button>
+</div>
+</div>
+
+<!-- CERTIFIKÁTY -->
+<div class="card">
+<h2>CERTIFIKÁTY</h2>
+<p>Vydané certifikáty.</p>
+<table>
+<thead>
+<tr>
+  <th>Certificate ID</th>
+  <th>Člen</th>
+  <th>WW-KEY</th>
+  <th>Vklad</th>
+  <th>Datum</th>
+</tr>
+
+</thead>
+<tbody id="certTable"></tbody>
+</table>
+<div class="actions">
+<button onclick="pdfCertificates()">PDF – certifikáty</button>
+</div>
+</div>
+
+<!-- OBCHODNÍCI -->
+<div class="card">
+<h2>OBCHODNÍ ZÁSTUPCI</h2>
+<p>Evidence a schvalování.</p>
+
+<div class="actions">
+<input id="aName" placeholder="Jméno">
+<input id="aEmail" placeholder="Email">
+<input id="aPhone" placeholder="Telefon">
+<button onclick="addAgent()">Přidat obchodníka</button>
+</div>
+
+<table>
+<thead>
+<tr><th>ID</th><th>Jméno</th><th>Email</th><th>Stav</th><th>Akce</th></tr>
+</thead>
+<tbody id="agentsTable"></tbody>
+</table>
+</div>
+
+<!-- PROMO KÓDY -->
+<div class="card">
+<h2>PROMO KÓDY</h2>
+<p>Přehled vygenerovaných kódů.</p>
+<table>
+<thead>
+<tr>
+  <th>Kód</th>
+  <th>Agent</th>
+  <th>Provize %</th>
+  <th>Použití</th>
+  <th>Stav</th>
+  <th>Datum</th>
+</tr>
+</thead>
+<tbody id="promoTable"></tbody>
+</table>
+
+<div class="actions">
+<button onclick="pdfPromo()">PDF – promo kódy</button>
+</div>
+</div>
+
+<div class="footer">AYAS-7 • interní audit-ready administrační velín</div>
+</div>
 <script type="module">
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
@@ -625,6 +1072,212 @@ ${tableHtml}
    START
 ========================================================= */
 loadAll();
+</script>
+
+<script>
+/* =========================================================
+   AYAS-7 • CLEAN HTML → PDF EXPORT
+   NO jsPDF • NO audit-print.html
+   ========================================================= */
+
+/* ===== VYTVOŘENÍ PDF OKNA ===== */
+function openPdfWindow(title, tableHtml) {
+  const w = window.open("", "_blank");
+
+  w.document.write(`
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<title>${title}</title>
+
+<style>
+@page { size: A4; margin: 20mm; }
+
+body{
+  font-family:"Segoe UI",Tahoma,Verdana,sans-serif;
+  font-size:11px;
+  color:#000;
+  line-height:1.45;
+}
+
+h1{
+  font-size:20px;
+  margin:0;
+}
+
+.sub{
+  font-size:11px;
+  margin-bottom:10px;
+}
+
+hr{
+  border:none;
+  border-top:1px solid #000;
+  margin:12px 0;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  font-size:10.5px;
+}
+
+th,td{
+  border:1px solid #000;
+  padding:4px 6px;
+  text-align:left;
+}
+
+th{
+  background:#f0f0f0;
+}
+
+.footer{
+  margin-top:18px;
+  font-size:10px;
+  border-top:1px solid #000;
+  padding-top:6px;
+}
+
+@media print{
+  button{display:none;}
+}
+</style>
+</head>
+
+<body>
+
+<button onclick="window.print()">Uložit jako PDF</button>
+
+<h1>AYAS-7</h1>
+<div class="sub">Audit & Reporting • Interní dokument</div>
+
+<hr>
+
+<h2>${title}</h2>
+
+${tableHtml}
+
+<div class="footer">
+Vygenerováno z AYAS-7 Admin • ${new Date().toLocaleString("cs-CZ")}
+</div>
+
+</body>
+</html>
+`);
+
+  w.document.close();
+}
+
+/* =========================================================
+   PDF – ČLENOVÉ
+   ========================================================= */
+function pdfMembers() {
+  let rows = DATA.members.map((m,i)=>`
+    <tr>
+      <td>${i+1}</td>
+      <td>${m.name}</td>
+      <td>${m.email}</td>
+      <td>${m.deposit.toLocaleString("cs-CZ")} CZK</td>
+      <td>${m.ww_key}</td>
+      <td>${m.status}</td>
+    </tr>
+  `).join("");
+
+  const table = `
+<table>
+<thead>
+<tr>
+  <th>#</th>
+  <th>Jméno</th>
+  <th>Email</th>
+  <th>Vklad</th>
+  <th>WW-KEY</th>
+  <th>Stav</th>
+</tr>
+</thead>
+<tbody>${rows}</tbody>
+</table>
+`;
+
+  openPdfWindow("Členové družstva", table);
+}
+function getMemberName(memberId){
+  const m = DATA.members.find(x => x.id === memberId);
+  return m ? m.name : "—";
+}
+
+
+/* =========================================================
+   PDF – CERTIFIKÁTY (FINÁLNÍ VERZE)
+   ========================================================= */
+function pdfCertificates() {
+  let rows = DATA.certificates.map((c,i)=>`
+    <tr>
+      <td>${i + 1}</td>
+      <td>${getMemberName(c.member_id)}</td>
+      <td>${c.certificate_id}</td>
+      <td>${c.ww_keys}</td>
+      <td>${c.deposit_czk.toLocaleString("cs-CZ")} CZK</td>
+      <td>${new Date(c.issued_at).toLocaleDateString("cs-CZ")}</td>
+    </tr>
+  `).join("");
+
+  const table = `
+<table>
+<thead>
+<tr>
+  <th>#</th>
+  <th>Člen</th>
+  <th>Certificate ID</th>
+  <th>WW-KEY</th>
+  <th>Vklad</th>
+  <th>Datum vydání</th>
+</tr>
+</thead>
+<tbody>
+${rows}
+</tbody>
+</table>
+`;
+
+  openPdfWindow("Vydané certifikáty", table);
+}
+
+/* =========================================================
+   PDF – PROMO KÓDY
+   ========================================================= */
+function pdfPromo() {
+  let rows = DATA.promo.map((p,i)=>`
+    <tr>
+      <td>${i+1}</td>
+      <td>${p.code}</td>
+      <td>${p.agent_id}</td>
+      <td>${p.commission_pct ?? "-"} %</td>
+      <td>${p.used_count ?? 0}</td>
+      <td>${p.status ?? "-"}</td>
+    </tr>
+  `).join("");
+
+  const table = `
+<table>
+<thead>
+<tr>
+  <th>#</th>
+  <th>Kód</th>
+  <th>Obchodník (ID)</th>
+  <th>Provize</th>
+  <th>Použití</th>
+  <th>Stav</th>
+</tr>
+</thead>
+<tbody>${rows}</tbody>
+</table>
+`;
+
+  openPdfWindow("Promo kódy", table);
+}
 </script>
 
 <script>
