@@ -756,12 +756,14 @@ async function addAgent() {
   }
 
   // vyčistit inputy
-  document.getElementById("aName").value = "";
-  document.getElementById("aEmail").value = "";
-  document.getElementById("aPhone").value = "";
+document.getElementById("aName").value = "";
+document.getElementById("aEmail").value = "";
+document.getElementById("aPhone").value = "";
 
-  loadAgents();
+// dočasně jen reload admina
+location.reload();
 }
+
 
 </script>
 
