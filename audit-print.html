@@ -184,8 +184,8 @@ stored in the AYAS-7 system database.
 <script>
 document.addEventListener("DOMContentLoaded", async () => {
 
-  const supabaseUrl = "https://hurayrwshmsvsylhwlbj.supabase.co";
-  const supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh1cmF5cndzaG1zdnN5bGh3bGJqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQyMTk4MzEsImV4cCI6MjA3OTc5NTgzMX0.Q0KpZX_Dln9_9OwZcCty-bbyw8drX84ax098Uy03VUI";
+  const supabaseUrl = "https://azfrniqqtetoqploxwgq.supabase.co";
+  const supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF6ZnJuaXFxdGV0b3FwbG94d2dxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3MzQ1OTYsImV4cCI6MjA4MzMxMDU5Nn0.QchmzNhs8owd6pkjZCk04u6PJoJ2Bhzz7oGV0KFyqdU";
 
   const db = supabase.createClient(supabaseUrl, supabaseAnonKey);
 
@@ -198,7 +198,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const tbody = document.getElementById("certTable");
 
   const { data, error } = await db
-    .from("certificates")
+    .from("member_certificates")
     .select("*")
     .order("issued_at", { ascending:true });
 
@@ -226,8 +226,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     let dKeys = 0, dDep = 0;
 
     byDay[day].forEach(c=>{
-      dKeys += Number(c.ww_keys||0);
-      dDep  += Number(c.deposit_czk||0);
+      dKeys += Number(c.ww_key_amount || 0);
+      dDep  += Number(c.deposit_amount || 0);
     });
 
     tbody.insertAdjacentHTML("beforeend", `
@@ -241,18 +241,22 @@ document.addEventListener("DOMContentLoaded", async () => {
     `);
 
     byDay[day].forEach(c=>{
-      totalKeys += Number(c.ww_keys||0);
-      totalDeposit += Number(c.deposit_czk||0);
-      concatHash += c.hash_sha256 || "";
+      totalKeys += Number(c.ww_key_amount || 0);
+      totalDeposit += Number(c.deposit_amount || 0);
+
+// hash počítáme deterministicky z obsahu
+concatHash += `${c.certificate_uid}|${c.deposit_amount}|${c.ww_key_amount}|${c.issued_at}`;
+
 
       tbody.insertAdjacentHTML("beforeend", `
         <tr>
           <td>${idx++}</td>
-          <td>${c.certificate_id}</td>
-          <td>${c.member_id}</td>
-          <td>${c.ww_keys}</td>
-          <td>${c.deposit_czk.toLocaleString("cs-CZ")}</td>
-          <td>${c.hash_sha256}</td>
+          <td>${c.certificate_number}</td>
+          <td>${c.member_name}</td>
+          <td>${c.ww_key_amount}</td>
+          <td>${c.deposit_amount.toLocaleString("cs-CZ")}</td>
+          <td>${c.certificate_uid}</td>
+
           <td>${new Date(c.issued_at).toLocaleString("cs-CZ")}</td>
         </tr>
       `);
