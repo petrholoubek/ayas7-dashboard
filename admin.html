@@ -780,22 +780,10 @@ async function addAgent() {
     return;
   }
 
-  /* ===== 1️⃣ přihlášený admin ===== */
-  const {
-    data: { user },
-    error: authErr
-  } = await supabaseClient.auth.getUser();
-
-  if (authErr || !user) {
-    alert("Admin není přihlášen");
-    return;
-  }
-
-  /* ===== 2️⃣ vytvoření agenta ===== */
+  /* ===== 1️⃣ vytvoření agenta ===== */
   const { data: agent, error: agentErr } = await supabaseClient
     .from("agents")
     .insert({
-      user_id: user.id,
       name,
       email,
       phone,
@@ -810,13 +798,13 @@ async function addAgent() {
     return;
   }
 
-  /* ===== 3️⃣ AUTOMATICKÝ PROMO KÓD ===== */
+  /* ===== 2️⃣ AUTOMATICKÝ PROMO KÓD ===== */
   const promoCode = generatePromoCode();
 
   const { error: promoErr } = await supabaseClient
     .from("promo_codes")
     .insert({
-      agent_id: agent.id,
+      agent_id: agent.id,   // ⬅️ KLÍČOVÉ
       code: promoCode,
       commission_rate: 0.07,
       is_active: true
@@ -828,7 +816,7 @@ async function addAgent() {
     return;
   }
 
-  /* ===== 4️⃣ cleanup + reload ===== */
+  /* ===== 3️⃣ refresh ===== */
   document.getElementById("aName").value = "";
   document.getElementById("aEmail").value = "";
   document.getElementById("aPhone").value = "";
