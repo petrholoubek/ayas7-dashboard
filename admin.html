@@ -448,7 +448,9 @@ input{
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
-/* ========= SUPABASE – JEDINÝ GLOBÁLNÍ INIT ========= */
+/* =========================================================
+   GLOBÁLNÍ KONFIGURACE – MUSÍ BÝT PRVNÍ
+   ========================================================= */
 
 const SUPABASE_URL =
   "https://azfrniqqtetoqploxwgq.supabase.co";
@@ -456,12 +458,19 @@ const SUPABASE_URL =
 const SUPABASE_ANON_KEY =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF6ZnJuaXFxdGV0b3FwbG94d2dxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3MzQ1OTYsImV4cCI6MjA4MzMxMDU5Nn0.QchmzNhs8owd6pkjZCk04u6PJoJ2Bhzz7oGV0KFyqdU";
 
+const READ_ENDPOINT_URL =
+  "https://azfrniqqtetoqploxwgq.supabase.co/functions/v1/smart-endpoint";
+
+/* =========================================================
+   SUPABASE CLIENT
+   ========================================================= */
+
 const supabaseClient = window.supabase.createClient(
   SUPABASE_URL,
   SUPABASE_ANON_KEY
 );
 
-/* ================================================= */
+/* ========================================================= */
 </script>
 <script>
 /* =========================================================
