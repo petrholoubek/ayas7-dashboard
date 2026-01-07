@@ -696,6 +696,65 @@ function openCertificate(uid) {
 loadAll();
 
 </script>
+<script>
+async function addAgent() {
+  const name  = document.getElementById("aName").value.trim();
+  const email = document.getElementById("aEmail").value.trim();
+  const phone = document.getElementById("aPhone").value.trim();
+
+  if (!name || !email) {
+    alert("Vyplň jméno a email");
+    return;
+  }
+
+  const { error } = await supabase
+    .from("agents")
+    .insert({
+      name,
+      email,
+      phone,
+      status: "active"
+    });
+
+  if (error) {
+    alert("Chyba při ukládání obchodníka");
+    console.error(error);
+    return;
+  }
+
+  // vyčistit inputy
+  document.getElementById("aName").value = "";
+  document.getElementById("aEmail").value = "";
+  document.getElementById("aPhone").value = "";
+
+  loadAgents();
+}
+
+async function loadAgents() {
+  const { data, error } = await supabase
+    .from("agents")
+    .select("id, name, email, status")
+    .order("id");
+
+  if (error) {
+    console.error(error);
+    return;
+  }
+
+  agentsTable.innerHTML = data.map(a => `
+<tr>
+  <td>${a.id}</td>
+  <td>${a.name}</td>
+  <td>${a.email}</td>
+  <td>${a.status}</td>
+  <td>—</td>
+</tr>
+`).join("");
+}
+
+// načíst při otevření admina
+loadAgents();
+</script>
 
 <script>
 /* =========================================================
