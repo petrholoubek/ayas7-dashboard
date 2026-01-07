@@ -481,7 +481,7 @@ let DATA = {
 /* ================= LOAD ================= */
 async function loadAll() {
   const r = await fetch(READ, { method: "POST" });
-  const json = await r.json();
+  DATA = await r.json();
 
   // ⛑️ OCHRANA PROTI NEKOMPLETNÍM DATŮM
   DATA = {
