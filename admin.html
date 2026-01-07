@@ -798,6 +798,21 @@ const supabaseClient = supabase.createClient(
   }
 })();
 </script>
+<script type="module">
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+
+const supabase = createClient(
+  "https://azfrniqqtetoqploxwgq.supabase.co",
+  "TVUJ_NOVY_ANON_KEY"
+);
+
+// 🔒 ADMIN GUARD
+const { data } = await supabase.auth.getSession();
+
+if (!data.session || data.session.user.app_metadata?.role !== "admin") {
+  window.location.replace("/signin.html");
+}
+</script>
 
 </body>
 </html>
