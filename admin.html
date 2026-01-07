@@ -632,43 +632,27 @@ loadAll();
 async function issueCertificate(memberId) {
   if (!confirm("Opravdu vydat certifikát tomuto členovi?")) return;
 
-  const m = DATA.members.find(x => x.id === memberId);
-  if (!m) return;
-
-  const certificateUid = crypto.randomUUID();
-
-const payload = {
-  member_id: m.id,
-  account_id: m.account_id,   // ⬅️ TEĎ UŽ NENÍ NULL
-  payment_id: m.payment_id,
-  member_name: m.name,
-  member_email: m.email,
-  ww_key_amount: m.ww_key,
-  certificate_uid: certificateUid,
-  issued_at: new Date().toISOString()
-};
-
-
   const r = await fetch(
-    "https://azfrniqqtetoqploxwgq.supabase.co/rest/v1/member_certificates",
+    "https://azfrniqqtetoqploxwgq.supabase.co/functions/v1/issue-certificate",
     {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
+        "Authorization": "Bearer " + SUPABASE_ANON_KEY,
         "apikey": SUPABASE_ANON_KEY,
-        "Authorization": "Bearer " + SUPABASE_ANON_KEY
+        "Content-Type": "application/json"
       },
-      body: JSON.stringify(payload)
+      body: JSON.stringify({ member_id: memberId })
     }
   );
 
+  const json = await r.json();
+
   if (!r.ok) {
-    alert("Chyba při vydání certifikátu");
-    console.error(await r.text());
+    alert(json.error || "Chyba při vydání certifikátu");
     return;
   }
 
-  window.open(`/certificate.html?uid=${certificateUid}`, "_blank");
+  window.open(`/certificate.html?uid=${json.certificate_uid}`, "_blank");
   loadAll();
 }
 
