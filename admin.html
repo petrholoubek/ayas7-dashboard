@@ -491,14 +491,18 @@ async function loadAll() {
        SMART-ENDPOINT → DATA.members
        ===================================================== */
     DATA.members = (json.payments || []).map(p => ({
-      id: p.member_id,
-      name: p.member_name,
-      email: p.email,
-      deposit: p.amount,
-      ww_key: p.ww_key_granted,
-      status: p.member_status,
-      paid: p.payment_status === "confirmed"
-    }));
+  id: p.member_id,
+  payment_id: p.payment_id,   // ⬅️ NOVÉ
+  account_id: p.account_id,   // ⬅️ NOVÉ
+  name: p.member_name,
+  email: p.email,
+  deposit: p.amount,
+  ww_key: p.ww_key_granted,
+  status: p.member_status,
+  paid: p.payment_status === "confirmed",
+  certificate_uid: p.certificate_uid ?? null
+}));
+
 
     renderMembersTable();
 
@@ -517,7 +521,7 @@ function renderMembersTable() {
 
     let actionHtml = "—";
 
-    // 1️⃣ čeká na potvrzení platby
+    // čeká na potvrzení platby
     if (!m.paid) {
       actionHtml = `
         <button onclick="confirmPayment(${m.id})">
@@ -526,7 +530,7 @@ function renderMembersTable() {
       `;
     }
 
-    // 2️⃣ zaplaceno, má WW-KEY, nemá certifikát
+    // zaplaceno + má WW-KEY + nemá certifikát
     if (m.paid && m.ww_key && !m.certificate_uid) {
       actionHtml = `
         <button onclick="issueCertificate(${m.id})">
@@ -535,7 +539,7 @@ function renderMembersTable() {
       `;
     }
 
-    // 3️⃣ certifikát už existuje
+    // certifikát už vydán
     if (m.certificate_uid) {
       actionHtml = `
         <span style="color:#22c55e;font-weight:600">
@@ -547,10 +551,17 @@ function renderMembersTable() {
     return `
 <tr>
   <td>${m.id}</td>
+
   <td>
-    <b>${m.name}</b><br>
-    <small>${m.email}</small>
+    <div style="display:flex;align-items:center;gap:10px">
+      <span class="led ${m.paid ? 'green' : 'yellow'}"></span>
+      <div>
+        <b>${m.name}</b><br>
+        <small>${m.paid ? 'Platba potvrzena' : 'Čeká na potvrzení platby'}</small>
+      </div>
+    </div>
   </td>
+
   <td>${(m.deposit || 0).toLocaleString("cs-CZ")} CZK</td>
   <td>${m.ww_key ?? "—"}</td>
   <td>${m.status ?? "—"}</td>
@@ -626,14 +637,17 @@ async function issueCertificate(memberId) {
 
   const certificateUid = crypto.randomUUID();
 
-  const payload = {
-    member_id: m.id,
-    member_name: m.name,
-    member_email: m.email,
-    ww_key_amount: m.ww_key,
-    certificate_uid: certificateUid,
-    issued_at: new Date().toISOString()
-  };
+const payload = {
+  member_id: m.id,
+  account_id: m.account_id,   // ⬅️ POVINNÉ
+  payment_id: m.payment_id,   // ⬅️ silně doporučeno
+  member_name: m.name,
+  member_email: m.email,
+  ww_key_amount: m.ww_key,
+  certificate_uid: certificateUid,
+  issued_at: new Date().toISOString()
+};
+
 
   const r = await fetch(
     "https://azfrniqqtetoqploxwgq.supabase.co/rest/v1/member_certificates",
@@ -876,9 +890,6 @@ function pdfPromo() {
   openPdfWindow("Promo kódy", table);
 }
 </script>
-
-
-
 
 </body>
 </html>
