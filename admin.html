@@ -578,73 +578,72 @@ async function loadAll() {
 </tr>
 `).join("");
 }
-
 /* ================= AKCE ================= */
 async function handleMemberAction(memberId, state) {
+
+  // 🔐 1️⃣ vezmeme session (JWT)
+  const { data: { session } } = await supabase.auth.getSession();
+
+  if (!session) {
+    alert("Session vypršela, přihlas se znovu.");
+    location.replace("/signin.html");
+    return;
+  }
+
+  const token = session.access_token;
+
+  /* ================= POTVRZENÍ PLATBY ================= */
   if (state === "confirm-payment") {
     await fetch(CONFIRM_PAYMENT, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      },
       body: JSON.stringify({ member_id: memberId })
     });
+
     loadAll();
   }
 
+  /* ================= VYDÁNÍ CERTIFIKÁTU ================= */
   if (state === "issue-certificate") {
-    await fetch(ISSUE_CERTIFICATE, {
+
+    const r = await fetch(ISSUE_CERTIFICATE, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      },
       body: JSON.stringify({ member_id: memberId })
     });
+
+    const cert = await r.json();
+
+    // ⛑️ ochrana
+    if (!cert || !cert.certificate_id) {
+      alert("Certifikát nebylo možné vytvořit.");
+      return;
+    }
+
+    /* ================= OTEVŘENÍ CERTIFIKÁTU ================= */
+    const member = DATA.members.find(m => m.id === memberId);
+
+    const url =
+      `/certificates/certificate.html` +
+      `?name=${encodeURIComponent(member?.name ?? "")}` +
+      `&amount=${member?.deposit ?? 0}` +
+      `&keys=${member?.ww_key ?? 0}` +
+      `&date=${new Date(cert.issued_at).toLocaleDateString("cs-CZ")}` +
+      `&id=${cert.certificate_id}`;
+
+    // 🔥 otevře se nové okno – lze uložit / tisknout
+    window.open(url, "_blank");
+
     loadAll();
   }
 }
 
-/* ================= OSTATNÍ ================= */
-async function addAgent() {
-  await fetch(ADD_AGENT, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      name: aName.value,
-      email: aEmail.value,
-      phone: aPhone.value
-    })
-  });
-  aName.value = aEmail.value = aPhone.value = "";
-  loadAll();
-}
-
-async function approveAgent(id) {
-  await fetch(APPROVE_AGENT, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ agent_id: id })
-  });
-  loadAll();
-}
-
-async function generatePromo(id) {
-  const r = await fetch(GENERATE_PROMO, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ agent_id: id })
-  });
-  const j = await r.json();
-  alert("Promo kód: " + (j.code || "nenalezen"));
-  loadAll();
-}
-
-function generateOfficialAudit() {
-  window.open("/audit-print.html?view=official&print=1", "_blank");
-}
-
-function getMemberName(id) {
-  const m = DATA.members.find(x => x.id === id);
-  return m ? m.name : "—";
-}
-
-loadAll();
 </script>
 
 <script>
