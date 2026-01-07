@@ -490,26 +490,40 @@ async function loadAll() {
     /* =====================================================
        SMART-ENDPOINT → DATA.members
        ===================================================== */
-    DATA.members = (json.payments || []).map(p => ({
+DATA.members = (json.payments || []).map(p => ({
   id: p.member_id,
   payment_id: p.payment_id,
-  account_id: p.account_id,   // ⬅️ DŮLEŽITÉ
+  account_id: p.account_id,
   name: p.member_name,
   email: p.email,
   deposit: p.amount,
   ww_key: p.ww_key_granted,
   status: p.member_status,
   paid: p.payment_status === "confirmed",
-  certificate_uid: null
+  certificate_uid: p.certificate_uid ?? null
 }));
 
+/* =====================
+   SMART-ENDPOINT → DATA.certificates
+   ===================== */
+DATA.certificates = (json.payments || [])
+  .filter(p => p.certificate_uid)
+  .map(p => ({
+    certificate_uid: p.certificate_uid,
+    member_name: p.member_name,
+    ww_key: p.ww_key_granted,
+    amount: p.amount,
+    issued_at: p.confirmed_at
+  }));
 
     renderMembersTable();
+renderCertificatesTable();
 
-  } catch (err) {
-    console.error("loadAll failed:", err);
-  }
+} catch (err) {
+  console.error("loadAll failed:", err);
 }
+}
+
 
 /* =========================================================
    VYKRESLENÍ TABULKY ČLENŮ
@@ -569,6 +583,21 @@ function renderMembersTable() {
 </tr>`;
   }).join("");
 }
+
+function renderCertificatesTable() {
+  if (!window.certTable) return;
+
+  certTable.innerHTML = DATA.certificates.map(c => `
+<tr>
+  <td>${c.certificate_uid}</td>
+  <td>${c.member_name}</td>
+  <td>${c.ww_key}</td>
+  <td>${c.amount.toLocaleString("cs-CZ")} CZK</td>
+  <td>${new Date(c.issued_at).toLocaleDateString("cs-CZ")}</td>
+</tr>
+`).join("");
+}
+
 async function confirmPayment(memberId) {
   if (!confirm("Opravdu potvrdit platbu tohoto člena?")) return;
 
