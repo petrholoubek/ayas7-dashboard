@@ -554,14 +554,17 @@ function renderMembersTable() {
       `;
     }
 
-    // certifikát už vydán
-    if (m.certificate_uid) {
-      actionHtml = `
-        <span style="color:#22c55e;font-weight:600">
-          Certifikát vydán
-        </span>
-      `;
-    }
+ // certifikát už vydán
+if (m.certificate_uid) {
+  actionHtml = `
+    <button
+      onclick="openCertificate('${m.certificate_uid}')"
+      style="background:#16a34a;color:#fff">
+      Zobrazit certifikát
+    </button>
+  `;
+}
+
 
     return `
 <tr>
@@ -657,8 +660,6 @@ function getMemberName(id) {
 /* =========================================================
    INIT
    ========================================================= */
-loadAll();
-
 async function issueCertificate(memberId) {
   if (!confirm("Opravdu vydat certifikát tomuto členovi?")) return;
 
@@ -685,6 +686,14 @@ async function issueCertificate(memberId) {
   window.open(`/certificate.html?uid=${json.certificate_uid}`, "_blank");
   loadAll();
 }
+
+/* ⬇️⬇️⬇️ TUTO FUNKCI TAM TEĎ DOPLŇ ⬇️⬇️⬇️ */
+function openCertificate(uid) {
+  window.open(`/certificate.html?uid=${uid}`, "_blank");
+}
+
+/* ⬇️⬇️⬇️ AŽ ÚPLNĚ POSLEDNÍ ŘÁDEK ⬇️⬇️⬇️ */
+loadAll();
 
 </script>
 
