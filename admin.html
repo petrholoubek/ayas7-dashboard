@@ -445,7 +445,6 @@ input{
 
 <div class="footer">AYAS-7 • interní audit-ready administrační velín</div>
 </div>
-
 <script type="module">
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
@@ -455,21 +454,21 @@ const supabase = createClient(
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF6ZnJuaXFxdGV0b3FwbG94d2dxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3MzQ1OTYsImV4cCI6MjA4MzMxMDU5Nn0.QchmzNhs8owd6pkjZCk04u6PJoJ2Bhzz7oGV0KFyqdU"
 );
 
-/* ================= ENDPOINTY ================= */
-const READ  = "https://azfrniqqtetoqploxwgq.supabase.co/functions/v1/smart-endpoint";
-const ISSUE = "https://azfrniqqtetoqploxwgq.supabase.co/functions/v1/issue-certificate";
+/* ================= ENDPOINT ================= */
+const READ =
+  "https://azfrniqqtetoqploxwgq.supabase.co/functions/v1/smart-endpoint";
 
 /* ================= LOAD ================= */
 async function loadAll() {
 
-  /* 1️⃣ session */
+  /* 1️⃣ SESSION */
   const { data: { session } } = await supabase.auth.getSession();
   if (!session) {
-    location.href = "/signin.html";
+    location.replace("/signin.html");
     return;
   }
 
-  /* 2️⃣ data */
+  /* 2️⃣ FETCH DATA */
   const r = await fetch(READ, {
     method: "POST",
     headers: {
@@ -478,102 +477,59 @@ async function loadAll() {
   });
 
   if (!r.ok) {
-    console.error("SMART ENDPOINT ERROR", r.status, await r.text());
-    return;
-  }
-
-  const data = await r.json();
-  console.log("SMART DATA:", data);
-
-  const payments = data.payments || [];
-  const tbody = document.getElementById("paymentsTable");
-
-  if (!tbody) {
-    console.warn("paymentsTable neexistuje v HTML");
-    return;
-  }
-
-  if (payments.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="5">Zatím žádné platby</td></tr>`;
-    return;
-  }
-
-  /* 3️⃣ render */
-  tbody.innerHTML = payments.map(p => {
-
-    let color = "blue";
-    let text  = "Uzavřeno";
-    let click = "";
-
-    if (p.payment_status === "confirmed" && !p.certificate_uid) {
-      color = "green";
-      text  = "Klikni pro vydání certifikátu";
-      click = `onclick="issueCertificate(${p.payment_id})"`;
-    }
-
-    return `
-<tr ${click} style="cursor:${click ? "pointer" : "default"}">
-
-  <td>${p.payment_id}</td>
-
-  <td>
-    <div style="display:flex;align-items:center;gap:10px">
-      <span class="led ${color}"></span>
-      <div>
-        <b>${p.member_name}</b><br>
-        <small>${p.email}</small>
-      </div>
-    </div>
-  </td>
-
-  <td>${p.amount.toLocaleString("cs-CZ")} CZK</td>
-  <td>${p.ww_key_granted}</td>
-  <td>${p.payment_status}</td>
-
-</tr>`;
-  }).join("");
-}
-
-/* ================= ISSUE CERT ================= */
-window.issueCertificate = async function(paymentId) {
-
-  const { data: { session } } = await supabase.auth.getSession();
-  if (!session) {
-    alert("Session vypršela");
-    location.href = "/signin.html";
-    return;
-  }
-
-  const r = await fetch(ISSUE, {
-    method: "POST",
-    headers: {
-      "Authorization": `Bearer ${session.access_token}`,
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({ payment_id: paymentId })
-  });
-
-  if (!r.ok) {
-    alert("Nepodařilo se vydat certifikát");
+    console.error("SMART ENDPOINT ERROR:", r.status);
     console.error(await r.text());
     return;
   }
 
-  const cert = await r.json();
+  const json = await r.json();
+  console.log("SMART DATA:", json);
 
-  /* otevření certifikátu */
-  const url =
-    `/certificates/certificate.html` +
-    `?name=${encodeURIComponent(cert.member_name)}` +
-    `&amount=${cert.amount}` +
-    `&keys=${cert.ww_key_granted}` +
-    `&date=${new Date(cert.issued_at).toLocaleDateString("cs-CZ")}` +
-    `&id=${cert.certificate_uid}`;
+  /* 3️⃣ DATA SAFE */
+  const members      = json.members      || [];
+  const payments     = json.payments     || [];
+  const certificates = json.certificates || [];
 
-  window.open(url, "_blank");
+  /* ================= ČLENOVÉ ================= */
+  if (window.membersTable) {
+    membersTable.innerHTML = members.map(m => `
+      <tr>
+        <td>${m.member_id ?? m.id}</td>
+        <td>${m.member_name ?? m.name}</td>
+        <td>${m.email ?? "-"}</td>
+        <td>${m.member_status ?? m.status}</td>
+      </tr>
+    `).join("");
+  }
 
-  loadAll();
-};
+  /* ================= PLATBY ================= */
+  if (window.paymentsTable) {
+    paymentsTable.innerHTML = payments.map(p => `
+      <tr>
+        <td>${p.payment_id}</td>
+        <td>${p.member_name}</td>
+        <td>${p.email}</td>
+        <td>${p.amount.toLocaleString("cs-CZ")} CZK</td>
+        <td>${p.ww_key_granted}</td>
+        <td>${p.payment_status}</td>
+        <td>${new Date(p.confirmed_at).toLocaleDateString("cs-CZ")}</td>
+      </tr>
+    `).join("");
+  }
+
+  /* ================= CERTIFIKÁTY ================= */
+  if (window.certTable) {
+    certTable.innerHTML = certificates.map(c => `
+      <tr>
+        <td>${c.certificate_uid}</td>
+        <td>${c.member_name}</td>
+        <td>${c.ww_keys}</td>
+        <td>${c.amount.toLocaleString("cs-CZ")} CZK</td>
+        <td>${new Date(c.issued_at).toLocaleDateString("cs-CZ")}</td>
+      </tr>
+    `).join("");
+  }
+}
 
 /* ================= START ================= */
 loadAll();
