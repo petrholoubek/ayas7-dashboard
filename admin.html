@@ -446,64 +446,42 @@ input{
 <div class="footer">AYAS-7 • interní audit-ready administrační velín</div>
 </div>
 
-<script>
-/* ================= ENDPOINT ================= */
+<script type="module">
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+
+const supabase = createClient(
+  "https://azfrniqqtetoqploxwgq.supabase.co",  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF6ZnJuaXFxdGV0b3FwbG94d2dxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3MzQ1OTYsImV4cCI6MjA4MzMxMDU5Nn0.QchmzNhs8owd6pkjZCk04u6PJoJ2Bhzz7oGV0KFyqdU"
+);
+
 const READ = "https://azfrniqqtetoqploxwgq.supabase.co/functions/v1/smart-endpoint";
 
-/* ================= DATA ================= */
-let DATA = {
-  members: [],
-  certificates: [],
-  agents: [],
-  promo: []
-};
-
-/* ================= LOAD ================= */
 async function loadAll() {
+  const { data: { session } } = await supabase.auth.getSession();
+
+  if (!session) {
+    alert("Nejsi přihlášen");
+    location.href = "/signin.html";
+    return;
+  }
+
   const r = await fetch(READ, {
     method: "POST",
     headers: {
-      "Content-Type": "application/json"
+      "Authorization": `Bearer ${session.access_token}`
     }
   });
 
+  if (!r.ok) {
+    console.error("HTTP", r.status);
+    const t = await r.text();
+    console.error(t);
+    return;
+  }
+
   const json = await r.json();
-
-  DATA.members = json.members || [];
-  DATA.certificates = json.certificates || [];
-  DATA.agents = json.agents || [];
-  DATA.promo = json.promo || [];
-
-  /* ===== MEMBERS ===== */
-  membersTable.innerHTML = DATA.members.map(m => `
-<tr>
-  <td>${m.id}</td>
-  <td>${m.name}</td>
-  <td>${m.deposit ?? 0} CZK</td>
-  <td>${m.ww_key ?? 0}</td>
-  <td>${m.status}</td>
-</tr>
-`).join("");
-
-  /* ===== CERTIFICATES ===== */
-  certTable.innerHTML = DATA.certificates.map(c => `
-<tr>
-  <td>${c.certificate_id}</td>
-  <td>${getMemberName(c.member_id)}</td>
-  <td>${c.ww_keys}</td>
-  <td>${c.deposit_czk} CZK</td>
-  <td>${new Date(c.issued_at).toLocaleDateString("cs-CZ")}</td>
-</tr>
-`).join("");
+  console.log("SMART DATA:", json);
 }
 
-/* ================= HELPERS ================= */
-function getMemberName(id) {
-  const m = DATA.members.find(x => x.id === id);
-  return m ? m.name : "—";
-}
-
-/* ================= START ================= */
 loadAll();
 </script>
 
