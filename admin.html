@@ -514,38 +514,70 @@ function renderMembersTable() {
   if (!window.membersTable) return;
 
   membersTable.innerHTML = DATA.members.map(m => {
-    let state = "closed";
-    let text  = "Platba potvrzena";
-    let color = "green";
 
+    let actionHtml = "—";
+
+    // 1️⃣ čeká na potvrzení platby
     if (!m.paid) {
-      state = "confirm-payment";
-      text  = "Čeká na potvrzení platby";
-      color = "yellow";
+      actionHtml = `
+        <button onclick="confirmPayment(${m.id})">
+          Potvrdit platbu
+        </button>
+      `;
+    }
+
+    // 2️⃣ zaplaceno, má WW-KEY, nemá certifikát
+    if (m.paid && m.ww_key && !m.certificate_uid) {
+      actionHtml = `
+        <button onclick="issueCertificate(${m.id})">
+          Vydat certifikát
+        </button>
+      `;
+    }
+
+    // 3️⃣ certifikát už existuje
+    if (m.certificate_uid) {
+      actionHtml = `
+        <span style="color:#22c55e;font-weight:600">
+          Certifikát vydán
+        </span>
+      `;
     }
 
     return `
-<tr class="member-row"
-    onclick="handleMemberAction(${m.id}, '${state}')"
-    style="cursor:${state === 'closed' ? 'default' : 'pointer'}">
-
+<tr>
   <td>${m.id}</td>
-
   <td>
-    <div style="display:flex;align-items:center;gap:10px">
-      <span class="led ${color}"></span>
-      <div>
-        <div><b>${m.name ?? "—"}</b></div>
-        <small>${text}</small>
-      </div>
-    </div>
+    <b>${m.name}</b><br>
+    <small>${m.email}</small>
   </td>
-
   <td>${(m.deposit || 0).toLocaleString("cs-CZ")} CZK</td>
   <td>${m.ww_key ?? "—"}</td>
   <td>${m.status ?? "—"}</td>
+  <td>${actionHtml}</td>
 </tr>`;
   }).join("");
+}
+async function confirmPayment(memberId) {
+  if (!confirm("Opravdu potvrdit platbu tohoto člena?")) return;
+
+  const r = await fetch(CONFIRM_PAYMENT, {
+    method: "POST",
+    headers: {
+      "Authorization": "Bearer " + SUPABASE_ANON_KEY,
+      "apikey": SUPABASE_ANON_KEY,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ member_id: memberId })
+  });
+
+  if (!r.ok) {
+    alert("Chyba při potvrzení platby");
+    console.error(await r.text());
+    return;
+  }
+
+  loadAll();
 }
 
 /* =========================================================
@@ -586,18 +618,19 @@ function getMemberName(id) {
    ========================================================= */
 loadAll();
 
-async function issueCertificate(member, payment) {
+async function issueCertificate(memberId) {
   if (!confirm("Opravdu vydat certifikát tomuto členovi?")) return;
+
+  const m = DATA.members.find(x => x.id === memberId);
+  if (!m) return;
 
   const certificateUid = crypto.randomUUID();
 
   const payload = {
-    member_id: member.id,
-    account_id: payment.account_id,
-    payment_id: payment.id,
-    member_name: member.name,
-    member_email: member.email,
-    ww_key_amount: payment.ww_key_granted,
+    member_id: m.id,
+    member_name: m.name,
+    member_email: m.email,
+    ww_key_amount: m.ww_key,
     certificate_uid: certificateUid,
     issued_at: new Date().toISOString()
   };
@@ -609,8 +642,7 @@ async function issueCertificate(member, payment) {
       headers: {
         "Content-Type": "application/json",
         "apikey": SUPABASE_ANON_KEY,
-        "Authorization": "Bearer " + SUPABASE_ANON_KEY,
-        "Prefer": "return=minimal"
+        "Authorization": "Bearer " + SUPABASE_ANON_KEY
       },
       body: JSON.stringify(payload)
     }
