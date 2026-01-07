@@ -446,39 +446,7 @@ input{
 <div class="footer">AYAS-7 • interní audit-ready administrační velín</div>
 </div>
 
-<script>
-/* ================= ENDPOINTY – NOVÝ PROJEKT ================= */
-const BASE = "https://azfrniqqtetoqploxwgq.supabase.co/functions/v1";
-
-const READ =
-  `${BASE}/smart-endpoint`;
-
-const CONFIRM_PAYMENT =
-  `${BASE}/approve-member`;
-
-const ISSUE_CERTIFICATE =
-  `${BASE}/issue-certificate`;
-
-const ADD_AGENT =
-  `${BASE}/add-agent`;
-
-const APPROVE_AGENT =
-  `${BASE}/approve-agent`;
-
-const GENERATE_PROMO =
-  `${BASE}/generate-promo`;
-
-
-/* ================= DATA ================= */
-let DATA = {
-  members: [],
-  certificates: [],
-  agents: [],
-  promo: [],
-  commissions: []
-};
-
-type="module">
+<script type="module">
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
 /* ================= SUPABASE ================= */
@@ -501,8 +469,8 @@ let DATA = {
 
 /* ================= LOAD ================= */
 async function loadAll() {
-
   const { data: { session } } = await supabase.auth.getSession();
+
   if (!session) {
     location.replace("/signin.html");
     return;
@@ -550,14 +518,14 @@ async function loadAll() {
     <div style="display:flex;align-items:center;gap:10px">
       <span class="led ${color}"></span>
       <div>
-        <b>${m.name}</b><br>
+        <b>${m.name ?? "—"}</b><br>
         <small>${text}</small>
       </div>
     </div>
   </td>
-  <td>${m.deposit.toLocaleString("cs-CZ")} CZK</td>
+  <td>${(m.deposit ?? 0).toLocaleString("cs-CZ")} CZK</td>
   <td>${m.ww_key ?? 0}</td>
-  <td>${m.status}</td>
+  <td>${m.status ?? "-"}</td>
 </tr>`;
   }).join("");
 
@@ -574,7 +542,6 @@ async function loadAll() {
 
 /* ================= AKCE ================= */
 window.handleMemberAction = async function(memberId, state) {
-
   const { data: { session } } = await supabase.auth.getSession();
   const token = session.access_token;
 
@@ -605,9 +572,9 @@ window.handleMemberAction = async function(memberId, state) {
 
     const url =
       `/certificates/certificate.html` +
-      `?name=${encodeURIComponent(m.name)}` +
-      `&amount=${m.deposit}` +
-      `&keys=${m.ww_key}` +
+      `?name=${encodeURIComponent(m.name ?? "")}` +
+      `&amount=${m.deposit ?? 0}` +
+      `&keys=${m.ww_key ?? 0}` +
       `&date=${new Date(cert.issued_at).toLocaleDateString("cs-CZ")}` +
       `&id=${cert.certificate_id}`;
 
