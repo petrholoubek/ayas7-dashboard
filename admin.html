@@ -373,18 +373,19 @@ input{
   <p>Nově registrovaní uživatelé čekající na schválení.</p>
 
   <div class="card-table-wrapper">
-    <table>
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Email</th>
-          <th>Datum registrace</th>
-          <th>Stav</th>
-          <th>Akce</th>
-        </tr>
-      </thead>
-      <tbody id="pendingUsersTable"></tbody>
-    </table>
+  <table>
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Jméno</th>
+      <th>Email</th>
+      <th>Vytvořeno</th>
+      <th>Akce</th>
+    </tr>
+  </thead>
+  <tbody id="pendingUsersTable"></tbody>
+</table>
+
   </div>
 </div>
 
@@ -567,6 +568,34 @@ renderCertificatesTable();
 } catch (err) {
   console.error("loadAll failed:", err);
 }
+}
+function renderPendingUsers(users) {
+  const tbody = document.getElementById("pendingUsersTable");
+  if (!tbody) return;
+
+  if (!users || users.length === 0) {
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="5">Žádní čekající uživatelé</td>
+      </tr>
+    `;
+    return;
+  }
+
+  tbody.innerHTML = users.map(u => `
+    <tr>
+      <td>${u.id}</td>
+      <td>${u.members_data?.name ?? "—"}</td>
+      <td>${u.members_data?.email ?? "—"}</td>
+      <td>${new Date(u.created_at).toLocaleString("cs-CZ")}</td>
+      <td>
+        <button onclick="approveUser(${u.id})">Povolit</button>
+        <button onclick="rejectUser(${u.id})" style="background:#dc2626;color:#fff">
+          Zamítnout
+        </button>
+      </td>
+    </tr>
+  `).join("");
 }
 
 
@@ -789,13 +818,23 @@ async function issueCertificate(memberId) {
 function openCertificate(uid) {
   window.open(`/certificates/certificate.html?uid=${uid}`, "_blank");
 }
+
 /* =========================================================
    SCHVALOVÁNÍ PŘÍSTUPU – NAČTENÍ ČEKAJÍCÍCH
    ========================================================= */
 async function loadPendingUsers() {
   const { data, error } = await supabaseClient
     .from("member_accounts")
-    .select("id, user_id, created_at, status")
+    .select(`
+      id,
+      user_id,
+      status,
+      created_at,
+      members_data (
+        name,
+        email
+      )
+    `)
     .eq("status", "pending")
     .order("created_at", { ascending: true })
     .limit(50);
@@ -807,21 +846,8 @@ async function loadPendingUsers() {
 
   console.log("PENDING USERS:", data);
 
-  if (!window.pendingUsersTable) return;
-
-  pendingUsersTable.innerHTML = data.map(u => `
-    <tr>
-      <td>${u.id}</td>
-      <td>${u.user_id}</td>
-      <td>${new Date(u.created_at).toLocaleString("cs-CZ")}</td>
-      <td>
-        <button onclick="approveUser(${u.id})">Povolit</button>
-        <button onclick="rejectUser(${u.id})">Zamítnout</button>
-      </td>
-    </tr>
-  `).join("");
+  renderPendingUsers(data);
 }
-
 
 /* =========================================================
    SCHVALOVÁNÍ / ZAMÍTNUTÍ UŽIVATELE
@@ -1126,9 +1152,6 @@ document.addEventListener("DOMContentLoaded", () => {
   loadAll();
   loadPromoCodes();
   loadPendingUsers();
-  console.log("INIT pending members");
-});
-
 
 
 </script>
