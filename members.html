@@ -1036,14 +1036,9 @@ function downloadMyCertificatePdf() {
 <script type="module">
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-/* =========================================================
-   KONFIGURACE
-   ========================================================= */
 const SUPABASE_URL =
   "https://azfrniqqtetoqploxwgq.supabase.co";
-
-const SUPABASE_ANON_KEY =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF6ZnJuaXFxdGV0b3FwbG94d2dxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3MzQ1OTYsImV4cCI6MjA4MzMxMDU5Nn0.QchmzNhs8owd6pkjZCk04u6PJoJ2Bhzz7oGV0KFyqdU";
+const SUPABASE_ANON_KEY =  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF6ZnJuaXFxdGV0b3FwbG94d2dxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3MzQ1OTYsImV4cCI6MjA4MzMxMDU5Nn0.QchmzNhs8owd6pkjZCk04u6PJoJ2Bhzz7oGV0KFyqdU";
 
 const READ_ENDPOINT_URL =
   "https://azfrniqqtetoqploxwgq.supabase.co/functions/v1/smart-endpoint";
@@ -1051,7 +1046,7 @@ const READ_ENDPOINT_URL =
 /* =========================================================
    SUPABASE CLIENT
    ========================================================= */
-const supabase = createClient(
+window.supabase = createClient(
   SUPABASE_URL,
   SUPABASE_ANON_KEY
 );
