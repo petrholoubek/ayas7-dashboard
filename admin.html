@@ -834,30 +834,42 @@ async function loadPendingUsers() {
 async function approveUser(id) {
   if (!confirm("Povolit přístup tomuto uživateli?")) return;
 
-  await supabaseClient
-    .from("member_accounts")
+  const { error } = await supabaseClient
+    .from("members_data")
     .update({
       status: "approved",
       approved_at: new Date().toISOString()
     })
     .eq("id", id);
 
+  if (error) {
+    console.error("approveUser error:", error);
+    alert("Chyba při schválení uživatele");
+    return;
+  }
+
   loadPendingUsers();
+  loadAll(); // obnoví hlavní tabulku členů
 }
 
 async function rejectUser(id) {
   if (!confirm("Zamítnout přístup tomuto uživateli?")) return;
 
-  await supabaseClient
-    .from("member_accounts")
-    .update({ status: "rejected" })
+  const { error } = await supabaseClient
+    .from("members_data")
+    .update({
+      status: "rejected"
+    })
     .eq("id", id);
+
+  if (error) {
+    console.error("rejectUser error:", error);
+    alert("Chyba při zamítnutí uživatele");
+    return;
+  }
 
   loadPendingUsers();
 }
-
-
-/* ⬇️⬇️⬇️ AŽ ÚPLNĚ POSLEDNÍ ŘÁDEK ⬇️⬇️⬇️ */
 
 
 </script>
