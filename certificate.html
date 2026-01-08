@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<title>AYAS-7 · Certifikát WW-KEY</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- FAVICON / PWA -->
+  <link rel="icon" type="image/png" sizes="192x192" href="/ayas7-192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="/ayas7-512.png">
+  <link rel="apple-touch-icon" href="/ayas7-192.png">
+  <meta name="theme-color" content="#020617">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{
+  width:100%;
+  height:100%;
+  background:#020617;
+  font-family:"Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  color:#e5e7eb;
+}
+
+/* STRÁNKA */
+.page{
+  width:210mm;
+  height:297mm;
+  margin:20px auto;
+  position:relative;
+  background:linear-gradient(180deg,#0b1120,#020617 70%,#000);
+}
+
+/* RÁMEČEK = HRANICE AUTORITY */
+.frame{
+  position:absolute;
+  top:28mm;
+  left:22mm;
+  right:22mm;
+  bottom:22mm;
+  border:1px solid rgba(148,163,184,.28);
+  border-radius:8px;
+  pointer-events:none;
+}
+
+/* VEŠKERÝ OBSAH MUSÍ BÝT UVNITŘ RÁMEČKU */
+.content-wrap{
+  position:absolute;
+  top:28mm;
+  left:22mm;
+  right:22mm;
+  bottom:22mm;
+  padding:22mm 6mm;
+  display:flex;
+  flex-direction:column;
+}
+
+/* PODPIS SYSTÉMU – VLEVO */
+.system{
+  font-size:10px;
+  letter-spacing:.36em;
+  color:#94a3b8;
+  text-transform:uppercase;
+  margin-bottom:18mm;
+  margin-top:-16mm;   /* ⬅⬅ TADY */
+}
+
+/* HLAVIČKA – STŘED */
+.header{
+  text-align:center;
+  margin-bottom:18mm;
+}
+.logo{
+  font-size:30px;
+  font-weight:700;
+  letter-spacing:.28em;
+}
+.title{
+  margin-top:14px;
+  font-size:24px;
+  letter-spacing:.18em;
+}
+.subtitle{
+  margin-top:10px;
+  font-size:12px;
+  color:#9ca3af;
+  max-width:520px;
+  margin-left:auto;
+  margin-right:auto;
+}
+
+/* DATA – LEVO / PRAVO */
+.grid{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 140px;              /* 🔥 velká osa – ROZTAŽENÍ */
+  row-gap: 18px;
+  margin: 14mm 0 0;              /* ❗ žádné centrování */
+  padding: 0 8mm;                /* ❗ respektuje rámeček */
+  font-size:13.5px;
+}
+
+/* LEVÁ STRANA – POPISKY */
+.label{
+  color:#9ca3af;
+  text-align:left;
+  letter-spacing:0.04em;
+}
+
+/* PRAVÁ STRANA – HODNOTY */
+.value{
+  font-weight:600;
+  text-align:right;
+  letter-spacing:0.02em;
+}
+
+/* RAZÍTKO */
+.seal{
+  margin:26mm auto 0;
+  width:220px;
+  height:220px;
+  border-radius:50%;
+  position:relative;
+
+  background:
+    radial-gradient(
+      circle at 50% 22%,
+      rgba(147,197,253,.22),
+      rgba(147,197,253,.10) 55%,
+      rgba(147,197,253,.04) 72%,
+      transparent 78%
+    ),
+    radial-gradient(circle at 50% 50%, rgba(255,255,255,.05), transparent 60%);
+
+  border:1px solid rgba(147,197,253,.55);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.seal-inner{
+  width:190px;
+  height:190px;
+  border-radius:50%;
+  border:1px dashed rgba(147,197,253,.45);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+}
+.seal-count{
+  font-size:40px;
+  font-weight:700;
+  color:#4fa3ff;
+}
+.seal-text{
+  margin-top:6px;
+  font-size:11px;
+  letter-spacing:.28em;
+  text-transform:uppercase;
+  color:#bfdbfe;
+}
+
+/* FOOTER */
+.footer{
+  margin-top:auto;
+  margin-bottom:-10mm;  /* ⬅⬅ TADY */
+  font-size:10px;
+  color:#9ca3af;
+}
+.footer hr{
+  border:none;
+  border-top:1px solid rgba(148,163,184,.25);
+  margin-bottom:8px;
+}
+.hash{
+  font-family:monospace;
+  font-size:10px;
+  color:#64748b;
+  word-break:break-all;
+}
+.legal{
+  margin-top:8px;
+  color:#94a3b8;
+}
+
+@media print{
+  body{background:#000}
+  .page{margin:0}
+}
+</style>
+</head>
+
+<body>
+<div class="page">
+
+  <div class="frame"></div>
+
+  <div class="content-wrap">
+
+    <div class="system">Next Generation · AYAS-7 Engine</div>
+
+    <div class="header">
+      <div class="logo">AYAS-7</div>
+      <div class="title">CERTIFIKÁT WW-KEY</div>
+      <div class="subtitle">
+        Tento certifikát potvrzuje přidělení členských jednotek WW-KEY
+        v rámci systému AYAS-7.
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="label">Jméno člena</div><div class="value" data-name></div>
+      <div class="label">Datum vydání</div><div class="value" data-date></div>
+      <div class="label">Výše vkladu</div><div class="value" data-amount></div>
+      <div class="label">Kurz WW-KEY</div><div class="value">1 WW-KEY = 25 CZK</div>
+    </div>
+
+    <div class="seal">
+      <div class="seal-inner">
+        <div class="seal-count" data-keys></div>
+        <div class="seal-text">WW-KEY přiděleno</div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <hr>
+      <div class="hash">
+        Certificate ID: <span data-id></span><br>
+        SHA-256 Integrity Hash: <span data-hash></span>
+      </div>
+      <div class="legal">
+        Tento dokument slouží výhradně jako potvrzení evidence členských jednotek
+        v systému Win-Win Cooperative a nepředstavuje investiční nástroj ani příslib výnosu.
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const SUPABASE_ANON_KEY =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF6ZnJuaXFxdGV0b3FwbG94d2dxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3MzQ1OTYsImV4cCI6MjA4MzMxMDU5Nn0.QchmzNhs8owd6pkjZCk04u6PJoJ2Bhzz7oGV0KFyqdU";
+
+const params = new URLSearchParams(location.search);
+const uid = params.get("uid");
+
+if (!uid) {
+  alert("Chybí ID certifikátu");
+}
+
+async function loadCertificate() {
+  const r = await fetch(
+    `https://azfrniqqtetoqploxwgq.supabase.co/rest/v1/member_certificates?certificate_uid=eq.${uid}&select=*`,
+    {
+      headers: {
+        "apikey": SUPABASE_ANON_KEY,
+        "Authorization": "Bearer " + SUPABASE_ANON_KEY
+      }
+    }
+  );
+
+  const [c] = await r.json();
+  if (!c) {
+    alert("Certifikát nebyl nalezen");
+    return;
+  }
+
+  // dosazení do layoutu
+  document.querySelector("[data-name]").textContent = c.member_name;
+  document.querySelector("[data-date]").textContent =
+    new Date(c.issued_at).toLocaleDateString("cs-CZ");
+  document.querySelector("[data-amount]").textContent =
+    `${(c.deposit_amount || c.amount || 0).toLocaleString("cs-CZ")} CZK`;
+  document.querySelector("[data-keys]").textContent = c.ww_key_amount || c.ww_key;
+  document.querySelector("[data-id]").textContent = c.certificate_uid;
+
+  // SHA-256 hash (auditní stopa)
+  const raw = `${c.member_name}|${c.deposit_amount || c.amount}|${c.ww_key_amount || c.ww_key}|${c.issued_at}|${c.certificate_uid}|AYAS7`;
+  const buf = await crypto.subtle.digest(
+    "SHA-256",
+    new TextEncoder().encode(raw)
+  );
+
+  document.querySelector("[data-hash]").textContent =
+    [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2,"0")).join("");
+}
+
+loadCertificate();
+</script>
+
+
+</body>
+</html>
