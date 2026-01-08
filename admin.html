@@ -373,18 +373,18 @@ input{
   <p>Nově registrovaní uživatelé čekající na schválení.</p>
 
   <div class="card-table-wrapper">
-      <table>
-  <thead>
-    <tr>
-      <th>ID</th>
-      <th>Jméno</th>
-      <th>Email</th>
-      <th>Vytvořeno</th>
-      <th>Akce</th>
-    </tr>
-  </thead>
-  <tbody id="pendingUsersTable"></tbody>
-</table>
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Email</th>
+          <th>Datum registrace</th>
+          <th>Stav</th>
+          <th>Akce</th>
+        </tr>
+      </thead>
+      <tbody id="pendingUsersTable"></tbody>
+    </table>
   </div>
 </div>
 
@@ -1126,6 +1126,11 @@ document.addEventListener("DOMContentLoaded", () => {
   loadAll();
   loadPromoCodes();
   loadPendingUsers();
+  console.log("INIT pending members");
+});
+
+
+
 </script>
 
 
