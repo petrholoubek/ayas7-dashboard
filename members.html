@@ -1162,20 +1162,7 @@ document.addEventListener("DOMContentLoaded", () => {
   loadMyData();
 });
 </script>
-<script type="module">
-import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
-
-/* ===============================
-   SUPABASE
-   =============================== */
-const supabase = createClient(
-  "https://azfrniqqtetoqploxwgq.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF6ZnJuaXFxdGV0b3FwbG94d2dxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3MzQ1OTYsImV4cCI6MjA4MzMxMDU5Nn0.QchmzNhs8owd6pkjZCk04u6PJoJ2Bhzz7oGV0KFyqdU"
-);
-
-/* ===============================
-   JEDINÝ SUBMIT FORMULÁŘE
-   =============================== */
+<script>
 const form = document.getElementById("memberForm");
 
 if (!form) {
@@ -1184,15 +1171,16 @@ if (!form) {
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    // 🔐 session
-    const { data: { session } } = await supabase.auth.getSession();
+    // 🔐 použij EXISTUJÍCÍ supabase client
+    const { data } = await supabase.auth.getSession();
+    const session = data?.session;
 
     if (!session) {
       alert("Nejsi přihlášen");
       return;
     }
 
-    // 📥 hodnoty
+    // 📥 hodnoty z formuláře
     const amount = Number(
       document.getElementById("investmentAmount").value
     );
@@ -1205,35 +1193,41 @@ if (!form) {
       return;
     }
 
-    // 🚀 EDGE FUNCTION
-    const r = await fetch(
-      "https://azfrniqqtetoqploxwgq.supabase.co/functions/v1/purchase-ww-key",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": "Bearer " + session.access_token
-        },
-        body: JSON.stringify({
-          amount,
-          promo_code
-        })
+    try {
+      const r = await fetch(
+        "https://azfrniqqtetoqploxwgq.supabase.co/functions/v1/purchase-ww-key",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + session.access_token
+          },
+          body: JSON.stringify({
+            amount,
+            promo_code
+          })
+        }
+      );
+
+      const json = await r.json();
+
+      if (!r.ok) {
+        alert(json.error || "Chyba při zpracování platby");
+        console.error(json);
+        return;
       }
-    );
 
-    const json = await r.json();
+      alert(
+        "Platba přijata.\n" +
+        "Po potvrzení se zobrazí stav a certifikát."
+      );
 
-    if (!r.ok) {
-      alert(json.error || "Chyba při zpracování platby");
-      console.error(json);
-      return;
+      location.reload();
+
+    } catch (err) {
+      console.error(err);
+      alert("Technická chyba – zkus to později.");
     }
-
-    alert(
-      `Platba přijata.\nPřiděleno WW-KEY: ${json.ww_key_added}`
-    );
-
-    location.reload();
   });
 }
 </script>
