@@ -264,7 +264,9 @@ async function loadCertificate() {
   }
 
   // dosazení do layoutu
-  document.querySelector("[data-name]").textContent = c.member_name;
+  document.querySelector("[data-name]").textContent =
+  c.full_name || c.member_name;
+
   document.querySelector("[data-date]").textContent =
     new Date(c.issued_at).toLocaleDateString("cs-CZ");
   document.querySelector("[data-amount]").textContent =
