@@ -799,14 +799,17 @@ async function loadPendingUsers() {
       method: "POST",
       headers: {
         "Authorization": "Bearer " + SUPABASE_ANON_KEY,
-        "apikey": SUPABASE_ANON_KEY,
         "Content-Type": "application/json"
       }
     }
   );
 
-  const data = await r.json();
+  if (!r.ok) {
+    console.error("admin-pending-members failed");
+    return;
+  }
 
+  const data = await r.json();
   console.log("PENDING USERS:", data);
 
   if (!window.pendingUsersTable) return;
@@ -814,7 +817,7 @@ async function loadPendingUsers() {
   pendingUsersTable.innerHTML = data.map(u => `
     <tr>
       <td>${u.id}</td>
-      <td>${u.email}</td>
+      <td>${u.user_id}</td>
       <td>${new Date(u.created_at).toLocaleString("cs-CZ")}</td>
       <td>
         <button onclick="approveUser(${u.id})">Povolit</button>
