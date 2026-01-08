@@ -753,18 +753,23 @@ table.members-table tbody tr:nth-child(odd){
                <b>members_data</b> v Supabase. V další fázi se zde bude zobrazovat i stav platby
                (FIAT / krypto) a napojení na platební stránku.
              </div>
+<div class="card-sub">
+  Vyplň údaje, které budou použity pro vystavení certifikátu a oficiální dokumenty.
+  <br>
+  <b>Identita člena a platba jsou vázány na tvůj přihlášený účet.</b>
+</div>
 
              <form id="memberForm">
                <div class="form-group">
-                 <label class="form-label" for="memberName">Jméno a příjmení</label>
+                 <label class="form-label" for="memberName">Jméno a příjmení (na certifikátu)</label>
                  <input id="memberName" class="form-input" placeholder="Jan Novák" required />
                </div>
                <div class="form-group">
-                 <label class="form-label" for="memberEmail">E-mail</label>
+                 <label class="form-label" for="memberEmail">Kontaktní e-mail (pro certifikát a komunikaci</label>
                  <input id="memberEmail" type="email" class="form-input" placeholder="email@domain.cz" required />
                </div>
                <div class="form-group">
-                 <label class="form-label" for="memberPhone">Telefon</label>
+                 <label class="form-label" for="memberPhone">Telefon (nepovinné, pouze pro kontakt)</label>
                  <input id="memberPhone" class="form-input" placeholder="+420 123 456 789" required />
                </div>
 <div class="form-group">
