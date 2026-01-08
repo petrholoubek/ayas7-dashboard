@@ -1130,16 +1130,13 @@ window.openCertificate = function (uid) {
 document.addEventListener("DOMContentLoaded", loadMyData);
 </script>
 <script>
-const supabase = window.supabase;
 const form = document.getElementById("memberForm");
 
-if (!form) {
-  console.error("Form memberForm nenalezen");
-} else {
+if (form) {
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    const { data } = await supabase.auth.getSession();
+    const { data } = await window.supabase.auth.getSession();
     const session = data?.session;
 
     if (!session) {
@@ -1167,10 +1164,7 @@ if (!form) {
           "Content-Type": "application/json",
           "Authorization": "Bearer " + session.access_token
         },
-        body: JSON.stringify({
-          amount,
-          promo_code
-        })
+        body: JSON.stringify({ amount, promo_code })
       }
     );
 
@@ -1181,42 +1175,9 @@ if (!form) {
       return;
     }
 
-    alert(
-      "Platba přijata.\n" +
-      "Po potvrzení se zobrazí stav a certifikát."
-    );
-
+    alert("Platba přijata. Čeká se na potvrzení.");
     location.reload();
   });
-}
-</script>
-<script>
-function downloadMyCertificatePdf() {
-  // proměnná je naplněná z smart-endpointu
-  // (už ji máš – používá se pro tabulku)
-  if (!window.myPayments || !window.myPayments.length) {
-    alert("Zatím nemáte potvrzenou platbu.");
-    return;
-  }
-
-  // najdeme certifikát uživatele
-  const withCert = window.myPayments.find(
-    p => p.certificate_uid
-  );
-
-  if (!withCert) {
-    alert(
-      "Certifikát zatím nebyl vydán.\n" +
-      "Jakmile bude potvrzen, zobrazí se zde možnost stažení."
-    );
-    return;
-  }
-
-  // otevře EXISTUJÍCÍ certifikát v print režimu
-  window.open(
-    `/certificates/certificate.html?uid=${withCert.certificate_uid}&print=1`,
-    "_blank"
-  );
 }
 </script>
 
