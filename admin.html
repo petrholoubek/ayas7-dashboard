@@ -306,6 +306,11 @@ html,body{
   flex-direction:column;
   gap:12px;
 }
+.card-table-wrapper {
+  max-height: 420px;
+  overflow-y: auto;
+}
+
 
 h2{margin:0;font-size:14px;letter-spacing:1px}
 p{margin:0;font-size:12px;color:var(--muted)}
@@ -360,6 +365,27 @@ input{
   <button onclick="generateOfficialAudit()">
     GENEROVAT OFICIÁLNÍ AUDIT (PDF)
   </button>
+</div>
+
+<!-- SCHVALOVÁNÍ PŘÍSTUPU -->
+<div class="card">
+  <h2>SCHVALOVÁNÍ PŘÍSTUPU</h2>
+  <p>Nově registrovaní uživatelé čekající na schválení.</p>
+
+  <div class="card-table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Email</th>
+          <th>Datum registrace</th>
+          <th>Stav</th>
+          <th>Akce</th>
+        </tr>
+      </thead>
+      <tbody id="pendingUsersTable"></tbody>
+    </table>
+  </div>
 </div>
 
 
@@ -763,6 +789,69 @@ async function issueCertificate(memberId) {
 function openCertificate(uid) {
   window.open(`/certificates/certificate.html?uid=${uid}`, "_blank");
 }
+/* =========================================================
+   SCHVALOVÁNÍ PŘÍSTUPU – NAČTENÍ ČEKAJÍCÍCH
+   ========================================================= */
+async function loadPendingUsers() {
+  const { data, error } = await supabaseClient
+    .from("member_accounts")
+    .select("id, email, created_at, status")
+    .eq("status", "pending")
+    .order("created_at", { ascending: true })
+    .limit(50);
+
+  if (error) {
+    console.error("loadPendingUsers error:", error);
+    return;
+  }
+
+  const tbody = document.getElementById("pendingUsersTable");
+  if (!tbody) return;
+
+  tbody.innerHTML = data.map(u => `
+    <tr>
+      <td>${u.id}</td>
+      <td>${u.email}</td>
+      <td>${new Date(u.created_at).toLocaleString("cs-CZ")}</td>
+      <td>${u.status}</td>
+      <td>
+        <button onclick="approveUser(${u.id})">Povolit</button>
+        <button onclick="rejectUser(${u.id})"
+                style="background:#991b1b;color:#fff">
+          Zamítnout
+        </button>
+      </td>
+    </tr>
+  `).join("");
+}
+/* =========================================================
+   SCHVALOVÁNÍ / ZAMÍTNUTÍ UŽIVATELE
+   ========================================================= */
+async function approveUser(id) {
+  if (!confirm("Povolit přístup tomuto uživateli?")) return;
+
+  await supabaseClient
+    .from("member_accounts")
+    .update({
+      status: "approved",
+      approved_at: new Date().toISOString()
+    })
+    .eq("id", id);
+
+  loadPendingUsers();
+}
+
+async function rejectUser(id) {
+  if (!confirm("Zamítnout přístup tomuto uživateli?")) return;
+
+  await supabaseClient
+    .from("member_accounts")
+    .update({ status: "rejected" })
+    .eq("id", id);
+
+  loadPendingUsers();
+}
+
 
 /* ⬇️⬇️⬇️ AŽ ÚPLNĚ POSLEDNÍ ŘÁDEK ⬇️⬇️⬇️ */
 
@@ -1036,6 +1125,8 @@ function pdfPromo() {
 }
 loadAll();
 loadPromoCodes();
+loadPendingUsers();
+
 </script>
 
 
