@@ -799,45 +799,18 @@ function getMemberName(id) {
 async function issueCertificate(memberId) {
   if (!confirm("Opravdu vydat certifikát tomuto členovi?")) return;
 
-  // 🔐 VEME SESSION ADMINA
-  const { data: sessionData } = await supabaseClient.auth.getSession();
-  const session = sessionData?.session;
-
-  if (!session) {
-    alert("Admin není přihlášen");
-    return;
-  }
-
   const r = await fetch(
     "https://azfrniqqtetoqploxwgq.supabase.co/functions/v1/issue-certificate",
     {
       method: "POST",
       headers: {
-        "Authorization": "Bearer " + session.access_token,
+        "Authorization": "Bearer " + SUPABASE_ANON_KEY,
         "apikey": SUPABASE_ANON_KEY,
         "Content-Type": "application/json"
       },
       body: JSON.stringify({ member_id: memberId })
     }
   );
-
-  const json = await r.json();
-
-  if (!r.ok) {
-    alert(json.error || "Chyba při vydání certifikátu");
-    console.error(json);
-    return;
-  }
-
-  // otevře certifikát
-  window.open(
-    `/certificates/certificate.html?uid=${json.certificate_uid}`,
-    "_blank"
-  );
-
-  // refresh dat
-  loadAll();
-}
 
   const json = await r.json();
 
@@ -859,8 +832,8 @@ function openCertificate(uid) {
    ========================================================= */
 async function loadPendingUsers() {
   const { data, error } = await supabaseClient
-    .from("members_data")
-    .select("id, user_id, email, created_at, status")
+    .from("member_accounts")
+    .select("id, user_id, created_at, status")
     .eq("status", "pending")
     .order("created_at", { ascending: true })
     .limit(50);
@@ -877,7 +850,7 @@ async function loadPendingUsers() {
   pendingUsersTable.innerHTML = data.map(u => `
     <tr>
       <td>${u.id}</td>
-      <td>${u.email}</td>
+      <td>${u.user_id}</td>
       <td>${new Date(u.created_at).toLocaleString("cs-CZ")}</td>
       <td>
         <button onclick="approveUser(${u.id})">Povolit</button>
@@ -887,6 +860,7 @@ async function loadPendingUsers() {
   `).join("");
 }
 
+
 /* =========================================================
    SCHVALOVÁNÍ / ZAMÍTNUTÍ UŽIVATELE
    ========================================================= */
@@ -894,7 +868,7 @@ async function approveUser(id) {
   if (!confirm("Povolit přístup tomuto uživateli?")) return;
 
   await supabaseClient
-    .from("members_data")
+    .from("member_accounts")
     .update({
       status: "approved",
       approved_at: new Date().toISOString()
@@ -902,19 +876,22 @@ async function approveUser(id) {
     .eq("id", id);
 
   loadPendingUsers();
-  loadAll();
 }
 
 async function rejectUser(id) {
   if (!confirm("Zamítnout přístup tomuto uživateli?")) return;
 
   await supabaseClient
-    .from("members_data")
+    .from("member_accounts")
     .update({ status: "rejected" })
     .eq("id", id);
 
   loadPendingUsers();
 }
+
+
+/* ⬇️⬇️⬇️ AŽ ÚPLNĚ POSLEDNÍ ŘÁDEK ⬇️⬇️⬇️ */
+
 
 </script>
 
