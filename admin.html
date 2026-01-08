@@ -799,18 +799,45 @@ function getMemberName(id) {
 async function issueCertificate(memberId) {
   if (!confirm("Opravdu vydat certifikát tomuto členovi?")) return;
 
+  // 🔐 VEME SESSION ADMINA
+  const { data: sessionData } = await supabaseClient.auth.getSession();
+  const session = sessionData?.session;
+
+  if (!session) {
+    alert("Admin není přihlášen");
+    return;
+  }
+
   const r = await fetch(
     "https://azfrniqqtetoqploxwgq.supabase.co/functions/v1/issue-certificate",
     {
       method: "POST",
       headers: {
-        "Authorization": "Bearer " + SUPABASE_ANON_KEY,
+        "Authorization": "Bearer " + session.access_token,
         "apikey": SUPABASE_ANON_KEY,
         "Content-Type": "application/json"
       },
       body: JSON.stringify({ member_id: memberId })
     }
   );
+
+  const json = await r.json();
+
+  if (!r.ok) {
+    alert(json.error || "Chyba při vydání certifikátu");
+    console.error(json);
+    return;
+  }
+
+  // otevře certifikát
+  window.open(
+    `/certificates/certificate.html?uid=${json.certificate_uid}`,
+    "_blank"
+  );
+
+  // refresh dat
+  loadAll();
+}
 
   const json = await r.json();
 
