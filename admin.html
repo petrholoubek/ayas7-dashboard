@@ -867,28 +867,41 @@ async function loadPendingUsers() {
 async function approveUser(id) {
   if (!confirm("Povolit přístup tomuto uživateli?")) return;
 
-  await supabaseClient
+  const { error } = await supabaseClient
     .from("member_accounts")
     .update({
-      status: "approved",
-      approved_at: new Date().toISOString()
+      status: "active"
     })
     .eq("id", id);
 
+  if (error) {
+    alert("Chyba při schvalování uživatele");
+    console.error(error);
+    return;
+  }
+
   loadPendingUsers();
+  loadAll(); // ať se admin data ihned refreshnou
 }
 
 async function rejectUser(id) {
   if (!confirm("Zamítnout přístup tomuto uživateli?")) return;
 
-  await supabaseClient
+  const { error } = await supabaseClient
     .from("member_accounts")
-    .update({ status: "rejected" })
+    .update({
+      status: "suspended"
+    })
     .eq("id", id);
+
+  if (error) {
+    alert("Chyba při zamítnutí uživatele");
+    console.error(error);
+    return;
+  }
 
   loadPendingUsers();
 }
-
 
 /* ⬇️⬇️⬇️ AŽ ÚPLNĚ POSLEDNÍ ŘÁDEK ⬇️⬇️⬇️ */
 
