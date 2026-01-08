@@ -638,6 +638,55 @@ table.members-table tbody tr:nth-child(odd){
      .nav-list{ flex-wrap:wrap; row-gap:4px; font-size:13px; }
    }
 
+/* ===== CERTIFIKÁT STAV ===== */
+.cert-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  border: 1px solid rgba(148,163,184,0.5);
+  background: rgba(15,23,42,0.85);
+  color: #e5e7eb;
+  cursor: default;
+}
+
+.cert-action.active {
+  cursor: pointer;
+  background: linear-gradient(to right, #22c55e, #4ade80);
+  color: #020617;
+  border: none;
+}
+
+.cert-action.waiting {
+  background: rgba(15,23,42,0.9);
+  color: #9ca3af;
+}
+
+.cert-led {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+}
+
+.cert-led.green {
+  background: #22c55e;
+  box-shadow: 0 0 8px rgba(34,197,94,0.9);
+}
+
+.cert-led.blue {
+  background: #4fa3ff;
+  box-shadow: 0 0 8px rgba(79,163,255,0.9);
+}
+
+.cert-led.yellow {
+  background: #facc15;
+  box-shadow: 0 0 8px rgba(250,204,21,0.9);
+}
+
+
  </style>
 </head>
 <body>
@@ -850,22 +899,26 @@ table.members-table tbody tr:nth-child(odd){
     </div>
 
     <div class="link-actions" style="margin-top:14px;">
-      <!-- Varianta A: přímé stažení -->
-      <a href="certificate.html">
-        <button class="btn-link">
-          <span class="btn-link-dot"></span>
-          Zobrazit certifikát WW-KEY
-        </button>
-      </a>
 
-      <!-- Varianta B: PDF (zatím placeholder) -->
-      <a href="#" onclick="alert('Certifikát bude dostupný po potvrzení platby a přidělení WW-KEY.'); return false;">
-        <button class="btn-link">
-          <span class="btn-link-dot"></span>
-          Stáhnout PDF (po schválení)
-        </button>
-      </a>
-    </div>
+  <!-- Varianta A: INFO o certifikátu (bez logiky) -->
+  <a href="certificate-info.html">
+    <button class="btn-link">
+      <span class="btn-link-dot"></span>
+      Jak probíhá vydání certifikátu
+    </button>
+  </a>
+
+  <!-- Varianta B: PDF certifikátu (jen pokud existuje) -->
+  <button
+    class="btn-link"
+    onclick="downloadMyCertificatePdf()"
+  >
+    <span class="btn-link-dot"></span>
+    Stáhnout certifikát (PDF)
+  </button>
+
+</div>
+
 
   </div>
 </section>
@@ -949,6 +1002,37 @@ table.members-table tbody tr:nth-child(odd){
  </main>
 
  <footer>© 2025 Win-Win Družstvo · AYAS-7 Engine · Všechna práva vyhrazena</footer>
+
+<script>
+function downloadMyCertificatePdf() {
+  // proměnná je naplněná z smart-endpointu
+  // (už ji máš – používá se pro tabulku)
+  if (!window.myPayments || !window.myPayments.length) {
+    alert("Zatím nemáte potvrzenou platbu.");
+    return;
+  }
+
+  // najdeme certifikát uživatele
+  const withCert = window.myPayments.find(
+    p => p.certificate_uid
+  );
+
+  if (!withCert) {
+    alert(
+      "Certifikát zatím nebyl vydán.\n" +
+      "Jakmile bude potvrzen, zobrazí se zde možnost stažení."
+    );
+    return;
+  }
+
+  // otevře EXISTUJÍCÍ certifikát v print režimu
+  window.open(
+    `/certificates/certificate.html?uid=${withCert.certificate_uid}&print=1`,
+    "_blank"
+  );
+}
+</script>
+
 <script type="module">
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
@@ -1003,9 +1087,9 @@ async function loadMyData() {
   const myPayments = (json.payments || []).filter(
     p => p.email === session.user.email
   );
-
-  renderMembersTable(myPayments);
-}
+window.myPayments = myPayments;
+renderMembersTable(myPayments);
+ }
 
 /* =========================================================
    VYKRESLENÍ TABULKY (PLATBY + CERTIFIKÁT)
@@ -1021,11 +1105,35 @@ function renderMembersTable(payments) {
   }
 
   payments.forEach(p => {
-    const certHtml = p.certificate_uid
-      ? `<button onclick="openCertificate('${p.certificate_uid}')">
-           Zobrazit
-         </button>`
-      : "—";
+    let certHtml = `
+  <div class="cert-action waiting">
+    <span class="cert-led yellow"></span>
+    Čeká na potvrzení
+  </div>
+`;
+
+// zaplaceno, ale certifikát ještě nevydán
+if (p.payment_status === "confirmed" && !p.certificate_uid) {
+  certHtml = `
+    <div class="cert-action waiting">
+      <span class="cert-led blue"></span>
+      Zpracování certifikátu
+    </div>
+  `;
+}
+
+// certifikát vydán
+if (p.certificate_uid) {
+  certHtml = `
+    <button
+      class="cert-action active"
+      onclick="openCertificate('${p.certificate_uid}')"
+    >
+      <span class="cert-led green"></span>
+      Certifikát
+    </button>
+  `;
+}
 
     const tr = document.createElement("tr");
     tr.innerHTML = `
