@@ -795,7 +795,7 @@ function openCertificate(uid) {
 async function loadPendingUsers() {
   const { data, error } = await supabaseClient
     .from("member_accounts")
-    .select("id, email, created_at, status")
+    .select("id, user_id, created_at, status")
     .eq("status", "pending")
     .order("created_at", { ascending: true })
     .limit(50);
@@ -805,25 +805,24 @@ async function loadPendingUsers() {
     return;
   }
 
-  const tbody = document.getElementById("pendingUsersTable");
-  if (!tbody) return;
+  console.log("PENDING USERS:", data);
 
-  tbody.innerHTML = data.map(u => `
+  if (!window.pendingUsersTable) return;
+
+  pendingUsersTable.innerHTML = data.map(u => `
     <tr>
       <td>${u.id}</td>
-      <td>${u.email}</td>
+      <td>${u.user_id}</td>
       <td>${new Date(u.created_at).toLocaleString("cs-CZ")}</td>
-      <td>${u.status}</td>
       <td>
         <button onclick="approveUser(${u.id})">Povolit</button>
-        <button onclick="rejectUser(${u.id})"
-                style="background:#991b1b;color:#fff">
-          Zamítnout
-        </button>
+        <button onclick="rejectUser(${u.id})">Zamítnout</button>
       </td>
     </tr>
   `).join("");
 }
+
+
 /* =========================================================
    SCHVALOVÁNÍ / ZAMÍTNUTÍ UŽIVATELE
    ========================================================= */
@@ -1123,11 +1122,13 @@ function pdfPromo() {
 
   openPdfWindow("Promo kódy", table);
 }
-loadAll();
-loadPromoCodes();
-loadPendingUsers();
-console.log("INIT pending members");
-loadPendingMembers();
+document.addEventListener("DOMContentLoaded", () => {
+  loadAll();
+  loadPromoCodes();
+  loadPendingUsers();
+  console.log("INIT pending members");
+});
+
 
 
 </script>
