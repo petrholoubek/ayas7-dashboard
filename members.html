@@ -1002,7 +1002,194 @@ table.members-table tbody tr:nth-child(odd){
  </main>
 
  <footer>© 2025 Win-Win Družstvo · AYAS-7 Engine · Všechna práva vyhrazena</footer>
+<script type="module">
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
+window.supabase = createClient(
+  "https://azfrniqqtetoqploxwgq.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF6ZnJuaXFxdGV0b3FwbG94d2dxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3MzQ1OTYsImV4cCI6MjA4MzMxMDU5Nn0.QchmzNhs8owd6pkjZCk04u6PJoJ2Bhzz7oGV0KFyqdU"
+);
+</script>
+<script>
+const supabase = window.supabase;
+
+/* ===============================
+   STÁHNUTÍ PDF CERTIFIKÁTU
+=============================== */
+function downloadMyCertificatePdf() {
+  if (!window.myPayments || !window.myPayments.length) {
+    alert("Zatím nemáte potvrzenou platbu.");
+    return;
+  }
+
+  const withCert = window.myPayments.find(p => p.certificate_uid);
+
+  if (!withCert) {
+    alert(
+      "Certifikát zatím nebyl vydán.\n" +
+      "Jakmile bude potvrzen, zobrazí se zde možnost stažení."
+    );
+    return;
+  }
+
+  window.open(
+    `/certificates/certificate.html?uid=${withCert.certificate_uid}&print=1`,
+    "_blank"
+  );
+}
+
+/* ===============================
+   NAČTENÍ DAT PRO ČLENA
+=============================== */
+async function loadMyData() {
+  const { data } = await supabase.auth.getSession();
+  const session = data?.session;
+
+  if (!session) return;
+
+  const r = await fetch(
+    "https://azfrniqqtetoqploxwgq.supabase.co/functions/v1/smart-endpoint",
+    {
+      method: "POST",
+      headers: {
+        "Authorization": "Bearer " + session.access_token,
+        "Content-Type": "application/json"
+      }
+    }
+  );
+
+  if (!r.ok) return;
+
+  const json = await r.json();
+
+  const myPayments = (json.payments || []).filter(
+    p => p.email === session.user.email
+  );
+
+  window.myPayments = myPayments;
+  renderMembersTable(myPayments);
+}
+
+/* ===============================
+   TABULKA
+=============================== */
+function renderMembersTable(payments) {
+  const tbody = document.getElementById("membersTableBody");
+  tbody.innerHTML = "";
+
+  if (!payments.length) {
+    tbody.innerHTML =
+      "<tr><td colspan='6'>Zatím žádná potvrzená platba</td></tr>";
+    return;
+  }
+
+  payments.forEach(p => {
+    let certHtml = `
+      <div class="cert-action waiting">
+        <span class="cert-led yellow"></span>
+        Čeká na potvrzení
+      </div>
+    `;
+
+    if (p.payment_status === "confirmed" && !p.certificate_uid) {
+      certHtml = `
+        <div class="cert-action waiting">
+          <span class="cert-led blue"></span>
+          Zpracování certifikátu
+        </div>
+      `;
+    }
+
+    if (p.certificate_uid) {
+      certHtml = `
+        <button class="cert-action active"
+          onclick="openCertificate('${p.certificate_uid}')">
+          <span class="cert-led green"></span>
+          Certifikát
+        </button>
+      `;
+    }
+
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${new Date(p.confirmed_at).toLocaleDateString("cs-CZ")}</td>
+      <td>${p.member_name}</td>
+      <td>${p.email}</td>
+      <td>${(p.amount || 0).toLocaleString("cs-CZ")} CZK</td>
+      <td>${p.ww_key_granted ?? "—"}</td>
+      <td>${certHtml}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+window.openCertificate = function (uid) {
+  window.open(`/certificates/certificate.html?uid=${uid}`, "_blank");
+};
+
+document.addEventListener("DOMContentLoaded", loadMyData);
+</script>
+<script>
+const supabase = window.supabase;
+const form = document.getElementById("memberForm");
+
+if (!form) {
+  console.error("Form memberForm nenalezen");
+} else {
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const { data } = await supabase.auth.getSession();
+    const session = data?.session;
+
+    if (!session) {
+      alert("Nejsi přihlášen");
+      return;
+    }
+
+    const amount = Number(
+      document.getElementById("investmentAmount").value
+    );
+
+    const promo_code =
+      document.getElementById("memberPromo").value.trim() || null;
+
+    if (!amount || amount <= 0) {
+      alert("Zadej částku");
+      return;
+    }
+
+    const r = await fetch(
+      "https://azfrniqqtetoqploxwgq.supabase.co/functions/v1/purchase-ww-key",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer " + session.access_token
+        },
+        body: JSON.stringify({
+          amount,
+          promo_code
+        })
+      }
+    );
+
+    const json = await r.json();
+
+    if (!r.ok) {
+      alert(json.error || "Chyba při zpracování platby");
+      return;
+    }
+
+    alert(
+      "Platba přijata.\n" +
+      "Po potvrzení se zobrazí stav a certifikát."
+    );
+
+    location.reload();
+  });
+}
+</script>
 <script>
 function downloadMyCertificatePdf() {
   // proměnná je naplněná z smart-endpointu
@@ -1030,205 +1217,6 @@ function downloadMyCertificatePdf() {
     `/certificates/certificate.html?uid=${withCert.certificate_uid}&print=1`,
     "_blank"
   );
-}
-</script>
-
-<script type="module">
-import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
-
-/* =========================================================
-   KONFIGURACE
-   ========================================================= */
-const SUPABASE_URL =
-  "https://azfrniqqtetoqploxwgq.supabase.co";
-
-const SUPABASE_ANON_KEY =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF6ZnJuaXFxdGV0b3FwbG94d2dxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3MzQ1OTYsImV4cCI6MjA4MzMxMDU5Nn0.QchmzNhs8owd6pkjZCk04u6PJoJ2Bhzz7oGV0KFyqdU";
-
-const READ_ENDPOINT_URL =
-  "https://azfrniqqtetoqploxwgq.supabase.co/functions/v1/smart-endpoint";
-
-/* =========================================================
-   SUPABASE CLIENT
-   ========================================================= */
-const supabase = createClient(
-  SUPABASE_URL,
-  SUPABASE_ANON_KEY
-);
-
-/* =========================================================
-   NAČTENÍ DAT PRO PŘIHLÁŠENÉHO ČLENA
-   ========================================================= */
-async function loadMyData() {
-  const { data: sessionData } = await supabase.auth.getSession();
-  const session = sessionData?.session;
-
-  if (!session) {
-    console.warn("Uživatel není přihlášen");
-    return;
-  }
-
-  const r = await fetch(READ_ENDPOINT_URL, {
-    method: "POST",
-    headers: {
-      "Authorization": "Bearer " + session.access_token,
-      "Content-Type": "application/json"
-    }
-  });
-
-  if (!r.ok) {
-    console.error("Chyba smart-endpointu:", await r.text());
-    return;
-  }
-
-  const json = await r.json();
-
-  // 🔑 STEJNÁ DATA JAKO ADMIN – JEN FILTR NA UŽIVATELE
-  const myPayments = (json.payments || []).filter(
-    p => p.email === session.user.email
-  );
-window.myPayments = myPayments;
-renderMembersTable(myPayments);
- }
-
-/* =========================================================
-   VYKRESLENÍ TABULKY (PLATBY + CERTIFIKÁT)
-   ========================================================= */
-function renderMembersTable(payments) {
-  const tbody = document.getElementById("membersTableBody");
-  tbody.innerHTML = "";
-
-  if (!payments.length) {
-    tbody.innerHTML =
-      "<tr><td colspan='6'>Zatím žádná potvrzená platba</td></tr>";
-    return;
-  }
-
-  payments.forEach(p => {
-    let certHtml = `
-  <div class="cert-action waiting">
-    <span class="cert-led yellow"></span>
-    Čeká na potvrzení
-  </div>
-`;
-
-// zaplaceno, ale certifikát ještě nevydán
-if (p.payment_status === "confirmed" && !p.certificate_uid) {
-  certHtml = `
-    <div class="cert-action waiting">
-      <span class="cert-led blue"></span>
-      Zpracování certifikátu
-    </div>
-  `;
-}
-
-// certifikát vydán
-if (p.certificate_uid) {
-  certHtml = `
-    <button
-      class="cert-action active"
-      onclick="openCertificate('${p.certificate_uid}')"
-    >
-      <span class="cert-led green"></span>
-      Certifikát
-    </button>
-  `;
-}
-
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td>${new Date(p.confirmed_at).toLocaleDateString("cs-CZ")}</td>
-      <td>${p.member_name}</td>
-      <td>${p.email}</td>
-      <td>${(p.amount || 0).toLocaleString("cs-CZ")} CZK</td>
-      <td>${p.ww_key_granted ?? "—"}</td>
-      <td>${certHtml}</td>
-    `;
-    tbody.appendChild(tr);
-  });
-}
-
-/* =========================================================
-   OTEVŘENÍ CERTIFIKÁTU (STEJNÉ JAKO ADMIN)
-   ========================================================= */
-window.openCertificate = function (uid) {
-  window.open(`/certificates/certificate.html?uid=${uid}`, "_blank");
-};
-
-/* =========================================================
-   INIT
-   ========================================================= */
-document.addEventListener("DOMContentLoaded", () => {
-  loadMyData();
-});
-</script>
-<script>
-const form = document.getElementById("memberForm");
-
-if (!form) {
-  console.error("Form memberForm nenalezen");
-} else {
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-
-    // 🔐 použij EXISTUJÍCÍ supabase client
-    const { data } = await supabase.auth.getSession();
-    const session = data?.session;
-
-    if (!session) {
-      alert("Nejsi přihlášen");
-      return;
-    }
-
-    // 📥 hodnoty z formuláře
-    const amount = Number(
-      document.getElementById("investmentAmount").value
-    );
-
-    const promo_code =
-      document.getElementById("memberPromo").value.trim() || null;
-
-    if (!amount || amount <= 0) {
-      alert("Zadej částku");
-      return;
-    }
-
-    try {
-      const r = await fetch(
-        "https://azfrniqqtetoqploxwgq.supabase.co/functions/v1/purchase-ww-key",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": "Bearer " + session.access_token
-          },
-          body: JSON.stringify({
-            amount,
-            promo_code
-          })
-        }
-      );
-
-      const json = await r.json();
-
-      if (!r.ok) {
-        alert(json.error || "Chyba při zpracování platby");
-        console.error(json);
-        return;
-      }
-
-      alert(
-        "Platba přijata.\n" +
-        "Po potvrzení se zobrazí stav a certifikát."
-      );
-
-      location.reload();
-
-    } catch (err) {
-      console.error(err);
-      alert("Technická chyba – zkus to později.");
-    }
-  });
 }
 </script>
 
