@@ -1172,7 +1172,7 @@ if (!form) {
     e.preventDefault();
 
     // 🔐 použij EXISTUJÍCÍ supabase client
-    const { data } = await supabase.auth.getSession();
+    const { data } = await window.supabase.auth.getSession();
     const session = data?.session;
 
     if (!session) {
