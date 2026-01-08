@@ -793,23 +793,18 @@ function openCertificate(uid) {
    SCHVALOVÁNÍ PŘÍSTUPU – NAČTENÍ ČEKAJÍCÍCH
    ========================================================= */
 async function loadPendingUsers() {
-  const r = await fetch(
-    "https://azfrniqqtetoqploxwgq.supabase.co/functions/v1/admin-pending-members",
-    {
-      method: "POST",
-      headers: {
-        "Authorization": "Bearer " + SUPABASE_ANON_KEY,
-        "Content-Type": "application/json"
-      }
-    }
-  );
+  const { data, error } = await supabaseClient
+    .from("members_data")
+    .select("id, user_id, email, created_at, status")
+    .eq("status", "pending")
+    .order("created_at", { ascending: true })
+    .limit(50);
 
-  if (!r.ok) {
-    console.error("admin-pending-members failed");
+  if (error) {
+    console.error("loadPendingUsers error:", error);
     return;
   }
 
-  const data = await r.json();
   console.log("PENDING USERS:", data);
 
   if (!window.pendingUsersTable) return;
@@ -817,7 +812,7 @@ async function loadPendingUsers() {
   pendingUsersTable.innerHTML = data.map(u => `
     <tr>
       <td>${u.id}</td>
-      <td>${u.user_id}</td>
+      <td>${u.email}</td>
       <td>${new Date(u.created_at).toLocaleString("cs-CZ")}</td>
       <td>
         <button onclick="approveUser(${u.id})">Povolit</button>
@@ -827,14 +822,13 @@ async function loadPendingUsers() {
   `).join("");
 }
 
-
 /* =========================================================
    SCHVALOVÁNÍ / ZAMÍTNUTÍ UŽIVATELE
    ========================================================= */
 async function approveUser(id) {
   if (!confirm("Povolit přístup tomuto uživateli?")) return;
 
-  const { error } = await supabaseClient
+  await supabaseClient
     .from("members_data")
     .update({
       status: "approved",
@@ -842,35 +836,20 @@ async function approveUser(id) {
     })
     .eq("id", id);
 
-  if (error) {
-    console.error("approveUser error:", error);
-    alert("Chyba při schválení uživatele");
-    return;
-  }
-
   loadPendingUsers();
-  loadAll(); // obnoví hlavní tabulku členů
+  loadAll();
 }
 
 async function rejectUser(id) {
   if (!confirm("Zamítnout přístup tomuto uživateli?")) return;
 
-  const { error } = await supabaseClient
+  await supabaseClient
     .from("members_data")
-    .update({
-      status: "rejected"
-    })
+    .update({ status: "rejected" })
     .eq("id", id);
-
-  if (error) {
-    console.error("rejectUser error:", error);
-    alert("Chyba při zamítnutí uživatele");
-    return;
-  }
 
   loadPendingUsers();
 }
-
 
 </script>
 
