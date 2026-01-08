@@ -1173,6 +1173,48 @@ function pdfPromo() {
 
   openPdfWindow("Promo kódy", table);
 }
+
+/* =========================================================
+   PDF – PROVIZE
+   ========================================================= */
+function pdfCommissions() {
+  if (!DATA.commissions || !DATA.commissions.length) {
+    alert("Žádné provize k exportu.");
+    return;
+  }
+
+  let rows = DATA.commissions.map((c,i)=>`
+    <tr>
+      <td>${i+1}</td>
+      <td>${c.promo_code}</td>
+      <td>${c.agent_name}</td>
+      <td>${(c.commission_rate * 100).toFixed(0)} %</td>
+      <td>${c.deposit_amount.toLocaleString("cs-CZ")} CZK</td>
+      <td><b>${c.commission_amount.toLocaleString("cs-CZ")} CZK</b></td>
+      <td>${new Date(c.payment_date).toLocaleDateString("cs-CZ")}</td>
+    </tr>
+  `).join("");
+
+  const table = `
+<table>
+<thead>
+<tr>
+  <th>#</th>
+  <th>Promo kód</th>
+  <th>Obchodník</th>
+  <th>%</th>
+  <th>Vklad</th>
+  <th>Provize</th>
+  <th>Datum</th>
+</tr>
+</thead>
+<tbody>${rows}</tbody>
+</table>
+`;
+
+  openPdfWindow("Provize – přehled", table);
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   loadAll();
   loadPromoCodes();
