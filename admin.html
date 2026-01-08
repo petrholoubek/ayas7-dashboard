@@ -794,8 +794,8 @@ function openCertificate(uid) {
    ========================================================= */
 async function loadPendingUsers() {
   const { data, error } = await supabaseClient
-    .from("members_data")                 // ⬅️ ZMĚNA TABULKY
-    .select("id, name, email, created_at, status")
+    .from("member_accounts")
+    .select("id, email, created_at, status")
     .eq("status", "pending")
     .order("created_at", { ascending: true })
     .limit(50);
@@ -804,11 +804,7 @@ async function loadPendingUsers() {
     console.error("loadPendingUsers error:", error);
     return;
   }
-
-  DATA.pending = data || [];
-  renderPendingUsers();
 }
-
 
   const tbody = document.getElementById("pendingUsersTable");
   if (!tbody) return;
