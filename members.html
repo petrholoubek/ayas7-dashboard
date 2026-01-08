@@ -1162,63 +1162,82 @@ document.addEventListener("DOMContentLoaded", () => {
   loadMyData();
 });
 </script>
-<script>
-document.addEventListener("DOMContentLoaded", () => {
+<script type="module">
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
 
-  const form = document.getElementById("memberForm");
-  if (!form) return;
+/* ===============================
+   SUPABASE
+   =============================== */
+const supabase = createClient(
+  "https://azfrniqqtetoqploxwgq.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF6ZnJuaXFxdGV0b3FwbG94d2dxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3MzQ1OTYsImV4cCI6MjA4MzMxMDU5Nn0.QchmzNhs8owd6pkjZCk04u6PJoJ2Bhzz7oGV0KFyqdU"
+);
 
+/* ===============================
+   JEDINÝ SUBMIT FORMULÁŘE
+   =============================== */
+const form = document.getElementById("memberForm");
+
+if (!form) {
+  console.error("Form memberForm nenalezen");
+} else {
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    // ⬇️ načtení hodnot z formuláře
-    const payload = {
-      name: document.getElementById("memberName").value.trim(),
-      email: document.getElementById("memberEmail").value.trim(),
-      phone: document.getElementById("memberPhone").value.trim(),
-      promo_code: document.getElementById("memberPromo").value.trim() || null,
-      amount: Number(document.getElementById("investmentAmount").value)
-    };
+    // 🔐 session
+    const { data: { session } } = await supabase.auth.getSession();
 
-    if (!payload.name || !payload.email || !payload.amount) {
-      alert("Vyplň prosím všechna povinná pole.");
+    if (!session) {
+      alert("Nejsi přihlášen");
       return;
     }
 
-    try {
-      const r = await fetch(
-        "https://azfrniqqtetoqploxwgq.supabase.co/functions/v1/purchase-ww-key",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify(payload)
-        }
-      );
+    // 📥 hodnoty
+    const amount = Number(
+      document.getElementById("investmentAmount").value
+    );
 
-      const json = await r.json();
+    const promo_code =
+      document.getElementById("memberPromo").value.trim() || null;
 
-      if (!r.ok) {
-        alert(json.error || "Chyba při odeslání.");
-        return;
-      }
-
-      alert(
-        "Žádost přijata.\n" +
-        "Po potvrzení platby se zobrazí stav a certifikát."
-      );
-
-      form.reset();
-
-    } catch (err) {
-      console.error(err);
-      alert("Technická chyba – zkus to později.");
+    if (!amount || amount <= 0) {
+      alert("Zadej částku");
+      return;
     }
-  });
 
-});
+    // 🚀 EDGE FUNCTION
+    const r = await fetch(
+      "https://azfrniqqtetoqploxwgq.supabase.co/functions/v1/purchase-ww-key",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer " + session.access_token
+        },
+        body: JSON.stringify({
+          amount,
+          promo_code
+        })
+      }
+    );
+
+    const json = await r.json();
+
+    if (!r.ok) {
+      alert(json.error || "Chyba při zpracování platby");
+      console.error(json);
+      return;
+    }
+
+    alert(
+      `Platba přijata.\nPřiděleno WW-KEY: ${json.ww_key_added}`
+    );
+
+    location.reload();
+  });
+}
 </script>
+
 
 </body>
 </html>
