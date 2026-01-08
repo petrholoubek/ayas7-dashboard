@@ -1162,6 +1162,63 @@ document.addEventListener("DOMContentLoaded", () => {
   loadMyData();
 });
 </script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+  const form = document.getElementById("memberForm");
+  if (!form) return;
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    // ⬇️ načtení hodnot z formuláře
+    const payload = {
+      name: document.getElementById("memberName").value.trim(),
+      email: document.getElementById("memberEmail").value.trim(),
+      phone: document.getElementById("memberPhone").value.trim(),
+      promo_code: document.getElementById("memberPromo").value.trim() || null,
+      amount: Number(document.getElementById("investmentAmount").value)
+    };
+
+    if (!payload.name || !payload.email || !payload.amount) {
+      alert("Vyplň prosím všechna povinná pole.");
+      return;
+    }
+
+    try {
+      const r = await fetch(
+        "https://azfrniqqtetoqploxwgq.supabase.co/functions/v1/purchase-ww-key",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(payload)
+        }
+      );
+
+      const json = await r.json();
+
+      if (!r.ok) {
+        alert(json.error || "Chyba při odeslání.");
+        return;
+      }
+
+      alert(
+        "Žádost přijata.\n" +
+        "Po potvrzení platby se zobrazí stav a certifikát."
+      );
+
+      form.reset();
+
+    } catch (err) {
+      console.error(err);
+      alert("Technická chyba – zkus to později.");
+    }
+  });
+
+});
+</script>
 
 </body>
 </html>
