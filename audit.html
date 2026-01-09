@@ -948,266 +948,110 @@ p, span, label, td, th, li, a, div {
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 /* =========================
-   SUPABASE KONFIGURACE
+   SUPABASE
    ========================= */
-
 const supabaseUrl = "https://azfrniqqtetoqploxwgq.supabase.co";
-const supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF6ZnJuaXFxdGV0b3FwbG94d2dxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3MzQ1OTYsImV4cCI6MjA4MzMxMDU5Nn0.QchmzNhs8owd6pkjZCk04u6PJoJ2Bhzz7oGV0KFyqdU";
+const supabaseAnonKey = "TVŮJ_ANON_KEY";
 
 const supabaseClient = supabase.createClient(
   supabaseUrl,
   supabaseAnonKey
 );
 
-// DEBUG – po ověření můžeš smazat
-console.log("AUDIT SUPABASE OK:", supabaseClient);
-
-
+console.log("AUDIT CONNECTED");
 
 /* =========================
    DENNÍ AUDIT – AGREGACE
    ========================= */
 async function loadDailyAudit() {
-  const tbody = document.getElementById('auditDailyBody');
+  const tbody = document.getElementById("auditDailyBody");
   if (!tbody) return;
 
   tbody.innerHTML = `
-    <tr>
-      <td colspan="4" style="color:#9ca3af;font-size:12px;">
-        Načítám data z databáze…
-      </td>
-    </tr>
+    <tr><td colspan="4" style="color:#9ca3af">Načítám audit…</td></tr>
   `;
 
   const { data, error } = await supabaseClient
-    .from('certificates')
-    .select('issued_at, deposit_czk, ww_keys');
+    .from("member_certificates")
+    .select("issued_at, deposit_amount, ww_key_amount");
 
   if (error) {
-    console.error('Audit select error:', error);
+    console.error(error);
     tbody.innerHTML = `
-      <tr>
-        <td colspan="4" style="color:#f87171;font-size:12px;">
-          Chyba při načítání auditních dat
-        </td>
-      </tr>
+      <tr><td colspan="4" style="color:#f87171">Chyba auditu</td></tr>
     `;
     return;
   }
 
-  if (!data || data.length === 0) {
+  if (!data || !data.length) {
     tbody.innerHTML = `
-      <tr>
-        <td colspan="4" style="color:#9ca3af;font-size:12px;">
-          Zatím nebyly vydány žádné certifikáty
-        </td>
-      </tr>
+      <tr><td colspan="4" style="color:#9ca3af">Zatím žádné certifikáty</td></tr>
     `;
     return;
   }
 
-  /* =========================
-     SESKUPENÍ PODLE DNŮ
-     ========================= */
-  const byDay = {};
-
-  data.forEach(row => {
-    if (!row.issued_at) return;
-
-    const day = new Date(row.issued_at).toISOString().slice(0, 10);
-
-    if (!byDay[day]) {
-      byDay[day] = {
-        count: 0,
-        deposit: 0,
-        keys: 0
-      };
-    }
-
-    byDay[day].count += 1;
-    byDay[day].deposit += Number(row.deposit_czk || 0);
-    byDay[day].keys += Number(row.ww_keys || 0);
-  });
-
-  /* =========================
-     VYKRESLENÍ TABULKY
-     ========================= */
-  const days = Object.keys(byDay).sort((a, b) => b.localeCompare(a));
-  tbody.innerHTML = '';
-
-  days.forEach(day => {
-    const d = byDay[day];
-    const tr = document.createElement('tr');
-
-    tr.innerHTML = `
-      <td>${day}</td>
-      <td>${d.count}</td>
-      <td>${d.deposit.toLocaleString('cs-CZ')}</td>
-      <td>${d.keys.toLocaleString('cs-CZ')}</td>
-    `;
-
-    tbody.appendChild(tr);
-  });
-}
-
-/* =========================
-   START
-   ========================= */
-loadDailyAudit();
-
-(async () => {
-  
-  const tbody = document.getElementById("auditDailyBody");
-  if (!tbody) {
-    console.error("Chybí auditDailyBody");
-    return;
-  }
-
-  const { data, error } = await supabaseClient
-    .from("certificates")
-    .select("issued_at, ww_keys, deposit_czk");
-
-  if (error) {
-    console.error("Audit select error:", error);
-    tbody.innerHTML = `
-      <tr><td colspan="4" style="color:#f87171">Chyba při načítání auditu</td></tr>
-    `;
-    return;
-  }
-
-  if (!data || data.length === 0) {
-    tbody.innerHTML = `
-      <tr><td colspan="4" style="color:#9ca3af">Žádné certifikáty</td></tr>
-    `;
-    return;
-  }
-
-  // agregace po dnech
   const days = {};
 
-  data.forEach(row => {
-    const day = new Date(row.issued_at).toISOString().slice(0, 10);
-
+  data.forEach(c => {
+    const day = new Date(c.issued_at).toISOString().slice(0,10);
     if (!days[day]) {
-      days[day] = { members: 0, czk: 0, keys: 0 };
+      days[day] = { count: 0, czk: 0, keys: 0 };
     }
-
-    days[day].members += 1;
-    days[day].czk += Number(row.deposit_czk || 0);
-    days[day].keys += Number(row.ww_keys || 0);
+    days[day].count += 1;
+    days[day].czk += Number(c.deposit_amount || 0);
+    days[day].keys += Number(c.ww_key_amount || 0);
   });
 
   tbody.innerHTML = "";
 
   Object.entries(days)
-    .sort((a, b) => b[0].localeCompare(a[0]))
-    .forEach(([day, v]) => {
-      const tr = document.createElement("tr");
-      tr.innerHTML = `
-        <td>${day}</td>
-        <td>${v.members}</td>
-        <td>${v.czk.toLocaleString("cs-CZ")}</td>
-        <td>${v.keys.toLocaleString("cs-CZ")}</td>
+    .sort((a,b)=>b[0].localeCompare(a[0]))
+    .forEach(([day,v])=>{
+      tbody.innerHTML += `
+        <tr>
+          <td>${day}</td>
+          <td>${v.count}</td>
+          <td>${v.czk.toLocaleString("cs-CZ")}</td>
+          <td>${v.keys.toLocaleString("cs-CZ")}</td>
+        </tr>
       `;
-      tbody.appendChild(tr);
     });
-})();
-
-
-/* =========================
-   AUDIT EXPORT – CSV
-   ========================= */
-
-async function fetchCertificates() {
-  const { data, error } = await supabaseClient
-    .from("certificates")
-    .select("issued_at, certificate_id, hash_sha256, ww_keys, deposit_czk")
-    .order("issued_at", { ascending: true });
-
-  if (error) {
-    alert("Chyba při načítání certifikátů");
-    throw error;
-  }
-  return data || [];
-}
-
-function downloadCSV(filename, rows) {
-  const csv = rows.map(r =>
-    r.map(v => `"${String(v ?? "").replace(/"/g, '""')}"`).join(",")
-  ).join("\n");
-
-  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-  const url = URL.createObjectURL(blob);
-
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = filename;
-  a.click();
-
-  URL.revokeObjectURL(url);
 }
 
 /* =========================
-   DENNÍ AUDIT
+   CSV EXPORT
    ========================= */
-async function exportDailyAuditCSV() {
-  const data = await fetchCertificates();
+async function exportAuditCSV() {
+  const { data } = await supabaseClient
+    .from("member_certificates")
+    .select("issued_at, certificate_uid, deposit_amount, ww_key_amount")
+    .order("issued_at");
 
   const rows = [
-    ["Datum", "Certifikát ID", "Hash", "WW-KEY", "Vklad CZK"]
+    ["Datum","Certifikát","Vklad CZK","WW-KEY"]
   ];
 
-  data.forEach(c => {
-    const day = new Date(c.issued_at).toISOString().slice(0, 10);
+  data.forEach(c=>{
     rows.push([
-      day,
-      c.certificate_id,
-      c.hash_sha256,
-      c.ww_keys,
-      c.deposit_czk
+      c.issued_at.slice(0,10),
+      c.certificate_uid,
+      c.deposit_amount,
+      c.ww_key_amount
     ]);
   });
 
-  downloadCSV(
-    `AYAS7_AUDIT_DAILY_${new Date().toISOString().slice(0,10)}.csv`,
-    rows
-  );
+  const csv = rows.map(r=>r.join(",")).join("\n");
+  const blob = new Blob([csv],{type:"text/csv"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "AYAS7_AUDIT.csv";
+  a.click();
 }
 
 /* =========================
-   MĚSÍČNÍ AGREGOVANÝ AUDIT
+   INIT
    ========================= */
-async function exportMonthlyAuditCSV() {
-  const data = await fetchCertificates();
-  const months = {};
-
-  data.forEach(c => {
-    const m = c.issued_at.slice(0, 7); // YYYY-MM
-    if (!months[m]) {
-      months[m] = { count: 0, czk: 0, keys: 0 };
-    }
-    months[m].count += 1;
-    months[m].czk += Number(c.deposit_czk || 0);
-    months[m].keys += Number(c.ww_keys || 0);
-  });
-
-  const rows = [
-    ["Měsíc", "Vydané certifikáty", "Vklad CZK", "WW-KEY"]
-  ];
-
-  Object.entries(months).forEach(([m, v]) => {
-    rows.push([m, v.count, v.czk, v.keys]);
-  });
-
-  downloadCSV(
-    `AYAS7_AUDIT_MONTHLY_${new Date().toISOString().slice(0,7)}.csv`,
-    rows
-  );
-}
-
-function exportMonthlyAuditPDF() {
-  window.open("audit-print.html", "_blank");
-}
+document.addEventListener("DOMContentLoaded", loadDailyAudit);
 </script>
 
 </body>
