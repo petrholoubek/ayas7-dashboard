@@ -1185,53 +1185,51 @@ document.addEventListener("DOMContentLoaded", () => {
 
 <script>
 /* =========================================================
-   PROVIZE – FINÁLNÍ NAČTENÍ (MATCH S DB)
+   PROVIZE – NAČTENÍ (BEZ RPC, BEZ SQL)
    ========================================================= */
 
 async function loadCommissions() {
   try {
-    const { data, error } = await supabaseClient.rpc(
-      "sql",
-      {
-        query: `
-          select
-            ac.payment_id,
-            ac.commission_rate,
-            ac.commission_amount,
-            ac.payment_amount,
-            ac.created_at as payment_date,
-            pc.code as promo_code,
-            a.name as agent_name
-          from agent_commissions ac
-          left join promo_codes pc on pc.id = ac.promo_code_id
-          left join agents a on a.id = ac.agent_id
-          order by ac.created_at desc
-        `
-      }
-    );
+    const { data, error } = await supabaseClient
+      .from("agent_commissions")
+      .select(`
+        payment_id,
+        commission_rate,
+        commission_amount,
+        payment_amount,
+        created_at,
+        promo_codes (
+          code
+        ),
+        agents (
+          name
+        )
+      `)
+      .order("created_at", { ascending: false });
 
     if (error) {
       console.error("loadCommissions error:", error);
       return;
     }
 
-    // 📦 přesně to, co PDF a tabulka čekají
+    // 🔹 NORMALIZACE DAT PRO UI + PDF
     DATA.commissions = (data || []).map(c => ({
-      promo_code: c.promo_code,
-      agent_name: c.agent_name,
+      promo_code: c.promo_codes?.code ?? "—",
+      agent_name: c.agents?.name ?? "—",
       commission_rate: Number(c.commission_rate),
       deposit_amount: Number(c.payment_amount),
       commission_amount: Number(c.commission_amount),
-      payment_date: c.payment_date,
+      payment_date: c.created_at,
       payment_id: c.payment_id
     }));
 
+    // 🔹 vykresli tabulku, pokud existuje
     if (typeof renderCommissionTable === "function") {
       renderCommissionTable();
     }
 
-  } catch (e) {
-    console.error("loadCommissions failed:", e);
+  } catch (err) {
+    console.error("loadCommissions failed:", err);
   }
 }
 
@@ -1242,6 +1240,7 @@ document.addEventListener("DOMContentLoaded", () => {
   loadCommissions();
 });
 </script>
+
 
 
 </body>
