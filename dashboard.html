@@ -9,7 +9,26 @@
   <link rel="icon" type="image/png" sizes="512x512" href="/ayas7-512.png">
   <link rel="apple-touch-icon" href="/ayas7-192.png">
   <meta name="theme-color" content="#020617">
+<script type="module">
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
+const supabase = createClient(
+  "https://azfrniqqtetoqploxwgq.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF6ZnJuaXFxdGV0b3FwbG94d2dxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3MzQ1OTYsImV4cCI6MjA4MzMxMDU5Nn0.QchmzNhs8owd6pkjZCk04u6PJoJ2Bhzz7oGV0KFyqdU"
+);
+
+(async () => {
+  const { data: { session } } = await supabase.auth.getSession();
+
+  // 🔒 NENÍ PŘIHLÁŠEN → PRYČ
+  if (!session) {
+    window.location.replace("https://win.win");
+    return;
+  }
+
+  // volitelně: zatím jen přihlášení, role řešíme později
+})();
+</script>
   <title>AYAS-7 · …</title>
   <!-- Chart.js pro grafy -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
