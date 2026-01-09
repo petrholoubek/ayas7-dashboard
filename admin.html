@@ -1185,17 +1185,16 @@ DATA.commissions = [];
    ========================================================= */
 async function loadCommissions() {
   const { data, error } = await supabaseClient
-    .from("v_agent_commissions")   // ⬅️ POUŽÍVÁME VIEW
+    .from("agent_commissions")
     .select(`
-      promo_code,
-      agent_name,
+      promo_code_id,
+      agent_id,
       commission_rate,
-      deposit_amount,
+      payment_amount,
       commission_amount,
-      payment_date,
-      payment_id
+      created_at
     `)
-    .order("payment_date", { ascending: false });
+    .order("created_at", { ascending: false });
 
   if (error) {
     console.error("loadCommissions error:", error);
@@ -1205,6 +1204,7 @@ async function loadCommissions() {
   DATA.commissions = data || [];
   renderCommissionTable();
 }
+
 
 /* =========================================================
    VYKRESLENÍ TABULKY PROVIZÍ (ADMIN)
