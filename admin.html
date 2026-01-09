@@ -1185,62 +1185,64 @@ document.addEventListener("DOMContentLoaded", () => {
 
 <script>
 /* =========================================================
-   PROVIZE – NAČTENÍ DAT PRO ADMINA
-   BEZ ZÁSAHU DO STÁVAJÍCÍ LOGIKY
+   PROVIZE – FINÁLNÍ NAČTENÍ (MATCH S DB)
    ========================================================= */
 
 async function loadCommissions() {
   try {
-    const { data, error } = await supabaseClient
-      .from("agent_commissions")
-      .select(`
-        payment_id,
-        commission_rate,
-        commission_amount,
-        payment_amount,
-        created_at,
-        promo_codes (
-          code
-        ),
-        agents (
-          name
-        )
-      `)
-      .order("created_at", { ascending: false });
+    const { data, error } = await supabaseClient.rpc(
+      "sql",
+      {
+        query: `
+          select
+            ac.payment_id,
+            ac.commission_rate,
+            ac.commission_amount,
+            ac.payment_amount,
+            ac.created_at as payment_date,
+            pc.code as promo_code,
+            a.name as agent_name
+          from agent_commissions ac
+          left join promo_codes pc on pc.id = ac.promo_code_id
+          left join agents a on a.id = ac.agent_id
+          order by ac.created_at desc
+        `
+      }
+    );
 
     if (error) {
       console.error("loadCommissions error:", error);
       return;
     }
 
-    // map do formátu, který už PDF očekává
+    // 📦 přesně to, co PDF a tabulka čekají
     DATA.commissions = (data || []).map(c => ({
-      promo_code: c.promo_codes?.code ?? "—",
-      agent_name: c.agents?.name ?? "—",
-      commission_rate: c.commission_rate,
+      promo_code: c.promo_code,
+      agent_name: c.agent_name,
+      commission_rate: Number(c.commission_rate),
       deposit_amount: Number(c.payment_amount),
       commission_amount: Number(c.commission_amount),
-      payment_date: c.created_at,
+      payment_date: c.payment_date,
       payment_id: c.payment_id
     }));
 
-    // pokud existuje tabulka, vykresli ji
     if (typeof renderCommissionTable === "function") {
       renderCommissionTable();
     }
 
-  } catch (err) {
-    console.error("loadCommissions failed:", err);
+  } catch (e) {
+    console.error("loadCommissions failed:", e);
   }
 }
 
 /* =========================================================
-   INIT – PŘIDÁ SE K EXISTUJÍCÍMU INITU
+   INIT
    ========================================================= */
 document.addEventListener("DOMContentLoaded", () => {
   loadCommissions();
 });
 </script>
+
 
 </body>
 </html>
