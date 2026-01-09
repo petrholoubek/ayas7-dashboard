@@ -538,6 +538,10 @@
   z-index:2;
   overflow:visible; /* 🔥 KRITICKÉ */
 }
+.link-inner{
+  padding-top: 10px;   /* ← PŘIDEJ JEN TOTO */
+}
+
 
 
    .card-badge, .info-badge{ display:inline-flex; align-items:center; gap:6px; padding:2px 10px; border-radius:999px; border:1px solid rgba(148,163,184,0.5); font-size:11px; color:var(--muted); margin-bottom:10px; background:rgba(15,23,42,0.7); }
@@ -600,7 +604,11 @@ table.members-table tbody tr:nth-child(odd){
 
    /* ===== LINK SECTION (uniform border fixed) ===== */
    .link-section{ margin-top:26px; display:flex; flex-direction:column; gap:14px; }
-   .link-card{ /* unified with card styles above via shared classes */ border:1px solid var(--card-border); }
+   .link-card{
+  border:1px solid var(--card-border);
+  position: relative;   /* ← PŘIDEJ JEN TOTO */
+}
+
    .link-led-bar{ position:absolute; top:0; left:0; right:0; height:3px; background: linear-gradient(to right, #4fa3ff, var(--accent)); opacity:0.95; }
    .link-heading-row{ display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:4px; }
    .link-title{ font-size:14px; font-weight:600; }
@@ -733,10 +741,11 @@ table.members-table tbody tr:nth-child(odd){
        <div class="page-kicker"><span class="page-kicker-dot"></span> Členská databáze · AYAS-7</div>
        <div class="page-title">Členové &amp; WW-KEY</div>
        <div class="page-subtitle">
-         Tato sekce kombinuje <b>registraci člena</b>, výpočet jeho <b>WW-KEY</b> a náhled do
-         aktuální databáze. Cílem je, aby měl člen i investor jistotu, že každý vklad je
-         <b>evidovaný, spárovaný a auditovatelný</b> v rámci motoru AYAS-7.
-       </div>
+  Tato sekce slouží k <b>interní evidenci členství</b>, výpočtu alokačních jednotek
+  <b>WW-KEY</b> a náhledu do členské databáze. Jejím účelem je transparentní a
+  auditovatelná správa <b>členských vkladů</b> v rámci vnitřního systému AYAS-7.
+</div>
+
      </div>
 
      <div class="columns">
