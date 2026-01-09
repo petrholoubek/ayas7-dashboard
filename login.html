@@ -468,6 +468,28 @@
        padding: 20px 16px 18px;
      }
    }
+
+.info-box {
+  margin: 4px auto 0;
+  max-width: 520px;
+  padding: 16px 18px;
+  border: 1px solid #2a2f38;
+  border-radius: 10px;
+  background: rgba(255,255,255,0.03);
+  font-size: 14px;
+  color: #d1d5db;
+}
+
+.info-title {
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #e5e7eb;
+}
+
+.info-text {
+  line-height: 1.55;
+}
+
  </style>
 </head>
 <body>
@@ -511,7 +533,7 @@
  </header>
 
  
- <main>
+<main>
   <section class="login-wrapper">
     <div class="login-badge">
       <span class="login-badge-dot"></span>
@@ -539,56 +561,62 @@
 
     <form id="registerForm">
 
-  <!-- JMÉNO -->
-  <div class="form-group">
-    <label class="form-label" for="name">Jméno a příjmení</label>
-    <input
-      id="name"
-      type="text"
-      class="form-input"
-      placeholder="např. Jan Novák"
-      required
-    />
-  </div>
+      <div class="form-group">
+        <label class="form-label" for="name">Jméno a příjmení</label>
+        <input
+          id="name"
+          type="text"
+          class="form-input"
+          placeholder="např. Jan Novák"
+          required
+        />
+      </div>
 
-  <!-- E-MAIL -->
-  <div class="form-group">
-    <label class="form-label" for="login-identity">E-mail</label>
-    <input
-      id="login-identity"
-      type="email"
-      class="form-input"
-      placeholder="např. jan.novy@example.com"
-      required
-    />
-  </div>
+      <div class="form-group">
+        <label class="form-label" for="login-identity">E-mail</label>
+        <input
+          id="login-identity"
+          type="email"
+          class="form-input"
+          placeholder="např. jan.novy@example.com"
+          required
+        />
+      </div>
 
-  <!-- HESLO (zatím jen evidenční) -->
-  <div class="form-group">
-    <label class="form-label" for="login-password">Heslo</label>
-    <input
-      id="login-password"
-      type="password"
-      class="form-input"
-      placeholder="Zvol si heslo pro budoucí přístup"
-      required
-    />
-  </div>
+      <div class="form-group">
+        <label class="form-label" for="login-password">Heslo</label>
+        <input
+          id="login-password"
+          type="password"
+          class="form-input"
+          placeholder="Zvol si heslo pro budoucí přístup"
+          required
+        />
+      </div>
 
-  <button type="submit" class="btn-submit">
-    Odeslat žádost o přístup
-  </button>
+      <button type="submit" class="btn-submit">
+        Odeslat žádost o přístup
+      </button>
 
-  <div class="login-footer-text">
-    Odesláním žádosti souhlasíš se zpracováním údajů
-    pro účely členství v družstvu Win-Win.
-  </div>
+      <div class="login-footer-text">
+        Odesláním žádosti souhlasíš se zpracováním údajů
+        pro účely členství v družstvu Win-Win.
+      </div>
 
-</form>
+    </form>
+
+    <!-- ✅ INFO BOX – PŘESUNUTÝ SEM -->
+    <div class="info-box" style="margin-top: 12px;">
+      <div class="info-title">Co se stane po odeslání žádosti?</div>
+      <div class="info-text">
+        👉 <b>Po odeslání klikni na „Přihlášení“ v pravém horním rohu</b><br>
+        a přihlas se svým e-mailem a heslem.<br><br>
+        Pokud účet ještě není schválen, systém tě po přihlášení informuje.
+      </div>
+    </div>
 
   </section>
 </main>
-
 
  <footer>
    © 2025 Win-Win Družstvo · AYAS-7 Engine · Všechna práva vyhrazena
@@ -631,6 +659,21 @@ document.getElementById("registerForm").addEventListener("submit", async (e) => 
   }
 });
 </script>
+<script>
+function afterRequestSent() {
+  // zobrazíme info (volitelné)
+  alert(
+    "Žádost byla odeslána.\n\n" +
+    "Nyní se přihlas pomocí e-mailu a hesla."
+  );
+
+  // krátká pauza, aby to bylo pochopitelné
+  setTimeout(() => {
+    window.location.href = "signin.html";
+  }, 800);
+}
+</script>
+
 
 </body>
 </html>
