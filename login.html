@@ -636,7 +636,8 @@ document.getElementById("registerForm").addEventListener("submit", async (e) => 
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": "Bearer TVŮJ_ANON_KEY"
+          "Authorization": "Bearer " + 
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF6ZnJuaXFxdGV0b3FwbG94d2dxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3MzQ1OTYsImV4cCI6MjA4MzMxMDU5Nn0.QchmzNhs8owd6pkjZCk04u6PJoJ2Bhzz7oGV0KFyqdU"
         },
         body: JSON.stringify({ email, password })
       }
@@ -647,31 +648,20 @@ document.getElementById("registerForm").addEventListener("submit", async (e) => 
     console.log("BODY:", text);
 
     if (!res.ok) {
-      alert("Registrace selhala: " + text);
+      alert("Registrace selhala");
       return;
     }
 
-    afterRequestSent();
+    alert("Žádost odeslána");
+    window.location.href = "signin.html";
 
   } catch (err) {
     console.error("FETCH ERROR:", err);
-    alert("Síťová chyba – request se nedostal na server.");
+    alert("Technická chyba – request nebyl odeslán");
   }
 });
 </script>
 
-<script>
-function afterRequestSent() {
-  alert(
-    "Žádost byla odeslána.\n\n" +
-    "Nyní se přihlas pomocí e-mailu a hesla."
-  );
-
-  setTimeout(() => {
-    window.location.href = "signin.html";
-  }, 800);
-}
-</script>
 
 
 </body>
