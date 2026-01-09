@@ -9,6 +9,7 @@
   <link rel="icon" type="image/png" sizes="512x512" href="/ayas7-512.png">
   <link rel="apple-touch-icon" href="/ayas7-192.png">
   <meta name="theme-color" content="#020617">
+
 <script type="module">
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
@@ -26,10 +27,23 @@ const supabase = createClient(
     return;
   }
 
-  // volitelně: zatím jen přihlášení, role řešíme později
+  // 👤 ZOBRAZENÍ, ŽE JE UŽIVATEL PŘIHLÁŠEN
+  const userBar = document.getElementById("user-bar");
+  const emailEl = document.getElementById("user-email");
+  const logoutBtn = document.getElementById("logout");
+
+  if (userBar && session.user) {
+    emailEl.textContent = session.user.email;
+    userBar.style.display = "flex";
+
+    logoutBtn.onclick = async (e) => {
+      e.preventDefault();
+      await supabase.auth.signOut();
+      window.location.replace("https://win.win/login");
+    };
+  }
 })();
 </script>
-
 
   <title>AYAS-7 · …</title>
   <!-- Chart.js pro grafy -->
@@ -514,6 +528,24 @@ const supabase = createClient(
   </style>
 </head>
 <body>
+
+<div id="user-bar" style="
+  position:fixed;
+  top:12px;
+  right:16px;
+  z-index:9999;
+  font-size:12px;
+  color:#e5e7eb;
+  background:rgba(2,6,23,0.85);
+  border:1px solid rgba(148,163,184,0.3);
+  padding:6px 12px;
+  border-radius:999px;
+  display:none;
+">
+  Přihlášen: <span id="user-email"></span>
+  · <a href="#" id="logout" style="color:#4fa3ff;text-decoration:none;">Odhlásit</a>
+</div>
+
 
 <header class="topbar">
   <div class="topbar-inner">
