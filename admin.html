@@ -501,7 +501,6 @@ input{
 </thead>
 <tbody id="promoTable"></tbody>
 </table>
-<tbody id="commissionTable"></tbody>
 
 <div class="actions">
 <button onclick="pdfPromo()">PDF – promo kódy</button>
@@ -1174,113 +1173,14 @@ function pdfPromo() {
 
   openPdfWindow("Promo kódy", table);
 }
-
-/* =========================================================
-   DATA – KOMISE
-   ========================================================= */
-DATA.commissions = [];
-
-/* =========================================================
-   NAČTENÍ PROVIZÍ (VIEW: v_agent_commissions / v_commissions)
-   ========================================================= */
-async function loadCommissions() {
-  const { data, error } = await supabaseClient
-    .from("agent_commissions")
-    .select(`
-      promo_code_id,
-      agent_id,
-      commission_rate,
-      payment_amount,
-      commission_amount,
-      created_at
-    `)
-    .order("created_at", { ascending: false });
-
-  if (error) {
-    console.error("loadCommissions error:", error);
-    return;
-  }
-
-  DATA.commissions = data || [];
-  renderCommissionTable();
-}
-
-
-/* =========================================================
-   VYKRESLENÍ TABULKY PROVIZÍ (ADMIN)
-   ========================================================= */
-function renderCommissionTable() {
-  const tbody = document.getElementById("commissionTable");
-  if (!tbody) return;
-
-  if (!DATA.commissions.length) {
-    tbody.innerHTML =
-      "<tr><td colspan='7'>Zatím žádné provize</td></tr>";
-    return;
-  }
-
-  tbody.innerHTML = DATA.commissions.map(c => `
-    <tr>
-      <td><b>${c.promo_code}</b></td>
-      <td>${c.agent_name}</td>
-      <td>${(c.commission_rate * 100).toFixed(0)} %</td>
-      <td>${Number(c.deposit_amount).toLocaleString("cs-CZ")} CZK</td>
-      <td><b>${Number(c.commission_amount).toLocaleString("cs-CZ")} CZK</b></td>
-      <td>${new Date(c.payment_date).toLocaleDateString("cs-CZ")}</td>
-    </tr>
-  `).join("");
-}
-
-/* =========================================================
-   PDF – PROVIZE
-   ========================================================= */
-function pdfCommissions() {
-  if (!DATA.commissions.length) {
-    alert("Žádné provize k exportu.");
-    return;
-  }
-
-  const rows = DATA.commissions.map((c, i) => `
-    <tr>
-      <td>${i + 1}</td>
-      <td>${c.promo_code}</td>
-      <td>${c.agent_name}</td>
-      <td>${(c.commission_rate * 100).toFixed(0)} %</td>
-      <td>${Number(c.deposit_amount).toLocaleString("cs-CZ")} CZK</td>
-      <td><b>${Number(c.commission_amount).toLocaleString("cs-CZ")} CZK</b></td>
-      <td>${new Date(c.payment_date).toLocaleDateString("cs-CZ")}</td>
-    </tr>
-  `).join("");
-
-  const table = `
-<table>
-<thead>
-<tr>
-  <th>#</th>
-  <th>Promo kód</th>
-  <th>Obchodník</th>
-  <th>%</th>
-  <th>Vklad</th>
-  <th>Provize</th>
-  <th>Datum</th>
-</tr>
-</thead>
-<tbody>${rows}</tbody>
-</table>
-`;
-
-  openPdfWindow("Provize – přehled", table);
-}
-
-/* =========================================================
-   INIT
-   ========================================================= */
 document.addEventListener("DOMContentLoaded", () => {
   loadAll();
   loadPromoCodes();
   loadPendingUsers();
-  loadCommissions(); // ⬅️ TADY UŽ EXISTUJE
+  console.log("INIT pending members");
 });
+
+
 
 </script>
 
