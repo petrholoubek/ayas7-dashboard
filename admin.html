@@ -498,6 +498,8 @@ input{
         </tr>
       </tbody>
     </table>
+<tbody id="commissionTable"></tbody>
+
 <div style="margin-top: 16px; display: flex; justify-content: flex-start;">
   <button class="btn-secondary" onclick="pdfCommissions()">
     PDF – provize
@@ -1185,9 +1187,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
 <script>
 /* =========================================================
-   PROVIZE – NAČTENÍ (BEZ RPC, BEZ SQL)
+   PROVIZE – KOMPLETNÍ ŘEŠENÍ (LOAD + TABLE + PDF)
    ========================================================= */
 
+/* === UJISTÍME SE, ŽE DATA OBJEKT EXISTUJE === */
+window.DATA = window.DATA || {};
+DATA.commissions = [];
+
+/* =========================================================
+   NAČTENÍ PROVIZÍ Z DB
+   ========================================================= */
 async function loadCommissions() {
   try {
     const { data, error } = await supabaseClient
@@ -1198,12 +1207,8 @@ async function loadCommissions() {
         commission_amount,
         payment_amount,
         created_at,
-        promo_codes (
-          code
-        ),
-        agents (
-          name
-        )
+        promo_codes ( code ),
+        agents ( name )
       `)
       .order("created_at", { ascending: false });
 
@@ -1212,7 +1217,6 @@ async function loadCommissions() {
       return;
     }
 
-    // 🔹 NORMALIZACE DAT PRO UI + PDF
     DATA.commissions = (data || []).map(c => ({
       promo_code: c.promo_codes?.code ?? "—",
       agent_name: c.agents?.name ?? "—",
@@ -1223,14 +1227,77 @@ async function loadCommissions() {
       payment_id: c.payment_id
     }));
 
-    // 🔹 vykresli tabulku, pokud existuje
-    if (typeof renderCommissionTable === "function") {
-      renderCommissionTable();
-    }
+    renderCommissionTable();
 
   } catch (err) {
     console.error("loadCommissions failed:", err);
   }
+}
+
+/* =========================================================
+   VYKRESLENÍ TABULKY PROVIZÍ
+   ========================================================= */
+function renderCommissionTable() {
+  const tbody = document.getElementById("commissionTable");
+  if (!tbody) return;
+
+  if (!DATA.commissions.length) {
+    tbody.innerHTML =
+      "<tr><td colspan='6'>Žádné provize</td></tr>";
+    return;
+  }
+
+  tbody.innerHTML = DATA.commissions.map(c => `
+    <tr>
+      <td><b>${c.promo_code}</b></td>
+      <td>${c.agent_name}</td>
+      <td>${(c.commission_rate * 100).toFixed(0)} %</td>
+      <td>${c.deposit_amount.toLocaleString("cs-CZ")} CZK</td>
+      <td><b>${c.commission_amount.toLocaleString("cs-CZ")} CZK</b></td>
+      <td>${new Date(c.payment_date).toLocaleDateString("cs-CZ")}</td>
+    </tr>
+  `).join("");
+}
+
+/* =========================================================
+   PDF – PROVIZE
+   ========================================================= */
+function pdfCommissions() {
+  if (!DATA.commissions.length) {
+    alert("Žádné provize k exportu.");
+    return;
+  }
+
+  const rows = DATA.commissions.map((c,i)=>`
+    <tr>
+      <td>${i+1}</td>
+      <td>${c.promo_code}</td>
+      <td>${c.agent_name}</td>
+      <td>${(c.commission_rate * 100).toFixed(0)} %</td>
+      <td>${c.deposit_amount.toLocaleString("cs-CZ")} CZK</td>
+      <td><b>${c.commission_amount.toLocaleString("cs-CZ")} CZK</b></td>
+      <td>${new Date(c.payment_date).toLocaleDateString("cs-CZ")}</td>
+    </tr>
+  `).join("");
+
+  const table = `
+<table>
+<thead>
+<tr>
+  <th>#</th>
+  <th>Promo kód</th>
+  <th>Obchodník</th>
+  <th>%</th>
+  <th>Vklad</th>
+  <th>Provize</th>
+  <th>Datum</th>
+</tr>
+</thead>
+<tbody>${rows}</tbody>
+</table>
+`;
+
+  openPdfWindow("Provize – přehled", table);
 }
 
 /* =========================================================
