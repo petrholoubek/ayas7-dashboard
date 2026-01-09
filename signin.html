@@ -630,7 +630,9 @@ form.addEventListener("submit", async (e) => {
   });
 
   if (error) {
-    alert("Přihlášení selhalo: " + error.message);
+    alert(
+      "Účet ještě není aktivní nebo čeká na schválení administrátorem."
+    );
     btn.disabled = false;
     btn.textContent = "Přihlásit se";
     return;
@@ -638,7 +640,7 @@ form.addEventListener("submit", async (e) => {
 
   const userId = data.user.id;
 
-  // 2️⃣ KONTROLA ÚČTU (member_accounts)
+  // 2️⃣ KONTROLA ÚČTU
   const { data: account } = await supabase
     .from("member_accounts")
     .select("status")
@@ -653,22 +655,7 @@ form.addEventListener("submit", async (e) => {
     return;
   }
 
-  // 3️⃣ KONTROLA ČLENSTVÍ (members_data)
-  const { data: member } = await supabase
-    .from("members_data")
-    .select("status")
-    .eq("user_id", userId)
-    .single();
-
-  if (!member || member.status !== "approved") {
-    alert("Členství čeká na schválení.");
-    await supabase.auth.signOut();
-    btn.disabled = false;
-    btn.textContent = "Přihlásit se";
-    return;
-  }
-
-  // 4️⃣ OK → ČLEN
+  // 3️⃣ OK → ČLEN
   location.href = "/members.html";
 });
 </script>
