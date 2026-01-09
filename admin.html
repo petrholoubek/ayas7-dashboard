@@ -262,45 +262,7 @@ input{
 <meta charset="utf-8"/>
 <title>AYAS-7 Engine • Admin</title>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<script type="module">
-import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-const supabase = createClient(
-  "https://azfrniqqtetoqploxwgq.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF6ZnJuaXFxdGV0b3FwbG94d2dxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3MzQ1OTYsImV4cCI6MjA4MzMxMDU5Nn0.QchmzNhs8owd6pkjZCk04u6PJoJ2Bhzz7oGV0KFyqdU"
-);
-
-async function waitForSession(maxWait = 1500) {
-  const start = Date.now();
-
-  while (Date.now() - start < maxWait) {
-    const { data: { session } } = await supabase.auth.getSession();
-    if (session) return session;
-    await new Promise(r => setTimeout(r, 100));
-  }
-
-  return null;
-}
-
-(async () => {
-  const session = await waitForSession();
-
-  if (!session) {
-    location.replace("/signin.html");
-    return;
-  }
-
-  const role = session.user.app_metadata?.role;
-
-  // ⬇️ TADY UPRAV PODLE STRÁNKY
-  const allowedRoles = ["admin"]; // admin.html
-  // const allowedRoles = ["member", "admin"]; // members.html
-
-  if (!allowedRoles.includes(role)) {
-    location.replace("/signin.html");
-  }
-})();
-</script>
 <style>
 :root{
   --bg:#020617;
@@ -506,6 +468,45 @@ input{
 <button onclick="pdfPromo()">PDF – promo kódy</button>
 </div>
 </div>
+
+<!-- =========================================================
+     PROVIZE – PŘEHLED
+     ========================================================= -->
+<div class="card mt-6">
+  <div class="card-header flex justify-between items-center">
+    <div>
+      <h3>PROVIZE</h3>
+      <p class="muted">Přehled vypočtených provizí z promo kódů</p>
+    </div>    
+  </div>
+
+  <div class="card-body">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Promo kód</th>
+          <th>Obchodník</th>
+          <th>%</th>
+          <th>Vklad</th>
+          <th>Provize</th>
+          <th>Datum</th>
+        </tr>
+      </thead>
+      <tbody id="commissionTable">
+        <tr>
+          <td colspan="6">Zatím žádné provize</td>
+        </tr>
+      </tbody>
+    </table>
+<div style="margin-top: 16px; display: flex; justify-content: flex-start;">
+  <button class="btn-secondary" onclick="pdfCommissions()">
+    PDF – provize
+  </button>
+</div>
+
+</div>
+
+
 
 <div class="footer">AYAS-7 • interní audit-ready administrační velín</div>
 </div>
@@ -1180,10 +1181,66 @@ document.addEventListener("DOMContentLoaded", () => {
   console.log("INIT pending members");
 });
 
-
-
 </script>
 
+<script>
+/* =========================================================
+   PROVIZE – NAČTENÍ DAT PRO ADMINA
+   BEZ ZÁSAHU DO STÁVAJÍCÍ LOGIKY
+   ========================================================= */
+
+async function loadCommissions() {
+  try {
+    const { data, error } = await supabaseClient
+      .from("agent_commissions")
+      .select(`
+        payment_id,
+        commission_rate,
+        commission_amount,
+        payment_amount,
+        created_at,
+        promo_codes (
+          code
+        ),
+        agents (
+          name
+        )
+      `)
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      console.error("loadCommissions error:", error);
+      return;
+    }
+
+    // map do formátu, který už PDF očekává
+    DATA.commissions = (data || []).map(c => ({
+      promo_code: c.promo_codes?.code ?? "—",
+      agent_name: c.agents?.name ?? "—",
+      commission_rate: c.commission_rate,
+      deposit_amount: Number(c.payment_amount),
+      commission_amount: Number(c.commission_amount),
+      payment_date: c.created_at,
+      payment_id: c.payment_id
+    }));
+
+    // pokud existuje tabulka, vykresli ji
+    if (typeof renderCommissionTable === "function") {
+      renderCommissionTable();
+    }
+
+  } catch (err) {
+    console.error("loadCommissions failed:", err);
+  }
+}
+
+/* =========================================================
+   INIT – PŘIDÁ SE K EXISTUJÍCÍMU INITU
+   ========================================================= */
+document.addEventListener("DOMContentLoaded", () => {
+  loadCommissions();
+});
+</script>
 
 </body>
 </html>
