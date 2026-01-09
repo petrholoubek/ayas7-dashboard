@@ -501,6 +501,7 @@ input{
 </thead>
 <tbody id="promoTable"></tbody>
 </table>
+<tbody id="commissionTable"></tbody>
 
 <div class="actions">
 <button onclick="pdfPromo()">PDF – promo kódy</button>
@@ -1183,47 +1184,73 @@ function pdfCommissions() {
     return;
   }
 
-  let rows = DATA.commissions.map((c,i)=>`
+  let rows = DATA.commissions.map((c, i) => `
     <tr>
-      <td>${i+1}</td>
+      <td>${i + 1}</td>
       <td>${c.promo_code}</td>
       <td>${c.agent_name}</td>
       <td>${(c.commission_rate * 100).toFixed(0)} %</td>
-      <td>${c.deposit_amount.toLocaleString("cs-CZ")} CZK</td>
-      <td><b>${c.commission_amount.toLocaleString("cs-CZ")} CZK</b></td>
+      <td>${Number(c.deposit_amount).toLocaleString("cs-CZ")} CZK</td>
+      <td><b>${Number(c.commission_amount).toLocaleString("cs-CZ")} CZK</b></td>
       <td>${new Date(c.payment_date).toLocaleDateString("cs-CZ")}</td>
     </tr>
   `).join("");
 
   const table = `
 <table>
-<thead>
-<tr>
-  <th>#</th>
-  <th>Promo kód</th>
-  <th>Obchodník</th>
-  <th>%</th>
-  <th>Vklad</th>
-  <th>Provize</th>
-  <th>Datum</th>
-</tr>
-</thead>
-<tbody>${rows}</tbody>
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Promo kód</th>
+      <th>Obchodník</th>
+      <th>%</th>
+      <th>Vklad</th>
+      <th>Provize</th>
+      <th>Datum</th>
+    </tr>
+  </thead>
+  <tbody>${rows}</tbody>
 </table>
 `;
 
   openPdfWindow("Provize – přehled", table);
 }
 
+/* =========================================================
+   TABULKA – PROVIZE
+   ========================================================= */
+function renderCommissionTable() {
+  const tbody = document.getElementById("commissionTable");
+  if (!tbody) return;
+
+  if (!DATA.commissions || !DATA.commissions.length) {
+    tbody.innerHTML =
+      "<tr><td colspan='6'>Zatím žádné provize</td></tr>";
+    return;
+  }
+
+  tbody.innerHTML = DATA.commissions.map(c => `
+    <tr>
+      <td><b>${c.promo_code}</b></td>
+      <td>${c.agent_name}</td>
+      <td>${(c.commission_rate * 100).toFixed(0)} %</td>
+      <td>${Number(c.deposit_amount).toLocaleString("cs-CZ")} CZK</td>
+      <td><b>${Number(c.commission_amount).toLocaleString("cs-CZ")} CZK</b></td>
+      <td>${new Date(c.payment_date).toLocaleDateString("cs-CZ")}</td>
+    </tr>
+  `).join("");
+}
+
+/* =========================================================
+   INIT
+   ========================================================= */
 document.addEventListener("DOMContentLoaded", () => {
   loadAll();
   loadPromoCodes();
   loadPendingUsers();
+  loadCommissions(); // ⬅️ TADY se DATA.commissions plní
   console.log("INIT pending members");
 });
-
-
-
 </script>
 
 
