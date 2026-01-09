@@ -830,31 +830,7 @@ p, span, label, td, th, li, a, div {
      }
    });
  </script>
-<script type="module">
-import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-const supabase = createClient(
-  "https://azfrniqqtetoqploxwgq.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF6ZnJuaXFxdGV0b3FwbG94d2dxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3MzQ1OTYsImV4cCI6MjA4MzMxMDU5Nn0.QchmzNhs8owd6pkjZCk04u6PJoJ2Bhzz7oGV0KFyqdU"
-);
-
-let checked = false;
-
-supabase.auth.onAuthStateChange((event, session) => {
-  // vyhodnocuj jen jednou
-  if (checked) return;
-
-  // dokud neexistuje session, NErozhoduj
-  if (!session) return;
-
-  checked = true;
-
-  // kontrola role
-  if (session.user.app_metadata?.role !== "admin") {
-    location.replace("/signin.html");
-  }
-});
-</script>
 
 </body>
 </html>
