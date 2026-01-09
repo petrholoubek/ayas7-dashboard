@@ -636,7 +636,7 @@ document.getElementById("registerForm").addEventListener("submit", async (e) => 
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF6ZnJuaXFxdGV0b3FwbG94d2dxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3MzQ1OTYsImV4cCI6MjA4MzMxMDU5Nn0.QchmzNhs8owd6pkjZCk04u6PJoJ2Bhzz7oGV0KFyqdU"
+          "Authorization": "Bearer TVŮJ_ANON_KEY"
         },
         body: JSON.stringify({ email, password })
       }
@@ -651,7 +651,7 @@ document.getElementById("registerForm").addEventListener("submit", async (e) => 
       return;
     }
 
-    alert("Registrace proběhla úspěšně.");
+    afterRequestSent();
 
   } catch (err) {
     console.error("FETCH ERROR:", err);
@@ -659,15 +659,14 @@ document.getElementById("registerForm").addEventListener("submit", async (e) => 
   }
 });
 </script>
+
 <script>
 function afterRequestSent() {
-  // zobrazíme info (volitelné)
   alert(
     "Žádost byla odeslána.\n\n" +
     "Nyní se přihlas pomocí e-mailu a hesla."
   );
 
-  // krátká pauza, aby to bylo pochopitelné
   setTimeout(() => {
     window.location.href = "signin.html";
   }, 800);
