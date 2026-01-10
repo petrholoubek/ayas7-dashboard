@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<title>Politika členských benefitů · WIN.WIN</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+:root{
+  --bg-main:#020617;
+  --bg-card:#0b1120;
+  --border-soft:rgba(148,163,184,0.25);
+  --text-main:#e5e7eb;
+  --text-muted:#9ca3af;
+
+  --green:#22c55e;
+  --blue:#4fa3ff;
+  --purple:#a78bfa;
+  --amber:#facc15;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+
+html,body{
+  background:radial-gradient(circle at 40% 0%, #0f172a 0%, #020617 60%, #000 100%);
+  color:var(--text-main);
+  font-family:"Segoe UI",Tahoma,Geneva,Verdana,sans-serif;
+}
+
+.page{
+  max-width:1200px;
+  margin:0 auto;
+  padding:40px 16px 80px;
+}
+
+/* ===== COMMON ===== */
+.section{
+  margin-bottom:32px;
+}
+
+.card{
+  background:radial-gradient(circle at top left,#0b1120,#020617 75%);
+  border:1px solid var(--border-soft);
+  border-radius:20px;
+  padding:22px 22px 20px;
+  box-shadow:0 24px 60px rgba(15,23,42,0.9);
+}
+
+.kicker{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  font-size:12px;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:var(--text-muted);
+  margin-bottom:6px;
+}
+
+.dot{
+  width:8px;
+  height:8px;
+  border-radius:999px;
+  background: currentColor;
+
+  /* jasné jádro */
+  box-shadow:
+    0 0 2px rgba(255,255,255,0.9),
+    0 0 6px currentColor,
+    0 0 14px currentColor,
+    0 0 28px rgba(0,0,0,0);
+@keyframes glow {
+  0%   { opacity: .7; }
+  50%  { opacity: 1; }
+  100% { opacity: .7; }
+}
+
+.dot{
+  animation: glow 2.2s ease-in-out infinite;
+}
+
+
+  /* optický kontrast na tmě */
+  filter: brightness(1.25);
+}
+
+h1{
+  font-size:28px;
+  font-weight:700;
+  margin-bottom:10px;
+}
+
+h2{
+  font-size:20px;
+  font-weight:600;
+  margin-bottom:8px;
+}
+
+p{
+  font-size:14px;
+  line-height:1.65;
+  color:var(--text-muted);
+}
+
+ul{
+  margin-top:10px;
+  padding-left:18px;
+  font-size:13px;
+  color:var(--text-muted);
+}
+
+li{margin-bottom:4px}
+
+/* ===== NOTICE ===== */
+.notice{
+  display:flex;
+  gap:10px;
+  padding:14px 16px;
+  border-left:4px solid var(--amber);
+  background:linear-gradient(to right,rgba(250,204,21,0.12),transparent);
+  font-size:13px;
+  margin-bottom:28px;
+}
+
+/* ===== GRID ===== */
+.grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:22px;
+}
+
+@media(max-width:900px){
+  .grid{grid-template-columns:1fr}
+}
+
+/* ===== COLORS ===== */
+.green{color:var(--green)}
+.blue{color:var(--blue)}
+.purple{color:var(--purple)}
+/* ===== BENEFIT GRID ===== */
+.benefit-grid{
+  display:grid;
+  grid-template-columns:1.1fr 0.9fr;
+  gap:24px;
+  margin-top:18px;
+}
+
+@media(max-width:900px){
+  .benefit-grid{
+    grid-template-columns:1fr;
+  }
+}
+
+/* ===== GRAPH ===== */
+.benefit-graph h3,
+.benefit-logic h3{
+  font-size:17px;
+  margin:6px 0 10px;
+}
+
+.bar-chart{
+  display:flex;
+  align-items:flex-end;
+  gap:16px;
+  height:220px;
+  margin:16px 0 10px;
+  padding:12px 10px;
+  border-radius:14px;
+  background:rgba(15,23,42,0.6);
+  border:1px solid rgba(148,163,184,0.15);
+ position: relative;
+}
+
+.bar-item{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:6px;
+  font-size:12px;
+  color:var(--text-muted);
+}
+
+.bar{
+  width:100%;
+  border-radius:8px 8px 4px 4px;
+  box-shadow:0 0 18px currentColor;
+  transition:height .6s ease;
+ min-height: 8px;
+}
+
+.bar.blue{background:#4fa3ff;}
+.bar.green{background:#22c55e;}
+.bar.purple{background:#a78bfa;}
+.bar.amber{background:#facc15;}
+
+.graph-note{
+  font-size:12px;
+  color:var(--text-muted);
+}
+
+.bar{
+  transition:
+    height 1s ease,
+    filter .2s ease,
+    box-shadow .2s ease;
+}
+
+.bar:hover{
+  filter: brightness(1.25);
+  box-shadow:
+    0 0 12px currentColor,
+    0 0 28px currentColor;
+}
+
+/* ===== LOGIC ===== */
+.logic-list{
+  list-style:none;
+  padding:0;
+  margin-top:12px;
+}
+
+.logic-list li{
+  margin-bottom:10px;
+  padding-left:14px;
+  border-left:2px solid rgba(34,197,94,0.6);
+  font-size:13px;
+  line-height:1.55;
+}
+
+.logic-footer{
+  margin-top:14px;
+  padding:10px 12px;
+  font-size:12px;
+  border-radius:12px;
+  background:linear-gradient(
+    to right,
+    rgba(34,197,94,0.12),
+    rgba(79,163,255,0.05)
+  );
+  border:1px solid rgba(148,163,184,0.18);
+}
+.bar[data-tip]{
+  position: relative;
+}
+
+.bar[data-tip]::after{
+  content: attr(data-tip);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(2,6,23,.95);
+  color:#e5e7eb;
+  font-size:11px;
+  padding:6px 10px;
+  border-radius:8px;
+  border:1px solid rgba(148,163,184,.3);
+  white-space:nowrap;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .2s ease;
+  margin-bottom:8px;
+}
+
+.bar:hover::after{
+  opacity:1;
+}
+
+
+</style>
+</head>
+
+<body>
+
+<div class="page">
+
+<!-- ================================================= -->
+<!-- HEADER -->
+<!-- ================================================= -->
+<section class="section">
+  <div class="kicker">
+    <span class="dot green"></span>
+    Politika benefitů · WIN.WIN
+  </div>
+  <h1>Jak fungují členské benefity ve WIN.WIN</h1>
+  <p>
+    Tato stránka popisuje <b>interní systém rozdělování členských benefitů</b>
+    v rámci družstva WIN.WIN, řízený analytickým a kontrolním systémem <b>AYAS-7</b>.
+    Uvedené mechanismy mají <b>evidenční, motivační a provozní charakter</b>.
+  </p>
+</section>
+
+<div class="notice">
+  ⚠️ Tento obsah slouží výhradně jako interní popis fungování družstva.
+  Nejedná se o veřejnou nabídku investic, cenných papírů ani finančních produktů.
+</div>
+
+<!-- ================================================= -->
+<!-- FILOZOFIE -->
+<!-- ================================================= -->
+<section class="section card">
+  <div class="kicker">
+    <span class="dot green"></span>
+    Filozofie družstva
+  </div>
+  <h2>Proč WIN.WIN pracuje s benefity</h2>
+  <p>
+    Družstvo WIN.WIN nestaví svůj model na výnosech ani slibech zhodnocení.
+    Základním principem je <b>dlouhodobé, stabilní a transparentní členství</b>.
+  </p>
+  <ul>
+    <li>benefity nejsou finanční nároky</li>
+    <li>benefity nejsou investiční produkty</li>
+    <li>benefity podporují aktivní účast a stabilitu systému</li>
+  </ul>
+</section>
+
+<!-- ================================================= -->
+<!-- WW-KEY -->
+<!-- ================================================= -->
+<section class="section card">
+  <div class="kicker">
+    <span class="dot blue"></span>
+    Základní klíč systému
+  </div>
+  <h2>WW-KEY jako přístupový index</h2>
+  <p>
+    WW-KEY nepředstavuje peněžní hodnotu ani investici.
+    Slouží jako <b>váhový klíč</b>, podle kterého systém AYAS-7
+    určuje rozsah přístupu k interním benefitům.
+  </p>
+  <ul>
+    <li>neurčuje cenu ani výnos</li>
+    <li>určuje váhu člena v systému</li>
+    <li>navazuje na dlouhodobé chování člena</li>
+  </ul>
+</section>
+
+<!-- ================================================= -->
+<!-- BENEFITS -->
+<!-- ================================================= -->
+<section class="section grid">
+
+  <!-- CRX -->
+  <div class="card">
+    <div class="kicker">
+      <span class="dot green"></span>
+      Věrnostní systém
+    </div>
+    <h2>CREDIX (CRX)</h2>
+    <p>
+      CRX je interní věrnostní jednotka družstva WIN.WIN,
+      která slouží k evidenci dlouhodobé účasti člena v systému.
+    </p>
+    <ul>
+      <li>není převoditelný</li>
+      <li>nemá peněžní hodnotu</li>
+      <li>ukazatel aktivity a stability členství</li>
+    </ul>
+    <p><b>CRX je evidenční nástroj, nikoli finanční instrument.</b></p>
+  </div>
+
+  <!-- PLX -->
+  <div class="card">
+    <div class="kicker">
+      <span class="dot blue"></span>
+      Benefitní poukázky
+    </div>
+    <h2>PLUX (PLX)</h2>
+    <p>
+      PLX představuje interní benefitní poukázky určené
+      k uplatnění členských výhod v rámci ekosystému WIN.WIN.
+    </p>
+    <ul>
+      <li>nelze směnit za peníze</li>
+      <li>nepředstavuje investici</li>
+      <li>slouží výhradně k interním benefitům</li>
+    </ul>
+  </div>
+
+</section>
+
+<!-- ================================================= -->
+<!-- AURIX -->
+<!-- ================================================= -->
+<section class="section card">
+  <div class="kicker">
+    <span class="dot purple"></span>
+    Koncepční model
+  </div>
+  <h2>AURIX – modelová evidence hodnot</h2>
+  <p>
+    AURIX je koncepční model interní evidence dlouhodobých hodnot.
+    Nejedná se o cenné papíry, komodity ani investiční produkty.
+  </p>
+  <ul>
+    <li>AUX – model 1 g zlata</li>
+    <li>AGX – model 1 g stříbra</li>
+    <li>PTX – model 1 g platiny</li>
+    <li>PDX – model 1 g palladia</li>
+  </ul>
+</section>
+
+
+<!-- ================================================= -->
+<!-- AYAS-7 -->
+<!-- ================================================= -->
+<section class="section card">
+  <div class="kicker">
+    <span class="dot blue"></span>
+    Řídicí vrstva
+  </div>
+  <h2>Role systému AYAS-7</h2>
+  <ul>
+    <li>zajišťuje neměnnost pravidel</li>
+    <li>odděluje členství, benefity a finance</li>
+    <li>umožňuje auditovatelnost a transparentnost</li>
+    <li>řídí přístup k benefitům podle WW-KEY a CRX</li>
+  </ul>
+</section>
+<!-- ================================================= -->
+<!-- BENEFIT DISTRIBUTION MODEL -->
+<!-- ================================================= -->
+<section class="section card">
+
+  <div class="kicker">
+    <span class="dot green"></span>
+    Model rozdělování benefitů
+  </div>
+
+  <h2>Jak družstvo rozděluje benefity spravedlivě</h2>
+  <p>
+    Systém WIN.WIN pracuje s <b>váhovým klíčem WW-KEY</b>, který nevyjadřuje
+    hodnotu ani nárok, ale <b>relativní pozici člena</b> v rámci družstva.
+    AYAS-7 zajišťuje, že rozdělování benefitů je <b>transparentní,
+    auditovatelné a jednotné pro všechny</b>.
+  </p>
+
+  <div class="benefit-grid">
+
+    <!-- ===== LEFT: GRAPH ===== -->
+    <div class="benefit-graph">
+
+      <div class="kicker">
+        <span class="dot blue"></span>
+        Ilustrační přehled
+      </div>
+
+      <h3>Rozložení benefitní kapacity</h3>
+
+      <div class="bar-chart">
+        <div class="bar-item">
+  <div class="bar blue" style="height:35%" data-tip="Základní přístup k benefitům"></div>
+  <span>WW-KEY 1–10</span>
+</div>
+
+        <div class="bar-item">
+          <div class="bar green" style="height:55%"></div>
+          <span>WW-KEY 11–50</span>
+        </div>
+        <div class="bar-item">
+          <div class="bar purple" style="height:75%"></div>
+          <span>WW-KEY 51–200</span>
+        </div>
+        <div class="bar-item">
+          <div class="bar amber" style="height:95%"></div>
+          <span>WW-KEY 200+</span>
+        </div>
+      </div>
+
+      <p class="graph-note">
+        Graf znázorňuje <b>relativní rozsah přístupu k benefitům</b>.
+        Nevyjadřuje výnos, hodnotu ani finanční plnění.
+      </p>
+
+    </div>
+
+    <!-- ===== RIGHT: LOGIC ===== -->
+    <div class="benefit-logic">
+
+      <div class="kicker">
+        <span class="dot green"></span>
+        Princip spravedlnosti
+      </div>
+
+      <h3>Logika rozdělování benefitů</h3>
+
+      <ul class="logic-list">
+        <li>
+          <b>WW-KEY neurčuje peníze</b><br>
+          Slouží pouze jako váhový index pro interní přístup.
+        </li>
+        <li>
+          <b>Žádný fixní nárok</b><br>
+          Benefity nejsou garantované, ale přidělované podle pravidel systému.
+        </li>
+        <li>
+          <b>Rovná pravidla pro všechny</b><br>
+          AYAS-7 aplikuje stejnou logiku bez výjimek.
+        </li>
+        <li>
+          <b>Oddělení financí a benefitů</b><br>
+          Finanční toky nejsou podmínkou pro evidenční benefity.
+        </li>
+        <li>
+          <b>Plná auditovatelnost</b><br>
+          Každé přidělení je zpětně dohledatelné v systému.
+        </li>
+      </ul>
+
+      <div class="logic-footer">
+        Tento model chrání družstvo i člena a umožňuje
+        dlouhodobě udržitelný rozvoj bez regulatorních rizik.
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+<!-- ================================================= -->
+<!-- SCENARIOS -->
+<!-- ================================================= -->
+<section class="section card">
+  <div class="kicker">
+    <span class="dot green"></span>
+    Modelové scénáře
+  </div>
+  <ul>
+    <li>nový člen – základní přehled, žádné benefity</li>
+    <li>aktivní člen – růst CRX, přístup k PLX</li>
+    <li>dlouhodobý člen – rozšířený přístup a priorita</li>
+  </ul>
+</section>
+
+
+<!-- ================================================= -->
+<!-- FOOTER -->
+<!-- ================================================= -->
+<section class="section">
+  <p style="font-size:13px;color:var(--text-muted)">
+    WIN.WIN nestaví na slibech. Staví na systému.
+    AYAS-7 zajišťuje, že pravidla platí pro každého stejně.
+  </p>
+</section>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  document.querySelectorAll(".bar").forEach(bar => {
+    const h = bar.style.height;
+    bar.style.height = "0";
+    setTimeout(() => {
+      bar.style.height = h;
+    }, 200);
+  });
+});
+</script>
+
+<script>
+function setScenario(level){
+  const values = {
+    1:[20,10,5],
+    2:[50,40,25],
+    3:[80,70,60]
+  };
+
+  document.querySelectorAll(".bar").forEach((bar,i)=>{
+    bar.style.height = values[level][i] + "%";
+  });
+}
+</script>
+
+</div>
+</body>
+</html>
