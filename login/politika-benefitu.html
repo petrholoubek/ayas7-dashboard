@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<title>Model rozdělování benefitů · WIN.WIN</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+:root{
+  --bg:#020617;
+  --card:#0b1120;
+  --border:rgba(148,163,184,.25);
+  --text:#e5e7eb;
+  --muted:#9ca3af;
+  --green:#22c55e;
+  --blue:#4fa3ff;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+
+body{
+  font-family:"Segoe UI",Tahoma,Geneva,Verdana,sans-serif;
+  background:radial-gradient(circle at 40% 0%, #0f172a 0%, #020617 60%, #000 100%);
+  color:var(--text);
+}
+
+.page{
+  max-width:1200px;
+  margin:0 auto;
+  padding:48px 16px 80px;
+}
+
+/* ===== COMMON ===== */
+.section{margin-bottom:32px}
+
+.card{
+  background:radial-gradient(circle at top left,#0b1120,#020617 70%);
+  border:1px solid var(--border);
+  border-radius:20px;
+  padding:24px;
+  box-shadow:0 24px 60px rgba(15,23,42,.9);
+}
+
+.kicker{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  font-size:12px;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:var(--muted);
+  margin-bottom:6px;
+}
+
+.dot{
+  width:7px;
+  height:7px;
+  border-radius:999px;
+  background:currentColor;
+  box-shadow:0 0 10px currentColor;
+}
+
+h1{font-size:28px;margin-bottom:10px}
+h2{font-size:20px;margin-bottom:8px}
+p{font-size:14px;line-height:1.65;color:var(--muted)}
+
+ul{margin-top:10px;padding-left:18px;font-size:13px;color:var(--muted)}
+li{margin-bottom:4px}
+
+/* ===== TABLE ===== */
+table{
+  width:100%;
+  border-collapse:collapse;
+  margin-top:14px;
+  font-size:13px;
+}
+
+th,td{
+  padding:10px 12px;
+  text-align:left;
+  border-bottom:1px solid rgba(148,163,184,.15);
+}
+
+thead{
+  background:linear-gradient(to right,#0b1120,#111827);
+}
+
+tbody tr:nth-child(even){
+  background:rgba(15,23,42,.65);
+}
+
+/* ===== GRID ===== */
+.grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:24px;
+}
+
+@media(max-width:900px){
+  .grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+
+<body>
+<div class="page">
+
+<!-- ================= HEADER ================= -->
+<section class="section">
+  <div class="kicker">
+    <span class="dot" style="color:var(--green)"></span>
+    Politika rozdělování benefitů · WIN.WIN
+  </div>
+
+  <h1>Jak systém AYAS-7 vyhodnocuje přístup k benefitům</h1>
+
+  <p>
+    Tato stránka popisuje <b>interní mechanizmus rozdělování členských benefitů</b>
+    v rámci družstva WIN.WIN. Systém <b>AYAS-7</b> neuděluje nároky ani hodnoty,
+    ale <b>vyhodnocuje splnění podmínek a otevírá přístup</b>.
+  </p>
+</section>
+
+<!-- ================= PRINCIP ================= -->
+<section class="section card">
+  <div class="kicker">
+    <span class="dot" style="color:var(--blue)"></span>
+    Základní princip
+  </div>
+
+  <h2>Benefit není právo, ale zpřístupněná možnost</h2>
+
+  <ul>
+    <li>nejedná se o investici ani výnos</li>
+    <li>nevzniká právní ani finanční nárok</li>
+    <li>přístup je podmíněn stavem členství</li>
+    <li>finální rozhodnutí zůstává na družstvu</li>
+  </ul>
+</section>
+
+<!-- ================= AXES ================= -->
+<section class="section card">
+  <div class="kicker">
+    <span class="dot" style="color:var(--green)"></span>
+    Vyhodnocovací osy
+  </div>
+
+  <h2>Co systém AYAS-7 skutečně posuzuje</h2>
+
+  <ul>
+    <li><b>WW-KEY</b> – váhový index člena</li>
+    <li><b>CRX</b> – čas a stabilita účasti</li>
+    <li><b>Stav členství</b> – aktivní / pozastavené</li>
+    <li><b>Rozhodnutí družstva</b> – schvalovací vrstva</li>
+  </ul>
+</section>
+
+<!-- ================= LEVELS TABLE ================= -->
+<section class="section card">
+  <div class="kicker">
+    <span class="dot" style="color:var(--blue)"></span>
+    Úrovně členství
+  </div>
+
+  <h2>Levelový model přístupu</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Úroveň</th>
+        <th>Rozsah WW-KEY</th>
+        <th>Charakteristika</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>L0</td>
+        <td>0–99</td>
+        <td>evidenční člen</td>
+      </tr>
+      <tr>
+        <td>L1</td>
+        <td>100–299</td>
+        <td>aktivní člen</td>
+      </tr>
+      <tr>
+        <td>L2</td>
+        <td>300–499</td>
+        <td>stabilní člen</td>
+      </tr>
+      <tr>
+        <td><b>L3</b></td>
+        <td><b>500–799</b></td>
+        <td><b>rozšířený přístup</b></td>
+      </tr>
+      <tr>
+        <td>L4</td>
+        <td>800+</td>
+        <td>prioritní člen</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ================= SCENARIO ================= -->
+<section class="section grid">
+
+  <div class="card">
+    <div class="kicker">
+      <span class="dot" style="color:var(--green)"></span>
+      Modelová situace
+    </div>
+
+    <h2>Člen s 600 WW-KEY</h2>
+
+    <ul>
+      <li>WW-KEY: 600</li>
+      <li>CRX: dlouhodobá aktivita</li>
+      <li>Stav: aktivní člen</li>
+    </ul>
+
+    <p>
+      Výsledkem je zařazení do úrovně <b>L3 – Rozšířený přístup</b>.
+    </p>
+  </div>
+
+  <div class="card">
+    <div class="kicker">
+      <span class="dot" style="color:var(--blue)"></span>
+      Co se otevře
+    </div>
+
+    <ul>
+      <li>rozšířené programy CRX</li>
+      <li>vyšší úroveň PLX benefitů</li>
+      <li>zobrazení AURIX modelové evidence</li>
+      <li>prioritní přístup k připravovaným výhodám</li>
+    </ul>
+  </div>
+
+</section>
+
+<!-- ================= AYAS ROLE ================= -->
+<section class="section card">
+  <div class="kicker">
+    <span class="dot" style="color:var(--green)"></span>
+    Role systému AYAS-7
+  </div>
+
+  <ul>
+    <li>zajišťuje neměnnost pravidel</li>
+    <li>odděluje finance, členství a benefity</li>
+    <li>loguje veškerá rozhodnutí</li>
+    <li>umožňuje auditovatelnost</li>
+  </ul>
+</section>
+
+<!-- ================= FOOTER ================= -->
+<section class="section">
+  <p>
+    WIN.WIN nestaví na slibech. Staví na systému.
+    AYAS-7 zajišťuje, že pravidla platí pro každého stejně.
+  </p>
+</section>
+
+</div>
+</body>
+</html>
