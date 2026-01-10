@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+ <meta charset="UTF-8" />
+ <title>WIN.WIN – Přihlášení</title>
+ <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- FAVICON / PWA -->
+  <link rel="icon" type="image/png" sizes="192x192" href="/ayas7-192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="/ayas7-512.png">
+  <link rel="apple-touch-icon" href="/ayas7-192.png">
+  <meta name="theme-color" content="#020617">
+<script type="module" src="./assets/js/gate.js"></script>
+  <title>WIN-WIN · …</title>
+ <style>
+   :root {
+     --blue-dark: #0a1a33;
+     --blue-mid: #124c99;
+     --blue-light: #4fa3ff;
+     --bg-page: #020617;
+     --card-bg: #0b1220;
+     --border-soft: rgba(148, 163, 184, 0.4);
+     --text-main: #e5e7eb;
+     --text-muted: #9ca3af;
+     --accent: #22c55e;
+   }
+
+   * {
+     box-sizing: border-box;
+     margin: 0;
+     padding: 0;
+   }
+
+   html, #msg_body {
+     width: 100%;
+     height: 100%;
+     font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+     background: radial-gradient(circle at 40% 0%, #0f172a 0%, #020617 55%, #000 100%);
+     color: var(--text-main);
+     overflow-x: hidden;
+   }
+
+   a {
+     text-decoration: none;
+     color: inherit;
+   }
+
+   /* TOP BAR / MENU */
+   header.topbar {
+     background: linear-gradient(to right, #060b16, #0a1a33);
+     color: #fff;
+     padding: 10px 0;
+     border-bottom: 1px solid rgba(15, 23, 42, 0.9);
+   }
+
+   .topbar-inner {
+     max-width: 1200px;
+     margin: 0 auto;
+     padding: 0 16px;
+     display: flex;
+     align-items: center;
+     justify-content: space-between;
+     gap: 24px;
+   }
+
+   /* LEVÁ ČÁST – textová značka (bez loga) */
+   .brand {
+     display: flex;
+     flex-direction: column;
+     gap: 2px;
+     min-width: 0;
+   }
+
+   .brand-text-main {
+     font-size: 18px;
+     font-weight: 600;
+     letter-spacing: 0.06em;
+     text-transform: uppercase;
+     white-space: nowrap;
+   }
+
+   .brand-text-sub {
+     font-size: 11px;
+     text-transform: uppercase;
+     letter-spacing: 0.18em;
+     color: rgba(226, 232, 240, 0.75);
+   }
+
+   /* STŘED – hlavní menu (3 položky) */
+   nav.main-nav {
+     display: flex;
+     align-items: center;
+     justify-content: center;
+     flex: 1;
+     min-width: 0;
+   }
+
+   .nav-list {
+     display: flex;
+     align-items: center;
+     justify-content: center;
+     gap: 22px;
+     list-style: none;
+     margin: 0;
+     padding: 0;
+     font-size: 14px;
+   }
+
+   .nav-link {
+     position: relative;
+     padding: 4px 0;
+     color: rgba(226, 232, 240, 0.86);
+     transition: color 0.18s ease;
+     white-space: nowrap;
+   }
+
+   .nav-link::after {
+     content: "";
+     position: absolute;
+     left: 0;
+     bottom: -3px;
+     width: 0;
+     height: 2px;
+     border-radius: 999px;
+     background: linear-gradient(to right, #22c55e, #4ade80);
+     transition: width 0.22s ease;
+   }
+
+   .nav-link:hover {
+     color: #ffffff;
+   }
+
+   .nav-link:hover::after {
+     width: 100%;
+   }
+
+   .nav-link.active {
+     color: #ffffff;
+     font-weight: 600;
+   }
+
+   .nav-link.active::after {
+     width: 100%;
+   }
+
+   /* PRAVÁ ČÁST – jazyk + login */
+   .topbar-right {
+     display: flex;
+     align-items: center;
+     gap: 16px;
+     flex-shrink: 0;
+   }
+
+   .lang-switch {
+     font-size: 12px;
+     letter-spacing: 0.12em;
+     text-transform: uppercase;
+     color: rgba(226, 232, 240, 0.8);
+     display: flex;
+     align-items: center;
+     gap: 6px;
+     white-space: nowrap;
+   }
+
+   .lang-switch span {
+     cursor: pointer;
+     opacity: 0.65;
+   }
+
+   .lang-switch span.active {
+     opacity: 1;
+     font-weight: 600;
+     text-decoration: underline;
+     text-underline-offset: 3px;
+   }
+
+   .lang-sep {
+     opacity: 0.4;
+   }
+
+   .btn-login {
+     padding: 6px 16px;
+     border-radius: 999px;
+     border: 1px solid rgba(226, 232, 240, 0.6);
+     background: rgba(15, 23, 42, 0.18);
+     color: #f9fafb;
+     font-size: 13px;
+     font-weight: 500;
+     cursor: pointer;
+     display: inline-flex;
+     align-items: center;
+     gap: 8px;
+     transition: background 0.18s ease, border-color 0.18s ease, transform 0.12s ease;
+     white-space: nowrap;
+   }
+
+   .btn-login span.dot {
+     width: 8px;
+     height: 8px;
+     border-radius: 999px;
+     background: var(--accent);
+     box-shadow: 0 0 8px rgba(34, 197, 94, 0.9);
+   }
+
+   .btn-login:hover {
+     background: rgba(15, 23, 42, 0.35);
+     border-color: #ffffff;
+     transform: translateY(-1px);
+   }
+
+   .btn-login:active {
+     transform: translateY(0);
+   }
+
+   /* HLAVNÍ OBSAH – login karta */
+   main {
+     min-height: calc(100vh - 72px - 50px);
+     display: flex;
+     align-items: center;
+     justify-content: center;
+     padding: 40px 16px 32px;
+   }
+
+   .login-wrapper {
+     max-width: 420px;
+     width: 100%;
+     background: radial-gradient(circle at top left, #0b1120 0, #020617 60%);
+     border-radius: 18px;
+     border: 1px solid rgba(148, 163, 184, 0.4);
+     box-shadow:
+       0 24px 60px rgba(15, 23, 42, 0.85),
+       0 0 0 1px rgba(15, 23, 42, 0.8);
+     padding: 24px 22px 20px;
+   }
+
+   .login-badge {
+     display: inline-flex;
+     align-items: center;
+     gap: 6px;
+     padding: 2px 10px;
+     border-radius: 999px;
+     border: 1px solid rgba(148, 163, 184, 0.5);
+     font-size: 11px;
+     color: var(--text-muted);
+     margin-bottom: 10px;
+   }
+
+   .login-badge-dot {
+     width: 7px;
+     height: 7px;
+     border-radius: 999px;
+     background: var(--accent);
+     box-shadow: 0 0 8px rgba(34, 197, 94, 0.9);
+   }
+
+   .login-title {
+     font-size: 22px;
+     font-weight: 600;
+     margin: 0 0 4px;
+   }
+
+   .login-subtitle {
+     font-size: 13px;
+     color: var(--text-muted);
+     margin: 0 0 14px;
+   }
+
+   /* NOVÝ INFO BLOK PRO NOVÉHO ČLENA */
+   .login-intro {
+     margin-bottom: 16px;
+     padding: 10px 10px 8px;
+     border-radius: 12px;
+     border: 1px solid rgba(148, 163, 184, 0.45);
+     background: radial-gradient(circle at top left, rgba(15,23,42,0.95), rgba(15,23,42,0.75));
+   }
+
+   .login-intro-header {
+     display: flex;
+     align-items: center;
+     gap: 8px;
+     font-size: 12px;
+     margin-bottom: 6px;
+     color: var(--text-main);
+   }
+
+   .login-intro-dot {
+     width: 7px;
+     height: 7px;
+     border-radius: 999px;
+     background: var(--blue-light);
+     box-shadow: 0 0 10px rgba(79, 163, 255, 1);
+   }
+
+   .login-intro-text {
+     font-size: 12px;
+     color: var(--text-muted);
+     line-height: 1.55;
+   }
+
+   .login-intro-text b {
+     color: var(--text-main);
+     font-weight: 600;
+   }
+
+   .form-group {
+     margin-bottom: 12px;
+   }
+
+   .form-label {
+     display: block;
+     font-size: 12px;
+     color: var(--text-muted);
+     margin-bottom: 4px;
+   }
+
+   .form-input {
+     width: 100%;
+     padding: 8px 10px;
+     border-radius: 8px;
+     border: 1px solid var(--border-soft);
+     background: rgba(15, 23, 42, 0.7);
+     color: var(--text-main);
+     font-size: 13px;
+     outline: none;
+     transition: border-color 0.16s ease, box-shadow 0.16s ease, background 0.16s ease;
+   }
+
+   .form-input::placeholder {
+     color: rgba(148, 163, 184, 0.7);
+   }
+
+   .form-input:focus {
+     border-color: var(--blue-light);
+     box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.6);
+     background: rgba(15, 23, 42, 0.95);
+   }
+
+   .form-row-between {
+     display: flex;
+     align-items: center;
+     justify-content: space-between;
+     gap: 8px;
+     margin-bottom: 16px;
+   }
+
+   .form-check {
+     display: flex;
+     align-items: center;
+     gap: 6px;
+     font-size: 12px;
+     color: var(--text-muted);
+   }
+
+   .form-check input[type="checkbox"] {
+     width: 14px;
+     height: 14px;
+     border-radius: 4px;
+     border: 1px solid var(--border-soft);
+     background: transparent;
+     accent-color: var(--accent);
+     cursor: pointer;
+   }
+
+   .link-small {
+     font-size: 12px;
+     color: var(--blue-light);
+     cursor: pointer;
+     white-space: nowrap;
+   }
+
+   .link-small:hover {
+     text-decoration: underline;
+     text-underline-offset: 3px;
+   }
+
+   .btn-submit {
+     width: 100%;
+     padding: 9px 14px;
+     border-radius: 999px;
+     border: none;
+     background: linear-gradient(to right, #22c55e, #4ade80);
+     color: #020617;
+     font-weight: 600;
+     font-size: 14px;
+     cursor: pointer;
+     margin-bottom: 10px;
+     box-shadow: 0 18px 40px rgba(22, 163, 74, 0.6);
+     transition: transform 0.12s ease, box-shadow 0.12s ease, filter 0.12s ease;
+   }
+
+   .btn-submit:hover {
+     filter: brightness(1.03);
+     transform: translateY(-1px);
+     box-shadow: 0 22px 52px rgba(22, 163, 74, 0.75);
+   }
+
+   .btn-submit:active {
+     transform: translateY(0);
+     box-shadow: 0 16px 36px rgba(22, 163, 74, 0.5);
+   }
+
+   .login-footer-text {
+     font-size: 12px;
+     color: var(--text-muted);
+     text-align: center;
+     margin-top: 6px;
+   }
+
+   .login-footer-text a {
+     color: var(--blue-light);
+   }
+
+   .login-footer-text a:hover {
+     text-decoration: underline;
+     text-underline-offset: 3px;
+   }
+
+   /* Footer stránky */
+   footer {
+     text-align: center;
+     padding: 10px 16px 16px;
+     font-size: 11px;
+     color: var(--text-muted);
+   }
+
+   /* RESPONSIVE */
+   @media (max-width: 900px) {
+     .topbar-inner {
+       flex-wrap: wrap;
+       row-gap: 8px;
+     }
+     nav.main-nav {
+       order: 3;
+       width: 100%;
+       justify-content: flex-start;
+     }
+     .nav-list {
+       flex-wrap: wrap;
+       row-gap: 4px;
+     }
+   }
+
+   @media (max-width: 640px) {
+     .topbar-inner {
+       flex-direction: column;
+       align-items: flex-start;
+     }
+
+     nav.main-nav {
+       width: 100%;
+     }
+
+     .nav-list {
+       font-size: 13px;
+       gap: 14px;
+     }
+
+     .topbar-right {
+       align-self: stretch;
+       justify-content: space-between;
+       width: 100%;
+     }
+
+     .brand-text-main {
+       font-size: 16px;
+     }
+
+     .login-wrapper {
+       padding: 20px 16px 18px;
+     }
+   }
+ </style>
+</head>
+<body>
+ 
+ <title>WIN.WIN · …</title>
+ <style>
+   /* ========== RESET & BASE ========== */
+   * { box-sizing: border-box; margin:0; padding:0; }
+   html, #msg_body { height:100%; width:100%; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; background: radial-gradient(circle at 40% 0%, #0f172a 0%, #020617 55%, #000 100%); color:#e5e7eb; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
+   a { color:inherit; text-decoration:none; }
+
+   :root{
+     --accent: #22c55e;
+     --blue-light: #4fa3ff;
+     --card-bg-start: #0b1120;
+     --card-bg-end: #020617;
+     --card-border: rgba(51,65,85,0.9);
+     --muted: #9ca3af;
+     --glass: rgba(15,23,42,0.75);
+   }
+
+   /* ===== TOPBAR ===== */
+   header.topbar { background: linear-gradient(to right,#020617,#020617); border-bottom:1px solid rgba(15,23,42,0.9); }
+   .topbar-inner { max-width:1200px; margin:0 auto; padding:10px 16px; display:flex; align-items:center; justify-content:space-between; gap:24px; }
+   .brand { display:flex; flex-direction:column; gap:2px; }
+   .brand-text-main { font-size:18px; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; color:#e5e7eb; }
+   .brand-text-sub { font-size:11px; letter-spacing:0.18em; text-transform:uppercase; color:rgba(148,163,184,0.9); }
+
+   nav.main-nav { flex:1; display:flex; justify-content:center; }
+   .nav-list { list-style:none; display:flex; gap:18px; font-size:14px; }
+   .nav-link { position:relative; padding:4px 0; color:rgba(226,232,240,0.9); white-space:nowrap; transition:color .18s; }
+   .nav-link::after { content:""; position:absolute; left:0; bottom:-3px; width:0; height:2px; border-radius:999px; background:linear-gradient(to right,var(--accent),#4ade80); transition:width .22s; }
+   .nav-link:hover{ color:#fff; } .nav-link:hover::after{ width:100%; }
+   .nav-link.active{ color:#fff; font-weight:600; } .nav-link.active::after{ width:100%; }
+
+   .topbar-right{ display:flex; align-items:center; gap:16px; flex-shrink:0; }
+   .lang-switch{ font-size:12px; letter-spacing:0.12em; text-transform:uppercase; color:rgba(226,232,240,0.8); display:flex; gap:6px; }
+   .btn-login{ padding:6px 16px; border-radius:999px; border:1px solid rgba(226,232,240,0.6); background: radial-gradient(circle at top left,#0b1120,#020617); color:#f9fafb; font-size:13px; font-weight:500; cursor:pointer; display:inline-flex; align-items:center; gap:8px; transition:transform .12s; }
+   .btn-login .dot{ width:8px; height:8px; border-radius:999px; background:var(--accent); box-shadow:0 0 10px rgba(34,197,94,0.9); display:inline-block; }
+
+   /* ===== MAIN LAYOUT ===== */
+   main{ min-height:calc(100vh - 80px - 60px); padding:28px 16px 32px; display:flex; justify-content:center; }
+   .page-inner{ max-width:1200px; width:100%; }
+   .page-header{ margin-bottom:20px; }
+   .page-kicker{ font-size:12px; text-transform:uppercase; letter-spacing:0.14em; color:var(--muted); margin-bottom:4px; display:inline-flex; align-items:center; gap:6px; }
+   .page-kicker-dot{ width:7px; height:7px; border-radius:999px; background:var(--accent); box-shadow:0 0 8px rgba(34,197,94,1); }
+   .page-title{ font-size:24px; font-weight:600; margin-bottom:6px; }
+   .page-subtitle{ font-size:13px; color:var(--muted); max-width:780px; line-height:1.6; }
+
+   .columns{ display:flex; gap:20px; align-items:flex-start; flex-wrap:wrap; margin-top:22px; }
+   .col{ flex:1; min-width:0; }
+
+   /* ===== CARDS (UNIFORM) ===== */
+   .card, .link-card, .info-card { background: radial-gradient(circle at top left, var(--card-bg-start), var(--card-bg-end) 70%); border-radius:18px; border:1px solid var(--card-border); box-shadow:0 24px 60px rgba(15,23,42,0.9); padding:18px 18px 16px; position:relative; overflow:visible; }
+   .card::before, .link-card::before, .info-card::before {
+  content:"";
+  position:absolute;
+  inset:0;
+  background:radial-gradient(circle at top right, rgba(79,172,255,0.08), transparent 65%);
+  pointer-events:none;
+  opacity:0.95;
+  z-index:0;               /* 🔥 DŮLEŽITÉ */
+}
+
+   .card-inner, .link-inner, .info-inner {
+  position:relative;
+  z-index:2;
+  overflow:visible; /* 🔥 KRITICKÉ */
+}
+.link-inner{
+  padding-top: 10px;   /* ← PŘIDEJ JEN TOTO */
+}
+
+
+
+   .card-badge, .info-badge{ display:inline-flex; align-items:center; gap:6px; padding:2px 10px; border-radius:999px; border:1px solid rgba(148,163,184,0.5); font-size:11px; color:var(--muted); margin-bottom:10px; background:rgba(15,23,42,0.7); }
+   .card-badge-dot, .info-badge-dot{ width:7px; height:7px; border-radius:999px; background:var(--accent); box-shadow:0 0 8px rgba(34,197,94,0.9); display:inline-block; }
+
+   .card-title{ font-size:18px; font-weight:600; margin-bottom:6px; }
+   .card-sub{ font-size:12px; color:var(--muted); margin-bottom:14px; line-height:1.6; }
+   .form-group{ margin-bottom:10px; }
+   .form-label{ display:block; font-size:12px; color:var(--muted); margin-bottom:4px; }
+   .form-input{ width:100%; padding:8px 10px; border-radius:8px; border:1px solid rgba(148,163,184,0.15); background:var(--glass); color:var(--text-main); font-size:13px; outline:none; transition:box-shadow .16s, border-color .16s; }
+   .form-input::placeholder{ color: rgba(148,163,184,0.6); }
+   .form-input:focus{ box-shadow: 0 0 0 2px rgba(79,163,255,0.06); border-color: rgba(79,163,255,0.2); }
+
+   .btn-primary{ width:100%; padding:9px 14px; border-radius:999px; border:none; background: linear-gradient(to right,#4fa3ff,#70c3ff); color:#020617; font-weight:600; font-size:14px; cursor:pointer; margin-top:4px; box-shadow:0 18px 40px rgba(79,163,255,0.45); transition:transform .12s, filter .12s; }
+   .btn-primary:hover{ transform:translateY(-1px); filter:brightness(1.04); box-shadow:0 22px 52px rgba(79,163,255,0.7); }
+
+   .result-panel{ margin-top:10px; padding:8px 10px; border-radius:10px; background: rgba(22,163,74,0.08); border:1px solid rgba(34,197,94,0.18); font-size:12px; color:#bbf7d0; }
+
+   .muted{ font-size:11px; color:var(--muted); margin-top:8px; }
+
+  /* ===== MEMBERS TABLE ===== */
+.members-table-wrap{
+  margin-top:6px;
+  border-radius:12px;
+  border:1px solid rgba(30,64,175,0.07);
+  background: radial-gradient(circle at top left,#020617,#020617 75%);
+  overflow-x:auto;   /* ← ZMĚNA */
+  overflow-y:visible;
+}
+table.members-xtable { 
+  width:100%; 
+  border-collapse:collapse; 
+  font-size:12px; 
+}
+table.members-table th, 
+table.members-table td{
+  padding:7px 8px;
+  border-bottom:1px solid rgba(30,64,175,0.05);
+  text-align:left;
+  color:#e5e7eb;
+}
+table.members-table thead{
+  background:linear-gradient(to right,#0b1120,#111827);
+}
+table.members-table tbody tr:nth-child(even){
+  background: rgba(15,23,42,0.82);
+}
+table.members-table tbody tr:nth-child(odd){
+  background: rgba(15,23,42,0.88);
+}
+
+
+   /* ===== INFO ROW ===== */
+   .info-row{ margin-top:26px; display:grid; grid-template-columns:1.6fr 1.4fr; gap:18px; }
+   .info-heading{ font-size:14px; font-weight:600; margin-bottom:6px; }
+   .info-text{ font-size:12px; color:var(--muted); line-height:1.6; }
+   .info-list{ margin-top:6px; padding-left:18px; font-size:12px; color:var(--muted); }
+   .btn-investor{ margin-top:10px; padding:8px 14px; border-radius:999px; border:1px solid rgba(148,163,184,0.8); background:rgba(15,23,42,0.85); color:#e5e7eb; font-size:13px; display:inline-flex; align-items:center; gap:8px; cursor:pointer; transition:transform .12s; }
+   .btn-investor-dot{ width:7px; height:7px; border-radius:999px; background:var(--blue-light); box-shadow:0 0 10px rgba(79,163,255,0.9); }
+
+   /* ===== LINK SECTION (uniform border fixed) ===== */
+   .link-section{ margin-top:26px; display:flex; flex-direction:column; gap:14px; }
+   .link-card{
+  border:1px solid var(--card-border);
+  position: relative;   /* ← PŘIDEJ JEN TOTO */
+}
+
+   .link-led-bar{ position:absolute; top:0; left:0; right:0; height:3px; background: linear-gradient(to right, #4fa3ff, var(--accent)); opacity:0.95; }
+   .link-heading-row{ display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:4px; }
+   .link-title{ font-size:14px; font-weight:600; }
+   .link-pill{ font-size:11px; padding:2px 9px; border-radius:999px; border:1px solid rgba(148,163,184,0.7); display:inline-flex; align-items:center; gap:5px; color:var(--muted); background:rgba(15,23,42,0.9); }
+   .link-pill-dot{ width:6px; height:6px; border-radius:999px; background:var(--blue-light); box-shadow:0 0 8px rgba(79,163,255,1); }
+
+   .link-text{ font-size:12px; color:var(--muted); line-height:1.6; margin-top:2px; }
+   .link-actions{ margin-top:8px; display:flex; justify-content:flex-start; gap:10px; }
+
+   .btn-link{ padding:7px 14px; border-radius:999px; border:1px solid rgba(148,163,184,0.8); background:rgba(15,23,42,0.85); color:#e5e7eb; font-size:12px; display:inline-flex; align-items:center; gap:7px; cursor:pointer; transition:transform .12s; }
+   .btn-link-dot{ width:6px; height:6px; border-radius:999px; background:var(--accent); box-shadow:0 0 8px rgba(34,197,94,0.9); }
+   .btn-link:hover{ transform:translateY(-1px); }
+
+   /* ===== TOKENOMIKA small ===== */
+   .tokenomika{ margin-top:10px; font-size:0.9em; background:rgba(232,244,255,0.02); padding:10px; border-radius:5px; color:var(--muted); border:1px solid rgba(148,163,184,0.06); }
+
+   /* ===== FOOTER ===== */
+   footer{ text-align:center; padding:10px 16px 16px; font-size:11px; color:var(--muted); }
+
+   /* ===== LED / DOT ANIMATIONS (subtle premium) ===== */
+   @keyframes pulse {
+     0% { transform: scale(1); opacity:1; }
+     50% { transform: scale(1.35); opacity:0.7; }
+     100% { transform: scale(1); opacity:1; }
+   }
+   .card-badge-dot, .info-badge-dot, .btn-investor-dot, .btn-link-dot { animation: pulse 2.4s infinite; }
+   .link-led-bar { animation: shift 6s linear infinite; background-size:200% 100%; }
+   @keyframes shift { 0% { background-position:0% 0%; } 50% { background-position:100% 0%; } 100% { background-position:0% 0%; } }
+
+   /* RESPONSIVE */
+   @media(max-width:900px){ .columns{ flex-direction:column; } .info-row{ grid-template-columns:1fr; } }
+   @media(max-width:640px){
+     .topbar-inner{ flex-direction:column; align-items:flex-start; gap:8px; }
+     nav.main-nav{ width:100%; justify-content:flex-start; }
+     .nav-list{ flex-wrap:wrap; row-gap:4px; font-size:13px; }
+   }
+
+/* ===== CERTIFIKÁT STAV ===== */
+.cert-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  border: 1px solid rgba(148,163,184,0.5);
+  background: rgba(15,23,42,0.85);
+  color: #e5e7eb;
+  cursor: default;
+}
+
+.cert-action.active {
+  cursor: pointer;
+  background: linear-gradient(to right, #22c55e, #4ade80);
+  color: #020617;
+  border: none;
+}
+
+.cert-action.waiting {
+  background: rgba(15,23,42,0.9);
+  color: #9ca3af;
+}
+
+.cert-led {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+}
+
+.cert-led.green {
+  background: #22c55e;
+  box-shadow: 0 0 8px rgba(34,197,94,0.9);
+}
+
+.cert-led.blue {
+  background: #4fa3ff;
+  box-shadow: 0 0 8px rgba(79,163,255,0.9);
+}
+
+.cert-led.yellow {
+  background: #facc15;
+  box-shadow: 0 0 8px rgba(250,204,21,0.9);
+}
+
+
+ </style>
+</head>
+<body>
+<div id="user-bar" style="
+  position:fixed;
+  top:12px;
+  right:16px;
+  z-index:9999;
+  font-size:12px;
+  color:#e5e7eb;
+  background:rgba(2,6,23,0.85);
+  border:1px solid rgba(148,163,184,0.3);
+  padding:6px 12px;
+  border-radius:999px;
+  display:none;
+">
+  Přihlášen: <span id="user-email"></span>
+  · <a href="#" id="logout" style="color:#4fa3ff;text-decoration:none;">Odhlásit</a>
+</div>
+ 
+ 
+ <header class="topbar">
+   <div class="topbar-inner">
+
+     
+     <div class="brand">
+       <div class="brand-text-main">WIN.WIN</div>
+       <div class="brand-text-sub">WIN-WIN COOPERATIVE</div>
+     </div>
+
+     
+ <nav class="main-nav" aria-label="Hlavní menu">
+  <ul class="nav-list">
+
+    <li>
+      <a href="/login/member.html" class="nav-link">
+        Můj účet
+      </a>
+    </li>
+
+    <li>
+      <a href="/login/benefits.html" class="nav-link">
+        Moje benefity
+      </a>
+    </li>
+
+    <li>
+      <a href="/login/support.html" class="nav-link">
+        Podpora
+      </a>
+    </li>
+
+  </ul>
+</nav>
+
+
+     
+     <div class="topbar-right">
+       <div class="lang-switch" aria-label="Přepnutí jazyka">
+         <span class="active">CZ</span>
+         <span class="lang-sep">|</span>
+         <span>EN</span>
+       </div>
+ <a href="/login/signin.html">
+  <button type="button" class="btn-login">
+    <span class="dot"></span>
+    <span>Přihlášení</span>
+  </button>
+</a>
+
+
+     </div>
+
+   </div>
+ </header>
+
+ 
+ <section class="card" style="max-width:900px;margin:60px auto 0;">
+
+  <div class="card-inner">
+
+    <div class="card-badge">
+      <span class="card-badge-dot"></span>
+      Podpora & kontakty
+    </div>
+
+    <h2 class="card-title">Podílové družstvo Win-Win</h2>
+
+    <p class="card-sub">
+      Jsme tu pro členy družstva i zájemce o členství.  
+      V případě dotazů k účtu, WW-KEY, benefitům nebo dokumentům nás neváhej kontaktovat.
+    </p>
+
+    <!-- KONTAKTY -->
+    <div class="info-row" style="margin-top:18px;grid-template-columns:1fr 1fr;">
+
+      <div class="info-card">
+        <div class="info-inner">
+          <div class="info-heading">Kontaktní údaje</div>
+          <div class="info-text">
+            <b>Podílové družstvo Win-Win</b><br>
+            Křižovnická 86/6<br>
+            Praha 1 – Staré Město<br>
+            110 00
+          </div>
+
+          <div class="info-text" style="margin-top:10px;">
+            📧 <b>E-mail:</b> info@winwin.coop<br>
+            ☎️ <b>Telefon:</b> +420 776 776 699
+          </div>
+        </div>
+      </div>
+
+      <div class="info-card">
+        <div class="info-inner">
+          <div class="info-heading">Identifikace družstva</div>
+          <div class="info-text">
+            <b>IČ:</b> 234 16 106<br>
+            <b>Spisová značka:</b> Dr 9182<br>
+            vedená u Městského soudu v Praze
+          </div>
+
+          <div class="info-text" style="margin-top:10px;">
+            <b>Datová schránka:</b> 9p9j5b3
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- BANKA -->
+    <div class="info-card" style="margin-top:18px;">
+      <div class="info-inner">
+        <div class="info-heading">Bankovní spojení</div>
+        <div class="info-text">
+          <b>Číslo účtu:</b> 2103318889 / 2010<br>
+          <b>IBAN:</b> CZ81 2010 0000 0021 0331 8889<br>
+          <b>BIC:</b> FIOBCZPP
+        </div>
+        <div class="info-text" style="margin-top:6px;">
+          vedený u Fio banka, a.s.
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+<footer style="margin-top:40px;">
+  <a href="#">Zásady cookies</a> ·
+  <a href="#">Zásady GDPR</a> ·
+  <a href="#">Všeobecné obchodní podmínky</a> ·
+  <a href="#">Obchodní rejstřík</a>
+</footer>
+
+</section>
+<script type="module">
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+
+const supabase = createClient(
+  "https://azfrniqqtetoqploxwgq.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF6ZnJuaXFxdGV0b3FwbG94d2dxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3MzQ1OTYsImV4cCI6MjA4MzMxMDU5Nn0.QchmzNhs8owd6pkjZCk04u6PJoJ2Bhzz7oGV0KFyqdU"
+);
+
+(async () => {
+  const { data: { session } } = await supabase.auth.getSession();
+
+  // ❌ není přihlášen → bar zůstane skrytý
+  if (!session) return;
+
+  // ✅ je přihlášen → zobraz bar
+  const userBar = document.getElementById("user-bar");
+  const emailEl = document.getElementById("user-email");
+  const logoutBtn = document.getElementById("logout");
+
+  emailEl.textContent = session.user.email;
+  userBar.style.display = "flex";
+
+  logoutBtn.onclick = async (e) => {
+    e.preventDefault();
+    await supabase.auth.signOut();
+    window.location.href = "/login/signin.html";
+  };
+})();
+</script>
+
+</body>
+</html>
