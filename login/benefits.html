@@ -711,6 +711,35 @@ main {
   margin-top: 0 !important;
   padding-top: 0 !important;
 }
+/* ===== FIX: srovnání horních benefit boxů ===== */
+.benefits-grid{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap:24px;
+  align-items:stretch;
+  margin-top:22px;
+}
+
+/* mobile fallback */
+@media(max-width:900px){
+  .benefits-grid{
+    grid-template-columns:1fr;
+  }
+}
+/* ===== BENEFITS GRID – čisté a rovné boxy ===== */
+.benefits-grid{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-top: 22px;
+  align-items: stretch;
+}
+
+@media (max-width: 900px){
+  .benefits-grid{
+    grid-template-columns: 1fr;
+  }
+}
 
 
  </style>
@@ -792,82 +821,66 @@ main {
 <main>
   <div class="page-inner">
 
-    <!-- ================= PAGE HEADER ================= -->
-    <div class="page-header">
-      <div class="page-kicker">
-        <span class="page-kicker-dot"></span>
-        Členská sekce · WIN.WIN
+<!-- ================= BENEFITS GRID ================= -->
+<div class="benefits-grid">
+
+  <!-- ===== CREDIX ===== -->
+  <section class="card">
+    <div class="card-inner">
+      <div class="card-badge">
+        <span class="card-badge-dot"></span>
+        Věrnostní systém
       </div>
 
-      <div class="page-title">Moje benefity</div>
+      <div class="card-title">CREDIX (CRX)</div>
 
-      <div class="page-subtitle">
-        Přehled interních benefitů a evidenčních nástrojů,
-        které se vážou k tvému členství v družstvu WIN.WIN.
-        Všechny uvedené položky mají <b>informační a evidenční charakter</b>
-        a slouží výhradně pro interní potřeby družstva.
+      <div class="card-sub">
+        <b>CREDIX (CRX)</b> je interní věrnostní jednotka družstva WIN.WIN,
+        která slouží k evidenci dlouhodobé účasti člena v systému.
       </div>
+
+      <ul class="info-list">
+        <li>není převoditelný</li>
+        <li>nemá peněžní hodnotu</li>
+        <li>slouží jako ukazatel aktivity a stability členství</li>
+      </ul>
+
+      <p class="muted">
+        CRX je interní evidenční nástroj, nikoli finanční instrument.
+      </p>
     </div>
+  </section>
 
-    <!-- ================= BENEFITS GRID ================= -->
-    <div class="columns">
+  <!-- ===== PLUX ===== -->
+  <section class="card">
+    <div class="card-inner">
+      <div class="card-badge">
+        <span class="card-badge-dot"></span>
+        Benefitní poukázky
+      </div>
 
-      <!-- ===== CREDIX ===== -->
-      <section class="card">
-        <div class="card-inner">
-          <div class="card-badge">
-            <span class="card-badge-dot"></span>
-            Věrnostní systém
-          </div>
+      <div class="card-title">PLUX (PLX)</div>
 
-          <div class="card-title">CREDIX (CRX)</div>
+      <div class="card-sub">
+        <b>PLUX (PLX)</b> představuje model interní benefitní poukázky,
+        určené k uplatnění členských výhod v rámci ekosystému WIN.WIN
+        a partnerských služeb.
+      </div>
 
-          <div class="card-sub">
-            <b>CREDIX (CRX)</b> je interní věrnostní jednotka družstva WIN.WIN,
-            která slouží k evidenci dlouhodobé účasti člena v systému.
-          </div>
+      <ul class="info-list">
+        <li>nepředstavuje investici</li>
+        <li>nelze směnit za peníze</li>
+        <li>slouží výhradně k interním benefitním účelům</li>
+      </ul>
 
-          <ul class="info-list">
-            <li>není převoditelný</li>
-            <li>nemá peněžní hodnotu</li>
-            <li>slouží jako ukazatel aktivity a stability členství</li>
-          </ul>
-
-          <p class="muted">
-            CRX je interní evidenční nástroj, nikoli finanční instrument.
-          </p>
-        </div>
-      </section>
-
-      <!-- ===== PLUX ===== -->
-      <section class="card">
-        <div class="card-inner">
-          <div class="card-badge">
-            <span class="card-badge-dot"></span>
-            Benefitní poukázky
-          </div>
-
-          <div class="card-title">PLUX (PLX)</div>
-
-          <div class="card-sub">
-            <b>PLUX (PLX)</b> představuje model interní benefitní poukázky,
-            určené k uplatnění členských výhod v rámci ekosystému WIN.WIN
-            a partnerských služeb.
-          </div>
-
-          <ul class="info-list">
-            <li>nepředstavuje investici</li>
-            <li>nelze směnit za peníze</li>
-            <li>slouží výhradně k interním benefitním účelům</li>
-          </ul>
-
-          <p class="muted">
-            PLX je provozní benefitní nástroj družstva.
-          </p>
-        </div>
-      </section>
-
+      <p class="muted">
+        PLX je provozní benefitní nástroj družstva.
+      </p>
     </div>
+  </section>
+
+</div>
+
 
     <!-- ================= AURIX SECTION ================= -->
     <section class="card" style="margin-top:26px;">
@@ -949,6 +962,61 @@ main {
 
   </div>
 </section>
+
+<!-- ================= BENEFITS POLICY CTA ================= -->
+<section class="info-card" style="
+  margin-top:32px;
+  border:1px solid rgba(79,163,255,0.35);
+  background:radial-gradient(circle at top left, rgba(79,163,255,0.08), rgba(2,6,23,0.9));
+">
+  <div class="info-inner">
+
+    <div class="info-badge">
+      <span class="info-badge-dot" style="
+        background:#4fa3ff;
+        box-shadow:0 0 12px rgba(79,163,255,1);
+      "></span>
+      Politika benefitů
+    </div>
+
+    <div class="info-heading">
+      Jak družstvo WIN.WIN spravedlivě rozděluje benefity
+    </div>
+
+    <div class="info-text">
+      Systém benefitů družstva WIN.WIN je řízen jasnými vnitřními pravidly
+      a analytickou vrstvou <b>AYAS-7</b>.  
+      Na této stránce najdeš <b>kompletní vysvětlení principů</b>,
+      podle kterých jsou benefity evidovány, přidělovány a rozvíjeny.
+    </div>
+
+    <ul class="info-list">
+      <li>jakou roli hraje WW-KEY v členském systému</li>
+      <li>jak fungují CRX, PLX a model AURIX</li>
+      <li>jak je zajištěna transparentnost a rovnost členů</li>
+      <li>proč jsou benefity nefinanční a regulatorně oddělené</li>
+    </ul>
+
+    <div style="margin-top:14px;">
+      <a href="/login/benefits-policy.html">
+        <button class="btn-link" style="
+          padding:10px 18px;
+          font-size:13px;
+          border:1px solid rgba(79,163,255,0.9);
+          background:linear-gradient(to right, rgba(79,163,255,0.25), rgba(34,197,94,0.25));
+        ">
+          <span class="btn-link-dot" style="
+            background:#4fa3ff;
+            box-shadow:0 0 10px rgba(79,163,255,1);
+          "></span>
+          Otevřít politiku členských benefitů
+        </button>
+      </a>
+    </div>
+
+  </div>
+</section>
+
 
   </div>
 </main>
