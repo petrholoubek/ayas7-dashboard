@@ -1403,6 +1403,20 @@ const supabase = createClient(
 async function loadBenefitResults() {
   const tableBody = document.getElementById("benefits-table-body");
 
+  // 🔴 KRITICKÉ – bez toho to padalo
+  if (!tableBody) {
+    console.warn("benefits-table-body nenalezen – tabulka není v DOM");
+    return;
+  }
+
+  tableBody.innerHTML = `
+    <tr>
+      <td colspan="8" style="text-align:center;color:#9ca3af;">
+        Načítám data…
+      </td>
+    </tr>
+  `;
+
   const { data, error } = await supabase
     .from("benefit_results")
     .select("*")
@@ -1433,7 +1447,6 @@ async function loadBenefitResults() {
 
   data.forEach(row => {
     const tr = document.createElement("tr");
-
     tr.innerHTML = `
       <td>${row.period}</td>
       <td style="font-size:11px;">${row.member_id}</td>
@@ -1444,13 +1457,16 @@ async function loadBenefitResults() {
       <td>${row.crx_awarded}</td>
       <td style="font-size:11px;">${row.note ?? ""}</td>
     `;
-
     tableBody.appendChild(tr);
   });
 }
 
-loadBenefitResults();
+// ✅ ČEKÁME, AŽ JE DOM HOTOVÝ
+document.addEventListener("DOMContentLoaded", () => {
+  loadBenefitResults();
+});
 </script>
+
 
 
 </body>
