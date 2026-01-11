@@ -821,6 +821,50 @@ main {
 <main>
   <div class="page-inner">
 
+<section class="card" style="margin-top:26px;">
+  <div class="card-inner">
+
+    <div class="card-badge">
+      <span class="card-badge-dot"></span>
+      Přehled benefitů
+    </div>
+
+    <div class="card-title">Moje přidělené benefity</div>
+    <div class="card-sub">
+      Přehled interních benefitů vypočtených systémem AYAS-7
+      na základě WW-KEY a CRX pro jednotlivá období.
+    </div>
+
+    <div class="members-table-wrap">
+      <table class="members-table">
+        <thead>
+          <tr>
+            <th>Období</th>
+            <th>WW-KEY</th>
+            <th>CRX</th>
+            <th>Úroveň</th>
+            <th>PLX</th>
+            <th>CRX+</th>
+            <th>Poznámka</th>
+          </tr>
+        </thead>
+        <tbody id="benefitsTableBody">
+          <tr>
+            <td colspan="7">Načítám data…</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p class="muted">
+      Benefity mají interní, evidenční a nefinanční charakter.
+      Nejedná se o investici ani příslib výnosu.
+    </p>
+
+  </div>
+</section>
+
+
 <!-- ================= BENEFITS GRID ================= -->
 <div class="benefits-grid">
 
@@ -1070,6 +1114,69 @@ const supabase = createClient(
     window.location.href = "/login/signin.html";
   };
 })();
+</script>
+<script type="module">
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+
+const supabase = createClient(
+  "https://azfrniqqtetoqploxwgq.supabase.co",
+  "EYJHB...TVŮJ_ANON_KEY"
+);
+
+async function loadMyBenefits() {
+  const { data: sessionData } = await supabase.auth.getSession();
+  const session = sessionData?.session;
+
+  if (!session) {
+    console.warn("Uživatel není přihlášen");
+    return;
+  }
+
+  const { data, error } = await supabase
+    .from("benefit_results")
+    .select(`
+      period,
+      ww_key_snapshot,
+      crx_snapshot,
+      benefit_level,
+      plx_allocated,
+      crx_awarded,
+      note
+    `)
+    .order("period", { ascending: false });
+
+  const tbody = document.getElementById("benefitsTableBody");
+  tbody.innerHTML = "";
+
+  if (error) {
+    console.error(error);
+    tbody.innerHTML =
+      "<tr><td colspan='7'>Chyba při načítání dat</td></tr>";
+    return;
+  }
+
+  if (!data || data.length === 0) {
+    tbody.innerHTML =
+      "<tr><td colspan='7'>Zatím nejsou přiděleny žádné benefity</td></tr>";
+    return;
+  }
+
+  data.forEach(row => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${row.period}</td>
+      <td>${row.ww_key_snapshot}</td>
+      <td>${row.crx_snapshot}</td>
+      <td>${row.benefit_level}</td>
+      <td>${row.plx_allocated}</td>
+      <td>${row.crx_awarded}</td>
+      <td>${row.note ?? "—"}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+document.addEventListener("DOMContentLoaded", loadMyBenefits);
 </script>
 
 </body>
