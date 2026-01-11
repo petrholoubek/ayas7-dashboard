@@ -554,7 +554,7 @@ input{
 
     <!-- ===== TABULKA VÝSLEDKŮ ===== -->
     <div class="members-table-wrap">
-      <table class="members-table">
+      <table class="members-table" id="benefits-table">
         <thead>
           <tr>
             <th>Období</th>
@@ -578,12 +578,13 @@ input{
     </div>
 
     <!-- ===== PDF TLAČÍTKO – DOLE VLEVO ===== -->
-    <div style="margin-top:14px;">
-      <button class="btn-link" id="export-benefits-pdf">
-        <span class="btn-link-dot"></span>
-        Export PDF
-      </button>
-    </div>
+<div style="margin-top: 16px; display: flex; justify-content: flex-start;">
+  <button class="btn-secondary" onclick="pdfBenefits()">
+    PDF – rozdělení benefitů
+  </button>
+</div>
+
+
 
     <!-- ===== PATIČKA BLOKU ===== -->
     <div class="muted" style="margin-top:10px;">
@@ -1456,8 +1457,27 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
 </script>
 
+<script>
+/* =========================================================
+   PDF – ROZDĚLENÍ BENEFITŮ (STEJNÁ LOGIKA)
+   ========================================================= */
+function pdfBenefits() {
+  const table = document.getElementById("benefits-table");
 
+  if (!table) {
+    alert("Tabulka rozdělení benefitů nebyla nalezena.");
+    return;
+  }
 
+  // KLÍČOVÉ – převod DOM → HTML STRING
+  const tableHtml = table.outerHTML;
+
+  openPdfWindow(
+    "AYAS-7 · Rozdělení členských benefitů",
+    tableHtml
+  );
+}
+</script>
 
 
 </body>
