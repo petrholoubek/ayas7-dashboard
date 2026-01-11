@@ -1413,7 +1413,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   const { data, error } = await supabase
     .from("benefit_results")
-    .select(`
+.select(`
   period,
   member_id,
   ww_key_snapshot,
@@ -1423,11 +1423,13 @@ document.addEventListener("DOMContentLoaded", async () => {
   crx_awarded,
   note,
   created_at,
-  members:member_id (
+  v_members_full!inner (
+    id,
     name,
     email
   )
 `)
+
 
     .order("created_at", { ascending: false });
 
@@ -1460,7 +1462,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       <td>${row.period}</td>
       <td>
   <div style="display:flex;flex-direction:column;gap:2px">
-    <b>${row.members?.name ?? "—"}</b>
+    <b>${row.v_members_full?.name ?? "—"}</b>
     <small style="font-size:11px;color:#9ca3af">
       ${row.member_id}
     </small>
