@@ -1395,27 +1395,19 @@ document.addEventListener("DOMContentLoaded", () => {
 <script type="module">
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-const supabase = createClient(
-  "https://azfrniqqtetoqploxwgq.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF6ZnJuaXFxdGV0b3FwbG94d2dxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3MzQ1OTYsImV4cCI6MjA4MzMxMDU5Nn0.QchmzNhs8owd6pkjZCk04u6PJoJ2Bhzz7oGV0KFyqdU"
-);
+document.addEventListener("DOMContentLoaded", async () => {
 
-async function loadBenefitResults() {
-  const tableBody = document.getElementById("benefits-table-body");
+  const supabase = window.supabase ?? createClient(
+    "https://azfrniqqtetoqploxwgq.supabase.co",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF6ZnJuaXFxdGV0b3FwbG94d2dxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3MzQ1OTYsImV4cCI6MjA4MzMxMDU5Nn0.QchmzNhs8owd6pkjZCk04u6PJoJ2Bhzz7oGV0KFyqdU"
+  );
 
-  // 🔴 KRITICKÉ – bez toho to padalo
+  const tableBody = document.getElementById("benefits-results-body");
+
   if (!tableBody) {
     console.warn("benefits-table-body nenalezen – tabulka není v DOM");
     return;
   }
-
-  tableBody.innerHTML = `
-    <tr>
-      <td colspan="8" style="text-align:center;color:#9ca3af;">
-        Načítám data…
-      </td>
-    </tr>
-  `;
 
   const { data, error } = await supabase
     .from("benefit_results")
@@ -1459,13 +1451,10 @@ async function loadBenefitResults() {
     `;
     tableBody.appendChild(tr);
   });
-}
 
-// ✅ ČEKÁME, AŽ JE DOM HOTOVÝ
-document.addEventListener("DOMContentLoaded", () => {
-  loadBenefitResults();
 });
 </script>
+
 
 
 
