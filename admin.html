@@ -1436,48 +1436,47 @@ async function loadBenefitResults() {
   tableBody.innerHTML = "";
 
   data.forEach(row => {
-    const tr = document.createElement("tr");
+  const tr = document.createElement("tr");
 
-    tr.innerHTML = `
-      <td>${row.period}</td>
+  let actionHtml = "—";
 
-      <td>
-        <b>${row.email ?? "—"}</b><br>
-        <small style="font-size:11px;color:#9ca3af">
-          ${row.member_id}
-        </small>
-      </td>
-
-      <td>${row.ww_key_snapshot}</td>
-      <td>${row.crx_snapshot}</td>
-      <td>${row.benefit_level}</td>
-      <td>${row.plx_allocated}</td>
-      <td>${row.crx_awarded}</td>
-
-      <td>
-        <span class="status ${row.status}">
-          ${row.status}
-        </span>
-      </td>
-
-      <td>
-        ${
-          row.status === "pending"
-            ? `
-              <button onclick="approveBenefit('${row.id}')">
-                Schválit
-              </button>
-              <button onclick="rejectBenefit('${row.id}')">
-                Zamítnout
-              </button>
-            `
-            : "—"
-        }
-      </td>
+  if (row.status === "pending") {
+    actionHtml = `
+      <button onclick="approveBenefit('${row.id}')" style="margin-right:6px;">
+        ✔ Schválit
+      </button>
+      <button onclick="rejectBenefit('${row.id}')">
+        ✖ Zamítnout
+      </button>
     `;
+  }
 
-    tableBody.appendChild(tr);
-  });
+  if (row.status === "approved") {
+    actionHtml = `<span style="color:#22c55e;font-weight:600;">Schváleno</span>`;
+  }
+
+  if (row.status === "rejected") {
+    actionHtml = `<span style="color:#ef4444;font-weight:600;">Zamítnuto</span>`;
+  }
+
+  tr.innerHTML = `
+    <td>${row.period}</td>
+    <td>
+      <b>${row.email ?? "—"}</b><br>
+      <small>${row.member_id}</small>
+    </td>
+    <td>${row.ww_key_snapshot}</td>
+    <td>${row.crx_snapshot}</td>
+    <td>${row.benefit_level}</td>
+    <td>${row.plx_allocated}</td>
+    <td>${row.crx_awarded}</td>
+    <td>${row.note ?? ""}</td>
+    <td>${actionHtml}</td>
+  `;
+
+  tableBody.appendChild(tr);
+});
+
 }
 
 /* ===============================
