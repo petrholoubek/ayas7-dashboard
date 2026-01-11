@@ -1396,56 +1396,32 @@ document.addEventListener("DOMContentLoaded", () => {
 <script type="module">
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
+const supabase = createClient(
+  "https://azfrniqqtetoqploxwgq.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF6ZnJuaXFxdGV0b3FwbG94d2dxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3MzQ1OTYsImV4cCI6MjA4MzMxMDU5Nn0.QchmzNhs8owd6pkjZCk04u6PJoJ2Bhzz7oGV0KFyqdU"
+);
+
 document.addEventListener("DOMContentLoaded", async () => {
 
-  const supabase = createClient(
-    "https://azfrniqqtetoqploxwgq.supabase.co",
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF6ZnJuaXFxdGV0b3FwbG94d2dxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3MzQ1OTYsImV4cCI6MjA4MzMxMDU5Nn0.QchmzNhs8owd6pkjZCk04u6PJoJ2Bhzz7oGV0KFyqdU"
-  );
-
   const tableBody = document.getElementById("benefits-results-body");
-
   if (!tableBody) {
-    console.warn("benefits-results-body nenalezen – tabulka není v DOM");
+    console.error("❌ benefits-results-body nenalezen");
     return;
   }
 
   const { data, error } = await supabase
-    .from("benefit_results")
-    .select(`
-      period,
-      member_id,
-      ww_key_snapshot,
-      crx_snapshot,
-      benefit_level,
-      plx_allocated,
-      crx_awarded,
-      note,
-      created_at,
-      auth_users:member_id (
-        email
-      )
-    `)
+    .from("v_benefit_results_full")
+    .select("*")
     .order("created_at", { ascending: false });
 
   if (error) {
-    tableBody.innerHTML = `
-      <tr>
-        <td colspan="8" style="color:#f87171;text-align:center;">
-          Chyba načítání dat
-        </td>
-      </tr>`;
-    console.error(error);
+    console.error("❌ DB ERROR:", error);
+    tableBody.innerHTML = `<tr><td colspan="8">Chyba DB</td></tr>`;
     return;
   }
 
   if (!data || data.length === 0) {
-    tableBody.innerHTML = `
-      <tr>
-        <td colspan="8" style="text-align:center;color:#9ca3af;">
-          Zatím žádná data
-        </td>
-      </tr>`;
+    tableBody.innerHTML = `<tr><td colspan="8">Žádná data</td></tr>`;
     return;
   }
 
@@ -1456,26 +1432,22 @@ document.addEventListener("DOMContentLoaded", async () => {
     tr.innerHTML = `
       <td>${row.period}</td>
       <td>
-        <div style="display:flex;flex-direction:column;gap:2px">
-          <b>${row.auth_users?.email ?? "—"}</b>
-          <small style="font-size:11px;color:#9ca3af">
-            ${row.member_id}
-          </small>
-        </div>
+        <b>${row.email ?? "—"}</b><br>
+        <small>${row.member_id}</small>
       </td>
       <td>${row.ww_key_snapshot}</td>
       <td>${row.crx_snapshot}</td>
       <td>${row.benefit_level}</td>
       <td>${row.plx_allocated}</td>
       <td>${row.crx_awarded}</td>
-      <td style="font-size:11px;">${row.note ?? ""}</td>
+      <td>${row.note ?? ""}</td>
     `;
     tableBody.appendChild(tr);
   });
 
-}); // ✅ TOTO TI CHYBĚLO
-
+});
 </script>
+
 
 
 <script>
