@@ -1423,14 +1423,11 @@ const { data, error } = await supabase
     crx_awarded,
     note,
     created_at,
-    members:member_id (
-      id,
-      name,
+    auth_users:member_id (
       email
     )
   `)
   .order("created_at", { ascending: false });
-
 
   if (error) {
     tableBody.innerHTML = `
@@ -1456,30 +1453,27 @@ const { data, error } = await supabase
   tableBody.innerHTML = "";
 
   data.forEach(row => {
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td>${row.period}</td>
-      <td>
-  <div style="display:flex;flex-direction:column;gap:2px">
-   <b>${row.members?.name ?? "—"}</b>
-<small style="font-size:11px;color:#9ca3af">
-  ${row.member_id}
-</small>
-
-  </div>
-</td>
-
-      <td>${row.ww_key_snapshot}</td>
-      <td>${row.crx_snapshot}</td>
-      <td>${row.benefit_level}</td>
-      <td>${row.plx_allocated}</td>
-      <td>${row.crx_awarded}</td>
-      <td style="font-size:11px;">${row.note ?? ""}</td>
-    `;
-    tableBody.appendChild(tr);
-  });
-
+  const tr = document.createElement("tr");
+  tr.innerHTML = `
+    <td>${row.period}</td>
+    <td>
+      <div style="display:flex;flex-direction:column;gap:2px">
+        <b>${row.auth_users?.email ?? "—"}</b>
+        <small style="font-size:11px;color:#9ca3af">
+          ${row.member_id}
+        </small>
+      </div>
+    </td>
+    <td>${row.ww_key_snapshot}</td>
+    <td>${row.crx_snapshot}</td>
+    <td>${row.benefit_level}</td>
+    <td>${row.plx_allocated}</td>
+    <td>${row.crx_awarded}</td>
+    <td style="font-size:11px;">${row.note ?? ""}</td>
+  `;
+  tableBody.appendChild(tr);
 });
+
 </script>
 
 <script>
