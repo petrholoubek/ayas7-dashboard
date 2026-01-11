@@ -523,6 +523,75 @@ input{
 
 </div>
 
+<section class="card" style="margin-top:26px;">
+  <div class="card-inner">
+
+    <!-- ===== HLAVIČKA AYAS-7 S VÝSTRAŽNOU LED ===== -->
+    <div class="card-badge" style="
+      margin-bottom:10px;
+      padding-left:16px;
+      position:relative;
+    ">
+      <span class="card-badge-dot" style="
+  position:absolute;
+  left:6px;
+  top:50%;
+  transform:translateY(-50%);
+  width:6px;
+  height:6px;
+  border-radius:999px;
+  background:#22c55e;
+  box-shadow:
+    0 0 6px rgba(34,197,94,0.9),
+    0 0 14px rgba(34,197,94,0.8),
+    0 0 28px rgba(34,197,94,0.6);
+"></span>
+
+
+      AYAS-7 · výpočtová vrstva · Rozdělení členských benefitů ·
+      Interní auditní výstup podle WW-KEY a CRX
+    </div>
+
+    <!-- ===== TABULKA VÝSLEDKŮ ===== -->
+    <div class="members-table-wrap">
+      <table class="members-table">
+        <thead>
+          <tr>
+            <th>Období</th>
+            <th>Člen (UUID)</th>
+            <th>WW-KEY</th>
+            <th>CRX</th>
+            <th>Úroveň</th>
+            <th>PLX</th>
+            <th>CRX +</th>
+            <th>Poznámka</th>
+          </tr>
+        </thead>
+        <tbody id="benefits-results-body">
+          <tr>
+            <td colspan="8" style="text-align:center; color:#9ca3af;">
+              Načítám data…
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ===== PDF TLAČÍTKO – DOLE VLEVO ===== -->
+    <div style="margin-top:14px;">
+      <button class="btn-link" id="export-benefits-pdf">
+        <span class="btn-link-dot"></span>
+        Export PDF
+      </button>
+    </div>
+
+    <!-- ===== PATIČKA BLOKU ===== -->
+    <div class="muted" style="margin-top:10px;">
+      AYAS-7 · interní audit-ready administrativní výstup
+    </div>
+
+  </div>
+</section>
 
 
 <div class="footer">AYAS-7 • interní audit-ready administrační velín</div>
@@ -1323,6 +1392,65 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 </script>
 
+<script type="module">
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+
+const supabase = createClient(
+  "https://azfrniqqtetoqploxwgq.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF6ZnJuaXFxdGV0b3FwbG94d2dxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3MzQ1OTYsImV4cCI6MjA4MzMxMDU5Nn0.QchmzNhs8owd6pkjZCk04u6PJoJ2Bhzz7oGV0KFyqdU"
+);
+
+async function loadBenefitResults() {
+  const tableBody = document.getElementById("benefits-table-body");
+
+  const { data, error } = await supabase
+    .from("benefit_results")
+    .select("*")
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    tableBody.innerHTML = `
+      <tr>
+        <td colspan="8" style="color:#f87171;text-align:center;">
+          Chyba načítání dat
+        </td>
+      </tr>`;
+    console.error(error);
+    return;
+  }
+
+  if (!data || data.length === 0) {
+    tableBody.innerHTML = `
+      <tr>
+        <td colspan="8" style="text-align:center;color:#9ca3af;">
+          Zatím žádná data
+        </td>
+      </tr>`;
+    return;
+  }
+
+  tableBody.innerHTML = "";
+
+  data.forEach(row => {
+    const tr = document.createElement("tr");
+
+    tr.innerHTML = `
+      <td>${row.period}</td>
+      <td style="font-size:11px;">${row.member_id}</td>
+      <td>${row.ww_key_snapshot}</td>
+      <td>${row.crx_snapshot}</td>
+      <td>${row.benefit_level}</td>
+      <td>${row.plx_allocated}</td>
+      <td>${row.crx_awarded}</td>
+      <td style="font-size:11px;">${row.note ?? ""}</td>
+    `;
+
+    tableBody.appendChild(tr);
+  });
+}
+
+loadBenefitResults();
+</script>
 
 
 </body>
