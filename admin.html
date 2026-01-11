@@ -1396,14 +1396,20 @@ document.addEventListener("DOMContentLoaded", () => {
 <script type="module">
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
+/* ===============================
+   SUPABASE CLIENT
+================================ */
 const supabase = createClient(
   "https://azfrniqqtetoqploxwgq.supabase.co",
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF6ZnJuaXFxdGV0b3FwbG94d2dxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3MzQ1OTYsImV4cCI6MjA4MzMxMDU5Nn0.QchmzNhs8owd6pkjZCk04u6PJoJ2Bhzz7oGV0KFyqdU"
 );
 
-document.addEventListener("DOMContentLoaded", async () => {
-
+/* ===============================
+   LOAD BENEFIT RESULTS
+================================ */
+async function loadBenefitResults() {
   const tableBody = document.getElementById("benefits-results-body");
+
   if (!tableBody) {
     console.error("❌ benefits-results-body nenalezen");
     return;
@@ -1416,12 +1422,14 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   if (error) {
     console.error("❌ DB ERROR:", error);
-    tableBody.innerHTML = `<tr><td colspan="8">Chyba DB</td></tr>`;
+    tableBody.innerHTML =
+      `<tr><td colspan="9" style="color:#f87171">Chyba DB</td></tr>`;
     return;
   }
 
   if (!data || data.length === 0) {
-    tableBody.innerHTML = `<tr><td colspan="8">Žádná data</td></tr>`;
+    tableBody.innerHTML =
+      `<tr><td colspan="9">Žádná data</td></tr>`;
     return;
   }
 
@@ -1429,24 +1437,102 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   data.forEach(row => {
     const tr = document.createElement("tr");
+
     tr.innerHTML = `
       <td>${row.period}</td>
+
       <td>
         <b>${row.email ?? "—"}</b><br>
-        <small>${row.member_id}</small>
+        <small style="font-size:11px;color:#9ca3af">
+          ${row.member_id}
+        </small>
       </td>
+
       <td>${row.ww_key_snapshot}</td>
       <td>${row.crx_snapshot}</td>
       <td>${row.benefit_level}</td>
       <td>${row.plx_allocated}</td>
       <td>${row.crx_awarded}</td>
-      <td>${row.note ?? ""}</td>
+
+      <td>
+        <span class="status ${row.status}">
+          ${row.status}
+        </span>
+      </td>
+
+      <td>
+        ${
+          row.status === "pending"
+            ? `
+              <button onclick="approveBenefit('${row.id}')">
+                Schválit
+              </button>
+              <button onclick="rejectBenefit('${row.id}')">
+                Zamítnout
+              </button>
+            `
+            : "—"
+        }
+      </td>
     `;
+
     tableBody.appendChild(tr);
   });
+}
 
-});
+/* ===============================
+   APPROVE
+================================ */
+window.approveBenefit = async function(id) {
+  if (!confirm("Schválit rozdělení benefitů?")) return;
+
+  const { error } = await supabase
+    .from("benefit_results")
+    .update({
+      status: "approved",
+      approved_at: new Date().toISOString()
+    })
+    .eq("id", id);
+
+  if (error) {
+    alert("Chyba při schválení");
+    console.error(error);
+    return;
+  }
+
+  loadBenefitResults();
+};
+
+/* ===============================
+   REJECT
+================================ */
+window.rejectBenefit = async function(id) {
+  const reason = prompt("Důvod zamítnutí:");
+  if (!reason) return;
+
+  const { error } = await supabase
+    .from("benefit_results")
+    .update({
+      status: "rejected",
+      rejected_reason: reason
+    })
+    .eq("id", id);
+
+  if (error) {
+    alert("Chyba při zamítnutí");
+    console.error(error);
+    return;
+  }
+
+  loadBenefitResults();
+};
+
+/* ===============================
+   INIT
+================================ */
+document.addEventListener("DOMContentLoaded", loadBenefitResults);
 </script>
+
 
 
 
