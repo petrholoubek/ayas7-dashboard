@@ -1397,7 +1397,8 @@ import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js
 
 document.addEventListener("DOMContentLoaded", async () => {
 
-  const supabase = window.supabase ?? createClient(
+  // ✅ VŽDY vytvoříme plnohodnotný Supabase client
+  const supabase = createClient(
     "https://azfrniqqtetoqploxwgq.supabase.co",
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF6ZnJuaXFxdGV0b3FwbG94d2dxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3MzQ1OTYsImV4cCI6MjA4MzMxMDU5Nn0.QchmzNhs8owd6pkjZCk04u6PJoJ2Bhzz7oGV0KFyqdU"
   );
@@ -1405,7 +1406,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const tableBody = document.getElementById("benefits-results-body");
 
   if (!tableBody) {
-    console.warn("benefits-table-body nenalezen – tabulka není v DOM");
+    console.warn("benefits-results-body nenalezen – tabulka není v DOM");
     return;
   }
 
@@ -1454,6 +1455,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 });
 </script>
+
 
 
 
