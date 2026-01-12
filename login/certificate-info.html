@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<title>AYAS-7 · Certifikát WW-KEY</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- FAVICON / PWA -->
+  <link rel="icon" type="image/png" sizes="192x192" href="/ayas7-192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="/ayas7-512.png">
+  <link rel="apple-touch-icon" href="/ayas7-192.png">
+  <meta name="theme-color" content="#020617">
+<link rel="icon" href="/ayas7-192.png">
+<meta name="theme-color" content="#020617">
+<script type="module" src="./assets/js/gate.js"></script>
+<style>
+:root{
+  --bg:#020617;
+  --card:#0f172a;
+  --border:#1e293b;
+  --text:#e5e7eb;
+  --muted:#9ca3af;
+  --accent:#22c55e;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  background:radial-gradient(circle at 40% 0%,#0f172a 0%,#020617 60%,#000 100%);
+  font-family:"Segoe UI",Tahoma,Verdana,sans-serif;
+  color:var(--text);
+}
+
+main{
+  max-width:1200px;
+  margin:0 auto;
+  padding:48px 20px 80px;
+}
+
+/* ===== HERO – DNA AYAS-7 ===== */
+.hero{
+  margin-bottom:48px;
+  padding-bottom:36px;
+  border-bottom:1px solid var(--border);
+}
+
+.hero-led{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-bottom:18px;
+}
+
+.hero-dot{
+  width:6px;
+  height:6px;
+  border-radius:50%;
+  background:var(--accent);
+  box-shadow:0 0 12px var(--accent);
+}
+
+.hero-next{
+  font-size:11px;
+  letter-spacing:.34em;
+  text-transform:uppercase;
+  color:var(--muted);
+}
+
+.hero-logo{
+  font-size:30px;
+  font-weight:700;
+  letter-spacing:.30em;
+  margin-bottom:24px;
+}
+
+.hero-title{
+  font-size:34px;
+  font-weight:600;
+  letter-spacing:.12em;
+  margin-bottom:16px;
+}
+
+.hero-desc{
+  max-width:720px;
+  font-size:14px;
+  line-height:1.9;
+  color:var(--muted);
+}
+
+/* ===== CONTENT ===== */
+.section{
+  background:rgba(15,23,42,.8);
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:28px;
+  margin-bottom:24px;
+}
+
+.section h2{
+  font-size:18px;
+  font-weight:600;
+  margin-bottom:12px;
+}
+
+.section p{
+  font-size:13px;
+  line-height:1.8;
+  color:var(--muted);
+}
+
+.section ul{
+  margin-top:10px;
+  padding-left:18px;
+  font-size:13px;
+  color:var(--muted);
+}
+
+.section li{margin-bottom:6px}
+
+.footer-note{
+  margin-top:32px;
+  font-size:11px;
+  color:var(--muted);
+  border-top:1px solid var(--border);
+  padding-top:14px;
+}
+</style>
+</head>
+
+<body>
+<main>
+<div id="user-bar" style="
+  position:fixed;
+  top:12px;
+  right:16px;
+  z-index:9999;
+  font-size:12px;
+  color:#e5e7eb;
+  background:rgba(2,6,23,0.85);
+  border:1px solid rgba(148,163,184,0.3);
+  padding:6px 12px;
+  border-radius:999px;
+  display:none;
+">
+  Přihlášen: <span id="user-email"></span>
+  · <a href="#" id="logout" style="color:#4fa3ff;text-decoration:none;">Odhlásit</a>
+</div>
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-led">
+      <span class="hero-dot"></span>
+      <span class="hero-next">NEXT GENERATION</span>
+    </div>
+
+    <div class="hero-logo">AYAS-7</div>
+
+    <h1 class="hero-title">Certifikát WW-KEY</h1>
+
+    <p class="hero-desc">
+      Tato stránka vysvětluje princip vydávání certifikátu WW-KEY,
+      jeho vazbu na platbu, evidenci v systému AYAS-7
+      a způsob, jakým je certifikát používán jako auditovatelný doklad.
+    </p>
+  </section>
+
+  <!-- SECTION 1 -->
+  <section class="section">
+    <h2>Co je certifikát WW-KEY</h2>
+    <p>
+      Certifikát WW-KEY je oficiální potvrzení o přidělení
+      členských jednotek WW-KEY konkrétnímu členovi systému AYAS-7.
+      Nevzniká ručně, ale je generován systémově na základě
+      splnění podmínek členství a potvrzení platby.
+    </p>
+  </section>
+
+  <!-- SECTION 2 -->
+  <section class="section">
+    <h2>Jak certifikát vzniká</h2>
+    <ul>
+      <li>člen provede vklad (FIAT / krypto)</li>
+      <li>platba je potvrzena administrátorem nebo systémem</li>
+      <li>je vypočten počet WW-KEY (fixní kurz)</li>
+      <li>vygeneruje se certifikát s unikátním ID a hashem</li>
+      <li>hash je uložen v databázi pro budoucí ověření</li>
+    </ul>
+  </section>
+
+  <!-- SECTION 3 -->
+  <section class="section">
+    <h2>Role certifikátu v systému AYAS-7</h2>
+    <p>
+      Certifikát slouží jako auditní stopa.
+      Je propojen s databází členů, výkonnostní vrstvou
+      a budoucími výnosovými moduly.
+      Nejde o cenný papír ani investiční nástroj.
+    </p>
+  </section>
+
+  <div class="footer-note">
+    AYAS-7 · Win-Win Cooperative · Interní certifikační vrstva
+  </div>
+
+</main>
+
+<script>
+const SUPABASE_ANON_KEY =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF6ZnJuaXFxdGV0b3FwbG94d2dxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3MzQ1OTYsImV4cCI6MjA4MzMxMDU5Nn0.QchmzNhs8owd6pkjZCk04u6PJoJ2Bhzz7oGV0KFyqdU";
+
+const params = new URLSearchParams(window.location.search);
+const uid = params.get("uid");
+
+if (!uid) {
+  alert("Chybí ID certifikátu");
+}
+
+async function loadCertificate() {
+  const r = await fetch(
+    `https://azfrniqqtetoqploxwgq.supabase.co/rest/v1/member_certificates?certificate_uid=eq.${uid}&select=*`,
+    {
+      headers: {
+        "apikey": SUPABASE_ANON_KEY,
+        "Authorization": "Bearer " + SUPABASE_ANON_KEY
+      }
+    }
+  );
+
+  const [cert] = await r.json();
+  if (!cert) {
+    alert("Certifikát nebyl nalezen");
+    return;
+  }
+
+  // PRO ZATÍM JEN TEST
+  console.log("CERTIFIKÁT:", cert);
+
+  // ZDE POZDĚJI DOSADÍŠ DO HTML (jméno, WW-KEY, datum…)
+}
+
+loadCertificate();
+</script>
+
+</body>
+</html>
