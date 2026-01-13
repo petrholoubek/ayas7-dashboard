@@ -267,6 +267,54 @@ li{margin-bottom:4px}
   opacity:1;
 }
 
+/* ===== MEMBERS TABLE (UNIFIED STYLE) ===== */
+.members-table-wrap{
+  width:100%;
+  overflow:hidden;
+  border-radius:14px;
+  border:1px solid rgba(148,163,184,0.22);
+  background:rgba(15,23,42,0.65);
+}
+
+.members-table{
+  width:100%;
+  border-collapse:collapse;
+  font-size:14px;
+}
+
+.members-table thead th{
+  text-align:left;
+  padding:14px 16px;
+  background:rgba(30,41,59,0.9);
+  color:#e5e7eb;
+  font-weight:600;
+  border-bottom:1px solid rgba(148,163,184,0.25);
+}
+
+.members-table tbody tr{
+  background:rgba(2,6,23,0.55);
+  transition:background .2s ease;
+}
+
+.members-table tbody tr:nth-child(even){
+  background:rgba(15,23,42,0.65);
+}
+
+.members-table tbody tr:hover{
+  background:rgba(79,163,255,0.12);
+}
+
+.members-table td{
+  padding:13px 16px;
+  border-bottom:1px solid rgba(148,163,184,0.15);
+  color:#e5e7eb;
+  vertical-align:middle;
+}
+
+.members-table td:last-child{
+  font-weight:600;
+  color:#facc15;
+}
 
 </style>
 </head>
@@ -350,15 +398,17 @@ li{margin-bottom:4px}
     </div>
     <h2>CREDIX (CRX)</h2>
     <p>
-      CRX je interní věrnostní jednotka družstva WIN.WIN,
-      která slouží k evidenci dlouhodobé účasti člena v systému.
+      <b>CREDIX (CRX)</b> je interní věrnostní jednotka družstva WIN.WIN,
+  která slouží výhradně k evidenci a uplatnění členských benefitů..
     </p>
-    <ul>
-      <li>není převoditelný</li>
-      <li>nemá peněžní hodnotu</li>
-      <li>ukazatel aktivity a stability členství</li>
-    </ul>
-    <p><b>CRX je evidenční nástroj, nikoli finanční instrument.</b></p>
+    <ul class="info-list">
+  <li>není investicí ani finančním nástrojem</li>
+  <li>nemá peněžní hodnotu a nelze jej směnit za peníze</li>
+  <li>není převoditelný mimo interní systémy družstva</li>
+  <li>je přidělován nenárokově na základě pravidel družstva</li>
+</ul>
+    <p><b>CRX nepředstavuje výnos, zhodnocení ani majetkové právo.
+  Slouží výhradně jako interní benefitní evidence.</b></p>
   </div>
 
   <!-- PLX -->
@@ -369,14 +419,20 @@ li{margin-bottom:4px}
     </div>
     <h2>PLUX (PLX)</h2>
     <p>
-      PLX představuje interní benefitní poukázky určené
-      k uplatnění členských výhod v rámci ekosystému WIN.WIN.
+      <b>PLUX (PLX)</b> představuje interní provozní benefitní poukázku,
+  která může být členu zpřístupněna na základě jeho statusu
+  a rozhodnutí družstva.
     </p>
-    <ul>
-      <li>nelze směnit za peníze</li>
-      <li>nepředstavuje investici</li>
-      <li>slouží výhradně k interním benefitům</li>
-    </ul>
+    <ul class="info-list">
+  <li>nepředstavuje investici ani finanční produkt</li>
+  <li>není směnitelná za peníze</li>
+  <li>slouží výhradně k uplatnění interních benefitů</li>
+  <li>její dostupnost je nenároková a řiditelná družstvem</li>
+</ul>
+<p class="muted">
+  <p><b>PLX je provozní benefitní nástroj družstva a nemá povahu
+  investičního ani majetkového práva.</b></p>
+</p>
   </div>
 
 </section>
@@ -446,6 +502,13 @@ li{margin-bottom:4px}
         <span class="dot blue"></span>
         Ilustrační přehled
       </div>
+<p class="muted" style="margin-top:14px;">
+  Kariérní pozice a uvedené procentní rozsahy představují maximální
+  rámec pro výpočet matching bonusů ze Síťového provizního fondu (SPF).
+  Nejedná se o nárok, příslib výnosu ani podíl na hospodářském výsledku
+  družstva. Výplata matching bonusů je vždy podmíněna rozhodnutím
+  družstva a disponibilní výší SPF.
+</p>
 
       <h3>Rozložení benefitní kapacity</h3>
 
@@ -519,6 +582,78 @@ li{margin-bottom:4px}
   </div>
 
 </section>
+<!-- ================================================= -->
+<!-- CAREER & MATCHING TABLE -->
+<!-- ================================================= -->
+<section class="section card">
+
+  <div class="kicker">
+    <span class="dot amber"></span>
+    Kariérní struktura obchodní sítě
+  </div>
+
+  <h2>Kariérní stupně a matching bonus</h2>
+
+  <p class="muted">
+    Níže uvedená tabulka popisuje <b>interní kariérní strukturu obchodní sítě</b>
+    a maximální rozsah <b>matching bonusu</b> připadajícího na jednotlivé kariérní pozice.
+    Uvedené hodnoty mají <b>výhradně výkladový a informativní charakter</b>.
+  </p>
+
+  <div class="members-table-wrap" style="margin-top:16px;">
+    <table class="members-table">
+      <thead>
+        <tr>
+          <th>Pozice</th>
+          <th>Název pozice</th>
+          <th>Max. MB z vlastní sítě</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>T</td><td>Trader</td><td>16 %</td></tr>
+        <tr><td>T1</td><td>Trader 1</td><td>21 %</td></tr>
+        <tr><td>T2</td><td>Trader 2</td><td>26 %</td></tr>
+        <tr><td>T3</td><td>Trader 3</td><td>31 %</td></tr>
+        <tr><td>M</td><td>Manager</td><td>36 %</td></tr>
+        <tr><td>M1</td><td>Manager 1</td><td>41 %</td></tr>
+        <tr><td>M2</td><td>Manager 2</td><td>46 %</td></tr>
+        <tr><td>M3</td><td>Manager 3</td><td>51 %</td></tr>
+        <tr><td>TM</td><td>Team Manager</td><td>56 %</td></tr>
+        <tr><td>TM1</td><td>Team Manager 1</td><td>60 %</td></tr>
+        <tr><td>TM2</td><td>Team Manager 2</td><td>64 %</td></tr>
+        <tr><td>TM3</td><td>Team Manager 3</td><td>68 %</td></tr>
+        <tr><td>TM4</td><td>Team Manager 4</td><td>72 %</td></tr>
+        <tr><td>TL</td><td>Team Leader</td><td>76 %</td></tr>
+        <tr><td>TL1</td><td>Team Leader 1</td><td>80 %</td></tr>
+        <tr><td>TL2</td><td>Team Leader 2</td><td>84 %</td></tr>
+        <tr><td>VP</td><td>Vice President</td><td>96 %</td></tr>
+        <tr><td>P</td><td>President</td><td>100 %</td></tr>
+      </tbody>
+    </table>
+  </div>
+<p class="muted" style="margin-top:14px;">
+  Uvedené rozsahy a koeficienty slouží výhradně jako interní metodika
+  pro výpočet přídělu CRX. Nezakládají právní nárok, nejsou garantované
+  a mohou být upraveny rozhodnutím družstva v souladu s jeho
+  ekonomickou stabilitou a interními předpisy.
+</p>
+
+  <p class="muted" style="margin-top:12px;">
+    Uvedené procentní hodnoty představují <b>maximální teoretický rozsah matching bonusu</b>
+    dle kariérní pozice. <br>
+    <b>Nepředstavují nárok, garantovaný příjem ani podíl na zisku.</b>
+    Skutečný rozsah matching bonusu je vždy podmíněn:
+  </p>
+
+  <ul>
+    <li>výší a režimem Síťového provizního fondu (SPF)</li>
+    <li>strukturou obchodní sítě</li>
+    <li>splněním kvalitativních a regulatorních podmínek</li>
+    <li>rozhodnutím představenstva družstva</li>
+  </ul>
+
+</section>
+
 
 <!-- ================================================= -->
 <!-- SCENARIOS -->
