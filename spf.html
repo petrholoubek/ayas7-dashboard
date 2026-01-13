@@ -176,20 +176,77 @@ async function loadSPF() {
   }
 
   data.forEach(r => {
-    tbody.innerHTML += `
-      <tr>
-        <td>${r.period}</td>
-        <td>${r.total_crx_assigned}</td>
-        <td>${r.spf_amount}</td>
-        <td>${r.status}</td>
-        <td>—</td>
-      </tr>
-    `;
-  });
+
+  let actions = "—";
+
+  if (r.status === "draft") {
+    actions = `
+  <div class="actions">
+    <button class="approve"
+      onclick="decideSPF('${r.id}','approve')">
+      Schválit
+    </button>
+    <button class="reject"
+      onclick="decideSPF('${r.id}','reject')">
+      Zamítnout
+    </button>
+  </div>
+`;
+
+  }
+
+  tbody.innerHTML += `
+    <tr>
+      <td>${r.period}</td>
+      <td>${r.total_crx_assigned}</td>
+      <td>${r.spf_amount}</td>
+      <td>${r.status}</td>
+      <td>${actions}</td>
+    </tr>
+  `;
+});
+
 }
 
 loadSPF();
 </script>
+
+<script>
+async function decideSPF(id, action) {
+
+  const isApprove = action === "approve";
+
+  const confirmText = isApprove
+    ? "Opravdu SCHVÁLIT příděl do SPF?\n\nTento krok je auditně zaznamenán."
+    : "Opravdu ZAMÍTNOUT příděl do SPF?\n\nTento krok je auditně zaznamenán.";
+
+  if (!confirm(confirmText)) {
+    return;
+  }
+
+  const { error } = await supabase
+    .from("spf_periods")
+    .update({
+      status: isApprove ? "approved" : "rejected",
+      decided_at: new Date().toISOString()
+    })
+    .eq("id", id);
+
+  if (error) {
+    alert("Chyba při rozhodnutí SPF.");
+    return;
+  }
+
+  alert(
+    isApprove
+      ? "SPF období bylo SCHVÁLENO."
+      : "SPF období bylo ZAMÍTNUTO."
+  );
+
+  loadSPF(); // refresh tabulky
+}
+</script>
+
 
 <script>
 /* =========================================================
