@@ -212,39 +212,46 @@ loadSPF();
 </script>
 
 <script>
+<script>
 async function decideSPF(id, action) {
 
-  const isApprove = action === "approve";
+  const text =
+    action === "approve"
+      ? "Opravdu SCHVÁLIT SPF období?\n\nRozhodnutí bude auditně zaznamenáno."
+      : "Opravdu ZAMÍTNOUT SPF období?\n\nRozhodnutí bude auditně zaznamenáno.";
 
-  const confirmText = isApprove
-    ? "Opravdu SCHVÁLIT příděl do SPF?\n\nTento krok je auditně zaznamenán."
-    : "Opravdu ZAMÍTNOUT příděl do SPF?\n\nTento krok je auditně zaznamenán.";
+  if (!confirm(text)) return;
 
-  if (!confirm(confirmText)) {
+  const session = (await supabase.auth.getSession()).data.session;
+
+  if (!session) {
+    alert("Nejste přihlášen.");
     return;
   }
 
-  const { error } = await supabase
-    .from("spf_periods")
-    .update({
-      status: isApprove ? "approved" : "rejected",
-      decided_at: new Date().toISOString()
-    })
-    .eq("id", id);
-
-  if (error) {
-    alert("Chyba při rozhodnutí SPF.");
-    return;
-  }
-
-  alert(
-    isApprove
-      ? "SPF období bylo SCHVÁLENO."
-      : "SPF období bylo ZAMÍTNUTO."
+  const res = await fetch(
+    "https://azfrniqqtetoqploxwgq.supabase.co/functions/v1/decide_spf",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${session.access_token}`
+      },
+      body: JSON.stringify({ id, action })
+    }
   );
 
-  loadSPF(); // refresh tabulky
+  if (!res.ok) {
+    const err = await res.text();
+    alert("Rozhodnutí se nezdařilo:\n" + err);
+    return;
+  }
+
+  alert("Rozhodnutí bylo uloženo.");
+  loadSPF(); // znovu načti tabulku
 }
+</script>
+
 </script>
 
 
