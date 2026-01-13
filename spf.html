@@ -62,11 +62,93 @@ h1{font-size:30px;margin-bottom:10px}
 h2{font-size:18px;margin-bottom:10px}
 p{font-size:13px;line-height:1.6;color:var(--muted)}
 
-table{width:100%;border-collapse:collapse;font-size:12px}
-th,td{padding:10px;border-bottom:1px solid var(--border)}
+table{
+  width:100%;
+  border-collapse:collapse;
+  font-size:12px;
+  table-layout:fixed;
+}
+
+/* === SPF TABULKA – TVRDÉ ZAROVNÁNÍ SLOUPCŮ === */
+table{
+  table-layout: fixed;
+}
+
+thead th,
+tbody td{
+  padding:10px;
+  vertical-align:middle;
+}
+
+/* Období */
+thead th:nth-child(1),
+tbody td:nth-child(1){
+  width:120px;
+}
+
+/* Celkový příděl CRX */
+thead th:nth-child(2),
+tbody td:nth-child(2){
+  width:180px;
+  text-align:right;
+}
+
+/* Návrh do SPF */
+thead th:nth-child(3),
+tbody td:nth-child(3){
+  width:160px;
+  text-align:right;
+}
+
+/* Stav */
+thead th:nth-child(4),
+tbody td:nth-child(4){
+  width:120px;
+}
+
+/* Akce */
+thead th:nth-child(5),
+tbody td:nth-child(5){
+  width:240px;
+}
+
+
+th,td{
+  padding:10px;
+  border-bottom:1px solid var(--border);
+}
+/* === TVRDÉ ZAROVNÁNÍ TEXTU V HLAVIČCE I DATECH === */
+thead th{
+  text-align:left;
+}
+
+tbody td{
+  text-align:left;
+}
+/* Období – HLAVIČKA I DATA NA STEJNOU POZICI */
+thead th:nth-child(1),
+tbody td:nth-child(1){
+  padding-left:10px;
+  text-align:left;
+}
+
+
 th{color:var(--muted)}
 
-.actions{display:flex;gap:8px}
+/* PEVNÉ SLOUPCE – DŮLEŽITÉ */
+th:nth-child(1), td:nth-child(1){ width:120px; }
+th:nth-child(2), td:nth-child(2){ width:180px; text-align:right; }
+th:nth-child(3), td:nth-child(3){ width:160px; text-align:right; }
+th:nth-child(4), td:nth-child(4){ width:120px; }
+th:nth-child(5), td:nth-child(5){ width:220px; }
+
+/* TLAČÍTKA */
+.actions{
+  display:flex;
+  gap:14px;
+}
+
+
 button{
   padding:6px 12px;
   border-radius:10px;
@@ -85,6 +167,39 @@ button{
     0 0 6px rgba(250,204,21,.9),
     0 0 14px rgba(250,204,21,.8),
     0 0 30px rgba(250,204,21,.6);
+}
+.cell-actions{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  min-height:28px;
+}
+/* === FIX ZAROVNÁNÍ SPF TABULKY === */
+table thead th,
+table tbody td{
+  vertical-align: middle;
+}
+
+/* ČÍSLA VPRAVO – HLAVIČKA I DATA */
+table th:nth-child(2),
+table th:nth-child(3),
+table td:nth-child(2),
+table td:nth-child(3){
+  text-align: right;
+}
+
+/* STAV */
+table th:nth-child(4),
+table td:nth-child(4){
+  text-align: left;
+  white-space: nowrap;
+}
+
+/* AKCE – PEVNÝ BLOK */
+table th:nth-child(5),
+table td:nth-child(5){
+  text-align: left;
+  white-space: nowrap;
 }
 
 </style>
@@ -180,23 +295,27 @@ async function loadSPF() {
 
   data.forEach(r => {
 
-  let actions = "—";
-
-  if (r.status === "draft") {
-    actions = `
-  <div class="actions">
-    <button class="approve"
-      onclick="decideSPF('${r.id}','approve')">
-      Schválit
-    </button>
-    <button class="reject"
-      onclick="decideSPF('${r.id}','reject')">
-      Zamítnout
-    </button>
+  let actions = `
+  <div class="cell-actions muted">
+    —
   </div>
 `;
 
-  }
+if (r.status === "draft") {
+  actions = `
+    <div class="cell-actions">
+      <button class="approve"
+        onclick="decideSPF('${r.id}','approve')">
+        Schválit
+      </button>
+      <button class="reject"
+        onclick="decideSPF('${r.id}','reject')">
+        Zamítnout
+      </button>
+    </div>
+  `;
+}
+
 
   tbody.innerHTML += `
     <tr>
@@ -254,10 +373,31 @@ async function decideSPF(id, action) {
 }
 </script>
 
-<script type="module">
-import { createClient } from
-  "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
+<script>
+/* =========================================================
+   PDF – ROZDĚLENÍ BENEFITŮ (STEJNÁ LOGIKA)
+   ========================================================= */
+function pdfSPF(){
+  const table = document.getElementById("spf-periods");
+
+  if (!table) {
+    alert("Tabulka SPF nebyla nalezena.");
+    return;
+  }
+
+  const tableHtml = table.closest("table").outerHTML;
+
+  openPdfWindow(
+    "AYAS-7 · Síťový provozní fond (SPF)",
+    tableHtml
+  );
+}
+
+
+</script>
+
+<script>
 /* =========================================================
    PDF WINDOW – SPOLEČNÉ SCHÉMA (ADMIN + SPF)
    ========================================================= */
@@ -313,33 +453,6 @@ function openPdfWindow(title, tableHtml) {
   w.focus();
 }
 </script>
-
-
-
-
-<script>
-/* =========================================================
-   PDF – ROZDĚLENÍ BENEFITŮ (STEJNÁ LOGIKA)
-   ========================================================= */
-function pdfSPF(){
-  const table = document.getElementById("spf-periods");
-
-  if (!table) {
-    alert("Tabulka SPF nebyla nalezena.");
-    return;
-  }
-
-  const tableHtml = table.closest("table").outerHTML;
-
-  openPdfWindow(
-    "AYAS-7 · Síťový provozní fond (SPF)",
-    tableHtml
-  );
-}
-
-
-</script>
-
 
 </body>
 </html>
