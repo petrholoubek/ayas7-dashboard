@@ -206,7 +206,22 @@ table td:nth-child(5){
 </head>
 
 <body>
-
+<div id="user-bar" style="
+  position:fixed;
+  top:12px;
+  right:16px;
+  z-index:9999;
+  font-size:12px;
+  color:#e5e7eb;
+  background:rgba(2,6,23,0.85);
+  border:1px solid rgba(148,163,184,0.3);
+  padding:6px 12px;
+  border-radius:999px;
+  display:none;
+">
+  Přihlášen: <span id="user-email"></span>
+  · <a href="#" id="logout" style="color:#4fa3ff;text-decoration:none;">Odhlásit</a>
+</div>
 
 <div class="page">
 <div class="card">
@@ -375,84 +390,94 @@ async function decideSPF(id, action) {
 
 
 <script>
-/* =========================================================
-   PDF – ROZDĚLENÍ BENEFITŮ (STEJNÁ LOGIKA)
-   ========================================================= */
 function pdfSPF(){
-  const table = document.getElementById("spf-periods");
+  const table = document.querySelector("table");
 
   if (!table) {
     alert("Tabulka SPF nebyla nalezena.");
     return;
   }
 
-  const tableHtml = table.closest("table").outerHTML;
-
   openPdfWindow(
     "AYAS-7 · Síťový provozní fond (SPF)",
-    tableHtml
+    table.outerHTML
   );
 }
-
-
 </script>
-
 <script>
 /* =========================================================
-   PDF WINDOW – SPOLEČNÉ SCHÉMA (ADMIN + SPF)
+   AUDIT PDF WINDOW – STEJNÉ JAKO ADMIN
    ========================================================= */
 function openPdfWindow(title, tableHtml) {
   const w = window.open("", "_blank");
 
   w.document.write(`
-    <html>
-    <head>
-      <title>${title}</title>
-      <style>
-        body{
-          font-family: "Segoe UI", Tahoma, Verdana, sans-serif;
-          background:#020617;
-          color:#e5e7eb;
-          padding:40px;
-        }
-        h1{
-          font-size:20px;
-          margin-bottom:20px;
-        }
-        table{
-          width:100%;
-          border-collapse:collapse;
-          font-size:12px;
-        }
-        th,td{
-          padding:8px 10px;
-          border-bottom:1px solid rgba(148,163,184,.3);
-          text-align:left;
-        }
-        th{
-          color:#9ca3af;
-        }
-        footer{
-          margin-top:30px;
-          font-size:11px;
-          color:#9ca3af;
-        }
-      </style>
-    </head>
-    <body>
-      <h1>${title}</h1>
-      ${tableHtml}
-      <footer>
-        AYAS-7 · interní auditní výstup · ${new Date().toLocaleString("cs-CZ")}
-      </footer>
-    </body>
-    </html>
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<title>${title}</title>
+<style>
+  body{
+    font-family:"Segoe UI",Tahoma,Verdana,sans-serif;
+    background:#ffffff;
+    color:#000000;
+    padding:40px;
+  }
+  h1{
+    font-size:22px;
+    margin-bottom:6px;
+  }
+  .meta{
+    font-size:12px;
+    margin-bottom:20px;
+  }
+  table{
+    width:100%;
+    border-collapse:collapse;
+    font-size:12px;
+  }
+  th,td{
+    padding:8px 10px;
+    border:1px solid #000;
+    text-align:left;
+  }
+  th{
+    background:#f2f2f2;
+  }
+  footer{
+    margin-top:30px;
+    font-size:11px;
+  }
+</style>
+</head>
+
+<body>
+
+<h1>${title}</h1>
+<div class="meta">
+  Systém: AYAS-7<br>
+  Typ výstupu: Interní auditní dokument<br>
+  Generováno: ${new Date().toLocaleString("cs-CZ")}
+</div>
+
+${tableHtml}
+
+<footer>
+  Tento dokument je interním auditním výstupem družstva WIN.WIN.
+  Nejedná se o veřejnou nabídku, investici ani nárokové plnění.
+</footer>
+
+</body>
+</html>
   `);
 
   w.document.close();
   w.focus();
 }
 </script>
+
+
 
 </body>
 </html>
