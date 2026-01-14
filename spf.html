@@ -414,6 +414,54 @@ function pdfSPF() {
   );
 }
 </script>
+<script>
+function openPdfWindow(title, contentHtml) {
+  const win = window.open("", "_blank", "width=900,height=1200");
+
+  if (!win) {
+    alert("Nelze otevřít PDF okno. Povol vyskakovací okna.");
+    return;
+  }
+
+  win.document.write(`
+    <html>
+      <head>
+        <title>${title}</title>
+        <style>
+          body {
+            font-family: Segoe UI, Arial, sans-serif;
+            padding: 40px;
+            color: #111;
+          }
+          h1 {
+            font-size: 20px;
+            margin-bottom: 20px;
+          }
+          table {
+            width: 100%;
+            border-collapse: collapse;
+          }
+          th, td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            font-size: 12px;
+          }
+          th {
+            background: #f3f4f6;
+          }
+        </style>
+      </head>
+      <body>
+        <h1>${title}</h1>
+        ${contentHtml}
+      </body>
+    </html>
+  `);
+
+  win.document.close();
+  win.focus();
+}
+</script>
 
 
 </body>
