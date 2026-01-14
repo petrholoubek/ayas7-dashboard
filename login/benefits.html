@@ -24,6 +24,7 @@
      --accent: #22c55e;
    }
 
+
    * {
      box-sizing: border-box;
      margin: 0;
@@ -495,6 +496,7 @@ main {
      --glass: rgba(15,23,42,0.75);
    }
 
+
    /* ===== TOPBAR ===== */
    header.topbar { background: linear-gradient(to right,#020617,#020617); border-bottom:1px solid rgba(15,23,42,0.9); }
    .topbar-inner { max-width:1200px; margin:0 auto; padding:10px 16px; display:flex; align-items:center; justify-content:space-between; gap:24px; }
@@ -931,6 +933,32 @@ main {
       Výběr benefitu slouží jako žádost a může být zamítnut
       nebo upraven dle pravidel družstva.
     </p>
+<hr style="margin:26px 0; border:0; border-top:1px solid rgba(148,163,184,.25);">
+
+<div class="card-badge">
+  <span class="card-badge-dot"></span>
+  Moje žádosti
+</div>
+
+<div class="card-title">Čekající žádosti o benefity</div>
+
+<div class="members-table-wrap">
+  <table class="members-table">
+    <thead>
+      <tr>
+        <th>Produkt</th>
+        <th>Období</th>
+        <th>Stav</th>
+      </tr>
+    </thead>
+    <tbody id="myRequests">
+      <tr>
+        <td colspan="3">Načítám žádosti…</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
 
   </div>
 </section>
@@ -1411,6 +1439,49 @@ data.forEach(b => {
 }
 
 /* ===============================
+   MOJE ŽÁDOSTI O BENEFITY
+================================ */
+async function loadMyRequests() {
+  const { data: sessionData } = await supabase.auth.getSession();
+  const session = sessionData?.session;
+  if (!session) return;
+
+  const { data, error } = await supabase
+    .from("benefit_requests")
+    .select("benefit_code, period, status")
+    .eq("member_id", session.user.id)
+    .order("created_at", { ascending: false });
+
+  const tbody = document.getElementById("myRequests");
+  if (!tbody) return;
+
+  tbody.innerHTML = "";
+
+  if (error || !data || data.length === 0) {
+    tbody.innerHTML =
+      "<tr><td colspan='3'>Zatím nemáte žádné žádosti</td></tr>";
+    return;
+  }
+
+  data.forEach(r => {
+    let statusText = "—";
+
+    if (r.status === "pending") statusText = "Čeká na schválení";
+    if (r.status === "approved") statusText = "Schváleno";
+    if (r.status === "rejected") statusText = "Zamítnuto";
+
+    tbody.insertAdjacentHTML("beforeend", `
+      <tr>
+        <td>${r.benefit_code}</td>
+        <td>${r.period}</td>
+        <td>${statusText}</td>
+      </tr>
+    `);
+  });
+}
+
+
+/* ===============================
    ŽÁDOST O BENEFIT
 ================================ */
 window.requestBenefit = async function(benefitCode) {
@@ -1445,6 +1516,7 @@ window.requestBenefit = async function(benefitCode) {
 document.addEventListener("DOMContentLoaded", () => {
   loadMyBenefits();
   loadAvailableBenefits();
+  loadMyRequests();
 });
 </script>
 
