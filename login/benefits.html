@@ -1326,7 +1326,7 @@ async function loadAvailableBenefits() {
   const tbody = document.getElementById("availableBenefits");
 
   const { data, error } = await supabase
-    .from("benefits_catalog")
+    .from("benefits")
     .select("*")
     .order("name");
 
