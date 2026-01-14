@@ -1448,9 +1448,9 @@ async function loadMyRequests() {
 
   const { data, error } = await supabase
     .from("benefit_requests")
-    .select("benefit_code, period, status")
-    .eq("user_id", session.user.id)
-    .order("created_at", { ascending: false });
+    .select("benefit_code, period, status, requested_at, note")
+    .eq("member_id", session.user.id)
+    .order("requested_at", { ascending: false });
 
   const tbody = document.getElementById("myRequests");
   if (!tbody) return;
