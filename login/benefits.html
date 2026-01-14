@@ -1304,47 +1304,67 @@ async function loadMyBenefits() {
 
   const { data, error } = await supabase
     .from("benefit_results")
-    .select(`
-      period,
-      ww_key_snapshot,
-      crx_snapshot,
-      benefit_level,
-      plx_allocated,
-      crx_awarded,
-      note
-    `)
-    .order("period", { ascending: false });
+.select(`
+  period,
+  ww_key_snapshot,
+  crx_snapshot,
+  benefit_level,
+  plx_allocated,
+  crx_awarded,
+  status,
+  approved_at,
+  rejected_reason,
+  note
+`)
 
-  const tbody = document.getElementById("benefitsTableBody");
-  tbody.innerHTML = "";
+   .order("period", { ascending: false });
 
-  if (error) {
-    tbody.innerHTML =
-      "<tr><td colspan='7'>Chyba při načítání dat</td></tr>";
-    return;
-  }
+const tbody = document.getElementById("benefitsTableBody");
+tbody.innerHTML = "";
 
-  if (!data || data.length === 0) {
-    tbody.innerHTML =
-      "<tr><td colspan='7'>Zatím nejsou přiděleny žádné benefity</td></tr>";
-    return;
-  }
-
-  data.forEach(row => {
-    tbody.insertAdjacentHTML("beforeend", `
-      <tr>
-        <td>${row.period}</td>
-        <td>${row.ww_key_snapshot}</td>
-        <td>${row.crx_snapshot}</td>
-        <td>${row.benefit_level}</td>
-        <td>${row.plx_allocated}</td>
-        <td>${row.crx_awarded}</td>
-        <td>${row.note ?? "—"}</td>
-      </tr>
-    `);
-  });
+if (error) {
+  tbody.innerHTML =
+    "<tr><td colspan='8'>Chyba při načítání dat</td></tr>";
+  return;
 }
 
+if (!data || data.length === 0) {
+  tbody.innerHTML =
+    "<tr><td colspan='8'>Zatím nejsou přiděleny žádné benefity</td></tr>";
+  return;
+}
+
+data.forEach(row => {
+
+  let statusLabel = "—";
+
+  if (row.status === "pending") {
+    statusLabel = "<span style='color:#f59e0b'>Čeká na schválení</span>";
+  }
+
+  if (row.status === "approved") {
+    statusLabel = "<span style='color:#22c55e;font-weight:600'>Schváleno</span>";
+  }
+
+  if (row.status === "rejected") {
+    statusLabel = "<span style='color:#ef4444'>Zamítnuto</span>";
+  }
+
+  tbody.insertAdjacentHTML("beforeend", `
+    <tr>
+      <td>${row.period}</td>
+      <td>${row.ww_key_snapshot}</td>
+      <td>${row.crx_snapshot}</td>
+      <td>${row.benefit_level}</td>
+      <td>${row.plx_allocated}</td>
+      <td>${row.crx_awarded}</td>
+      <td>${statusLabel}</td>
+      <td>${row.note ?? "—"}</td>
+    </tr>
+  `);
+});
+
+}
 /* ===============================
    DOSTUPNÉ BENEFITY (VÝBĚR)
 ================================ */
