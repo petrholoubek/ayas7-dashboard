@@ -368,47 +368,58 @@ concatHash += `${c.certificate_uid}|${c.deposit_amount}|${c.ww_key_amount}|${c.i
   document.getElementById("auditHash").textContent =
     [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,"0")).join("");
 
-  // ================= AYAS-7 DISTRIBUTION =================
-  const { data: benefitRows } = await db
-    .from("benefit_results")
-    .select("crx_awarded");
+ // ================= AYAS-7 DISTRIBUTION =================
 
-  const crxMembers = (benefitRows || []).reduce(
-    (sum, r) => sum + Number(r.crx_awarded || 0),
-    0
-  );
+// 1️⃣ CRX přidělené členům
+const { data: benefitRows } = await db
+  .from("benefit_results")
+  .select("crx_awarded");
 
-  const { data: spfRow } = await db
-    .from("spf_periods")
-    .select("spf_amount, status, decided_at, decided_by, decision_source")
-    .eq("period", Object.keys(byDay)[0])
-    .single();
-
-  const crxSpf = Number(spfRow?.spf_amount || 0);
-  const crxTotal = crxMembers + crxSpf;
-  const crxReserve = 0;
-
-// ================= SPF DISTRIBUTION (REAL DATA) =================
-
-// kolik bylo reálně rozděleno ze SPF
-const { data: spfDistRows } = await db
-  .from("spf_distributions")
-  .select("crx_amount")
-  .eq("spf_period_id", spfRow.id);
-
-const spfDistributed = (spfDistRows || []).reduce(
-  (sum, r) => sum + Number(r.crx_amount || 0),
+const crxMembers = (benefitRows || []).reduce(
+  (sum, r) => sum + Number(r.crx_awarded || 0),
   0
 );
 
-const spfRemaining =
-  Number(spfRow.spf_amount || 0) - spfDistributed;
+// 2️⃣ SPRÁVNÉ OBDOBÍ (YYYY-MM)
+const auditPeriod = Object.keys(byDay)[0].slice(0, 7);
+
+// 3️⃣ SPF PERIOD – MUSÍM NAČÍST ID
+const { data: spfRow } = await db
+  .from("spf_periods")
+  .select("id, spf_amount, status, decided_at, decided_by, decision_source")
+  .eq("period", auditPeriod)
+  .maybeSingle();
+
+// 4️⃣ ZÁKLADNÍ HODNOTY
+const crxSpf = Number(spfRow?.spf_amount || 0);
+const crxTotal = crxMembers + crxSpf;
+const crxReserve = 0;
+
+// ================= SPF DISTRIBUTION (REAL DATA) =================
+
+let spfDistributed = 0;
+let spfRemaining = crxSpf;
+
+// 5️⃣ POUZE POKUD SPF EXISTUJE
+if (spfRow?.id) {
+  const { data: spfDistRows } = await db
+    .from("spf_distributions")
+    .select("crx_amount")
+    .eq("spf_period_id", spfRow.id);
+
+  spfDistributed = (spfDistRows || []).reduce(
+    (sum, r) => sum + Number(r.crx_amount || 0),
+    0
+  );
+
+  spfRemaining = crxSpf - spfDistributed;
+}
 
 
 // ================= SPF METADATA → AUDIT HEADER & SUMMARY =================
 
 document.getElementById("spfPeriod").textContent =
-  Object.keys(byDay)[0];
+  auditPeriod;
 
 document.getElementById("spfTotal").textContent =
   crxSpf.toLocaleString("cs-CZ");
@@ -418,7 +429,6 @@ document.getElementById("spfDistributed").textContent =
 
 document.getElementById("spfRemaining").textContent =
   spfRemaining.toLocaleString("cs-CZ");
-
 
 document.getElementById("spfStatus").textContent =
   spfRow?.status ?? "—";
@@ -439,18 +449,19 @@ document.getElementById("spfApprovedBy").textContent =
 document.getElementById("spfDecisionSource").textContent =
   spfRow?.decision_source ?? "—";
 
+// ===== SOUHRN CRX =====
 
-  document.getElementById("crx-members").textContent =
-    crxMembers.toLocaleString("cs-CZ");
+document.getElementById("crx-members").textContent =
+  crxMembers.toLocaleString("cs-CZ");
 
-  document.getElementById("crx-spf").textContent =
-    crxSpf.toLocaleString("cs-CZ");
+document.getElementById("crx-spf").textContent =
+  crxSpf.toLocaleString("cs-CZ");
 
-  document.getElementById("crx-total").textContent =
-    crxTotal.toLocaleString("cs-CZ");
+document.getElementById("crx-total").textContent =
+  crxTotal.toLocaleString("cs-CZ");
 
-  document.getElementById("crx-reserve").textContent =
-    crxReserve.toLocaleString("cs-CZ");
+document.getElementById("crx-reserve").textContent =
+  crxReserve.toLocaleString("cs-CZ");
 
   setTimeout(()=>window.print(),300);
 });
