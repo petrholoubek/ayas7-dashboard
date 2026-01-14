@@ -740,6 +740,32 @@ main {
     grid-template-columns: 1fr;
   }
 }
+.btn-benefit-request{
+  padding:6px 14px;
+  border-radius:999px;
+  border:1px solid rgba(148,163,184,.6);
+  background:rgba(15,23,42,.85);
+  color:#e5e7eb;
+  font-size:12px;
+  cursor:pointer;
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  transition:transform .12s, background .12s;
+}
+
+.btn-benefit-request:hover{
+  transform:translateY(-1px);
+  background:rgba(15,23,42,.95);
+}
+
+.btn-dot{
+  width:7px;
+  height:7px;
+  border-radius:999px;
+  background:#22c55e;
+  box-shadow:0 0 8px rgba(34,197,94,.9);
+}
 
 
  </style>
@@ -1342,23 +1368,26 @@ async function loadAvailableBenefits() {
     return;
   }
 
-  tbody.innerHTML = "";
+tbody.innerHTML = "";
 
-  data.forEach(b => {
-    tbody.insertAdjacentHTML("beforeend", `
-      <tr>
-        <td>${b.name}</td>
-        <td>${b.type}</td>
-        <td>${b.description}</td>
-        <td>${b.crx_cost}</td>
-        <td>
-          <button onclick="requestBenefit('${b.code}')">
-            Požádat
-          </button>
-        </td>
-      </tr>
-    `);
-  });
+data.forEach(b => {
+  tbody.insertAdjacentHTML("beforeend", `
+    <tr>
+      <td>${b.name}</td>
+      <td>${b.type}</td>
+      <td>${b.description}</td>
+      <td>${b.crx_cost}</td>
+      <td>
+        <button class="btn-benefit-request"
+  onclick="requestBenefit('${b.code}')">
+  <span class="btn-dot"></span>
+  Požádat
+</button>
+      </td>
+    </tr>
+  `);
+});
+
 }
 
 /* ===============================
