@@ -346,15 +346,14 @@ concatHash += `${c.certificate_uid}|${c.deposit_amount}|${c.ww_key_amount}|${c.i
 
       tbody.insertAdjacentHTML("beforeend", `
         <tr>
-          <td>${idx++}</td>
-          <td>${c.certificate_number}</td>
-          <td>${c.member_name}</td>
-          <td>${c.ww_key_amount}</td>
-          <td>${c.deposit_amount.toLocaleString("cs-CZ")}</td>
-          <td>${c.certificate_uid}</td>
+  <td>${idx++}</td>
+  <td>${c.certificate_uid}</td>
+  <td>${c.member_name}</td>
+  <td>${c.ww_key_amount}</td>
+  <td>${c.deposit_amount.toLocaleString("cs-CZ")}</td>
+  <td>${new Date(c.issued_at).toLocaleString("cs-CZ")}</td>
+</tr>
 
-          <td>${new Date(c.issued_at).toLocaleString("cs-CZ")}</td>
-        </tr>
       `);
     });
   });
