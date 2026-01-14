@@ -150,6 +150,29 @@ Deterministic FSM · SSOT · Multisignature Governance
     <div><strong>Snapshot ID:</strong> <span id="snapshotId"></span></div>
     <div><strong>System State:</strong> STABLE</div>
   </div>
+
+<div class="ah-row">
+  <div>
+    <strong>SPF rozhodnutí:</strong>
+    <span id="spfDecisionStatus">—</span>
+  </div>
+  <div>
+    <strong>Rozhodl:</strong>
+    <span id="spfApprovedBy">—</span>
+  </div>
+</div>
+
+<div class="ah-row">
+  <div>
+    <strong>Rozhodnuto dne:</strong>
+    <span id="spfApprovedAt">—</span>
+  </div>
+  <div>
+    <strong>Zdroj rozhodnutí:</strong>
+    <span id="spfDecisionSource">—</span>
+  </div>
+</div>
+
   <div class="ah-row">
     <div><strong>Generated (local):</strong> <span id="localTime"></span></div>
     <div><strong>Generated (UTC):</strong> <span id="utcTime"></span></div>
@@ -198,6 +221,32 @@ Uvedené hodnoty představují agregovaný výstup výpočtového systému AYAS-
 za auditované období. Nejedná se o finanční plnění, nárok ani závazek.
 </p>
 </div>
+<div class="section">
+<h2>SPF Distribution Summary</h2>
+
+<div class="meta-grid">
+  <div class="meta-row">
+    <span class="meta-label">SPF období</span>
+    <span id="spfPeriod">—</span>
+  </div>
+  <div class="meta-row">
+    <span class="meta-label">Celkový SPF objem (CRX)</span>
+    <span id="spfTotal">—</span>
+  </div>
+  <div class="meta-row">
+    <span class="meta-label">Rozděleno členům (CRX)</span>
+    <span id="spfDistributed">—</span>
+  </div>
+  <div class="meta-row">
+    <span class="meta-label">Nerozdělený zůstatek (CRX)</span>
+    <span id="spfRemaining">—</span>
+  </div>
+  <div class="meta-row">
+    <span class="meta-label">Stav SPF</span>
+    <span id="spfStatus">—</span>
+  </div>
+</div>
+</div>
 
 <div class="section">
 <h2>Issued Certificates – Detail</h2>
@@ -223,6 +272,7 @@ za auditované období. Nejedná se o finanční plnění, nárok ani závazek.
 This audit snapshot is read-only and derived directly from issued certificates
 stored in the AYAS-7 system database.
 </div>
+
 
 <!-- ================= SUPABASE ================= -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
