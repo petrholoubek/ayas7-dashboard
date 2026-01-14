@@ -380,13 +380,46 @@ concatHash += `${c.certificate_uid}|${c.deposit_amount}|${c.ww_key_amount}|${c.i
 
   const { data: spfRow } = await db
     .from("spf_periods")
-    .select("spf_amount")
+    .select("spf_amount, status, decided_at, decided_by, decision_source")
     .eq("period", Object.keys(byDay)[0])
     .single();
 
   const crxSpf = Number(spfRow?.spf_amount || 0);
   const crxTotal = crxMembers + crxSpf;
   const crxReserve = 0;
+// ================= SPF METADATA → AUDIT HEADER & SUMMARY =================
+
+document.getElementById("spfPeriod").textContent =
+  Object.keys(byDay)[0];
+
+document.getElementById("spfTotal").textContent =
+  crxSpf.toLocaleString("cs-CZ");
+
+document.getElementById("spfDistributed").textContent =
+  "0";
+
+document.getElementById("spfRemaining").textContent =
+  crxSpf.toLocaleString("cs-CZ");
+
+document.getElementById("spfStatus").textContent =
+  spfRow?.status ?? "—";
+
+// ===== HLAVIČKA AUDITU =====
+
+document.getElementById("spfDecisionStatus").textContent =
+  spfRow?.status ?? "—";
+
+document.getElementById("spfApprovedAt").textContent =
+  spfRow?.decided_at
+    ? new Date(spfRow.decided_at).toLocaleString("cs-CZ")
+    : "—";
+
+document.getElementById("spfApprovedBy").textContent =
+  spfRow?.decided_by ?? "—";
+
+document.getElementById("spfDecisionSource").textContent =
+  spfRow?.decision_source ?? "—";
+
 
   document.getElementById("crx-members").textContent =
     crxMembers.toLocaleString("cs-CZ");
