@@ -340,6 +340,22 @@ async function loadSPF() {
         </div>
       `;
     }
+if (r.status === "approved") {
+  actions = `
+    <div class="actions">
+      <button
+        onclick="distributeSPF('${r.id}', '${r.period}')"
+        style="background:#0f172a;color:#fff">
+        🔒 Rozdělit SPF
+      </button>
+      <button
+        onclick="openAuditSPF('${r.period}')">
+        Audit SPF (PDF)
+      </button>
+    </div>
+  `;
+}
+
 
     tbody.insertAdjacentHTML("beforeend", `
       <tr>
@@ -377,6 +393,70 @@ window.decideSPF = async (id, action) => {
 
   loadSPF();
 };
+
+window.distributeSPF = async (spfId, period) => {
+  // ⛔ OCHRANA: SPF už bylo rozděleno?
+  const { data: already } = await supabase
+    .from("spf_distributions")
+    .select("id")
+    .eq("spf_period_id", spfId)
+    .limit(1);
+
+  if (already && already.length > 0) {
+    alert("SPF pro toto období již bylo rozděleno.\nOperace je uzavřena.");
+    return;
+  }
+
+  if (!confirm(
+    "Tímto krokem bude SPF rozdělen podle schválených benefitů.\n" +
+    "Operace je auditně nevratná.\n\nPokračovat?"
+  )) return;
+
+  const session = (await supabase.auth.getSession()).data.session;
+  if (!session) return alert("Nejste přihlášen.");
+
+  // 1️⃣ načteme schválené benefity
+  const { data: benefits, error } = await supabase
+    .from("benefit_results")
+    .select("id, member_id, crx_awarded")
+    .eq("status", "approved")
+    .eq("period", period);
+
+  if (error || !benefits || !benefits.length) {
+    alert("Neexistují žádné schválené benefity.");
+    return;
+  }
+
+  // 2️⃣ vytvoříme SPF distribuce
+  for (const b of benefits) {
+
+    const auditString =
+      `${spfId}|${b.id}|${b.member_id}|${b.crx_awarded}|${Date.now()}`;
+
+    const hashBuf = await crypto.subtle.digest(
+      "SHA-256",
+      new TextEncoder().encode(auditString)
+    );
+
+    const auditHash = [...new Uint8Array(hashBuf)]
+      .map(b => b.toString(16).padStart(2,"0"))
+      .join("");
+
+    await supabase.from("spf_distributions").insert({
+      spf_period_id: spfId,
+      benefit_result_id: b.id,
+      member_id: b.member_id,
+      crx_amount: b.crx_awarded,
+      audit_hash: auditHash,
+      source: "spf.html"
+    });
+  }
+
+  alert("SPF bylo úspěšně rozděleno.\nAuditní stopa je uzavřena.");
+
+  loadSPF();
+};
+
 
 /* ================================
    AUDIT → PRINT PAGE
