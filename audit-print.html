@@ -169,6 +169,35 @@ Deterministic FSM · SSOT · Multisignature Governance
   <div class="meta-row"><span class="meta-label">Auditované období</span><span id="auditRange">—</span></div>
 </div>
 </div>
+<div class="section">
+<h2>AYAS-7 – Souhrn rozdělení benefitní kapacity</h2>
+
+<table>
+  <tbody>
+    <tr>
+      <td><strong>Celkový výstup AYAS-7 (CRX)</strong></td>
+      <td id="crx-total">—</td>
+    </tr>
+    <tr>
+      <td>Alokováno členům (CRX)</td>
+      <td id="crx-members">—</td>
+    </tr>
+    <tr>
+      <td>Vyčleněno do SPF (CRX)</td>
+      <td id="crx-spf">—</td>
+    </tr>
+    <tr>
+      <td>Nealokovaná rezerva (CRX)</td>
+      <td id="crx-reserve">—</td>
+    </tr>
+  </tbody>
+</table>
+
+<p class="small">
+Uvedené hodnoty představují agregovaný výstup výpočtového systému AYAS-7
+za auditované období. Nejedná se o finanční plnění, nárok ani závazek.
+</p>
+</div>
 
 <div class="section">
 <h2>Issued Certificates – Detail</h2>
@@ -289,6 +318,38 @@ concatHash += `${c.certificate_uid}|${c.deposit_amount}|${c.ww_key_amount}|${c.i
   const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(concatHash));
   document.getElementById("auditHash").textContent =
     [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,"0")).join("");
+
+  // ================= AYAS-7 DISTRIBUTION =================
+  const { data: benefitRows } = await db
+    .from("benefit_results")
+    .select("crx_awarded");
+
+  const crxMembers = (benefitRows || []).reduce(
+    (sum, r) => sum + Number(r.crx_awarded || 0),
+    0
+  );
+
+  const { data: spfRow } = await db
+    .from("spf_periods")
+    .select("spf_amount")
+    .eq("period", Object.keys(byDay)[0])
+    .single();
+
+  const crxSpf = Number(spfRow?.spf_amount || 0);
+  const crxTotal = crxMembers + crxSpf;
+  const crxReserve = 0;
+
+  document.getElementById("crx-members").textContent =
+    crxMembers.toLocaleString("cs-CZ");
+
+  document.getElementById("crx-spf").textContent =
+    crxSpf.toLocaleString("cs-CZ");
+
+  document.getElementById("crx-total").textContent =
+    crxTotal.toLocaleString("cs-CZ");
+
+  document.getElementById("crx-reserve").textContent =
+    crxReserve.toLocaleString("cs-CZ");
 
   setTimeout(()=>window.print(),300);
 });
