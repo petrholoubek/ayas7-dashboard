@@ -251,7 +251,7 @@ table td:nth-child(5){
 <div class="card">
   <h2>Stav SPF za období</h2>
 
-  <table>
+  <table id="spf-table">
     <thead>
       <tr>
         <th>Období</th>
@@ -261,8 +261,7 @@ table td:nth-child(5){
         <th>Akce</th>
       </tr>
     </thead>
-    <tbody id="spf-periods">
-      <!-- DB -->
+    <tbody id="spf-periods">      <!-- DB -->
     </tbody>
   </table>
 </div>
@@ -278,9 +277,9 @@ table td:nth-child(5){
   <div class="actions" style="align-items:center; gap:16px;">
   <span class="dot"></span>
 
-  <button onclick="pdfSPF()">
-    PDF – rozhodnutí SPF (interní)
-  </button>
+  <button class="btn-secondary" onclick="pdfSPF()">
+  PDF – rozhodnutí SPF (interní)
+</button>
 
   <p class="muted" style="margin-top:8px;">
     Generuje interní PDF přehled stavu SPF za zvolené období.
@@ -394,6 +393,28 @@ window.openAuditSPF = (period) => {
 ================================ */
 loadSPF();
 </script>
+<script>
+/* =========================================================
+   PDF – ROZHODNUTÍ SPF (STEJNÁ LOGIKA JAKO ADMIN)
+   ========================================================= */
+function pdfSPF() {
+  const table = document.getElementById("spf-table");
+
+  if (!table) {
+    alert("Tabulka SPF nebyla nalezena.");
+    return;
+  }
+
+  // KLÍČOVÉ – převod DOM → HTML STRING
+  const tableHtml = table.outerHTML;
+
+  openPdfWindow(
+    "AYAS-7 · Rozhodnutí SPF",
+    tableHtml
+  );
+}
+</script>
+
 
 </body>
 </html>
