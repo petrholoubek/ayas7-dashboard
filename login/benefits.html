@@ -1449,7 +1449,7 @@ async function loadMyRequests() {
   const { data, error } = await supabase
     .from("benefit_requests")
     .select("benefit_code, period, status")
-    .eq("member_id", session.user.id)
+    .eq("user_id", session.user.id)
     .order("created_at", { ascending: false });
 
   const tbody = document.getElementById("myRequests");
