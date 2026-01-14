@@ -387,6 +387,24 @@ concatHash += `${c.certificate_uid}|${c.deposit_amount}|${c.ww_key_amount}|${c.i
   const crxSpf = Number(spfRow?.spf_amount || 0);
   const crxTotal = crxMembers + crxSpf;
   const crxReserve = 0;
+
+// ================= SPF DISTRIBUTION (REAL DATA) =================
+
+// kolik bylo reálně rozděleno ze SPF
+const { data: spfDistRows } = await db
+  .from("spf_distributions")
+  .select("crx_amount")
+  .eq("spf_period_id", spfRow.id);
+
+const spfDistributed = (spfDistRows || []).reduce(
+  (sum, r) => sum + Number(r.crx_amount || 0),
+  0
+);
+
+const spfRemaining =
+  Number(spfRow.spf_amount || 0) - spfDistributed;
+
+
 // ================= SPF METADATA → AUDIT HEADER & SUMMARY =================
 
 document.getElementById("spfPeriod").textContent =
@@ -396,10 +414,11 @@ document.getElementById("spfTotal").textContent =
   crxSpf.toLocaleString("cs-CZ");
 
 document.getElementById("spfDistributed").textContent =
-  "0";
+  spfDistributed.toLocaleString("cs-CZ");
 
 document.getElementById("spfRemaining").textContent =
-  crxSpf.toLocaleString("cs-CZ");
+  spfRemaining.toLocaleString("cs-CZ");
+
 
 document.getElementById("spfStatus").textContent =
   spfRow?.status ?? "—";
