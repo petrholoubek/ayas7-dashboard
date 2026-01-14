@@ -824,12 +824,14 @@ main {
 <section class="card" style="margin-top:26px;">
   <div class="card-inner">
 
+    <!-- ===== MOJE BENEFITY ===== -->
     <div class="card-badge">
       <span class="card-badge-dot"></span>
       Přehled benefitů
     </div>
 
     <div class="card-title">Moje přidělené benefity</div>
+
     <div class="card-sub">
       Přehled interních benefitů vypočtených systémem AYAS-7
       na základě WW-KEY a CRX pro jednotlivá období.
@@ -859,6 +861,49 @@ main {
     <p class="muted">
       Benefity mají interní, evidenční a nefinanční charakter.
       Nejedná se o investici ani příslib výnosu.
+    </p>
+
+    <!-- ===== ODDĚLOVAČ (jen vizuální) ===== -->
+    <hr style="margin:26px 0; border:0; border-top:1px solid rgba(148,163,184,.25);">
+
+    <!-- ===== VÝBĚR BENEFITŮ ===== -->
+    <div class="card-badge">
+      <span class="card-badge-dot"></span>
+      Výběr benefitů
+    </div>
+
+    <div class="card-title">Dostupné benefity</div>
+
+    <div class="card-sub">
+      Člen si zde může <b>zvolit benefity</b>, o které má zájem.
+      Výběr nepředstavuje nárok ani automatické přidělení.
+      Každá volba podléhá vyhodnocení systému AYAS-7
+      a schválení vnitřních pravidel družstva.
+    </div>
+
+    <div class="members-table-wrap">
+      <table class="members-table">
+        <thead>
+          <tr>
+            <th>Název benefitu</th>
+            <th>Typ</th>
+            <th>Popis</th>
+            <th>CRX náročnost</th>
+            <th>Akce</th>
+          </tr>
+        </thead>
+        <tbody id="availableBenefits">
+          <tr>
+            <td colspan="5">Načítám dostupné benefity…</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p class="muted">
+      Benefity jsou interní, evidenční a nefinanční povahy.
+      Výběr benefitu slouží jako žádost a může být zamítnut
+      nebo upraven dle pravidel družstva.
     </p>
 
   </div>
@@ -904,7 +949,11 @@ main {
 </p>
 
     </div>
+
+
   </section>
+
+
 
   <!-- ===== PLUX ===== -->
   <section class="card">
@@ -1198,13 +1247,13 @@ const supabase = createClient(
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF6ZnJuaXFxdGV0b3FwbG94d2dxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3MzQ1OTYsImV4cCI6MjA4MzMxMDU5Nn0.QchmzNhs8owd6pkjZCk04u6PJoJ2Bhzz7oGV0KFyqdU"
 );
 
+/* ===============================
+   AUTH BAR
+================================ */
 (async () => {
   const { data: { session } } = await supabase.auth.getSession();
-
-  // ❌ není přihlášen → bar zůstane skrytý
   if (!session) return;
 
-  // ✅ je přihlášen → zobraz bar
   const userBar = document.getElementById("user-bar");
   const emailEl = document.getElementById("user-email");
   const logoutBtn = document.getElementById("logout");
@@ -1218,23 +1267,14 @@ const supabase = createClient(
     window.location.href = "/login/signin.html";
   };
 })();
-</script>
-<script type="module">
-import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-const supabase = createClient(
-  "https://azfrniqqtetoqploxwgq.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF6ZnJuaXFxdGV0b3FwbG94d2dxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3MzQ1OTYsImV4cCI6MjA4MzMxMDU5Nn0.QchmzNhs8owd6pkjZCk04u6PJoJ2Bhzz7oGV0KFyqdU"
-);
-
+/* ===============================
+   MOJE PŘIDĚLENÉ BENEFITY
+================================ */
 async function loadMyBenefits() {
   const { data: sessionData } = await supabase.auth.getSession();
   const session = sessionData?.session;
-
-  if (!session) {
-    console.warn("Uživatel není přihlášen");
-    return;
-  }
+  if (!session) return;
 
   const { data, error } = await supabase
     .from("benefit_results")
@@ -1253,7 +1293,6 @@ async function loadMyBenefits() {
   tbody.innerHTML = "";
 
   if (error) {
-    console.error(error);
     tbody.innerHTML =
       "<tr><td colspan='7'>Chyba při načítání dat</td></tr>";
     return;
@@ -1266,22 +1305,100 @@ async function loadMyBenefits() {
   }
 
   data.forEach(row => {
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td>${row.period}</td>
-      <td>${row.ww_key_snapshot}</td>
-      <td>${row.crx_snapshot}</td>
-      <td>${row.benefit_level}</td>
-      <td>${row.plx_allocated}</td>
-      <td>${row.crx_awarded}</td>
-      <td>${row.note ?? "—"}</td>
-    `;
-    tbody.appendChild(tr);
+    tbody.insertAdjacentHTML("beforeend", `
+      <tr>
+        <td>${row.period}</td>
+        <td>${row.ww_key_snapshot}</td>
+        <td>${row.crx_snapshot}</td>
+        <td>${row.benefit_level}</td>
+        <td>${row.plx_allocated}</td>
+        <td>${row.crx_awarded}</td>
+        <td>${row.note ?? "—"}</td>
+      </tr>
+    `);
   });
 }
 
-document.addEventListener("DOMContentLoaded", loadMyBenefits);
+/* ===============================
+   DOSTUPNÉ BENEFITY (VÝBĚR)
+================================ */
+async function loadAvailableBenefits() {
+  const tbody = document.getElementById("availableBenefits");
+
+  const { data, error } = await supabase
+    .from("benefits_catalog")
+    .select("*")
+    .order("name");
+
+  if (error) {
+    tbody.innerHTML =
+      "<tr><td colspan='5'>Chyba načtení benefitů</td></tr>";
+    return;
+  }
+
+  if (!data || data.length === 0) {
+    tbody.innerHTML =
+      "<tr><td colspan='5'>Žádné benefity nejsou k dispozici</td></tr>";
+    return;
+  }
+
+  tbody.innerHTML = "";
+
+  data.forEach(b => {
+    tbody.insertAdjacentHTML("beforeend", `
+      <tr>
+        <td>${b.name}</td>
+        <td>${b.type}</td>
+        <td>${b.description}</td>
+        <td>${b.crx_cost}</td>
+        <td>
+          <button onclick="requestBenefit('${b.code}')">
+            Požádat
+          </button>
+        </td>
+      </tr>
+    `);
+  });
+}
+
+/* ===============================
+   ŽÁDOST O BENEFIT
+================================ */
+window.requestBenefit = async function(benefitCode) {
+  const { data: sessionData } = await supabase.auth.getSession();
+  const session = sessionData?.session;
+  if (!session) {
+    alert("Musíte být přihlášen.");
+    return;
+  }
+
+  const period = new Date().toISOString().slice(0,7);
+
+  const { error } = await supabase
+    .from("benefit_requests")
+    .insert({
+      member_id: session.user.id,
+      benefit_code: benefitCode,
+      period
+    });
+
+  if (error) {
+    alert("Nelze odeslat žádost:\n" + error.message);
+    return;
+  }
+
+  alert("Žádost byla odeslána ke schválení.");
+};
+
+/* ===============================
+   START
+================================ */
+document.addEventListener("DOMContentLoaded", () => {
+  loadMyBenefits();
+  loadAvailableBenefits();
+});
 </script>
+
 
 </body>
 </html>
