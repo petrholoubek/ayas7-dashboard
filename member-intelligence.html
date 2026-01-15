@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<title>WIN.WIN · Členská karta & Kariérní struktura</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#020617">
+
+<style>
+/* ======================================================
+   DNA SYSTÉMU
+====================================================== */
+:root{
+  --bg:#020617;
+  --panel:#0b1120;
+  --border:rgba(148,163,184,.25);
+  --text:#e5e7eb;
+  --muted:#9ca3af;
+
+  --gold:#facc15;
+  --teal:#2dd4bf;
+  --teal-soft:#0f2f2a;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:"Segoe UI",Tahoma,Verdana,sans-serif;
+  background:radial-gradient(circle at 40% 0%, #0f172a 0%, #020617 65%, #000 100%);
+  color:var(--text);
+}
+
+/* ======================================================
+   LAYOUT
+====================================================== */
+.page{
+  max-width:1400px;
+  margin:auto;
+  padding:32px 16px 80px;
+  display:grid;
+  gap:48px;
+}
+
+.panel{
+  background:radial-gradient(circle at top left,#0b1120,#020617 70%);
+  border:1px solid var(--border);
+  border-radius:20px;
+  padding:22px;
+}
+
+.section-head{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  font-size:12px;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  margin-bottom:10px;
+}
+
+.led{
+  width:10px;height:10px;border-radius:999px;
+}
+.led-gold{background:var(--gold);box-shadow:0 0 8px var(--gold)}
+.led-teal{background:var(--teal);box-shadow:0 0 10px var(--teal)}
+
+p{color:var(--muted);font-size:13px;line-height:1.6}
+
+/* ======================================================
+   FORM
+====================================================== */
+.input, select{
+  width:100%;
+  padding:10px 12px;
+  border-radius:10px;
+  background:#020617;
+  border:1px solid var(--border);
+  color:var(--text);
+}
+
+.btn{
+  padding:10px 16px;
+  border-radius:10px;
+  background:#020617;
+  border:1px solid var(--border);
+  color:var(--text);
+  cursor:pointer;
+}
+
+/* ======================================================
+   TABULKY
+====================================================== */
+table{
+  width:100%;
+  border-collapse:collapse;
+  font-size:12px;
+}
+
+th,td{
+  padding:12px;
+  border-bottom:1px solid var(--border);
+  text-align:left;
+}
+
+tbody tr:nth-child(even){
+  background:rgba(255,255,255,.025);
+}
+
+/* ======================================================
+   OBCHODNÍCI – KLIDNÁ PRACOVNÍ ZÓNA
+====================================================== */
+.agents-panel{
+  background:
+    radial-gradient(circle at top left,
+      rgba(45,212,191,.12),
+      var(--teal-soft) 70%);
+  border:1px solid rgba(45,212,191,.35);
+}
+
+/* ======================================================
+   GRID / RESPONSIVE
+====================================================== */
+.grid-2{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:24px;
+}
+.grid-3{
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  gap:12px;
+}
+
+@media(max-width:900px){
+  .grid-2,.grid-3{grid-template-columns:1fr}
+}
+</style>
+</head>
+
+<body>
+
+<div class="page">
+
+<!-- ======================================================
+   1️⃣ ČLENSKÁ KARTA – INTERNÍ VÝJEZD
+====================================================== -->
+<section class="panel">
+  <div class="section-head">
+    <span class="led led-gold"></span>
+    Členská karta – interní výjezd
+  </div>
+
+  <p>Autoritativní interní výstup systému. Nenárokové.</p>
+
+  <div class="grid-2" style="margin-top:20px">
+    <div>
+      <label>Email člena</label>
+      <input class="input" placeholder="clen@winwin.cz">
+      <div style="margin-top:12px;display:flex;gap:12px">
+        <button class="btn" onclick="loadMember()">
+  Načíst člena
+</button>
+
+<button class="btn" onclick="openMemberPdf()">
+  Export PDF
+</button>
+
+    </div>
+
+    <div class="panel">
+      <b>Výstup člena</b><br>
+      <span style="color:var(--muted)">
+        Identita · Angažovanost · SPF · Role · Matching
+      </span>
+    </div>
+  </div>
+</section>
+
+<!-- ======================================================
+   2️⃣ KARIÉRNÍ STUPNĚ (REFERENČNÍ RÁMEC)
+====================================================== -->
+<section class="panel">
+  <div class="section-head">
+    <span class="led led-gold"></span>
+    Kariérní stupně & matching bonus
+  </div>
+
+  <p>
+    Interní odpovědnostní rámec družstva WIN.WIN.
+    Uvedená procenta představují maximální matching z vlastní sítě.
+  </p>
+
+  <table style="margin-top:18px">
+    <thead>
+      <tr>
+        <th>Pozice</th>
+        <th>Název</th>
+        <th>Max. matching</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>T</td><td>Trader</td><td>16 %</td></tr>
+      <tr><td>T1</td><td>Trader 1</td><td>21 %</td></tr>
+      <tr><td>T2</td><td>Trader 2</td><td>26 %</td></tr>
+      <tr><td>T3</td><td>Trader 3</td><td>31 %</td></tr>
+      <tr><td>M</td><td>Manager</td><td>36 %</td></tr>
+      <tr><td>M1</td><td>Manager 1</td><td>41 %</td></tr>
+      <tr><td>M2</td><td>Manager 2</td><td>46 %</td></tr>
+      <tr><td>M3</td><td>Manager 3</td><td>51 %</td></tr>
+      <tr><td>TM</td><td>Team Manager</td><td>56 %</td></tr>
+      <tr><td>TM1</td><td>Team Manager 1</td><td>60 %</td></tr>
+      <tr><td>TM2</td><td>Team Manager 2</td><td>64 %</td></tr>
+      <tr><td>TM3</td><td>Team Manager 3</td><td>68 %</td></tr>
+      <tr><td>TM4</td><td>Team Manager 4</td><td>72 %</td></tr>
+      <tr><td>TL</td><td>Team Leader</td><td>76 %</td></tr>
+      <tr><td>TL1</td><td>Team Leader 1</td><td>80 %</td></tr>
+      <tr><td>TL2</td><td>Team Leader 2</td><td>84 %</td></tr>
+      <tr><td>VP</td><td>Vice President</td><td>96 %</td></tr>
+      <tr><td>P</td><td>President</td><td>100 %</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ======================================================
+   3️⃣ OBCHODNÍCI / AGENTS – KARIÉRNÍ REGISTRACE
+====================================================== -->
+<section class="panel agents-panel">
+  <div class="section-head">
+    <span class="led led-teal"></span>
+    Obchodníci / Agents – kariérní registrace
+  </div>
+
+  <p>
+    Zde se vytváří dlouhodobá kariérní identita obchodníka.
+    Promo kódy a provize se spravují v admin sekci.
+  </p>
+
+  <!-- REGISTRACE -->
+  <div class="panel" style="margin-top:16px">
+    <b>Registrace obchodníka (kariérní vstup)</b>
+
+    <div class="grid-3" style="margin-top:12px">
+      <input class="input" placeholder="Jméno">
+      <input class="input" placeholder="Email">
+      <select>
+        <option value="">Vyber kariérní roli</option>
+        <option>T</option><option>T1</option><option>T2</option><option>T3</option>
+        <option>M</option><option>M1</option><option>M2</option><option>M3</option>
+        <option>TM</option><option>TM1</option><option>TM2</option><option>TM3</option><option>TM4</option>
+        <option>TL</option><option>TL1</option><option>TL2</option>
+        <option>VP</option><option>P</option>
+      </select>
+    </div>
+<button
+  class="btn"
+  style="margin-top:12px"
+  onclick="registerAgent()">
+  Zapsat obchodníka
+</button>
+
+  <!-- SEZNAM -->
+  <b style="display:block;margin-top:24px">Obchodníci (přehled)</b>
+
+  <table style="margin-top:8px">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Jméno</th>
+        <th>Email</th>
+        <th>Kariérní role</th>
+        <th>Promo kódy</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td>Robert</td>
+        <td>robert@email.cz</td>
+        <td>T1</td>
+        <td>WW7-BJ43AE</td>
+      </tr>
+    </tbody>
+  </table>
+<button class="btn" onclick="openAgentsPdf()">
+  PDF – evidence obchodníků
+</button>
+
+</section>
+
+</div>
+
+<script>
+/* =========================================
+   NAČTENÍ ČLENA – ZATÍM PLACEHOLDER
+========================================= */
+function loadMember() {
+  alert(
+    "Načtení člena zatím není napojené na DB.\n" +
+    "Tohle je správně – UI je hotové."
+  );
+}
+
+/* =========================================
+   EXPORT PDF – OTEVŘE NOVÉ OKNO
+========================================= */
+function openMemberPdf() {
+  window.open(
+    "/member-card-pdf.html",
+    "_blank"
+  );
+}
+</script>
+<script type="module">
+import { createClient } from
+  "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+
+/* =========================================
+   SUPABASE – SPOLEČNÝ KLIENT
+========================================= */
+window.supabase = createClient(
+  "https://azfrniqqtetoqploxwgq.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF6ZnJuaXFxdGV0b3FwbG94d2dxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3MzQ1OTYsImV4cCI6MjA4MzMxMDU5Nn0.QchmzNhs8owd6pkjZCk04u6PJoJ2Bhzz7oGV0KFyqdU"
+);
+</script>
+<script>
+/* =========================================
+   AGENTS & CAREER – WRITE LAYER
+========================================= */
+
+async function registerAgent() {
+
+  const name = document
+    .querySelector("input[placeholder='Jméno']")
+    .value
+    .trim();
+
+  const email = document
+    .querySelector("input[placeholder='Email']")
+    .value
+    .trim();
+
+  const role = document
+    .querySelector("select")
+    .value;
+
+  if (!name || !email || !role) {
+    alert("Vyplň jméno, e-mail a kariérní roli.");
+    return;
+  }
+
+  console.log("Registruji obchodníka:", {
+    name, email, role
+  });
+
+  /*
+  await supabase.from("agents").insert({
+    name,
+    email,
+    career_role: role,
+    status: "active"
+  });
+  */
+
+  alert(
+    "Obchodník bude zapsán do DB.\n" +
+    "Kariérní role nastavena."
+  );
+}
+</script>
+<script>
+/* =========================================
+   REGISTRACE OBCHODNÍKA – UI KROK
+   (DB PŘIPOJÍME V DALŠÍM KROKU)
+========================================= */
+function registerAgent() {
+
+  const name = document
+    .querySelector("input[placeholder='Jméno']")
+    ?.value.trim();
+
+  const email = document
+    .querySelector("input[placeholder='Email']")
+    ?.value.trim();
+
+  const role = document
+    .querySelector("select")
+    ?.value;
+
+  if (!name || !email || !role) {
+    alert("Vyplň jméno, e-mail a kariérní roli.");
+    return;
+  }
+
+  console.log("REGISTRACE OBCHODNÍKA:", {
+    name,
+    email,
+    role
+  });
+
+  alert(
+    "Formulář je správně zapojen.\n" +
+    "Další krok: zápis do DB."
+  );
+}
+</script>
+<script>
+function openAgentsPdf() {
+  window.open(
+    "/agents-career-pdf.html",
+    "_blank"
+  );
+}
+</script>
+
+</body>
+</html>
