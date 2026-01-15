@@ -320,108 +320,61 @@ tbody tr:nth-child(even){
 
 </div>
 
+<!-- ======================================================
+     SUPABASE KLIENT
+====================================================== -->
 <script type="module">
 import { createClient } from
   "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-/* =========================================
-   SUPABASE – SPOLEČNÝ KLIENT
-========================================= */
 window.supabase = createClient(
   "https://azfrniqqtetoqploxwgq.supabase.co",
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF6ZnJuaXFxdGV0b3FwbG94d2dxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3MzQ1OTYsImV4cCI6MjA4MzMxMDU5Nn0.QchmzNhs8owd6pkjZCk04u6PJoJ2Bhzz7oGV0KFyqdU"
 );
 </script>
+
 <script>
 /* =========================================
-   AGENTS & CAREER – WRITE LAYER
+   REGISTRACE OBCHODNÍKA (JEDINÁ VERZE)
 ========================================= */
-
 async function registerAgent() {
 
-  const name = document
-    .querySelector("input[placeholder='Jméno']")
-    .value
-    .trim();
+  const name = document.querySelector(
+    "input[placeholder='Jméno']"
+  )?.value.trim();
 
-  const email = document
-    .querySelector("input[placeholder='Email']")
-    .value
-    .trim();
+  const email = document.querySelector(
+    "input[placeholder='Email']"
+  )?.value.trim();
 
-  const role = document
-    .querySelector("select")
-    .value;
+  const role = document.querySelector("select")?.value;
 
   if (!name || !email || !role) {
     alert("Vyplň jméno, e-mail a kariérní roli.");
     return;
   }
 
-  console.log("Registruji obchodníka:", {
+  // 🔒 zatím jen UI + log (DB připojíme později)
+  console.log("REGISTRACE OBCHODNÍKA:", {
     name, email, role
   });
 
-  /*
-  await supabase.from("agents").insert({
-    name,
-    email,
-    career_role: role,
-    status: "active"
-  });
-  */
-
   alert(
-    "Obchodník bude zapsán do DB.\n" +
-    "Kariérní role nastavena."
+    "Obchodník je připraven k zápisu.\n" +
+    "Další krok: INSERT do DB."
   );
 }
-</script>
-<script>
+
 /* =========================================
-   REGISTRACE OBCHODNÍKA – UI KROK
-   (DB PŘIPOJÍME V DALŠÍM KROKU)
+   PDF – EVIDENCE OBCHODNÍKŮ
 ========================================= */
-function registerAgent() {
-
-  const name = document
-    .querySelector("input[placeholder='Jméno']")
-    ?.value.trim();
-
-  const email = document
-    .querySelector("input[placeholder='Email']")
-    ?.value.trim();
-
-  const role = document
-    .querySelector("select")
-    ?.value;
-
-  if (!name || !email || !role) {
-    alert("Vyplň jméno, e-mail a kariérní roli.");
-    return;
-  }
-
-  console.log("REGISTRACE OBCHODNÍKA:", {
-    name,
-    email,
-    role
-  });
-
-  alert(
-    "Formulář je správně zapojen.\n" +
-    "Další krok: zápis do DB."
-  );
-}
-</script>
-<script>
 function openAgentsPdf() {
   window.open(
-    "/agents-career-pdf.html",
+    "agents-career-pdf.html",
     "_blank"
   );
 }
-</script>
-<script>
+
 /* =========================================
    NAČTENÍ ČLENA – MEMBER INTELLIGENCE
 ========================================= */
@@ -431,17 +384,12 @@ async function loadMember() {
     "input[placeholder='clen@winwin.cz']"
   );
 
-  if (!emailInput) {
-    alert("Chybí input pro e-mail.");
+  if (!emailInput || !emailInput.value) {
+    alert("Zadej e-mail člena.");
     return;
   }
 
   const email = emailInput.value.trim().toLowerCase();
-
-  if (!email) {
-    alert("Zadej e-mail člena.");
-    return;
-  }
 
   const { data, error } = await window.supabase
     .from("members_data")
@@ -455,12 +403,11 @@ async function loadMember() {
     return;
   }
 
-  /* ===== VYKRESLENÍ DO PRAVÉHO PANELU ===== */
   document.getElementById("mi-name").textContent =
     data.full_name || data.name || "—";
 
   document.getElementById("mi-email").textContent =
-    data.email || "—";
+    data.email;
 
   document.getElementById("mi-status").textContent =
     data.status || "—";
@@ -475,15 +422,29 @@ async function loadMember() {
 }
 
 /* =========================================
-   EXPORT PDF – ČLENSKÁ KARTA
+   EXPORT PDF – ČLENSKÁ KARTA (S EMAIL)
 ========================================= */
 function openMemberPdf() {
+
+  const emailInput = document.querySelector(
+    "input[placeholder='clen@winwin.cz']"
+  );
+
+  if (!emailInput || !emailInput.value) {
+    alert("Nejprve načti člena.");
+    return;
+  }
+
+  const email = emailInput.value.trim().toLowerCase();
+
   window.open(
-    "member-card-pdf.html",
+    "member-card-pdf.html?email=" +
+      encodeURIComponent(email),
     "_blank"
   );
 }
 </script>
+
 
 
 </body>
