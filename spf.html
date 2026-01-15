@@ -685,15 +685,18 @@ window.updateBenefitStatus = async (id, status) => {
 
   if (!status) return;
 
-  if (!confirm("Změna stavu benefitu bude platná okamžitě.\nPokračovat?")) {
+  if (!confirm(
+    "Změna dostupnosti benefitu bude platná okamžitě.\n" +
+    "Operace je provozní a auditovatelná.\n\n" +
+    "Pokračovat?"
+  )) {
     return;
   }
 
   const { error } = await supabase
     .from("benefits")
     .update({
-      status,
-      updated_at: new Date().toISOString()
+      is_active: status === "active"
     })
     .eq("id", id);
 
