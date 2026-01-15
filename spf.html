@@ -640,7 +640,7 @@ async function loadBenefitStates() {
 
   const { data, error } = await supabase
     .from("benefits")
-    .select("id, name, code, crx_cost, status")
+    .select("id, name, code, crx_cost")
     .order("name");
 
   if (error || !data) {
