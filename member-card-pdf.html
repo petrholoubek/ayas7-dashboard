@@ -383,149 +383,98 @@ th{
 import { createClient } from
   "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-/* =========================================
-   SUPABASE CLIENT (PDF)
-========================================= */
+/* ===============================
+   SUPABASE CLIENT
+=============================== */
 const supabase = createClient(
   "https://azfrniqqtetoqploxwgq.supabase.co",
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF6ZnJuaXFxdGV0b3FwbG94d2dxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3MzQ1OTYsImV4cCI6MjA4MzMxMDU5Nn0.QchmzNhs8owd6pkjZCk04u6PJoJ2Bhzz7oGV0KFyqdU"
 );
 
-/* 🔑 zpřístupníme klienta i pro další script */
-window.supabase = supabase;
-
-/* =========================================
-   PARAMETR Z URL
-========================================= */
+/* ===============================
+   PARAMETRY
+=============================== */
 const params = new URLSearchParams(window.location.search);
 const email = params.get("email");
 
 if (!email) {
-  document.body.innerHTML =
-    "<p>Chybí identifikace člena.</p>";
+  document.body.innerHTML = "<p>Chybí identifikace člena.</p>";
+  throw new Error("Missing email");
+}
+
+/* ===============================
+   LOAD MEMBER
+=============================== */
+const { data: member, error: memberError } = await supabase
+  .from("members_data")
+  .select("*")
+  .eq("email", email)
+  .single();
+
+if (memberError || !member) {
+  document.body.innerHTML = "<p>Člen nebyl nalezen.</p>";
+  throw memberError;
+}
+
+/* ===== IDENTITA ===== */
+document.getElementById("pdf-name").textContent =
+  member.full_name || member.name || "—";
+document.getElementById("pdf-email").textContent = member.email;
+document.getElementById("pdf-id").textContent = member.id;
+document.getElementById("pdf-status").textContent = member.status || "—";
+document.getElementById("pdf-generated").textContent =
+  new Date().toLocaleString("cs-CZ");
+
+/* ===============================
+   LOAD CAREER (READ-ONLY)
+=============================== */
+const { data: career } = await supabase
+  .from("v_agents_career")
+  .select("role_code, role_name")
+  .eq("email", member.email)
+  .single();
+
+document.getElementById("pdf-role").textContent =
+  career
+    ? `${career.role_code} – ${career.role_name}`
+    : "—";
+
+/* ===============================
+   LOAD CERTIFICATES & WW-KEY
+=============================== */
+const { data: certs } = await supabase
+  .from("member_certificates")
+  .select("certificate_uid, ww_key_amount, deposit_amount, issued_at")
+  .eq("member_id", member.id);
+
+const tbody = document.getElementById("pdf-certificates");
+const totalSpan = document.getElementById("pdf-wwkey-total");
+
+let total = 0;
+tbody.innerHTML = "";
+
+if (!certs || certs.length === 0) {
+  tbody.innerHTML =
+    "<tr><td colspan='4'>Žádné certifikáty nenalezeny</td></tr>";
+  totalSpan.textContent = "0";
 } else {
-
-  /* =========================================
-     NAČTENÍ ČLENA
-  ========================================= */
-  const { data, error } = await supabase
-    .from("members_data")
-    .select("*")
-    .eq("email", email)
-    .single();
-
-  if (error || !data) {
-    document.body.innerHTML =
-      "<p>Člen nebyl nalezen.</p>";
-  } else {
-
-    /* ===== IDENTITA ===== */
-    document.getElementById("pdf-name").textContent =
-      data.full_name || data.name || "—";
-
-    document.getElementById("pdf-email").textContent =
-      data.email;
-
-    document.getElementById("pdf-id").textContent =
-      data.id;
-
-    document.getElementById("pdf-status").textContent =
-      data.status || "—";
-
-    const gen = document.getElementById("pdf-generated");
-    if (gen) {
-      gen.textContent =
-        new Date().toLocaleString("cs-CZ");
-    }
-
-    /* =========================================
-       ⬇️ KLÍČOVÝ ŘÁDEK – CERTIFIKÁTY & WW-KEY
-    ========================================= */
-    loadCertificates(data.id);
-    loadCareer(data.email);
-
-
-  }
-}
-</script>
-<script>
-/* =========================================
-   NAČTENÍ KARIÉRNÍ ROLE (PDF)
-========================================= */
-async function loadCareer(email) {
-
-  const { data, error } = await window.supabase
-    .from("v_agents_career")
-    .select("role_code, role_name")
-    .eq("email", email)
-    .single();
-
-  const roleCell = document.getElementById("pdf-role");
-  if (!roleCell) return;
-
-  if (error || !data) {
-    roleCell.textContent = "—";
-    return;
-  }
-
-  roleCell.textContent =
-    `${data.role_code} – ${data.role_name}`;
-}
-</script>
-
-
-<script>
-async function loadCertificates(memberId) {
-
-  const { data, error } = await window.supabase
-    .from("member_certificates")
-    .select(`
-      certificate_uid,
-      ww_key_amount,
-      deposit_amount,
-      issued_at
-    `)
-    .eq("member_id", memberId);
-
-  const tableBody = document.getElementById("pdf-certificates");
-  const totalSpan = document.getElementById("pdf-wwkey-total");
-
-  if (error) {
-    console.error("Chyba načtení certifikátů:", error);
-    totalSpan.textContent = "0";
-    return;
-  }
-
-  if (!data || data.length === 0) {
-    totalSpan.textContent = "0";
-    tableBody.innerHTML =
-      "<tr><td colspan='4'>Žádné certifikáty nenalezeny</td></tr>";
-    return;
-  }
-
-  let total = 0;
-  tableBody.innerHTML = "";
-
-  data.forEach(cert => {
-    total += Number(cert.ww_key_amount || 0);
-
+  certs.forEach(c => {
+    total += Number(c.ww_key_amount || 0);
     const tr = document.createElement("tr");
     tr.innerHTML = `
-      <td>${cert.certificate_uid}</td>
-      <td>${cert.ww_key_amount}</td>
-      <td>${cert.deposit_amount}</td>
-      <td>${
-        cert.issued_at
-          ? new Date(cert.issued_at).toLocaleDateString("cs-CZ")
-          : "—"
-      }</td>
+      <td>${c.certificate_uid}</td>
+      <td>${c.ww_key_amount}</td>
+      <td>${c.deposit_amount}</td>
+      <td>${c.issued_at
+        ? new Date(c.issued_at).toLocaleDateString("cs-CZ")
+        : "—"}</td>
     `;
-    tableBody.appendChild(tr);
+    tbody.appendChild(tr);
   });
-
   totalSpan.textContent = total.toLocaleString("cs-CZ");
 }
 </script>
+
 
 
 </body>
