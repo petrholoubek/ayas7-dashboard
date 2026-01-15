@@ -186,7 +186,7 @@ th{
 
   <div class="box">
     <h3>Datum generování</h3>
-    <div class="value">2026-01-15 14:32</div>
+    <div class="value"><span id="pdf-generated">—</span></div>
   </div>
 </div>
 
@@ -201,22 +201,23 @@ th{
   <div class="info-grid">
     <div>
       Jméno:<br>
-      <b>Jan Novák</b>
+      <b><span id="pdf-name">—</span></b>
     </div>
     <div>
       Email:<br>
-      <b>jan.novak@winwin.cz</b>
+      <b><span id="pdf-email">—</span></b>
     </div>
     <div>
       ID člena:<br>
-      <b>WW-102938</b>
+      <b><span id="pdf-id">—</span></b>
     </div>
     <div>
       Stav členství:<br>
-      <b>Aktivní</b>
+      <b><span id="pdf-status">—</span></b>
     </div>
   </div>
 </div>
+
 
 <hr>
 
@@ -340,6 +341,51 @@ th{
     Hash: 9bcbd59c6d9f42fcbb7aea17de2ba98092c1b1d9cdab94a1d8eb4a8650809f5f
   </div>
 </div>
+<script type="module">
+import { createClient } from
+  "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+
+const supabase = createClient(
+  "https://azfrniqqtetoqploxwgq.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF6ZnJuaXFxdGV0b3FwbG94d2dxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3MzQ1OTYsImV4cCI6MjA4MzMxMDU5Nn0.QchmzNhs8owd6pkjZCk04u6PJoJ2Bhzz7oGV0KFyqdU"
+);
+
+const params = new URLSearchParams(window.location.search);
+const email = params.get("email");
+
+if (!email) {
+  document.body.innerHTML = "<p>Chybí identifikace člena.</p>";
+} else {
+
+  const { data, error } = await supabase
+    .from("members_data")
+    .select("*")
+    .eq("email", email)
+    .single();
+
+  if (error || !data) {
+    document.body.innerHTML = "<p>Člen nebyl nalezen.</p>";
+  } else {
+
+    document.getElementById("pdf-name").textContent =
+      data.full_name || data.name || "—";
+
+    document.getElementById("pdf-email").textContent =
+      data.email;
+
+    document.getElementById("pdf-id").textContent =
+      data.id;
+
+    document.getElementById("pdf-status").textContent =
+      data.status || "—";
+
+    const gen = document.getElementById("pdf-generated");
+    if (gen) {
+      gen.textContent = new Date().toLocaleString("cs-CZ");
+    }
+  }
+}
+</script>
 
 </body>
 </html>
