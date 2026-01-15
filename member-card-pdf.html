@@ -442,7 +442,8 @@ if (!email) {
        ⬇️ KLÍČOVÝ ŘÁDEK – CERTIFIKÁTY & WW-KEY
     ========================================= */
     loadCertificates(data.id);
-    loadCareer(data.id);
+    loadCareer(data.email);
+
 
   }
 }
@@ -451,16 +452,15 @@ if (!email) {
 /* =========================================
    NAČTENÍ KARIÉRNÍ ROLE (PDF)
 ========================================= */
-async function loadCareer(memberId) {
+async function loadCareer(email) {
 
   const { data, error } = await window.supabase
     .from("v_agents_career")
     .select("role_code, role_name")
-    .eq("member_id", memberId)
+    .eq("email", email)
     .single();
 
   const roleCell = document.getElementById("pdf-role");
-
   if (!roleCell) return;
 
   if (error || !data) {
