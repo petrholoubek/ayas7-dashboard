@@ -490,19 +490,23 @@ async function registerAgent() {
   }
 
   /* 3️⃣ deaktivujeme staré role */
-  await window.supabase
-    .from("member_career")
-    .update({ active: false })
-    .eq("member_id", member.id);
+await window.supabase
+  .from("member_career")
+  .update({ status: "revoked" })
+  .eq("member_id", member.id)
+  .eq("status", "active");
 
-  /* 4️⃣ zapíšeme novou kariéru */
-  const { error: insertError } = await window.supabase
-    .from("member_career")
-    .insert({
-      member_id: member.id,
-      career_role_id: role.id,
-      active: true
-    });
+/* 4️⃣ zapíšeme novou kariéru */
+const { error: insertError } = await window.supabase
+  .from("member_career")
+  .insert({
+    member_id: member.id,
+    role_id: role.id,
+    status: "active",
+    assigned_by: "admin",
+    note: "Kariérní registrace – interní rozhodnutí"
+  });
+
 
   if (insertError) {
     console.error(insertError);
