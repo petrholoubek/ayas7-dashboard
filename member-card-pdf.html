@@ -453,7 +453,7 @@ async function loadCertificates(memberId) {
 
   const { data, error } = await window.supabase
     .from("member_certificates")
-    .select("certificate_name, ww_key_value, status, valid_from")
+    .select("certificate, ww_key, status, approved_at")
     .eq("member_id", memberId)
     .eq("status", "approved");
 
@@ -473,13 +473,14 @@ async function loadCertificates(memberId) {
 
     const tr = document.createElement("tr");
     tr.innerHTML = `
-      <td>${cert.certificate_name}</td>
-      <td>${cert.ww_key_value}</td>
-      <td>${cert.status}</td>
-      <td>${cert.valid_from
-        ? new Date(cert.valid_from).toLocaleDateString("cs-CZ")
-        : "—"}
-      </td>
+      <td>${cert.certificate}</td>
+<td>${cert.ww_key}</td>
+<td>${cert.status}</td>
+<td>${cert.approved_at
+  ? new Date(cert.approved_at).toLocaleDateString("cs-CZ")
+  : "—"}
+</td>
+
     `;
     tableBody.appendChild(tr);
   });
