@@ -525,7 +525,8 @@ async function loadAgentsCareer() {
   const tbody = document.getElementById("agents-career-body");
   if (!tbody) return;
 
-  tbody.innerHTML = `<tr><td colspan="5">Načítám data…</td></tr>`;
+  tbody.innerHTML =
+    `<tr><td colspan="5">Načítám obchodníky…</td></tr>`;
 
   const { data, error } = await window.supabase
     .from("member_career")
@@ -535,10 +536,16 @@ async function loadAgentsCareer() {
       email,
       role_code,
       role_name
-    `)
-    .order("assigned_at", { ascending: false });
+    `);
 
-  if (error || !data || data.length === 0) {
+  if (error) {
+    console.error("Chyba při načítání kariéry:", error);
+    tbody.innerHTML =
+      `<tr><td colspan="5">Chyba načtení dat</td></tr>`;
+    return;
+  }
+
+  if (!data || data.length === 0) {
     tbody.innerHTML =
       `<tr><td colspan="5">Žádní obchodníci nejsou evidováni.</td></tr>`;
     return;
@@ -548,7 +555,6 @@ async function loadAgentsCareer() {
 
   data.forEach(row => {
     const tr = document.createElement("tr");
-
     tr.innerHTML = `
       <td>${row.id}</td>
       <td>${row.full_name}</td>
@@ -556,7 +562,6 @@ async function loadAgentsCareer() {
       <td>${row.role_code} – ${row.role_name}</td>
       <td>—</td>
     `;
-
     tbody.appendChild(tr);
   });
 }
@@ -564,7 +569,6 @@ async function loadAgentsCareer() {
 /* automatické načtení po otevření stránky */
 document.addEventListener("DOMContentLoaded", loadAgentsCareer);
 </script>
-
 
 </body>
 </html>
