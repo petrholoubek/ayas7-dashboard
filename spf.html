@@ -683,13 +683,7 @@ async function loadBenefitStates() {
 ================================ */
 window.updateBenefitStatus = async (id, status) => {
 
-  if (!status) return;
-
-  if (!confirm(
-    "Změna dostupnosti benefitu bude platná okamžitě.\n" +
-    "Operace je provozní a auditovatelná.\n\n" +
-    "Pokračovat?"
-  )) {
+  if (!confirm("Změna stavu benefitu bude platná okamžitě.\nPokračovat?")) {
     return;
   }
 
@@ -706,7 +700,8 @@ window.updateBenefitStatus = async (id, status) => {
     return;
   }
 
-  loadBenefitStates();
+  alert("Stav benefitu byl změněn.");
+  loadBenefitStates(); // reload tabulky ve SPF
 };
 
 /* ===============================
