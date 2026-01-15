@@ -409,7 +409,7 @@ async function loadMember() {
   console.log("Načítám člena z DB:", email);
 
   const { data, error } = await supabase
-    .from("members")
+    .from("members_data")
     .select("*")
     .eq("email", email)
     .single();
@@ -423,20 +423,16 @@ async function loadMember() {
   console.log("ČLEN NALEZEN:", data);
 
   /* === DOČASNÝ VÝSTUP DO UI === */
-  const outputBox = document.querySelector(
-    ".panel b"
+  alert(
+    `Člen nalezen:\n\n` +
+    `Jméno: ${data.name ?? "—"}\n` +
+    `Email: ${data.email}\n` +
+    `Stav: ${data.status ?? "—"}\n` +
+    `ID: ${data.id}`
   );
-
-  if (outputBox) {
-    outputBox.innerHTML = `
-      <b>${data.name ?? "—"}</b><br>
-      Email: ${data.email}<br>
-      Stav: ${data.status ?? "—"}<br>
-      ID: ${data.id}
-    `;
-  }
 }
 </script>
+
 
 </body>
 </html>
