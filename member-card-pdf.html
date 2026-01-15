@@ -251,6 +251,44 @@ th{
 
 <hr>
 
+<hr>
+
+<!-- ======================================================
+     WW-KEY & CERTIFIKÁTY
+====================================================== -->
+<div class="box">
+  <h3>WW-KEY & certifikáty</h3>
+
+  <div style="margin-bottom:10px">
+    <b>WW-KEY (celkem):</b>
+    <span id="pdf-wwkey-total">—</span>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Certifikát</th>
+        <th>Hodnota WW-KEY</th>
+        <th>Stav</th>
+        <th>Platnost</th>
+      </tr>
+    </thead>
+    <tbody id="pdf-certificates">
+      <tr>
+        <td colspan="4" style="text-align:center;color:#6b7280">
+          Žádné certifikáty nenalezeny
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p style="font-size:10px;color:#6b7280;margin-top:8px">
+    WW-KEY je součtem schválených certifikátů.
+    Uvedené hodnoty představují auditní snapshot ke dni generování dokumentu.
+  </p>
+</div>
+
+
 <!-- ======================================================
      BENEFITY ČLENA
 ====================================================== -->
@@ -341,22 +379,36 @@ th{
     Hash: 9bcbd59c6d9f42fcbb7aea17de2ba98092c1b1d9cdab94a1d8eb4a8650809f5f
   </div>
 </div>
+
 <script type="module">
 import { createClient } from
   "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
+/* =========================================
+   SUPABASE CLIENT (PDF)
+========================================= */
 const supabase = createClient(
   "https://azfrniqqtetoqploxwgq.supabase.co",
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF6ZnJuaXFxdGV0b3FwbG94d2dxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3MzQ1OTYsImV4cCI6MjA4MzMxMDU5Nn0.QchmzNhs8owd6pkjZCk04u6PJoJ2Bhzz7oGV0KFyqdU"
 );
 
+/* 🔑 zpřístupníme klienta i pro další script */
+window.supabase = supabase;
+
+/* =========================================
+   PARAMETR Z URL
+========================================= */
 const params = new URLSearchParams(window.location.search);
 const email = params.get("email");
 
 if (!email) {
-  document.body.innerHTML = "<p>Chybí identifikace člena.</p>";
+  document.body.innerHTML =
+    "<p>Chybí identifikace člena.</p>";
 } else {
 
+  /* =========================================
+     NAČTENÍ ČLENA
+  ========================================= */
   const { data, error } = await supabase
     .from("members_data")
     .select("*")
@@ -364,9 +416,11 @@ if (!email) {
     .single();
 
   if (error || !data) {
-    document.body.innerHTML = "<p>Člen nebyl nalezen.</p>";
+    document.body.innerHTML =
+      "<p>Člen nebyl nalezen.</p>";
   } else {
 
+    /* ===== IDENTITA ===== */
     document.getElementById("pdf-name").textContent =
       data.full_name || data.name || "—";
 
@@ -381,9 +435,56 @@ if (!email) {
 
     const gen = document.getElementById("pdf-generated");
     if (gen) {
-      gen.textContent = new Date().toLocaleString("cs-CZ");
+      gen.textContent =
+        new Date().toLocaleString("cs-CZ");
     }
+
+    /* =========================================
+       ⬇️ KLÍČOVÝ ŘÁDEK – CERTIFIKÁTY & WW-KEY
+    ========================================= */
+    loadCertificates(data.id);
   }
+}
+</script>
+
+
+<script>
+async function loadCertificates(memberId) {
+
+  const { data, error } = await window.supabase
+    .from("member_certificates")
+    .select("certificate_name, ww_key_value, status, valid_from")
+    .eq("member_id", memberId)
+    .eq("status", "approved");
+
+  const tableBody = document.getElementById("pdf-certificates");
+  const totalSpan = document.getElementById("pdf-wwkey-total");
+
+  if (error || !data || data.length === 0) {
+    totalSpan.textContent = "0";
+    return;
+  }
+
+  let total = 0;
+  tableBody.innerHTML = "";
+
+  data.forEach(cert => {
+    total += Number(cert.ww_key_value || 0);
+
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${cert.certificate_name}</td>
+      <td>${cert.ww_key_value}</td>
+      <td>${cert.status}</td>
+      <td>${cert.valid_from
+        ? new Date(cert.valid_from).toLocaleDateString("cs-CZ")
+        : "—"}
+      </td>
+    `;
+    tableBody.appendChild(tr);
+  });
+
+  totalSpan.textContent = total.toLocaleString("cs-CZ");
 }
 </script>
 
