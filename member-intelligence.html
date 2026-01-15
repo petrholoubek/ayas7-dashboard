@@ -444,6 +444,79 @@ function openMemberPdf() {
   );
 }
 </script>
+<script>
+async function registerAgent() {
+
+  const nameInput = document.querySelector("input[placeholder='Jméno']");
+  const emailInput = document.querySelector("input[placeholder='Email']");
+  const roleSelect = document.querySelector("select");
+
+  if (!nameInput || !emailInput || !roleSelect) {
+    alert("Formulář není kompletní.");
+    return;
+  }
+
+  const name = nameInput.value.trim();
+  const email = emailInput.value.trim().toLowerCase();
+  const roleCode = roleSelect.value;
+
+  if (!name || !email || !roleCode) {
+    alert("Vyplň jméno, e-mail a kariérní roli.");
+    return;
+  }
+
+  /* 1️⃣ najdeme člena */
+  const { data: member, error: memberError } = await window.supabase
+    .from("members_data")
+    .select("id")
+    .eq("email", email)
+    .single();
+
+  if (memberError || !member) {
+    alert("Člen s tímto e-mailem neexistuje.");
+    return;
+  }
+
+  /* 2️⃣ najdeme kariérní roli */
+  const { data: role, error: roleError } = await window.supabase
+    .from("career_roles")
+    .select("id")
+    .eq("code", roleCode)
+    .single();
+
+  if (roleError || !role) {
+    alert("Neplatná kariérní role.");
+    return;
+  }
+
+  /* 3️⃣ deaktivujeme staré role */
+  await window.supabase
+    .from("member_career")
+    .update({ active: false })
+    .eq("member_id", member.id);
+
+  /* 4️⃣ zapíšeme novou kariéru */
+  const { error: insertError } = await window.supabase
+    .from("member_career")
+    .insert({
+      member_id: member.id,
+      career_role_id: role.id,
+      active: true
+    });
+
+  if (insertError) {
+    console.error(insertError);
+    alert("Chyba při zápisu kariéry.");
+    return;
+  }
+
+  alert("✅ Obchodník byl úspěšně zaregistrován.");
+
+  nameInput.value = "";
+  emailInput.value = "";
+  roleSelect.value = "";
+}
+</script>
 
 
 
