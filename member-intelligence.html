@@ -288,27 +288,6 @@ tbody tr:nth-child(even){
 
 </div>
 
-<script>
-/* =========================================
-   NAČTENÍ ČLENA – ZATÍM PLACEHOLDER
-========================================= */
-function loadMember() {
-  alert(
-    "Načtení člena zatím není napojené na DB.\n" +
-    "Tohle je správně – UI je hotové."
-  );
-}
-
-/* =========================================
-   EXPORT PDF – OTEVŘE NOVÉ OKNO
-========================================= */
-function openMemberPdf() {
-  window.open(
-    "/member-card-pdf.html",
-    "_blank"
-  );
-}
-</script>
 <script type="module">
 import { createClient } from
   "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
@@ -408,6 +387,54 @@ function openAgentsPdf() {
     "/agents-career-pdf.html",
     "_blank"
   );
+}
+</script>
+<script>
+/* =========================================
+   NAČTENÍ ČLENA Z DB – REAL
+========================================= */
+async function loadMember() {
+
+  const emailInput = document.querySelector(
+    "input[placeholder='clen@winwin.cz']"
+  );
+
+  const email = emailInput?.value.trim().toLowerCase();
+
+  if (!email) {
+    alert("Zadej e-mail člena.");
+    return;
+  }
+
+  console.log("Načítám člena z DB:", email);
+
+  const { data, error } = await supabase
+    .from("members")
+    .select("*")
+    .eq("email", email)
+    .single();
+
+  if (error || !data) {
+    console.error(error);
+    alert("Člen nebyl nalezen.");
+    return;
+  }
+
+  console.log("ČLEN NALEZEN:", data);
+
+  /* === DOČASNÝ VÝSTUP DO UI === */
+  const outputBox = document.querySelector(
+    ".panel b"
+  );
+
+  if (outputBox) {
+    outputBox.innerHTML = `
+      <b>${data.name ?? "—"}</b><br>
+      Email: ${data.email}<br>
+      Stav: ${data.status ?? "—"}<br>
+      ID: ${data.id}
+    `;
+  }
 }
 </script>
 
