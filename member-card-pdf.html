@@ -227,16 +227,17 @@ th{
 <div class="box">
   <h3>Angažovanost a role</h3>
 
-  <table>
-    <tr>
-      <th>Aktuální role</th>
-      <td>—</td>
-    </tr>
-    <tr>
-      <th>Matching dle rámce</th>
-      <td>—</td>
-    </tr>
-  </table>
+<table>
+  <tr>
+    <th>Aktuální role</th>
+    <td id="pdf-role">—</td>
+  </tr>
+  <tr>
+    <th>Matching dle rámce</th>
+    <td>—</td>
+  </tr>
+</table>
+
 
   <p style="font-size:10px;color:#6b7280">
     Kariérní role a matching nejsou v tomto dokumentu
@@ -441,7 +442,34 @@ if (!email) {
        ⬇️ KLÍČOVÝ ŘÁDEK – CERTIFIKÁTY & WW-KEY
     ========================================= */
     loadCertificates(data.id);
+    loadCareer(data.id);
+
   }
+}
+</script>
+<script>
+/* =========================================
+   NAČTENÍ KARIÉRNÍ ROLE (PDF)
+========================================= */
+async function loadCareer(memberId) {
+
+  const { data, error } = await window.supabase
+    .from("v_agents_career")
+    .select("role_code, role_name")
+    .eq("member_id", memberId)
+    .single();
+
+  const roleCell = document.getElementById("pdf-role");
+
+  if (!roleCell) return;
+
+  if (error || !data) {
+    roleCell.textContent = "—";
+    return;
+  }
+
+  roleCell.textContent =
+    `${data.role_code} – ${data.role_name}`;
 }
 </script>
 
