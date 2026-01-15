@@ -911,15 +911,17 @@ main {
 
     <div class="members-table-wrap">
       <table class="members-table">
-        <thead>
-          <tr>
-            <th>Název benefitu</th>
-            <th>Typ</th>
-            <th>Popis</th>
-            <th>CRX náročnost</th>
-            <th>Akce</th>
-          </tr>
-        </thead>
+       <thead>
+  <tr>
+    <th>Název benefitu</th>
+    <th>Typ</th>
+    <th>Popis</th>
+    <th>CRX</th>
+    <th>Stav</th>
+    <th>Akce</th>
+  </tr>
+</thead>
+
         <tbody id="availableBenefits">
           <tr>
             <td colspan="5">Načítám dostupné benefity…</td>
@@ -1454,19 +1456,29 @@ async function loadAvailableBenefits() {
 tbody.innerHTML = "";
 
 data.forEach(b => {
+
+  const statusLabel = b.is_active
+    ? "<span style='color:#22c55e;font-weight:600'>Aktivní</span>"
+    : "<span style='color:#f59e0b'>Připravuje se</span>";
+
+  const actionButton = b.is_active
+    ? `
+      <button class="btn-benefit-request"
+        onclick="requestBenefit('${b.code}')">
+        <span class="btn-dot"></span>
+        Požádat
+      </button>
+    `
+    : "<span style='opacity:0.6'>—</span>";
+
   tbody.insertAdjacentHTML("beforeend", `
     <tr>
       <td>${b.name}</td>
       <td>${b.type}</td>
       <td>${b.description}</td>
       <td>${b.crx_cost}</td>
-      <td>
-        <button class="btn-benefit-request"
-  onclick="requestBenefit('${b.code}')">
-  <span class="btn-dot"></span>
-  Požádat
-</button>
-      </td>
+      <td>${statusLabel}</td>
+      <td>${actionButton}</td>
     </tr>
   `);
 });
