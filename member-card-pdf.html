@@ -230,21 +230,18 @@ th{
   <table>
     <tr>
       <th>Aktuální role</th>
-      <td>T1 – Trader 1</td>
+      <td>—</td>
     </tr>
     <tr>
-      <th>Max. matching dle rámce</th>
-      <td>21 %</td>
-    </tr>
-    <tr>
-      <th>Schválený matching</th>
-      <td>18 %</td>
-    </tr>
-    <tr>
-      <th>WW-KEY</th>
-      <td>3 420</td>
+      <th>Matching dle rámce</th>
+      <td>—</td>
     </tr>
   </table>
+
+  <p style="font-size:10px;color:#6b7280">
+    Kariérní role a matching nejsou v tomto dokumentu
+    závazné ani nárokové. Slouží pouze k interní orientaci.
+  </p>
 </div>
 
 <hr>
@@ -264,23 +261,24 @@ th{
     <span id="pdf-wwkey-total">—</span>
   </div>
 
-  <table>
-    <thead>
-      <tr>
-        <th>Certifikát</th>
-        <th>Hodnota WW-KEY</th>
-        <th>Stav</th>
-        <th>Platnost</th>
-      </tr>
-    </thead>
-    <tbody id="pdf-certificates">
-      <tr>
-        <td colspan="4" style="text-align:center;color:#6b7280">
-          Žádné certifikáty nenalezeny
-        </td>
-      </tr>
-    </tbody>
-  </table>
+<table style="width:100%; border-collapse:collapse;">
+  <thead>
+    <tr>
+      <th>Certifikát</th>
+      <th>Hodnota WW-KEY</th>
+      <th>Vklad</th>
+      <th>Datum vydání</th>
+    </tr>
+  </thead>
+
+  <!-- ⬇️ SEM SCRIPT VYGENERUJE ŘÁDKY ⬇️ -->
+  <tbody id="pdf-certificates">
+    <tr>
+      <td colspan="4">Načítám certifikáty…</td>
+    </tr>
+  </tbody>
+</table>
+
 
   <p style="font-size:10px;color:#6b7280;margin-top:8px">
     WW-KEY je součtem schválených certifikátů.
@@ -453,15 +451,27 @@ async function loadCertificates(memberId) {
 
   const { data, error } = await window.supabase
     .from("member_certificates")
-    .select("certificate, ww_key, status, approved_at")
-    .eq("member_id", memberId)
-    .eq("status", "approved");
+    .select(`
+      certificate_uid,
+      ww_key_amount,
+      deposit_amount,
+      issued_at
+    `)
+    .eq("member_id", memberId);
 
   const tableBody = document.getElementById("pdf-certificates");
   const totalSpan = document.getElementById("pdf-wwkey-total");
 
-  if (error || !data || data.length === 0) {
+  if (error) {
+    console.error("Chyba načtení certifikátů:", error);
     totalSpan.textContent = "0";
+    return;
+  }
+
+  if (!data || data.length === 0) {
+    totalSpan.textContent = "0";
+    tableBody.innerHTML =
+      "<tr><td colspan='4'>Žádné certifikáty nenalezeny</td></tr>";
     return;
   }
 
@@ -469,18 +479,18 @@ async function loadCertificates(memberId) {
   tableBody.innerHTML = "";
 
   data.forEach(cert => {
-    total += Number(cert.ww_key_value || 0);
+    total += Number(cert.ww_key_amount || 0);
 
     const tr = document.createElement("tr");
     tr.innerHTML = `
-      <td>${cert.certificate}</td>
-<td>${cert.ww_key}</td>
-<td>${cert.status}</td>
-<td>${cert.approved_at
-  ? new Date(cert.approved_at).toLocaleDateString("cs-CZ")
-  : "—"}
-</td>
-
+      <td>${cert.certificate_uid}</td>
+      <td>${cert.ww_key_amount}</td>
+      <td>${cert.deposit_amount}</td>
+      <td>${
+        cert.issued_at
+          ? new Date(cert.issued_at).toLocaleDateString("cs-CZ")
+          : "—"
+      }</td>
     `;
     tableBody.appendChild(tr);
   });
@@ -488,6 +498,7 @@ async function loadCertificates(memberId) {
   totalSpan.textContent = total.toLocaleString("cs-CZ");
 }
 </script>
+
 
 </body>
 </html>
