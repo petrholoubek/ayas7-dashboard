@@ -6,9 +6,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-/* ======================================================
-   ZÁKLADNÍ STYL PDF
-====================================================== */
 body{
   font-family:"Segoe UI",Tahoma,Verdana,sans-serif;
   color:#0f172a;
@@ -17,12 +14,12 @@ body{
 
 h1{
   font-size:22px;
-  margin-bottom:4px;
+  margin-bottom:6px;
 }
 
 h2{
   font-size:16px;
-  margin:24px 0 10px;
+  margin:20px 0 10px;
 }
 
 p{
@@ -37,9 +34,6 @@ hr{
   border-top:1px solid #cbd5e1;
 }
 
-/* ======================================================
-   BOX
-====================================================== */
 .box{
   border:1px solid #cbd5e1;
   border-radius:10px;
@@ -47,9 +41,6 @@ hr{
   margin-bottom:18px;
 }
 
-/* ======================================================
-   TABULKA
-====================================================== */
 table{
   width:100%;
   border-collapse:collapse;
@@ -67,24 +58,14 @@ th{
   font-weight:600;
 }
 
-td{
-  vertical-align:top;
-}
-
-/* ======================================================
-   PRINT FIX
-====================================================== */
 @media print{
-
   .box, table, tr{
     page-break-inside:avoid;
     break-inside:avoid;
   }
-
   h1,h2{
     page-break-after:avoid;
   }
-
 }
 </style>
 </head>
@@ -97,7 +78,7 @@ td{
 <h1>AYAS-7 · Evidence obchodníků</h1>
 <p>
 Interní auditní výstup – kariérní a odpovědnostní role<br>
-Generováno: <b>8. 1. 2026</b>
+Generováno: <b id="generated-date">—</b>
 </p>
 
 <hr>
@@ -123,38 +104,17 @@ Generováno: <b>8. 1. 2026</b>
   <table>
     <thead>
       <tr>
-        <th>ID</th>
+        <th>#</th>
         <th>Jméno</th>
         <th>Email</th>
         <th>Kariérní role</th>
-        <th>Max. rámec %</th>
-        <th>Stav</th>
         <th>Datum zařazení</th>
       </tr>
     </thead>
-    <tbody>
-
-      <!-- TEST DATA – POZDĚJI Z DB -->
+    <tbody id="pdf-agents-body">
       <tr>
-        <td>1</td>
-        <td>Robert</td>
-        <td>robert@email.cz</td>
-        <td>T – Trader</td>
-        <td>16 %</td>
-        <td>aktivní</td>
-        <td>07. 01. 2026</td>
+        <td colspan="5">Načítám data…</td>
       </tr>
-
-      <tr>
-        <td>2</td>
-        <td>Pavel Halaj</td>
-        <td>pavel@email.cz</td>
-        <td>T1 – Trader 1</td>
-        <td>21 %</td>
-        <td>aktivní</td>
-        <td>05. 01. 2026</td>
-      </tr>
-
     </tbody>
   </table>
 </div>
@@ -164,20 +124,88 @@ Generováno: <b>8. 1. 2026</b>
 ====================================================== -->
 <div class="box">
   <p style="font-size:11px;color:#475569">
-    Uvedené procentní hodnoty představují <b>maximální rámec</b>
-    odpovědnosti v rámci kariérní struktury.
-    Skutečně aplikovaná provize může být nižší
-    a je řízena samostatnou logikou promo kódů
-    a rozhodnutími družstva.
+    Kariérní role představují maximální rámec odpovědnosti
+    v systému. Nezakládají automatický ani nárokový nárok
+    na provize či jiné plnění.
   </p>
 </div>
 
 <hr>
 
 <p style="font-size:10px;color:#64748b;text-align:center">
-AYAS-7 · interní audit-ready administrativní výstup<br>
+AYAS-7 · interní audit-ready výstup<br>
 WIN.WIN družstvo
 </p>
+
+<!-- ======================================================
+     DATA & LOGIKA
+====================================================== -->
+<script type="module">
+import { createClient } from
+  "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+
+const supabase = createClient(
+  "https://azfrniqqtetoqploxwgq.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF6ZnJuaXFxdGV0b3FwbG94d2dxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3MzQ1OTYsImV4cCI6MjA4MzMxMDU5Nn0.QchmzNhs8owd6pkjZCk04u6PJoJ2Bhzz7oGV0KFyqdU"
+);
+
+document.getElementById("generated-date").textContent =
+  new Date().toLocaleString("cs-CZ");
+
+async function loadAgentsCareerPdf() {
+
+  const tbody = document.getElementById("pdf-agents-body");
+
+  const { data, error } = await supabase
+    .from("member_career")
+    .select(`
+      assigned_at,
+      members_data (
+        full_name,
+        email
+      ),
+      career_roles (
+        code,
+        name
+      )
+    `)
+    .eq("status", "active");
+
+  if (error || !data || data.length === 0) {
+    tbody.innerHTML =
+      `<tr><td colspan="5">Žádní obchodníci nejsou evidováni.</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = "";
+
+  data.forEach((row, index) => {
+
+    const name = row.members_data?.full_name ?? "—";
+    const email = row.members_data?.email ?? "—";
+    const role = row.career_roles
+      ? `${row.career_roles.code} – ${row.career_roles.name}`
+      : "—";
+
+    const date = row.assigned_at
+      ? new Date(row.assigned_at).toLocaleDateString("cs-CZ")
+      : "—";
+
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${index + 1}</td>
+      <td>${name}</td>
+      <td>${email}</td>
+      <td>${role}</td>
+      <td>${date}</td>
+    `;
+
+    tbody.appendChild(tr);
+  });
+}
+
+loadAgentsCareerPdf();
+</script>
 
 </body>
 </html>
