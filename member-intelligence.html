@@ -302,15 +302,12 @@ tbody tr:nth-child(even){
         <th>Promo kódy</th>
       </tr>
     </thead>
-    <tbody>
-      <tr>
-        <td>1</td>
-        <td>Robert</td>
-        <td>robert@email.cz</td>
-        <td>T1</td>
-        <td>WW7-BJ43AE</td>
-      </tr>
-    </tbody>
+    <tbody id="agents-career-body">
+  <tr>
+    <td colspan="5">Načítám obchodníky…</td>
+  </tr>
+</tbody>
+
   </table>
 <button class="btn" onclick="openAgentsPdf()">
   PDF – evidence obchodníků
@@ -522,6 +519,51 @@ const { error: insertError } = await window.supabase
 }
 </script>
 
+<script>
+async function loadAgentsCareer() {
+
+  const tbody = document.getElementById("agents-career-body");
+  if (!tbody) return;
+
+  tbody.innerHTML = `<tr><td colspan="5">Načítám data…</td></tr>`;
+
+  const { data, error } = await window.supabase
+    .from("member_career")
+    .select(`
+      id,
+      full_name,
+      email,
+      role_code,
+      role_name
+    `)
+    .order("assigned_at", { ascending: false });
+
+  if (error || !data || data.length === 0) {
+    tbody.innerHTML =
+      `<tr><td colspan="5">Žádní obchodníci nejsou evidováni.</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = "";
+
+  data.forEach(row => {
+    const tr = document.createElement("tr");
+
+    tr.innerHTML = `
+      <td>${row.id}</td>
+      <td>${row.full_name}</td>
+      <td>${row.email}</td>
+      <td>${row.role_code} – ${row.role_name}</td>
+      <td>—</td>
+    `;
+
+    tbody.appendChild(tr);
+  });
+}
+
+/* automatické načtení po otevření stránky */
+document.addEventListener("DOMContentLoaded", loadAgentsCareer);
+</script>
 
 
 </body>
