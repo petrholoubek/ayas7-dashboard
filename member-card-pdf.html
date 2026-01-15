@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<title>Členská karta – interní výjezd</title>
+
+<style>
+/* ======================================================
+   PDF – MEMBER INTELLIGENCE CARD
+====================================================== */
+@page{
+  size:A4;
+  margin:22mm 18mm;
+}
+
+body{
+  font-family:"Segoe UI",Tahoma,Verdana,sans-serif;
+  background:#ffffff;
+  color:#111827;
+  font-size:12px;
+}
+
+h1,h2,h3{
+  margin:0;
+  font-weight:600;
+}
+
+hr{
+  border:none;
+  border-top:1px solid #d1d5db;
+  margin:18px 0;
+}
+
+/* ======================================================
+   HLAVIČKA
+====================================================== */
+.header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.logo{
+  font-size:18px;
+  font-weight:700;
+  letter-spacing:.08em;
+}
+
+.logo span{
+  color:#b45309;
+}
+
+.doc-title{
+  text-align:right;
+}
+
+.doc-title h1{
+  font-size:16px;
+}
+
+.doc-title p{
+  font-size:10px;
+  color:#6b7280;
+}
+
+/* ======================================================
+   INFO BOX
+====================================================== */
+.info-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:14px;
+}
+
+.box{
+  border:1px solid #e5e7eb;
+  border-radius:8px;
+  padding:10px 12px;
+}
+
+.box h3{
+  font-size:11px;
+  text-transform:uppercase;
+  letter-spacing:.12em;
+  color:#6b7280;
+  margin-bottom:6px;
+}
+
+.value{
+  font-size:13px;
+  font-weight:600;
+}
+
+/* ======================================================
+   TABULKY
+====================================================== */
+table{
+  width:100%;
+  border-collapse:collapse;
+  font-size:11px;
+}
+
+th,td{
+  padding:8px 6px;
+  border-bottom:1px solid #e5e7eb;
+  text-align:left;
+}
+
+th{
+  color:#6b7280;
+  font-weight:600;
+}
+
+/* ======================================================
+   FOOTER
+====================================================== */
+.footer{
+  margin-top:28px;
+  font-size:9px;
+  color:#6b7280;
+}
+
+.audit{
+  margin-top:10px;
+  font-family:monospace;
+  font-size:9px;
+  word-break:break-all;
+}
+
+/* ======================================================
+   PRINT FIX – ZÁKAZ LÁMÁNÍ BLOKŮ
+====================================================== */
+@media print {
+
+  /* nikdy nelámej boxy */
+  .box,
+  table,
+  tr {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  /* hlavičky nikdy na konci stránky */
+  h1, h2, h3 {
+    page-break-after: avoid;
+    break-after: avoid;
+  }
+
+  /* oddělovače nepoužívej jako místo zlomu */
+  hr {
+    page-break-before: avoid;
+    page-break-after: avoid;
+  }
+
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- ======================================================
+     HLAVIČKA
+====================================================== -->
+<div class="header">
+  <div class="logo">
+    AYAS-7 <span>WIN.WIN</span>
+  </div>
+
+  <div class="doc-title">
+    <h1>Členská karta – interní výjezd</h1>
+    <p>Member Intelligence Card</p>
+  </div>
+</div>
+
+<hr>
+
+<!-- ======================================================
+     IDENTIFIKACE DOKUMENTU
+====================================================== -->
+<div class="info-grid">
+  <div class="box">
+    <h3>Dokument</h3>
+    <div class="value">Interní výstup systému</div>
+  </div>
+
+  <div class="box">
+    <h3>Datum generování</h3>
+    <div class="value">2026-01-15 14:32</div>
+  </div>
+</div>
+
+<hr>
+
+<!-- ======================================================
+     IDENTITA ČLENA
+====================================================== -->
+<div class="box">
+  <h3>Identita člena</h3>
+
+  <div class="info-grid">
+    <div>
+      Jméno:<br>
+      <b>Jan Novák</b>
+    </div>
+    <div>
+      Email:<br>
+      <b>jan.novak@winwin.cz</b>
+    </div>
+    <div>
+      ID člena:<br>
+      <b>WW-102938</b>
+    </div>
+    <div>
+      Stav členství:<br>
+      <b>Aktivní</b>
+    </div>
+  </div>
+</div>
+
+<hr>
+
+<!-- ======================================================
+     ANGAŽOVANOST & ROLE
+====================================================== -->
+<div class="box">
+  <h3>Angažovanost a role</h3>
+
+  <table>
+    <tr>
+      <th>Aktuální role</th>
+      <td>T1 – Trader 1</td>
+    </tr>
+    <tr>
+      <th>Max. matching dle rámce</th>
+      <td>21 %</td>
+    </tr>
+    <tr>
+      <th>Schválený matching</th>
+      <td>18 %</td>
+    </tr>
+    <tr>
+      <th>WW-KEY</th>
+      <td>3 420</td>
+    </tr>
+  </table>
+</div>
+
+<hr>
+
+<hr>
+
+<!-- ======================================================
+     BENEFITY ČLENA
+====================================================== -->
+<div class="box">
+  <h3>Členské benefity</h3>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Název benefitu</th>
+        <th>Období</th>
+        <th>Stav</th>
+        <th>Poznámka</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Výkonnostní bonus</td>
+        <td>12 / 2025</td>
+        <td>Schválen</td>
+        <td>Rozhodnutí výboru SPF</td>
+      </tr>
+      <tr>
+        <td>Partnerský benefit</td>
+        <td>01 / 2026</td>
+        <td>Čeká na schválení</td>
+        <td>—</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p style="font-size:10px;color:#6b7280;margin-top:8px">
+    Uvedené benefity nejsou nárokové. Přidělení podléhá rozhodnutí
+    orgánů družstva a může být kdykoliv změněno nebo odebráno.
+  </p>
+</div>
+
+
+<!-- ======================================================
+     SPF
+====================================================== -->
+<div class="box">
+  <h3>SPF & rozhodnutí družstva</h3>
+
+  <table>
+    <tr>
+      <th>Účast ve SPF</th>
+      <td>Ano</td>
+    </tr>
+    <tr>
+      <th>Poslední období</th>
+      <td>12 / 2025</td>
+    </tr>
+    <tr>
+      <th>Rozhodnutí</th>
+      <td>Schváleno</td>
+    </tr>
+  </table>
+</div>
+
+<hr>
+
+<!-- ======================================================
+     KARIÉRNÍ RÁMEC (READ-ONLY)
+====================================================== -->
+<div class="no-break">
+  <div class="box">
+    <h3>Kariérní rámec</h3>
+  <p style="font-size:10px;color:#6b7280">
+    Uvedené hodnoty představují maximální odpovědnostní rámec.
+    Přidělení role není nárokové.
+  </p>
+</div>
+
+<hr>
+
+<!-- ======================================================
+     AUDIT
+====================================================== -->
+<div class="footer">
+  <b>Auditní informace</b><br>
+  Tento dokument byl vygenerován systémem AYAS-7 jako
+  snapshot interního stavu člena.
+  Nejedná se o nabídku, investiční doporučení ani právní nárok.
+
+  <div class="audit">
+    Audit ID: AYAS7-MIC-20260115-143200<br>
+    Hash: 9bcbd59c6d9f42fcbb7aea17de2ba98092c1b1d9cdab94a1d8eb4a8650809f5f
+  </div>
+</div>
+
+</body>
+</html>
