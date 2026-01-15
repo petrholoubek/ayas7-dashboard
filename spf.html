@@ -640,7 +640,7 @@ async function loadBenefitStates() {
 
   const { data, error } = await supabase
     .from("benefits")
-    .select("id, name, code, crx_cost")
+    .select("id, name, code, crx_cost, is_active")
     .order("name");
 
   if (error || !data) {
@@ -653,10 +653,9 @@ async function loadBenefitStates() {
 
   data.forEach(b => {
 
-    let statusLabel = "—";
-    if (b.status === "active") statusLabel = "🟢 aktivní";
-    if (b.status === "preparing") statusLabel = "🟡 připravuje se";
-    if (b.status === "paused") statusLabel = "⛔ pozastaveno";
+    const statusLabel = b.is_active
+      ? "<span style='color:#22c55e;font-weight:600'>🟢 aktivní</span>"
+      : "<span style='color:#f59e0b'>🟡 připravuje se</span>";
 
     tbody.insertAdjacentHTML("beforeend", `
       <tr>
@@ -665,12 +664,10 @@ async function loadBenefitStates() {
         <td>${b.crx_cost ?? "—"}</td>
         <td>${statusLabel}</td>
         <td>
-          <select
-            onchange="updateBenefitStatus('${b.id}', this.value)">
+          <select onchange="updateBenefitStatus('${b.id}', this.value === 'true')">
             <option value="">— změnit —</option>
-            <option value="active">Aktivní</option>
-            <option value="preparing">Připravuje se</option>
-            <option value="paused">Pozastaven</option>
+            <option value="true">Aktivní</option>
+            <option value="false">Připravuje se</option>
           </select>
         </td>
       </tr>
@@ -679,18 +676,22 @@ async function loadBenefitStates() {
 }
 
 /* ===============================
-   UPDATE BENEFIT STATUS
+   UPDATE BENEFIT ACTIVE STATE
 ================================ */
-window.updateBenefitStatus = async (id, status) => {
+window.updateBenefitStatus = async (id, isActive) => {
 
-  if (!confirm("Změna stavu benefitu bude platná okamžitě.\nPokračovat?")) {
-    return;
-  }
+  if (typeof isActive !== "boolean") return;
+
+  if (!confirm(
+    isActive
+      ? "Aktivovat benefit pro členy?"
+      : "Deaktivovat benefit pro členy?"
+  )) return;
 
   const { error } = await supabase
     .from("benefits")
     .update({
-      is_active: status === "active"
+      is_active: isActive
     })
     .eq("id", id);
 
@@ -700,8 +701,7 @@ window.updateBenefitStatus = async (id, status) => {
     return;
   }
 
-  alert("Stav benefitu byl změněn.");
-  loadBenefitStates(); // reload tabulky ve SPF
+  loadBenefitStates(); // refresh tabulky ve SPF
 };
 
 /* ===============================
