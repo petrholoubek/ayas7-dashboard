@@ -402,7 +402,7 @@ function openAgentsPdf() {
 </script>
 <script>
 /* =========================================
-   NAČTENÍ ČLENA Z DB – REAL
+   NAČTENÍ ČLENA – MEMBER INTELLIGENCE
 ========================================= */
 async function loadMember() {
 
@@ -410,16 +410,19 @@ async function loadMember() {
     "input[placeholder='clen@winwin.cz']"
   );
 
-  const email = emailInput?.value.trim().toLowerCase();
+  if (!emailInput) {
+    alert("Chybí input pro e-mail.");
+    return;
+  }
+
+  const email = emailInput.value.trim().toLowerCase();
 
   if (!email) {
     alert("Zadej e-mail člena.");
     return;
   }
 
-  console.log("Načítám člena z DB:", email);
-
-  const { data, error } = await supabase
+  const { data, error } = await window.supabase
     .from("members_data")
     .select("*")
     .eq("email", email)
@@ -431,15 +434,32 @@ async function loadMember() {
     return;
   }
 
-  console.log("ČLEN NALEZEN:", data);
+  /* ===== VYKRESLENÍ DO PRAVÉHO PANELU ===== */
+  document.getElementById("mi-name").textContent =
+    data.full_name || data.name || "—";
 
-  /* === DOČASNÝ VÝSTUP DO UI === */
-  alert(
-    `Člen nalezen:\n\n` +
-    `Jméno: ${data.name ?? "—"}\n` +
-    `Email: ${data.email}\n` +
-    `Stav: ${data.status ?? "—"}\n` +
-    `ID: ${data.id}`
+  document.getElementById("mi-email").textContent =
+    data.email || "—";
+
+  document.getElementById("mi-status").textContent =
+    data.status || "—";
+
+  document.getElementById("mi-id").textContent =
+    data.id ?? "—";
+
+  document.getElementById("mi-created").textContent =
+    data.created_at
+      ? new Date(data.created_at).toLocaleString("cs-CZ")
+      : "—";
+}
+
+/* =========================================
+   EXPORT PDF – ČLENSKÁ KARTA
+========================================= */
+function openMemberPdf() {
+  window.open(
+    "member-card-pdf.html",
+    "_blank"
   );
 }
 </script>
