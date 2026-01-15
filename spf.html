@@ -680,19 +680,13 @@ async function loadBenefitStates() {
 ================================ */
 window.updateBenefitStatus = async (id, isActive) => {
 
-  if (typeof isActive !== "boolean") return;
-
   if (!confirm(
-    isActive
-      ? "Aktivovat benefit pro členy?"
-      : "Deaktivovat benefit pro členy?"
+    "Změna dostupnosti benefitu se projeví okamžitě.\nPokračovat?"
   )) return;
 
   const { error } = await supabase
     .from("benefits")
-    .update({
-      is_active: isActive
-    })
+    .update({ is_active: isActive })
     .eq("id", id);
 
   if (error) {
@@ -701,7 +695,7 @@ window.updateBenefitStatus = async (id, isActive) => {
     return;
   }
 
-  loadBenefitStates(); // refresh tabulky ve SPF
+  loadBenefitStates();
 };
 
 /* ===============================
