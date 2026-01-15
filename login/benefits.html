@@ -1435,54 +1435,54 @@ data.forEach(row => {
 ================================ */
 async function loadAvailableBenefits() {
   const tbody = document.getElementById("availableBenefits");
+  tbody.innerHTML = "<tr><td colspan='6'>Načítám…</td></tr>";
 
   const { data, error } = await supabase
     .from("benefits")
-    .select("*")
+    .select("id, name, type, description, crx_cost, is_active")
     .order("name");
 
   if (error) {
     tbody.innerHTML =
-      "<tr><td colspan='5'>Chyba načtení benefitů</td></tr>";
+      "<tr><td colspan='6'>Chyba načtení benefitů</td></tr>";
+    console.error(error);
     return;
   }
 
   if (!data || data.length === 0) {
     tbody.innerHTML =
-      "<tr><td colspan='5'>Žádné benefity nejsou k dispozici</td></tr>";
+      "<tr><td colspan='6'>Žádné benefity nejsou k dispozici</td></tr>";
     return;
   }
 
-tbody.innerHTML = "";
+  tbody.innerHTML = "";
 
-data.forEach(b => {
+  data.forEach(b => {
 
-  const statusLabel = b.is_active
-    ? "<span style='color:#22c55e;font-weight:600'>Aktivní</span>"
-    : "<span style='color:#f59e0b'>Připravuje se</span>";
+    const statusLabel = b.is_active
+      ? "<span style='color:#22c55e'>Aktivní</span>"
+      : "<span style='color:#f59e0b'>Připravuje se</span>";
 
-  const actionButton = b.is_active
-    ? `
-      <button class="btn-benefit-request"
-        onclick="requestBenefit('${b.code}')">
-        <span class="btn-dot"></span>
-        Požádat
-      </button>
-    `
-    : "<span style='opacity:0.6'>—</span>";
+    const actionBtn = b.is_active
+      ? `
+        <button class="btn-benefit-request"
+          onclick="requestBenefit('${b.code}')">
+          <span class="btn-dot"></span>
+          Požádat
+        </button>`
+      : "—";
 
-  tbody.insertAdjacentHTML("beforeend", `
-    <tr>
-      <td>${b.name}</td>
-      <td>${b.type}</td>
-      <td>${b.description}</td>
-      <td>${b.crx_cost}</td>
-      <td>${statusLabel}</td>
-      <td>${actionButton}</td>
-    </tr>
-  `);
-});
-
+    tbody.insertAdjacentHTML("beforeend", `
+      <tr>
+        <td>${b.name}</td>
+        <td>${b.type}</td>
+        <td>${b.description}</td>
+        <td>${b.crx_cost}</td>
+        <td>${statusLabel}</td>
+        <td>${actionBtn}</td>
+      </tr>
+    `);
+  });
 }
 
 /* ===============================
