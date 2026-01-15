@@ -213,6 +213,47 @@ table td:nth-child(5){
   text-align: left;
   white-space: nowrap;
 }
+/* ===== NOVÁ PROVOZNÍ SEKCE – BENEFITY ===== */
+.benefit-control-box{
+  margin-top:32px;
+  border:1px solid rgba(34,197,94,.45);
+  background:
+    radial-gradient(circle at top left,
+      rgba(34,197,94,.12),
+      rgba(2,6,23,.95) 70%);
+  border-radius:16px;
+  padding:22px 24px;
+}
+
+.benefit-control-header{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin-bottom:14px;
+}
+
+.benefit-led{
+  width:10px;
+  height:10px;
+  border-radius:999px;
+  background:#22c55e;
+  box-shadow:0 0 10px rgba(34,197,94,.9);
+  flex-shrink:0;
+}
+
+.benefit-control-title{
+  font-size:16px;
+  font-weight:600;
+  color:#eafff3;
+}
+
+.benefit-control-sub{
+  font-size:13px;
+  color:#c7f9dd;
+  margin-bottom:16px;
+  max-width:900px;
+  line-height:1.45;
+}
 
 </style>
 </head>
@@ -288,6 +329,46 @@ table td:nth-child(5){
 </div>
 
 </div>
+<!-- ================= BENEFIT AVAILABILITY CONTROL ================= -->
+<section class="benefit-control-box">
+
+  <div class="benefit-control-header">
+    <span class="benefit-led"></span>
+    <div class="benefit-control-title">
+      Řízení dostupnosti členských benefitů
+    </div>
+  </div>
+
+  <div class="benefit-control-sub">
+    Tato část slouží k <b>provoznímu řízení</b> dostupnosti benefitů
+    pro členy družstva WIN.WIN.<br>
+    Nejde o výpočet, přidělování ani nárokový systém – pouze o určení,
+    <b>které benefity jsou v dané fázi aktivní, připravované nebo pozastavené</b>.
+    Změny jsou auditně dohledatelné.
+  </div>
+
+  <div class="members-table-wrap">
+    <table class="members-table">
+      <thead>
+        <tr>
+          <th>Název</th>
+          <th>Kód</th>
+          <th>CRX</th>
+          <th>Stav</th>
+          <th>Akce</th>
+        </tr>
+      </thead>
+      <tbody id="benefitStatusTable">
+        <tr>
+          <td colspan="5">Načítám benefity…</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</section>
+
+
 <script type="module">
 import { createClient } from
   "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
@@ -541,6 +622,94 @@ function openPdfWindow(title, contentHtml) {
   win.document.close();
   win.focus();
 }
+</script>
+<script type="module">
+import { createClient } from
+  "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+
+const supabase = createClient(
+  "https://azfrniqqtetoqploxwgq.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF6ZnJuaXFxdGV0b3FwbG94d2dxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3MzQ1OTYsImV4cCI6MjA4MzMxMDU5Nn0.QchmzNhs8owd6pkjZCk04u6PJoJ2Bhzz7oGV0KFyqdU"
+);
+
+/* ===============================
+   LOAD BENEFIT STATES
+================================ */
+async function loadBenefitStates() {
+  const tbody = document.getElementById("benefitStatusTable");
+
+  const { data, error } = await supabase
+    .from("benefits")
+    .select("id, name, code, crx_cost, status")
+    .order("name");
+
+  if (error || !data) {
+    tbody.innerHTML =
+      "<tr><td colspan='5'>Chyba načtení benefitů</td></tr>";
+    return;
+  }
+
+  tbody.innerHTML = "";
+
+  data.forEach(b => {
+
+    let statusLabel = "—";
+    if (b.status === "active") statusLabel = "🟢 aktivní";
+    if (b.status === "preparing") statusLabel = "🟡 připravuje se";
+    if (b.status === "paused") statusLabel = "⛔ pozastaveno";
+
+    tbody.insertAdjacentHTML("beforeend", `
+      <tr>
+        <td>${b.name}</td>
+        <td><code>${b.code}</code></td>
+        <td>${b.crx_cost ?? "—"}</td>
+        <td>${statusLabel}</td>
+        <td>
+          <select
+            onchange="updateBenefitStatus('${b.id}', this.value)">
+            <option value="">— změnit —</option>
+            <option value="active">Aktivní</option>
+            <option value="preparing">Připravuje se</option>
+            <option value="paused">Pozastaven</option>
+          </select>
+        </td>
+      </tr>
+    `);
+  });
+}
+
+/* ===============================
+   UPDATE BENEFIT STATUS
+================================ */
+window.updateBenefitStatus = async (id, status) => {
+
+  if (!status) return;
+
+  if (!confirm("Změna stavu benefitu bude platná okamžitě.\nPokračovat?")) {
+    return;
+  }
+
+  const { error } = await supabase
+    .from("benefits")
+    .update({
+      status,
+      updated_at: new Date().toISOString()
+    })
+    .eq("id", id);
+
+  if (error) {
+    alert("Chyba při změně stavu benefitu");
+    console.error(error);
+    return;
+  }
+
+  loadBenefitStates();
+};
+
+/* ===============================
+   INIT
+================================ */
+document.addEventListener("DOMContentLoaded", loadBenefitStates);
 </script>
 
 
