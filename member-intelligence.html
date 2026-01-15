@@ -532,16 +532,22 @@ async function loadAgentsCareer() {
     .from("member_career")
     .select(`
       id,
-      full_name,
-      email,
-      role_code,
-      role_name
-    `);
+      assigned_at,
+      members_data (
+        full_name,
+        email
+      ),
+      career_roles (
+        code,
+        name
+      )
+    `)
+    .eq("status", "active");
 
   if (error) {
     console.error("Chyba při načítání kariéry:", error);
     tbody.innerHTML =
-      `<tr><td colspan="5">Chyba načtení dat</td></tr>`;
+      `<tr><td colspan="5">Chyba načtení kariéry</td></tr>`;
     return;
   }
 
@@ -554,14 +560,23 @@ async function loadAgentsCareer() {
   tbody.innerHTML = "";
 
   data.forEach(row => {
+
+    const name = row.members_data?.full_name ?? "—";
+    const email = row.members_data?.email ?? "—";
+    const role =
+      row.career_roles
+        ? `${row.career_roles.code} – ${row.career_roles.name}`
+        : "—";
+
     const tr = document.createElement("tr");
     tr.innerHTML = `
       <td>${row.id}</td>
-      <td>${row.full_name}</td>
-      <td>${row.email}</td>
-      <td>${row.role_code} – ${row.role_name}</td>
+      <td>${name}</td>
+      <td>${email}</td>
+      <td>${role}</td>
       <td>—</td>
     `;
+
     tbody.appendChild(tr);
   });
 }
@@ -569,6 +584,7 @@ async function loadAgentsCareer() {
 /* automatické načtení po otevření stránky */
 document.addEventListener("DOMContentLoaded", loadAgentsCareer);
 </script>
+
 
 </body>
 </html>
