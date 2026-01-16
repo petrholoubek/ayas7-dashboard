@@ -910,10 +910,10 @@ window.approveCareerRole = async () => {
    INIT
 ================================ */
 document.addEventListener("DOMContentLoaded", () => {
-  loadCareerRoles();
-  loadMemberCareerSummary(1); // EXISTUJÍCÍ member_id
-
+  loadCareerRoles();   // ⬅️ tohle MUSÍ běžet vždy
+  // loadMemberCareerSummary(1); ❌ SMAZAT
 });
+
 </script>
 
 </body>
