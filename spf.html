@@ -461,6 +461,25 @@ if (r.status === "approved") {
     </div>
   `;
 }
+if (r.status === "distributed") {
+  actions = `
+    <div class="actions">
+      <span style="
+        color:#22c55e;
+        font-weight:600;
+        display:flex;
+        align-items:center;
+        gap:6px;
+      ">
+        🟢 SPF uzavřeno
+      </span>
+      <button
+        onclick="openAuditSPF('${r.period}')">
+        Audit SPF (PDF)
+      </button>
+    </div>
+  `;
+}
 
 
     tbody.insertAdjacentHTML("beforeend", `
@@ -585,6 +604,13 @@ loadSPF();
    ========================================================= */
 function pdfSPF() {
   const table = document.getElementById("spf-table");
+
+const rows = table.querySelectorAll("tbody tr");
+if (!rows.length) {
+  alert("Neexistuje žádné SPF období pro export.");
+  return;
+}
+
 
   if (!table) {
     alert("Tabulka SPF nebyla nalezena.");
