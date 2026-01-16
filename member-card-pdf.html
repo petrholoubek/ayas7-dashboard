@@ -458,6 +458,26 @@ document.getElementById("pdf-generated").textContent =
   new Date().toLocaleString("cs-CZ");
 
 /* ===============================
+   ANGAŽOVANOST & ROLE (READ-ONLY)
+=============================== */
+const { data: career, error: careerError } = await supabase
+  .from("v_agents_career")
+  .select("role_code, role_name")
+  .eq("email", member.email)
+  .single();
+
+document.getElementById("pdf-role").textContent =
+  career && career.role_code
+    ? `${career.role_code} – ${career.role_name}`
+    : "Nestanovena (interní rámec)";
+
+document.getElementById("pdf-matching").textContent =
+  career && career.role_code
+    ? "Dle kariérního rámce (nenárokové)"
+    : "—";
+
+
+/* ===============================
    LOAD CAREER (READ-ONLY)
 =============================== */
 const { data: career } = await supabase
