@@ -491,50 +491,44 @@ async function loadSPF() {
     let actions = "—";
 
     if (r.status === "draft") {
-      actions = `
-        <div class="actions">
-          <button class="approve"
-            onclick="decideSPF('${r.id}','approve')">
-            Schválit
-          </button>
-          <button class="reject"
-            onclick="decideSPF('${r.id}','reject')">
-            Zamítnout
-          </button>
-          <button onclick="openSPFDistributionAudit()"
-            Audit SPF (PDF)
-          </button>
-        </div>
-      `;
-    }
+  actions = `
+    <div class="actions">
+      <button class="approve"
+        onclick="decideSPF('${r.id}','approve')">
+        Schválit
+      </button>
+      <button class="reject"
+        onclick="decideSPF('${r.id}','reject')">
+        Zamítnout
+      </button>
+    </div>
+  `;
+}
+
 
     if (r.status === "approved") {
-      actions = `
-        <div class="actions">
-          <button
-            onclick="distributeSPF('${r.id}', '${r.period}')"
-            style="background:#0f172a;color:#fff">
-            🔒 Rozdělit SPF
-          </button>
-          <button onclick="openSPFDistributionAudit()">
-            Audit SPF (PDF)
-          </button>
-        </div>
-      `;
-    }
+  actions = `
+    <div class="actions">
+      <button
+        onclick="distributeSPF('${r.id}', '${r.period}')"
+        style="background:#0f172a;color:#fff">
+        🔒 Rozdělit SPF
+      </button>
+    </div>
+  `;
+}
+
 
     if (r.status === "distributed") {
-      actions = `
-        <div class="actions">
-          <span style="color:#22c55e;font-weight:600">
-            🟢 SPF uzavřeno
-          </span>
-          <button onclick="openSPFDistributionAudit()">
-            Audit SPF (PDF)
-          </button>
-        </div>
-      `;
-    }
+  actions = `
+    <div class="actions">
+      <span style="color:#22c55e;font-weight:600">
+        🟢 SPF uzavřeno
+      </span>
+    </div>
+  `;
+}
+
 
     tbody.insertAdjacentHTML("beforeend", `
       <tr>
@@ -627,13 +621,25 @@ window.distributeSPF = async (spfId, period) => {
 };
 
 /* ================================
-   PDF – ROZHODNUTÍ SPF
+   PDF – ROZHODNUTÍ SPF (INTERNÍ)
 ================================ */
 window.pdfSPF = () => {
   const table = document.getElementById("spf-table");
-  if (!table) return alert("Tabulka nenalezena.");
-  openPdfWindow("AYAS-7 · Rozhodnutí SPF", table.outerHTML);
+  if (!table) {
+    alert("Tabulka nenalezena.");
+    return;
+  }
+
+  openPdfWindow(
+    {
+      title: "AYAS-7 · WIN.WIN – Rozhodnutí SPF",
+      period: "—",
+      hash: "—"
+    },
+    table.outerHTML
+  );
 };
+
 
 /* ================================
    PDF – AUDIT ROZDĚLENÍ SPF
@@ -662,16 +668,40 @@ window.openSPFDistributionAudit = async () => {
       <tr>
         <td>${r.member_name}</td>
         <td>${r.member_email}</td>
-        <td>${r.career_level}</td>
+        <td>${r.career_level ?? "—"}</td>
         <td style="text-align:right">${r.matching_bonus_crx}</td>
         <td style="text-align:right">${r.sources_count}</td>
       </tr>
     `;
   });
 
+  /* === AUDITNÍ HASH === */
+  const auditPayload = JSON.stringify({
+    period: window.selectedPeriod,
+    rows: data.map(r => ({
+      member: r.member_email,
+      career: r.career_level,
+      amount: r.matching_bonus_crx
+    }))
+  });
+
+  const hashBuffer = await crypto.subtle.digest(
+    "SHA-256",
+    new TextEncoder().encode(auditPayload)
+  );
+
+  const auditHash = Array.from(new Uint8Array(hashBuffer))
+    .map(b => b.toString(16).padStart(2, "0"))
+    .join("");
+
   openPdfWindow(
-    "Audit rozdělení SPF a matching bonusů – " + window.selectedPeriod,
-    `<table>
+    {
+      title: "Interní auditní záznam – SPF a matching bonusy",
+      period: window.selectedPeriod,
+      hash: auditHash
+    },
+    `
+    <table>
       <tr>
         <th>Člen</th>
         <th>E-mail</th>
@@ -680,38 +710,98 @@ window.openSPFDistributionAudit = async () => {
         <th>Zdrojů</th>
       </tr>
       ${rows}
-    </table>`
+    </table>
+    `
   );
 };
 
+
 /* ================================
-   PDF OKNO
+   PDF OKNO – SPOLEČNÉ
 ================================ */
-function openPdfWindow(title, content) {
+function openPdfWindow(meta, contentHtml) {
   const win = window.open("", "_blank", "width=900,height=1200");
+  if (!win) {
+    alert("Nelze otevřít PDF okno.");
+    return;
+  }
+
   win.document.write(`
     <html>
     <head>
-      <title>${title}</title>
+      <title>${meta.title}</title>
       <style>
-        body{font-family:Segoe UI,Arial;padding:40px}
-        table{width:100%;border-collapse:collapse}
-        th,td{border:1px solid #ccc;padding:6px;font-size:12px}
-        th{background:#f3f4f6}
+        body {
+          font-family: Segoe UI, Arial, sans-serif;
+          padding: 40px;
+          color: #111;
+        }
+        .header {
+          border-bottom: 2px solid #000;
+          margin-bottom: 20px;
+          padding-bottom: 10px;
+        }
+        .brand {
+          font-size: 18px;
+          font-weight: 700;
+        }
+        .subtitle {
+          font-size: 13px;
+          color: #333;
+        }
+        table {
+          width: 100%;
+          border-collapse: collapse;
+          margin-top: 16px;
+        }
+        th, td {
+          border: 1px solid #ccc;
+          padding: 6px;
+          font-size: 12px;
+        }
+        th {
+          background: #f3f4f6;
+        }
+        .footer {
+          margin-top: 30px;
+          font-size: 11px;
+          color: #555;
+        }
+        .hash {
+          font-family: monospace;
+          font-size: 10px;
+          word-break: break-all;
+          margin-top: 6px;
+        }
       </style>
     </head>
     <body>
-      <h1>${title}</h1>
-      ${content}
-      <p style="margin-top:20px;font-size:11px;color:#555">
-        Interní auditní dokument družstva. Nezakládá právní nárok.
-      </p>
+
+      <div class="header">
+        <div class="brand">AYAS-7 · WIN.WIN</div>
+        <div class="subtitle">
+          Interní auditní záznam – rozdělení SPF a matching bonusů<br>
+          <strong>Období:</strong> ${meta.period}
+        </div>
+      </div>
+
+      ${contentHtml}
+
+      <div class="footer">
+        Tento dokument je interním auditním a evidenčním výstupem družstva WIN.WIN.
+        Nezakládá právní nárok na výplatu, odměnu ani jiné plnění.
+        <div class="hash">
+          Auditní hash: ${meta.hash}
+        </div>
+      </div>
+
     </body>
     </html>
   `);
-  win.document.close();
-}
 
+  win.document.close();
+  win.focus();
+}
 /* ================================
    INIT
 ================================ */
