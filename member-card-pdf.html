@@ -351,6 +351,38 @@ th{
 <hr>
 
 <!-- ======================================================
+     CRX – INTERNÍ PŘIDĚLENÍ (UZAVŘENÁ OBDOBÍ)
+====================================================== -->
+<div class="box">
+  <h3>CRX – interní přidělení (uzavřená období)</h3>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Období</th>
+        <th>Program</th>
+        <th>Typ</th>
+        <th style="text-align:right">CRX</th>
+      </tr>
+    </thead>
+    <tbody id="pdf-crx">
+      <tr>
+        <td colspan="4">Načítám CRX…</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p style="font-size:10px;color:#6b7280;margin-top:8px">
+    CRX jsou interní nepeněžní jednotky přidělené na základě
+    rozhodnutí družstva v uzavřených obdobích.
+    Nejedná se o zůstatek ani nárokový účet.
+  </p>
+</div>
+
+<hr>
+
+
+<!-- ======================================================
      KARIÉRNÍ RÁMEC (READ-ONLY)
 ====================================================== -->
 <div class="no-break">
@@ -473,6 +505,35 @@ if (!certs || certs.length === 0) {
   });
   totalSpan.textContent = total.toLocaleString("cs-CZ");
 }
+
+/* ===============================
+   LOAD CRX (UZAVŘENÁ OBDOBÍ)
+=============================== */
+const { data: crxRows } = await supabase
+  .from("v_spf_distribution_export")
+  .select("period, program_name, program_type, matching_bonus_crx")
+  .eq("member_id", member.user_id)
+  .order("period", { ascending: false });
+
+const crxBody = document.getElementById("pdf-crx");
+crxBody.innerHTML = "";
+
+if (!crxRows || crxRows.length === 0) {
+  crxBody.innerHTML =
+    "<tr><td colspan='4'>Žádné CRX nebyly dosud přiděleny</td></tr>";
+} else {
+  crxRows.forEach(r => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${r.period}</td>
+      <td>${r.program_name}</td>
+      <td>${r.program_type}</td>
+      <td style="text-align:right">${r.matching_bonus_crx}</td>
+    `;
+    crxBody.appendChild(tr);
+  });
+}
+
 </script>
 
 
