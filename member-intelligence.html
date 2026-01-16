@@ -138,6 +138,103 @@ tbody tr:nth-child(even){
 @media(max-width:900px){
   .grid-2,.grid-3{grid-template-columns:1fr}
 }
+
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 40% 0%,
+      #0f172a 0%,
+      #020617 65%,
+      #000 100%);
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: cover;
+  background-position: center top;
+
+  font-family: "Segoe UI", Tahoma, Verdana, sans-serif;
+  color: #e5e7eb;
+}
+
+/* ======================================================
+   LED STATUS DOT
+====================================================== */
+
+.led {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
+/* MODRÁ – informační / stavová */
+.led-blue {
+  background: #38bdf8;
+  box-shadow:
+    0 0 6px rgba(56,189,248,0.8),
+    0 0 12px rgba(56,189,248,0.6);
+}
+
+/* ČERVENÁ – rozhodnutí / odpovědnost */
+.led-red {
+  background: #ef4444;
+  box-shadow:
+    0 0 6px rgba(239,68,68,0.8),
+    0 0 12px rgba(239,68,68,0.6);
+}
+
+/* ZLATÁ – audit / uzavření / autorita */
+.led-gold {
+  background: #facc15;
+  box-shadow:
+    0 0 6px rgba(250,204,21,0.8),
+    0 0 12px rgba(250,204,21,0.6);
+}
+/* ======================================================
+   ROZHODNUTÍ DRUŽSTVA – FINÁLNÍ ZAROVNÁNÍ
+====================================================== */
+
+.decision-form {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+  max-width: 520px;   /* 🔒 sjednocení šířky */
+}
+
+.decision-form label {
+  font-size: 13px;
+  color: #9ca3af;
+}
+
+.decision-form select,
+.decision-form textarea {
+  width: 100%;
+  background: #020617;
+  border: 1px solid rgba(148,163,184,.25);
+  border-radius: 10px;
+  padding: 10px;
+  color: #e5e7eb;
+  font-family: inherit;
+}
+
+.decision-form textarea {
+  min-height: 90px;
+  resize: vertical;
+}
+
+/* TLAČÍTKO – STEJNÁ OSA JAKO TEXTAREA */
+.decision-submit {
+  align-self: flex-end;   /* 🔑 */
+  margin-top: 6px;
+}
+
+
 </style>
 </head>
 
@@ -208,48 +305,113 @@ tbody tr:nth-child(even){
 </section>
 
 <!-- ======================================================
-   2️⃣ KARIÉRNÍ STUPNĚ (REFERENČNÍ RÁMEC)
+   KARIÉRNÍ ODPOVĚDNOST A SCHVALOVÁNÍ POZICE ČLENA
 ====================================================== -->
 <section class="panel">
+
   <div class="section-head">
-    <span class="led led-gold"></span>
-    Kariérní stupně & matching bonus
+    <span class="led led-blue"></span>
+    Kariérní odpovědnost a schvalování pozice člena
   </div>
 
-  <p>
-    Interní odpovědnostní rámec družstva WIN.WIN.
-    Uvedená procenta představují maximální matching z vlastní sítě.
+  <p class="muted">
+    Interní schvalovací rámec družstva WIN.WIN.
+    Uvedené hodnoty představují maximální matching bonus vyplývající
+    z potvrzené kariérní pozice a struktury sítě člena.
   </p>
 
-  <table style="margin-top:18px">
-    <thead>
-      <tr>
-        <th>Pozice</th>
-        <th>Název</th>
-        <th>Max. matching</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr><td>T</td><td>Trader</td><td>16 %</td></tr>
-      <tr><td>T1</td><td>Trader 1</td><td>21 %</td></tr>
-      <tr><td>T2</td><td>Trader 2</td><td>26 %</td></tr>
-      <tr><td>T3</td><td>Trader 3</td><td>31 %</td></tr>
-      <tr><td>M</td><td>Manager</td><td>36 %</td></tr>
-      <tr><td>M1</td><td>Manager 1</td><td>41 %</td></tr>
-      <tr><td>M2</td><td>Manager 2</td><td>46 %</td></tr>
-      <tr><td>M3</td><td>Manager 3</td><td>51 %</td></tr>
-      <tr><td>TM</td><td>Team Manager</td><td>56 %</td></tr>
-      <tr><td>TM1</td><td>Team Manager 1</td><td>60 %</td></tr>
-      <tr><td>TM2</td><td>Team Manager 2</td><td>64 %</td></tr>
-      <tr><td>TM3</td><td>Team Manager 3</td><td>68 %</td></tr>
-      <tr><td>TM4</td><td>Team Manager 4</td><td>72 %</td></tr>
-      <tr><td>TL</td><td>Team Leader</td><td>76 %</td></tr>
-      <tr><td>TL1</td><td>Team Leader 1</td><td>80 %</td></tr>
-      <tr><td>TL2</td><td>Team Leader 2</td><td>84 %</td></tr>
-      <tr><td>VP</td><td>Vice President</td><td>96 %</td></tr>
-      <tr><td>P</td><td>President</td><td>100 %</td></tr>
-    </tbody>
-  </table>
+  <!-- ===============================
+     HLAVNÍ KARTA
+  ============================== -->
+  <div class="card" id="career-approval-box">
+
+    <!-- ===== SOUHRN SÍTĚ ===== -->
+    <div class="subcard">
+      <div class="subcard-head">
+        <span class="led led-blue"></span>
+        Souhrn sítě člena
+      </div>
+
+      <table>
+        <tbody>
+          <tr>
+            <td>Přímí podřízení</td>
+            <td id="net-direct">—</td>
+          </tr>
+          <tr>
+            <td>Aktivní tým (celkem)</td>
+            <td id="net-total">—</td>
+          </tr>
+          <tr>
+            <td>Maximální hloubka struktury</td>
+            <td id="net-depth">—</td>
+          </tr>
+          <tr>
+            <td>Orientační návrh pozice (nezávazné)</td>
+            <td id="net-suggested-role">—</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ===== AKTUÁLNÍ KARIÉRNÍ STAV ===== -->
+    <div class="subcard">
+      <div class="subcard-head">
+        <span class="led led-blue"></span>
+        Aktuální kariérní pozice
+      </div>
+
+      <table>
+        <tbody>
+          <tr>
+            <td>Pozice</td>
+            <td id="career-current-role">—</td>
+          </tr>
+          <tr>
+            <td>Platná od</td>
+            <td id="career-valid-from">—</td>
+          </tr>
+          <tr>
+            <td>Schváleno kým</td>
+            <td id="career-approved-by">—</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ===== ROZHODNUTÍ DRUŽSTVA ===== -->
+ <div class="subcard admin-only">
+  <h4>
+    <span class="led led-red"></span>
+    Rozhodnutí družstva
+  </h4>
+
+  <div class="decision-form">
+
+    <label for="career-role-select">
+      Schválit kariérní pozici
+    </label>
+    <select id="career-role-select">
+      <option value="">— vybrat pozici —</option>
+    </select>
+
+    <label for="career-decision-note">
+      Odůvodnění rozhodnutí (povinné)
+    </label>
+
+    <textarea
+      id="career-decision-note"
+      placeholder="Odůvodnění rozhodnutí družstva…">
+    </textarea>
+
+    <button class="btn-primary decision-submit"
+            onclick="approveCareerRole()">
+      Schválit kariérní pozici
+    </button>
+
+  </div>
+</div>
+
 </section>
 
 <!-- ======================================================
@@ -586,6 +748,164 @@ async function loadAgentsCareer() {
 document.addEventListener("DOMContentLoaded", loadAgentsCareer);
 </script>
 
+<script type="module">
+import { createClient } from
+  "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+
+/* ===============================
+   SUPABASE
+================================ */
+const supabase = createClient(
+  "https://azfrniqqtetoqploxwgq.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF6ZnJuaXFxdGV0b3FwbG94d2dxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3MzQ1OTYsImV4cCI6MjA4MzMxMDU5Nn0.QchmzNhs8owd6pkjZCk04u6PJoJ2Bhzz7oGV0KFyqdU"
+);
+
+window.supabase = supabase;
+
+let currentMemberId = null;
+
+/* ===============================
+   LOAD CAREER ROLES (SELECT)
+================================ */
+async function loadCareerRoles() {
+  const { data, error } = await supabase
+    .from("career_roles")
+    .select("id, code, name, max_matching_percent")
+    .eq("is_active", true)
+    .order("max_matching_percent");
+
+  const select = document.getElementById("career-role-select");
+  select.innerHTML = `<option value="">— vybrat pozici —</option>`;
+
+  if (error || !data) return;
+
+  data.forEach(r => {
+    select.insertAdjacentHTML(
+      "beforeend",
+      `<option value="${r.id}">
+        ${r.code} – ${r.name} (${r.max_matching_percent}%)
+      </option>`
+    );
+  });
+}
+
+/* ===============================
+   LOAD MEMBER SUMMARY
+================================ */
+async function loadMemberCareerSummary(memberId) {
+  currentMemberId = memberId;
+
+  /* --- SÍŤ --- */
+  const { data: net } = await supabase
+    .from("member_network")
+    .select("member_id")
+    .eq("parent_member_id", memberId);
+
+  document.getElementById("net-direct").innerText =
+    net?.length ?? "0";
+
+  document.getElementById("net-total").innerText =
+    net?.length ?? "0"; // můžeš nahradit view
+
+  document.getElementById("net-depth").innerText =
+    net?.length ? "1+" : "0";
+
+  document.getElementById("net-suggested-role").innerText =
+    "—"; // orientační (zatím záměrně prázdné)
+
+  /* --- AKTUÁLNÍ KARIÉRA --- */
+  const { data: career } = await supabase
+    .from("member_career_history")
+    .select(`
+      valid_from,
+      note,
+      approved_by,
+      career_roles (
+        code,
+        name
+      )
+    `)
+    .eq("member_id", memberId)
+    .order("valid_from", { ascending: false })
+    .limit(1);
+
+  if (career && career.length) {
+    const c = career[0];
+    document.getElementById("career-current-role").innerText =
+      `${c.career_roles.code} – ${c.career_roles.name}`;
+    document.getElementById("career-valid-from").innerText =
+      new Date(c.valid_from).toLocaleDateString();
+    document.getElementById("career-approved-by").innerText =
+      c.approved_by ?? "—";
+  } else {
+    document.getElementById("career-current-role").innerText = "—";
+    document.getElementById("career-valid-from").innerText = "—";
+    document.getElementById("career-approved-by").innerText = "—";
+  }
+}
+
+/* ===============================
+   APPROVE CAREER ROLE
+================================ */
+window.approveCareerRole = async () => {
+
+  if (!currentMemberId) {
+    alert("Nejprve načti člena.");
+    return;
+  }
+
+  const roleId =
+    document.getElementById("career-role-select").value;
+  const note =
+    document.getElementById("career-decision-note").value.trim();
+
+  if (!roleId) {
+    alert("Vyber kariérní pozici.");
+    return;
+  }
+
+  if (!note) {
+    alert("Odůvodnění je povinné.");
+    return;
+  }
+
+  if (!confirm(
+    "Schválit kariérní pozici?\nRozhodnutí bude auditně zaznamenáno."
+  )) return;
+
+  const session = (await supabase.auth.getSession()).data.session;
+  if (!session) {
+    alert("Nejste přihlášen.");
+    return;
+  }
+
+  const { error } = await supabase
+    .from("member_career_history")
+    .insert({
+      member_id: currentMemberId,
+      career_role_id: roleId,
+      valid_from: new Date().toISOString(),
+      approved_by: session.user.id,
+      note: note
+    });
+
+  if (error) {
+    alert("Chyba při schválení pozice.");
+    console.error(error);
+    return;
+  }
+
+  alert("Kariérní pozice byla schválena.");
+  loadMemberCareerSummary(currentMemberId);
+};
+
+/* ===============================
+   INIT
+================================ */
+document.addEventListener("DOMContentLoaded", () => {
+  loadCareerRoles();
+});
+</script>
 
 </body>
 </html>
