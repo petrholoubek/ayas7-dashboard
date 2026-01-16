@@ -508,17 +508,31 @@ if (!certs || certs.length === 0) {
 
 /* ===============================
    LOAD CRX (UZAVŘENÁ OBDOBÍ)
+   – BEZPEČNÁ VARIANTA
 =============================== */
-const { data: crxRows } = await supabase
-  .from("v_spf_distribution_export")
-  .select("period, program_name, program_type, matching_bonus_crx")
-  .eq("member_id", member.user_id)
-  .order("period", { ascending: false });
+let crxRows = [];
+let crxError = null;
+
+try {
+  const res = await supabase
+    .from("v_spf_distribution_export")
+    .select("period, program_name, program_type, matching_bonus_crx")
+    .eq("member_internal_id", member.id)
+    .order("period", { ascending: false });
+
+  crxRows = res.data || [];
+  crxError = res.error;
+} catch (e) {
+  crxError = e;
+}
 
 const crxBody = document.getElementById("pdf-crx");
 crxBody.innerHTML = "";
 
-if (!crxRows || crxRows.length === 0) {
+if (crxError) {
+  crxBody.innerHTML =
+    "<tr><td colspan='4'>CRX data nejsou dostupná (auditní režim)</td></tr>";
+} else if (crxRows.length === 0) {
   crxBody.innerHTML =
     "<tr><td colspan='4'>Žádné CRX nebyly dosud přiděleny</td></tr>";
 } else {
@@ -533,6 +547,7 @@ if (!crxRows || crxRows.length === 0) {
     crxBody.appendChild(tr);
   });
 }
+
 
 
 </script>
