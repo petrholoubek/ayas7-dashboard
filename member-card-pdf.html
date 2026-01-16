@@ -533,6 +533,37 @@ if (!crxRows || crxRows.length === 0) {
     crxBody.appendChild(tr);
   });
 }
+/* ===============================
+   LOAD CRX (UZAVŘENÁ OBDOBÍ)
+=============================== */
+const { data: crxRows, error: crxError } = await supabase
+  .from("v_spf_distribution_export")
+  .select("period, program_name, program_type, matching_bonus_crx")
+  .eq("member_internal_id", member.id)
+  .order("period", { ascending: false });
+
+const crxBody = document.getElementById("pdf-crx");
+crxBody.innerHTML = "";
+
+if (crxError) {
+  crxBody.innerHTML =
+    "<tr><td colspan='4'>Chyba načtení CRX</td></tr>";
+} else if (!crxRows || crxRows.length === 0) {
+  crxBody.innerHTML =
+    "<tr><td colspan='4'>Žádné CRX nebyly dosud přiděleny</td></tr>";
+} else {
+  crxRows.forEach(r => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${r.period}</td>
+      <td>${r.program_name}</td>
+      <td>${r.program_type}</td>
+      <td style="text-align:right">${r.matching_bonus_crx}</td>
+    `;
+    crxBody.appendChild(tr);
+  });
+}
+
 
 </script>
 
