@@ -234,7 +234,7 @@ th{
   </tr>
   <tr>
     <th>Matching dle rámce</th>
-    <td>—</td>
+    <td id="pdf-matching">—</td>
   </tr>
 </table>
 
@@ -478,20 +478,6 @@ document.getElementById("pdf-matching").textContent =
 
 
 /* ===============================
-   LOAD CAREER (READ-ONLY)
-=============================== */
-const { data: career } = await supabase
-  .from("v_agents_career")
-  .select("role_code, role_name")
-  .eq("email", member.email)
-  .single();
-
-document.getElementById("pdf-role").textContent =
-  career
-    ? `${career.role_code} – ${career.role_name}`
-    : "—";
-
-/* ===============================
    LOAD CERTIFICATES & WW-KEY
 =============================== */
 const { data: certs } = await supabase
@@ -529,16 +515,19 @@ if (!certs || certs.length === 0) {
 /* ===============================
    LOAD CRX (UZAVŘENÁ OBDOBÍ)
 =============================== */
-const { data: crxRows } = await supabase
+const { data: crxRows, error: crxError } = await supabase
   .from("v_spf_distribution_export")
   .select("period, program_name, program_type, matching_bonus_crx")
-  .eq("member_id", member.user_id)
+  .eq("member_internal_id", member.id)
   .order("period", { ascending: false });
 
 const crxBody = document.getElementById("pdf-crx");
 crxBody.innerHTML = "";
 
-if (!crxRows || crxRows.length === 0) {
+if (crxError) {
+  crxBody.innerHTML =
+    "<tr><td colspan='4'>Chyba načtení CRX</td></tr>";
+} else if (!crxRows || crxRows.length === 0) {
   crxBody.innerHTML =
     "<tr><td colspan='4'>Žádné CRX nebyly dosud přiděleny</td></tr>";
 } else {
