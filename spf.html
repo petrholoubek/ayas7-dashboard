@@ -255,6 +255,29 @@ table td:nth-child(5){
   line-height:1.45;
 }
 
+/* === AUDIT – ŽLUTÁ === */
+.audit-yellow {
+  border: 1px solid rgba(250,204,21,.45);
+  background:
+    radial-gradient(circle at top left,
+      rgba(250,204,21,.12),
+      rgba(2,6,23,.95) 70%);
+}
+
+.audit-yellow .dot {
+  background: #facc15;
+  box-shadow:
+    0 0 6px rgba(250,204,21,.9),
+    0 0 14px rgba(250,204,21,.8),
+    0 0 30px rgba(250,204,21,.6);
+}
+
+/* === ODSAZENÍ AUDIT BOXU OD HORNÍHO OBSAHU === */
+.card.audit-yellow {
+  margin-top: 28px;   /* klidně 24–32 px */
+}
+
+
 </style>
 </head>
 
@@ -327,6 +350,8 @@ table td:nth-child(5){
     Dokument slouží výhradně pro evidenci a audit družstva.
   </p>
 </div>
+
+
 <!-- ===== ČLENSKÁ KARTA – INTERNÍ VÝJEZD ===== -->
 <div style="margin-top: 12px; display: flex; justify-content: flex-start;">
   <a href="member-intelligence.html" style="text-decoration:none;">
@@ -350,6 +375,35 @@ table td:nth-child(5){
       Členská karta – interní výjezd
     </button>
   </a>
+</div>
+<div class="card audit-yellow">
+  <div class="kicker">
+    <span class="dot dot-gold"></span>
+    Auditní výstup
+  </div>
+
+  <h2>Audit rozdělení SPF a matching bonusů</h2>
+
+  <p class="muted" style="margin-bottom:14px;">
+    Tento přehled zobrazuje <b>auditní záznam rozdělení prostředků
+    ze Síťového provozního fondu (SPF)</b> a odpovídající matching bonusy
+    za uzavřené období.<br>
+    Jedná se o <b>interní evidenční dokument</b>, který
+    <b>nezakládá právní nárok člena</b> na výplatu, odměnu ani jiné plnění.
+  </p>
+
+  <div class="actions" style="align-items:center; gap:16px;">
+    <span class="dot dot-gold"></span>
+
+    <button class="btn-secondary"
+      onclick="openSPFDistributionAudit()">
+      Zobrazit audit rozdělení (PDF)
+    </button>
+
+    <span class="muted" style="font-size:12px;">
+      Uzavřené období
+    </span>
+  </div>
 </div>
 
 
@@ -399,15 +453,18 @@ import { createClient } from
   "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
 /* ================================
-   SUPABASE
+   SUPABASE – JEDINÁ INSTANCE
 ================================ */
 const supabase = createClient(
   "https://azfrniqqtetoqploxwgq.supabase.co",
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF6ZnJuaXFxdGV0b3FwbG94d2dxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3MzQ1OTYsImV4cCI6MjA4MzMxMDU5Nn0.QchmzNhs8owd6pkjZCk04u6PJoJ2Bhzz7oGV0KFyqdU"
 );
 
+window.supabase = supabase;
+window.selectedPeriod = null;
+
 /* ================================
-   LOAD SPF
+   LOAD SPF OBDOBÍ
 ================================ */
 async function loadSPF() {
   const { data } = await supabase
@@ -426,6 +483,11 @@ async function loadSPF() {
 
   data.forEach(r => {
 
+    // automaticky nastavíme poslední uzavřené období
+    if (!window.selectedPeriod && r.status === "distributed") {
+      window.selectedPeriod = r.period;
+    }
+
     let actions = "—";
 
     if (r.status === "draft") {
@@ -439,48 +501,40 @@ async function loadSPF() {
             onclick="decideSPF('${r.id}','reject')">
             Zamítnout
           </button>
-          <button
-            onclick="openAuditSPF('${r.period}')">
+          <button onclick="openAuditSPF('${r.period}')">
             Audit SPF (PDF)
           </button>
         </div>
       `;
     }
-if (r.status === "approved") {
-  actions = `
-    <div class="actions">
-      <button
-        onclick="distributeSPF('${r.id}', '${r.period}')"
-        style="background:#0f172a;color:#fff">
-        🔒 Rozdělit SPF
-      </button>
-      <button
-        onclick="openAuditSPF('${r.period}')">
-        Audit SPF (PDF)
-      </button>
-    </div>
-  `;
-}
-if (r.status === "distributed") {
-  actions = `
-    <div class="actions">
-      <span style="
-        color:#22c55e;
-        font-weight:600;
-        display:flex;
-        align-items:center;
-        gap:6px;
-      ">
-        🟢 SPF uzavřeno
-      </span>
-      <button
-        onclick="openAuditSPF('${r.period}')">
-        Audit SPF (PDF)
-      </button>
-    </div>
-  `;
-}
 
+    if (r.status === "approved") {
+      actions = `
+        <div class="actions">
+          <button
+            onclick="distributeSPF('${r.id}', '${r.period}')"
+            style="background:#0f172a;color:#fff">
+            🔒 Rozdělit SPF
+          </button>
+          <button onclick="openAuditSPF('${r.period}')">
+            Audit SPF (PDF)
+          </button>
+        </div>
+      `;
+    }
+
+    if (r.status === "distributed") {
+      actions = `
+        <div class="actions">
+          <span style="color:#22c55e;font-weight:600">
+            🟢 SPF uzavřeno
+          </span>
+          <button onclick="openAuditSPF('${r.period}')">
+            Audit SPF (PDF)
+          </button>
+        </div>
+      `;
+    }
 
     tbody.insertAdjacentHTML("beforeend", `
       <tr>
@@ -494,11 +548,12 @@ if (r.status === "distributed") {
   });
 }
 
+
+
 /* ================================
-   DECISION → EDGE
+   SPF ROZHODNUTÍ
 ================================ */
 window.decideSPF = async (id, action) => {
-
   if (!confirm("Rozhodnutí bude auditně zaznamenáno. Pokračovat?")) return;
 
   const session = (await supabase.auth.getSession()).data.session;
@@ -519,160 +574,143 @@ window.decideSPF = async (id, action) => {
   loadSPF();
 };
 
+/* ================================
+   SPF DISTRIBUCE
+================================ */
 window.distributeSPF = async (spfId, period) => {
-  // ⛔ OCHRANA: SPF už bylo rozděleno?
+
   const { data: already } = await supabase
     .from("spf_distributions")
     .select("id")
     .eq("spf_period_id", spfId)
     .limit(1);
 
-  if (already && already.length > 0) {
-    alert("SPF pro toto období již bylo rozděleno.\nOperace je uzavřena.");
+  if (already && already.length) {
+    alert("SPF už bylo rozděleno.");
     return;
   }
 
-  if (!confirm(
-    "Tímto krokem bude SPF rozdělen podle schválených benefitů.\n" +
-    "Operace je auditně nevratná.\n\nPokračovat?"
-  )) return;
+  if (!confirm("Rozdělit SPF? Operace je auditně nevratná.")) return;
 
-  const session = (await supabase.auth.getSession()).data.session;
-  if (!session) return alert("Nejste přihlášen.");
-
-  // 1️⃣ načteme schválené benefity
-  const { data: benefits, error } = await supabase
+  const { data: benefits } = await supabase
     .from("benefit_results")
     .select("id, member_id, crx_awarded")
     .eq("status", "approved")
     .eq("period", period);
 
-  if (error || !benefits || !benefits.length) {
-    alert("Neexistují žádné schválené benefity.");
-    return;
-  }
-
-  // 2️⃣ vytvoříme SPF distribuce
   for (const b of benefits) {
-
-    const auditString =
-      `${spfId}|${b.id}|${b.member_id}|${b.crx_awarded}|${Date.now()}`;
-
-    const hashBuf = await crypto.subtle.digest(
-      "SHA-256",
-      new TextEncoder().encode(auditString)
-    );
-
-    const auditHash = [...new Uint8Array(hashBuf)]
-      .map(b => b.toString(16).padStart(2,"0"))
-      .join("");
-
     await supabase.from("spf_distributions").insert({
       spf_period_id: spfId,
       benefit_result_id: b.id,
       member_id: b.member_id,
       crx_amount: b.crx_awarded,
-      audit_hash: auditHash,
+      audit_hash: crypto.randomUUID(),
       source: "spf.html"
     });
   }
 
-  alert("SPF bylo úspěšně rozděleno.\nAuditní stopa je uzavřena.");
+  // 🔒 KLÍČOVÝ KROK – UZAVŘENÍ OBDOBÍ
+  await supabase
+    .from("spf_periods")
+    .update({
+      status: "distributed",
+      decided_at: new Date().toISOString()
+    })
+    .eq("id", spfId);
 
+  alert("SPF bylo rozděleno a období bylo auditně uzavřeno.");
   loadSPF();
 };
 
 
+
 /* ================================
-   AUDIT → PRINT PAGE
+   PDF – ROZHODNUTÍ SPF
 ================================ */
-window.openAuditSPF = (period) => {
-  window.open(
-    `/audit-print.html?type=spf&period=${encodeURIComponent(period)}`,
-    "_blank"
+window.pdfSPF = () => {
+  const table = document.getElementById("spf-table");
+  if (!table) return alert("Tabulka nenalezena.");
+  openPdfWindow("AYAS-7 · Rozhodnutí SPF", table.outerHTML);
+};
+
+/* ================================
+   PDF – AUDIT ROZDĚLENÍ SPF
+================================ */
+window.openSPFDistributionAudit = async () => {
+
+  if (!window.selectedPeriod) {
+    alert("Není zvoleno období.");
+    return;
+  }
+
+  const { data } = await supabase
+    .from("v_spf_distribution_export")
+    .select("*")
+    .eq("period", window.selectedPeriod)
+    .order("member_name");
+
+  if (!data || !data.length) {
+    alert("Žádná data pro export.");
+    return;
+  }
+
+  let rows = "";
+  data.forEach(r => {
+    rows += `
+      <tr>
+        <td>${r.member_name}</td>
+        <td>${r.member_email}</td>
+        <td>${r.career_level}</td>
+        <td style="text-align:right">${r.matching_bonus_crx}</td>
+        <td style="text-align:right">${r.sources_count}</td>
+      </tr>
+    `;
+  });
+
+  openPdfWindow(
+    "Audit rozdělení SPF a matching bonusů – " + window.selectedPeriod,
+    `<table>
+      <tr>
+        <th>Člen</th><th>E-mail</th><th>Kariéra</th>
+        <th>MB (CRX)</th><th>Zdrojů</th>
+      </tr>
+      ${rows}
+     </table>`
   );
 };
+
+/* ================================
+   PDF OKNO
+================================ */
+function openPdfWindow(title, content) {
+  const win = window.open("", "_blank", "width=900,height=1200");
+  win.document.write(`
+    <html>
+    <head>
+      <title>${title}</title>
+      <style>
+        body{font-family:Segoe UI,Arial;padding:40px}
+        table{width:100%;border-collapse:collapse}
+        th,td{border:1px solid #ccc;padding:6px;font-size:12px}
+        th{background:#f3f4f6}
+      </style>
+    </head>
+    <body>
+      <h1>${title}</h1>
+      ${content}
+      <p style="margin-top:20px;font-size:11px;color:#555">
+        Interní auditní dokument družstva. Nezakládá právní nárok.
+      </p>
+    </body>
+    </html>
+  `);
+  win.document.close();
+}
 
 /* ================================
    INIT
 ================================ */
 loadSPF();
-</script>
-<script>
-/* =========================================================
-   PDF – ROZHODNUTÍ SPF (STEJNÁ LOGIKA JAKO ADMIN)
-   ========================================================= */
-function pdfSPF() {
-  const table = document.getElementById("spf-table");
-
-const rows = table.querySelectorAll("tbody tr");
-if (!rows.length) {
-  alert("Neexistuje žádné SPF období pro export.");
-  return;
-}
-
-
-  if (!table) {
-    alert("Tabulka SPF nebyla nalezena.");
-    return;
-  }
-
-  // KLÍČOVÉ – převod DOM → HTML STRING
-  const tableHtml = table.outerHTML;
-
-  openPdfWindow(
-    "AYAS-7 · Rozhodnutí SPF",
-    tableHtml
-  );
-}
-</script>
-<script>
-function openPdfWindow(title, contentHtml) {
-  const win = window.open("", "_blank", "width=900,height=1200");
-
-  if (!win) {
-    alert("Nelze otevřít PDF okno. Povol vyskakovací okna.");
-    return;
-  }
-
-  win.document.write(`
-    <html>
-      <head>
-        <title>${title}</title>
-        <style>
-          body {
-            font-family: Segoe UI, Arial, sans-serif;
-            padding: 40px;
-            color: #111;
-          }
-          h1 {
-            font-size: 20px;
-            margin-bottom: 20px;
-          }
-          table {
-            width: 100%;
-            border-collapse: collapse;
-          }
-          th, td {
-            border: 1px solid #ccc;
-            padding: 8px;
-            font-size: 12px;
-          }
-          th {
-            background: #f3f4f6;
-          }
-        </style>
-      </head>
-      <body>
-        <h1>${title}</h1>
-        ${contentHtml}
-      </body>
-    </html>
-  `);
-
-  win.document.close();
-  win.focus();
-}
 </script>
 <script type="module">
 import { createClient } from
@@ -755,7 +793,6 @@ window.updateBenefitStatus = async (id, isActive) => {
 ================================ */
 document.addEventListener("DOMContentLoaded", loadBenefitStates);
 </script>
-
 
 </body>
 </html>
