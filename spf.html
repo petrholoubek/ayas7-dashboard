@@ -446,8 +446,6 @@ table td:nth-child(5){
   </div>
 
 </section>
-
-
 <script type="module">
 import { createClient } from
   "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
@@ -467,7 +465,7 @@ window.selectedPeriod = null;
    LOAD SPF OBDOBÍ
 ================================ */
 async function loadSPF() {
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from("spf_periods")
     .select("*")
     .order("period", { ascending: false });
@@ -475,15 +473,17 @@ async function loadSPF() {
   const tbody = document.getElementById("spf-periods");
   tbody.innerHTML = "";
 
-  if (!data || !data.length) {
+  if (error || !data || !data.length) {
     tbody.innerHTML =
       "<tr><td colspan='5'>Žádná SPF období</td></tr>";
     return;
   }
 
+  window.selectedPeriod = null;
+
   data.forEach(r => {
 
-    // automaticky nastavíme poslední uzavřené období
+    // automaticky bereme POSLEDNÍ UZAVŘENÉ období
     if (!window.selectedPeriod && r.status === "distributed") {
       window.selectedPeriod = r.period;
     }
@@ -548,10 +548,8 @@ async function loadSPF() {
   });
 }
 
-
-
 /* ================================
-   SPF ROZHODNUTÍ
+   SPF ROZHODNUTÍ (EDGE)
 ================================ */
 window.decideSPF = async (id, action) => {
   if (!confirm("Rozhodnutí bude auditně zaznamenáno. Pokračovat?")) return;
@@ -575,7 +573,8 @@ window.decideSPF = async (id, action) => {
 };
 
 /* ================================
-   SPF DISTRIBUCE
+   SPF DISTRIBUCE + UZAVŘENÍ
+   (VARIANTA A – DB FUNKCE)
 ================================ */
 window.distributeSPF = async (spfId, period) => {
 
@@ -592,11 +591,19 @@ window.distributeSPF = async (spfId, period) => {
 
   if (!confirm("Rozdělit SPF? Operace je auditně nevratná.")) return;
 
-  const { data: benefits } = await supabase
+  const session = (await supabase.auth.getSession()).data.session;
+  if (!session) return alert("Nejste přihlášen.");
+
+  const { data: benefits, error } = await supabase
     .from("benefit_results")
     .select("id, member_id, crx_awarded")
     .eq("status", "approved")
     .eq("period", period);
+
+  if (error || !benefits || !benefits.length) {
+    alert("Neexistují schválené benefity.");
+    return;
+  }
 
   for (const b of benefits) {
     await supabase.from("spf_distributions").insert({
@@ -609,20 +616,15 @@ window.distributeSPF = async (spfId, period) => {
     });
   }
 
-  // 🔒 KLÍČOVÝ KROK – UZAVŘENÍ OBDOBÍ
-  await supabase
-    .from("spf_periods")
-    .update({
-      status: "distributed",
-      decided_at: new Date().toISOString()
-    })
-    .eq("id", spfId);
+  // 🔒 ROZHODNUTÍ DRUŽSTVA – OFICIÁLNÍ UZAVŘENÍ
+  await supabase.rpc("close_spf_period", {
+    p_spf_id: spfId,
+    p_decided_by: session.user.email
+  });
 
-  alert("SPF bylo rozděleno a období bylo auditně uzavřeno.");
+  alert("SPF bylo rozděleno a období bylo rozhodnutím družstva uzavřeno.");
   loadSPF();
 };
-
-
 
 /* ================================
    PDF – ROZHODNUTÍ SPF
@@ -639,17 +641,17 @@ window.pdfSPF = () => {
 window.openSPFDistributionAudit = async () => {
 
   if (!window.selectedPeriod) {
-    alert("Není zvoleno období.");
+    alert("Neexistuje žádné uzavřené období.");
     return;
   }
 
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from("v_spf_distribution_export")
     .select("*")
     .eq("period", window.selectedPeriod)
     .order("member_name");
 
-  if (!data || !data.length) {
+  if (error || !data || !data.length) {
     alert("Žádná data pro export.");
     return;
   }
@@ -671,11 +673,14 @@ window.openSPFDistributionAudit = async () => {
     "Audit rozdělení SPF a matching bonusů – " + window.selectedPeriod,
     `<table>
       <tr>
-        <th>Člen</th><th>E-mail</th><th>Kariéra</th>
-        <th>MB (CRX)</th><th>Zdrojů</th>
+        <th>Člen</th>
+        <th>E-mail</th>
+        <th>Kariéra</th>
+        <th>MB (CRX)</th>
+        <th>Zdrojů</th>
       </tr>
       ${rows}
-     </table>`
+    </table>`
   );
 };
 
@@ -712,6 +717,8 @@ function openPdfWindow(title, content) {
 ================================ */
 loadSPF();
 </script>
+
+
 <script type="module">
 import { createClient } from
   "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
