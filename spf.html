@@ -501,7 +501,7 @@ async function loadSPF() {
             onclick="decideSPF('${r.id}','reject')">
             Zamítnout
           </button>
-          <button onclick="openAuditSPF('${r.period}')">
+          <button onclick="openSPFDistributionAudit()"
             Audit SPF (PDF)
           </button>
         </div>
@@ -516,7 +516,7 @@ async function loadSPF() {
             style="background:#0f172a;color:#fff">
             🔒 Rozdělit SPF
           </button>
-          <button onclick="openAuditSPF('${r.period}')">
+          <button onclick="openSPFDistributionAudit()">
             Audit SPF (PDF)
           </button>
         </div>
@@ -529,7 +529,7 @@ async function loadSPF() {
           <span style="color:#22c55e;font-weight:600">
             🟢 SPF uzavřeno
           </span>
-          <button onclick="openAuditSPF('${r.period}')">
+          <button onclick="openSPFDistributionAudit()">
             Audit SPF (PDF)
           </button>
         </div>
