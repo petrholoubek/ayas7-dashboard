@@ -814,35 +814,42 @@ async function loadMemberCareerSummary(memberId) {
     "—"; // orientační (zatím záměrně prázdné)
 
   /* --- AKTUÁLNÍ KARIÉRA --- */
-  const { data: career } = await supabase
-    .from("member_career_history")
-    .select(`
-      valid_from,
-      note,
-      approved_by,
-      career_roles (
-        code,
-        name
-      )
-    `)
-    .eq("member_id", memberId)
-    .order("valid_from", { ascending: false })
-    .limit(1);
+const { data: career } = await supabase
+  .from("member_career_history")
+  .select("valid_from, note, approved_by, career_role_id")
+  .eq("member_id", memberId)
+  .order("valid_from", { ascending: false })
+  .limit(1);
 
-  if (career && career.length) {
-    const c = career[0];
-    document.getElementById("career-current-role").innerText =
-      `${c.career_roles.code} – ${c.career_roles.name}`;
-    document.getElementById("career-valid-from").innerText =
-      new Date(c.valid_from).toLocaleDateString();
-    document.getElementById("career-approved-by").innerText =
-      c.approved_by ?? "—";
-  } else {
-    document.getElementById("career-current-role").innerText = "—";
-    document.getElementById("career-valid-from").innerText = "—";
-    document.getElementById("career-approved-by").innerText = "—";
+if (career && career.length) {
+  const c = career[0];
+
+  let roleLabel = "—";
+
+  if (c.career_role_id) {
+    const { data: role } = await supabase
+      .from("career_roles")
+      .select("code, name")
+      .eq("id", c.career_role_id)
+      .single();
+
+    if (role) {
+      roleLabel = `${role.code} – ${role.name}`;
+    }
   }
+
+  document.getElementById("career-current-role").innerText = roleLabel;
+  document.getElementById("career-valid-from").innerText =
+    new Date(c.valid_from).toLocaleDateString();
+  document.getElementById("career-approved-by").innerText =
+    c.approved_by ?? "—";
+
+} else {
+  document.getElementById("career-current-role").innerText = "—";
+  document.getElementById("career-valid-from").innerText = "—";
+  document.getElementById("career-approved-by").innerText = "—";
 }
+
 
 /* ===============================
    APPROVE CAREER ROLE
