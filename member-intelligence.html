@@ -354,6 +354,15 @@ body {
       </table>
     </div>
 
+<div class="card">
+  <h3>Výběr člena</h3>
+
+  <select id="member-select" style="width:100%;padding:8px">
+    <option value="">— vyber člena —</option>
+  </select>
+</div>
+
+
     <!-- ===== AKTUÁLNÍ KARIÉRNÍ STAV ===== -->
     <div class="subcard">
       <div class="subcard-head">
@@ -842,6 +851,33 @@ async function loadMemberCareerSummary(memberId) {
 }
 
 /* ===============================
+   LOAD MEMBERS LIST
+================================ */
+async function loadMembersList() {
+  const { data, error } = await supabase
+    .from("members_data")
+    .select("id, email, full_name")
+    .order("id");
+
+  if (error || !data) {
+    console.error(error);
+    return;
+  }
+
+  const select = document.getElementById("member-select");
+  select.innerHTML = `<option value="">— vyber člena —</option>`;
+
+  data.forEach(m => {
+    select.insertAdjacentHTML(
+      "beforeend",
+      `<option value="${m.id}">
+        ${m.full_name ?? m.email} (ID ${m.id})
+      </option>`
+    );
+  });
+}
+
+/* ===============================
    APPROVE CAREER ROLE
 ================================ */
 window.approveCareerRole = async () => {
@@ -902,8 +938,22 @@ window.approveCareerRole = async () => {
    INIT
 ================================ */
 document.addEventListener("DOMContentLoaded", () => {
+
+  loadMembersList();
   loadCareerRoles();
-  loadMemberCareerSummary(1); // 🔧 TEST – pak nahradíš výběrem člena
+
+  const memberSelect =
+    document.getElementById("member-select");
+
+  if (memberSelect) {
+    memberSelect.addEventListener("change", e => {
+      const memberId = e.target.value;
+      if (memberId) {
+        loadMemberCareerSummary(Number(memberId));
+      }
+    });
+  }
+
 });
 </script>
 
