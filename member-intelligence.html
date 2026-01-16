@@ -765,12 +765,12 @@ window.supabase = supabase;
 let currentMemberId = null;
 
 /* ===============================
-   LOAD CAREER ROLES (SELECT)
+   LOAD CAREER ROLES (REFERENCE)
 ================================ */
 async function loadCareerRoles() {
   const { data, error } = await supabase
     .from("career_roles")
-    .select("id, code, name, max_matching_percent")
+    .select("code, name, max_matching_percent")
     .eq("is_active", true)
     .order("max_matching_percent");
 
@@ -782,7 +782,7 @@ async function loadCareerRoles() {
   data.forEach(r => {
     select.insertAdjacentHTML(
       "beforeend",
-      `<option value="${r.id}">
+      `<option value="${r.code}">
         ${r.code} – ${r.name} (${r.max_matching_percent}%)
       </option>`
     );
@@ -795,7 +795,7 @@ async function loadCareerRoles() {
 async function loadMemberCareerSummary(memberId) {
   currentMemberId = memberId;
 
-  /* --- SÍŤ --- */
+  /* --- SÍŤ (ZATÍM JEDNODUCHÉ) --- */
   const { data: net } = await supabase
     .from("member_network")
     .select("member_id")
@@ -805,36 +805,33 @@ async function loadMemberCareerSummary(memberId) {
     net?.length ?? "0";
 
   document.getElementById("net-total").innerText =
-    net?.length ?? "0"; // můžeš nahradit view
+    net?.length ?? "0";
 
   document.getElementById("net-depth").innerText =
     net?.length ? "1+" : "0";
 
   document.getElementById("net-suggested-role").innerText =
-    "—"; // orientační (zatím záměrně prázdné)
+    "—";
 
   /* --- AKTUÁLNÍ KARIÉRA --- */
   const { data: career } = await supabase
     .from("member_career_history")
-    .select(`
-      valid_from,
-      note,
-      approved_by,
-      career_roles (
-        code,
-        name
-      )
-    `)
+    .select("career_level, valid_from, approved_by")
     .eq("member_id", memberId)
     .order("valid_from", { ascending: false })
     .limit(1);
 
   if (career && career.length) {
     const c = career[0];
+
     document.getElementById("career-current-role").innerText =
-      `${c.career_roles.code} – ${c.career_roles.name}`;
+      c.career_level ?? "—";
+
     document.getElementById("career-valid-from").innerText =
-      new Date(c.valid_from).toLocaleDateString();
+      c.valid_from
+        ? new Date(c.valid_from).toLocaleDateString()
+        : "—";
+
     document.getElementById("career-approved-by").innerText =
       c.approved_by ?? "—";
   } else {
@@ -854,12 +851,13 @@ window.approveCareerRole = async () => {
     return;
   }
 
-  const roleId =
+  const careerLevel =
     document.getElementById("career-role-select").value;
+
   const note =
     document.getElementById("career-decision-note").value.trim();
 
-  if (!roleId) {
+  if (!careerLevel) {
     alert("Vyber kariérní pozici.");
     return;
   }
@@ -883,10 +881,11 @@ window.approveCareerRole = async () => {
     .from("member_career_history")
     .insert({
       member_id: currentMemberId,
-      career_role_id: roleId,
-      valid_from: new Date().toISOString(),
+      career_level: careerLevel,
+      valid_from: new Date().toISOString().slice(0,10),
       approved_by: session.user.id,
-      note: note
+      note: note,
+      source: "member-intelligence"
     });
 
   if (error) {
@@ -903,11 +902,11 @@ window.approveCareerRole = async () => {
    INIT
 ================================ */
 document.addEventListener("DOMContentLoaded", () => {
-  loadCareerRoles();   // ⬅️ tohle MUSÍ běžet vždy
-  // loadMemberCareerSummary(1); ❌ SMAZAT
+  loadCareerRoles();
+  loadMemberCareerSummary(1); // 🔧 TEST – pak nahradíš výběrem člena
 });
-
 </script>
+
 
 </body>
 </html>
