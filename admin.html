@@ -1,23 +1,21 @@
 <!doctype html>
 <html lang="cs">
 <head>
-<meta charset="utf-8"/>
-<title>AYAS-7 Engine • Admin</title>
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
-<!-- FAVICON / PWA -->
-  <link rel="icon" type="image/png" sizes="192x192" href="/ayas7-192.png">
-  <link rel="icon" type="image/png" sizes="512x512" href="/ayas7-512.png">
-  <link rel="apple-touch-icon" href="/ayas7-192.png">
-  <meta name="theme-color" content="#020617">
-<script type="module" src="./assets/js/gate.js"></script>
+<meta charset="utf-8">
+<title>AYAS-7 · Admin</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
 <style>
 :root{
   --bg:#020617;
-  --card:#0f172acc;
-  --border:#94a3b833;
+  --panel:#0b1222;
+  --panel-soft:#0f172acc;
+  --border:#1e293b;
   --text:#e5e7eb;
   --muted:#94a3b8;
+
   --green:#22c55e;
+  --blue:#38bdf8;
   --yellow:#facc15;
 }
 
@@ -26,1587 +24,344 @@
 html,body{
   margin:0;
   padding:0;
-  background:var(--bg);
-  font-family:"Segoe UI",Tahoma,Verdana,sans-serif;
+  background:radial-gradient(1200px 600px at top,#020617,#000);
   color:var(--text);
+  font-family:"Segoe UI",Tahoma,Verdana,sans-serif;
 }
 
-/* =========================================================
-   ADMIN TOPBAR (SAFE, ISOLATED)
-   ========================================================= */
-.admin-topbar{
-  background:linear-gradient(to right,#060b16,#0a1a33);
-  border-bottom:1px solid var(--border);
-}
+a{color:inherit;text-decoration:none}
 
-.admin-topbar-inner{
-  max-width:1500px;
-  margin:auto;
-  padding:10px 22px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:20px;
-}
-
-.admin-brand{
+/* === WRAPPER === */
+.admin-wrap{
+  max-width:1200px;
+  margin:0 auto;
+  padding:28px 20px 40px;
   display:flex;
   flex-direction:column;
-  gap:2px;
+  gap:26px;
 }
-.admin-brand-main{
-  font-size:16px;
+
+/* === HEADER === */
+.admin-header{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+}
+
+.admin-title{
+  font-size:26px;
   font-weight:600;
-  letter-spacing:.06em;
+  letter-spacing:.04em;
 }
-.admin-brand-sub{
-  font-size:10px;
-  letter-spacing:.18em;
+
+.admin-sub{
+  font-size:13px;
   color:var(--muted);
 }
 
-.admin-nav{
-  flex:1;
-  display:flex;
-  justify-content:center;
-}
-.admin-nav-list{
-  list-style:none;
-  display:flex;
-  gap:20px;
-  padding:0;
-  margin:0;
-}
-.admin-nav-link{
-  font-size:12px;
-  color:#cbd5f5;
-  text-decoration:none;
-}
-.admin-nav-link:hover,
-.admin-nav-link.active{
-  color:#fff;
-  font-weight:600;
+/* === QUICK ACTIONS === */
+.quick-actions{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:18px;
 }
 
-.admin-topbar-right{
-  display:flex;
-  align-items:center;
-  gap:12px;
-}
-.admin-logout{
-  background:#020617;
-  border:1px solid var(--border);
-  color:var(--text);
-  padding:5px 12px;
-  border-radius:999px;
-  font-size:11px;
-  cursor:pointer;
-}
-.admin-logout:hover{
-  border-color:var(--green);
-  color:var(--green);
-}
-.admin-nav-link{
+.qa-box{
   position:relative;
+  background:linear-gradient(180deg,#0b1222,#020617);
+  border:1px solid var(--border);
+  border-radius:20px;
+  padding:22px;
+  transition:transform .25s ease, box-shadow .25s ease;
 }
 
-.admin-nav-link::after{
+.qa-box:hover{
+  transform:translateY(-3px);
+  box-shadow:0 18px 40px rgba(0,0,0,.45);
+}
+
+.qa-led{
+  position:absolute;
+  top:16px;
+  right:16px;
+  width:10px;
+  height:10px;
+  border-radius:50%;
+}
+
+.qa-title{
+  font-size:15px;
+  font-weight:600;
+  margin-bottom:6px;
+}
+
+.qa-desc{
+  font-size:12px;
+  color:var(--muted);
+  margin-bottom:14px;
+}
+
+.qa-cta{
+  font-size:12px;
+  font-weight:600;
+  letter-spacing:.02em;
+}
+
+/* COLORS */
+.qa-spf{border-color:var(--yellow)}
+.qa-spf .qa-led{background:var(--yellow);box-shadow:0 0 14px var(--yellow)}
+
+.qa-member{border-color:var(--blue)}
+.qa-member .qa-led{background:var(--blue);box-shadow:0 0 14px var(--blue)}
+
+.qa-audit{border-color:var(--green)}
+.qa-audit .qa-led{background:var(--green);box-shadow:0 0 14px var(--green)}
+
+/* === STATUS PANELS === */
+.stats{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:16px;
+}
+
+.stat{
+  position:relative;
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:18px 20px;
+}
+
+.stat::after{
   content:"";
   position:absolute;
-  left:0;
-  bottom:-4px;
-  width:0;
-  height:2px;
-  border-radius:999px;
-  background:linear-gradient(to right,#22c55e,#4ade80);
-  transition:width .22s ease;
-}
-
-.admin-nav-link:hover::after,
-.admin-nav-link.active::after{
-  width:100%;
-}
-.admin-led{
+  top:14px;
+  right:14px;
   width:8px;
   height:8px;
   border-radius:50%;
   background:var(--green);
-  box-shadow:0 0 8px var(--green);
-  display:inline-block;
+  box-shadow:0 0 12px var(--green);
 }
 
-
-/* =========================================================
-   ORIGINAL ADMIN LAYOUT (UNCHANGED)
-   ========================================================= */
-.app{
-  max-width:1500px;
-  margin:auto;
-  padding:22px;
-  display:flex;
-  flex-direction:column;
-  gap:18px;
-}
-
-.header{
-  display:flex;
-  flex-direction:column;
-  gap:4px;
-}
-
-.ng{
-  display:flex;
-  align-items:center;
-  gap:8px;
-  font-size:11px;
-  color:var(--muted);
-  letter-spacing:1.4px
-}
-.led{
-  width:10px;
-  height:10px;
-  border-radius:50%;
-  background:var(--green);
-  box-shadow:0 0 8px var(--green)
-}
-.engine{font-size:26px;font-weight:600}
-.admin{font-size:13px}
-.process{font-size:11px;color:var(--muted)}
-
-.card{
-  background:var(--card);
-  border:1px solid var(--border);
-  border-radius:14px;
-  padding:16px;
-  display:flex;
-  flex-direction:column;
-  gap:12px;
-}
-
-h2{margin:0;font-size:14px;letter-spacing:1px}
-p{margin:0;font-size:12px;color:var(--muted)}
-
-table{width:100%;border-collapse:collapse;font-size:12px}
-th,td{padding:8px;border-bottom:1px solid var(--border);text-align:left}
-th{font-size:11px;color:var(--muted)}
-
-.actions{display:flex;gap:6px;flex-wrap:wrap}
-button{
-  background:#020617;
-  border:1px solid var(--border);
-  color:var(--text);
-  padding:5px 10px;
-  font-size:11px;
-  border-radius:8px;
-  cursor:pointer
-}
-button.approve{border-color:var(--green);color:var(--green)}
-button.warn{border-color:var(--yellow);color:var(--yellow)}
-.status-pending{color:var(--yellow)}
-.status-approved,.status-active{color:var(--green)}
-
-input{
-  background:#020617;
-  border:1px solid var(--border);
-  color:var(--text);
-  padding:5px 8px;
-  border-radius:6px;
-  font-size:11px;
-}
-
-.footer{
-  text-align:center;
-  font-size:10px;
-  color:var(--muted)
-}
-</style>
-</head>
-
-<body>
-<div id="user-bar" style="
-  position:fixed;
-  top:12px;
-  right:16px;
-  z-index:9999;
+.stat-title{
   font-size:12px;
-  color:#e5e7eb;
-  background:rgba(2,6,23,0.85);
-  border:1px solid rgba(148,163,184,0.3);
-  padding:6px 12px;
-  border-radius:999px;
-  display:none;
-">
-  Přihlášen: <span id="user-email"></span>
-  · <a href="#" id="logout" style="color:#4fa3ff;text-decoration:none;">Odhlásit</a>
-</div>
-<!-- ===== TOP NAVIGATION ===== -->
-<header class="admin-topbar">
-  <div class="admin-topbar-inner">
-
-    <div class="admin-brand">
-      <div class="admin-brand-main">AYAS-7 Engine</div>
-      <div class="admin-brand-sub">ADMIN CONTROL</div>
-    </div>
-
-    <nav class="admin-nav">
-      <ul class="admin-nav-list">
-        <li><a href="dashboard.html" class="admin-nav-link">Home</a></li>
-        <li><a href="members.html" class="admin-nav-link">Členská sekce</a></li>
-        <li><a href="performance.html" class="admin-nav-link">Výkon &amp; výnos</a></li>
-        <li><a href="admin.html" class="admin-nav-link active">Admin</a></li>
-      </ul>
-    </nav>
-
-    <div class="admin-topbar-right">
-  <button class="admin-logout" id="logoutBtn">
-    <span class="admin-led"></span>
-    Logout
-  </button>
-</div>
-
-  </div>
-</header>
-
-</body>
-</html>
-
-
-<!doctype html>
-<html lang="cs">
-<head>
-<meta charset="utf-8"/>
-<title>AYAS-7 Engine • Admin</title>
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
-
-<style>
-:root{
-  --bg:#020617;
-  --card:#0f172acc;
-  --border:#94a3b833;
-  --text:#e5e7eb;
-  --muted:#94a3b8;
-  --green:#22c55e;
-  --yellow:#facc15;
+  color:var(--muted);
+  margin-bottom:6px;
 }
-*{box-sizing:border-box}
-html,body{
-  margin:0;padding:0;background:var(--bg);
-  font-family:"Segoe UI",Tahoma,Verdana,sans-serif;
-  color:var(--text);
+
+.stat-value{
+  font-size:22px;
+  font-weight:600;
 }
-.app{
-  max-width:1500px;
-  margin:auto;
+
+/* === SECTIONS === */
+.section{
+  background:var(--panel-soft);
+  border:1px solid var(--border);
+  border-radius:22px;
   padding:22px;
-  display:flex;
-  flex-direction:column;
-  gap:18px;
 }
 
-/* HEADER */
-.header{display:flex;flex-direction:column;gap:4px}
-.ng{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--muted);letter-spacing:1.4px}
-.led{width:10px;height:10px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green)}
-.engine{font-size:26px;font-weight:600}
-.admin{font-size:13px}
-.process{font-size:11px;color:var(--muted)}
-
-/* CARD */
-.card{
-  background:var(--card);
-  border:1px solid var(--border);
-  border-radius:14px;
-  padding:16px;
-  display:flex;
-  flex-direction:column;
-  gap:12px;
-}
-.card-table-wrapper {
-  max-height: 420px;
-  overflow-y: auto;
+.section h2{
+  margin:0 0 6px;
+  font-size:16px;
 }
 
-
-h2{margin:0;font-size:14px;letter-spacing:1px}
-p{margin:0;font-size:12px;color:var(--muted)}
-
-/* TABLE */
-table{width:100%;border-collapse:collapse;font-size:12px}
-th,td{padding:8px;border-bottom:1px solid var(--border);text-align:left}
-th{font-size:11px;color:var(--muted)}
-
-/* BUTTONS */
-.actions{display:flex;gap:6px;flex-wrap:wrap}
-button{
-  background:#020617;
-  border:1px solid var(--border);
-  color:var(--text);
-  padding:5px 10px;
-  font-size:11px;
-  border-radius:8px;
-  cursor:pointer
-}
-button.approve{border-color:var(--green);color:var(--green)}
-button.warn{border-color:var(--yellow);color:var(--yellow)}
-.status-pending{color:var(--yellow)}
-.status-approved,.status-active{color:var(--green)}
-
-input{
-  background:#020617;
-  border:1px solid var(--border);
-  color:var(--text);
-  padding:5px 8px;
-  border-radius:6px;
-  font-size:11px;
+.section p{
+  margin:0 0 14px;
+  font-size:12px;
+  color:var(--muted);
 }
 
-.footer{text-align:center;font-size:10px;color:var(--muted)}
-</style>
-</head>
-
-<body>
-<div class="app">
-
-<!-- HEADER -->
-<div class="header">
-  <div class="ng"><span class="led"></span><span>Next Generation</span></div>
-  <div class="engine">AYAS-7 Engine</div>
-  <div class="admin">Admin – úřední deska</div>
-  <div class="process">Rozhodovací, administrativní a auditní procesy</div>
-</div>
-
-<!-- OFICIÁLNÍ AUDIT -->
-<div class="card">
-  <button onclick="generateOfficialAudit()">
-    GENEROVAT OFICIÁLNÍ AUDIT (PDF)
-  </button>
-</div>
-
-<!-- SCHVALOVÁNÍ PŘÍSTUPU -->
-<div class="card">
-  <h2>SCHVALOVÁNÍ PŘÍSTUPU</h2>
-  <p>Nově registrovaní uživatelé čekající na schválení.</p>
-
-  <div class="card-table-wrapper">
-    <table>
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Email</th>
-          <th>Datum registrace</th>
-          <th>Stav</th>
-          <th>Akce</th>
-        </tr>
-      </thead>
-      <tbody id="pendingUsersTable"></tbody>
-    </table>
-  </div>
-</div>
-
-
-<!-- ČLENOVÉ -->
-<div class="card">
-<h2>ČLENOVÉ DRUŽSTVA</h2>
-<p>Schvalování členství.</p>
-<table>
-<thead>
-<tr><th>ID</th><th>Člen</th><th>Vklad</th><th>WW-KEY</th><th>Stav</th><th>Akce</th></tr>
-</thead>
-<tbody id="membersTable"></tbody>
-</table>
-<div class="actions">
-<button onclick="pdfMembers()">PDF – členové</button>
-</div>
-</div>
-
-<!-- CERTIFIKÁTY -->
-<div class="card">
-<h2>CERTIFIKÁTY</h2>
-<p>Vydané certifikáty.</p>
-<table>
-<thead>
-<tr>
-  <th>Certificate ID</th>
-  <th>Člen</th>
-  <th>WW-KEY</th>
-  <th>Vklad</th>
-  <th>Datum</th>
-</tr>
-
-</thead>
-<tbody id="certTable"></tbody>
-</table>
-<div class="actions">
-<button onclick="pdfCertificates()">PDF – certifikáty</button>
-</div>
-</div>
-
-<!-- OBCHODNÍCI -->
-<div class="card">
-<h2>OBCHODNÍ ZÁSTUPCI</h2>
-<p>Evidence a schvalování.</p>
-
-<div class="actions">
-<input id="aName" placeholder="Jméno">
-<input id="aEmail" placeholder="Email">
-<input id="aPhone" placeholder="Telefon">
-<button onclick="addAgent()">Přidat obchodníka</button>
-</div>
-
-<table>
-<thead>
-<tr><th>ID</th><th>Jméno</th><th>Email</th><th>Stav</th><th>Akce</th></tr>
-</thead>
-<tbody id="agentsTable"></tbody>
-</table>
-</div>
-
-<!-- PROMO KÓDY -->
-<div class="card">
-<h2>PROMO KÓDY</h2>
-<p>Přehled vygenerovaných kódů.</p>
-<table>
-<thead>
-<tr>
-  <th>Kód</th>
-  <th>Agent</th>
-  <th>Provize %</th>
-  <th>Použití</th>
-  <th>Stav</th>
-  <th>Datum</th>
-</tr>
-</thead>
-<tbody id="promoTable"></tbody>
-</table>
-
-<div class="actions">
-<button onclick="pdfPromo()">PDF – promo kódy</button>
-</div>
-</div>
-
-<!-- =========================================================
-     PROVIZE – PŘEHLED
-     ========================================================= -->
-<div class="card mt-6">
-  <div class="card-header flex justify-between items-center">
-    <div>
-      <h3>PROVIZE</h3>
-      <p class="muted">Přehled vypočtených provizí z promo kódů</p>
-    </div>    
-  </div>
-
-  <div class="card-body">
-    <table class="table">
-      <thead>
-        <tr>
-          <th>Promo kód</th>
-          <th>Obchodník</th>
-          <th>%</th>
-          <th>Vklad</th>
-          <th>Provize</th>
-          <th>Datum</th>
-        </tr>
-      </thead>
-      <tbody id="commissionTable">
-        <tr>
-          <td colspan="6">Zatím žádné provize</td>
-        </tr>
-      </tbody>
-    </table>
-<tbody id="commissionTable"></tbody>
-
-<div style="margin-top: 16px; display: flex; justify-content: flex-start;">
-  <button class="btn-secondary" onclick="pdfCommissions()">
-    PDF – provize
-  </button>
-</div>
-
-</div>
-
-<section class="card" style="margin-top:26px;">
-  <div class="card-inner">
-
-    <!-- ===== HLAVIČKA AYAS-7 S VÝSTRAŽNOU LED ===== -->
-    <div class="card-badge" style="
-      margin-bottom:10px;
-      padding-left:16px;
-      position:relative;
-    ">
-      <span class="card-badge-dot" style="
-  position:absolute;
-  left:6px;
-  top:50%;
-  transform:translateY(-50%);
-  width:6px;
-  height:6px;
-  border-radius:999px;
-  background:#22c55e;
-  box-shadow:
-    0 0 6px rgba(34,197,94,0.9),
-    0 0 14px rgba(34,197,94,0.8),
-    0 0 28px rgba(34,197,94,0.6);
-"></span>
-
-
-      AYAS-7 · výpočtová vrstva · Rozdělení členských benefitů ·
-      Interní auditní výstup podle WW-KEY a CRX
-    </div>
-
-    <!-- ===== TABULKA VÝSLEDKŮ ===== -->
-    <div class="members-table-wrap">
-      <table class="members-table" id="benefits-table">
-        <thead>
-          <tr>
-            <th>Období</th>
-            <th>Člen (UUID)</th>
-            <th>WW-KEY</th>
-            <th>CRX</th>
-            <th>Úroveň</th>
-            <th>PLX</th>
-            <th>CRX +</th>
-            <th>Poznámka</th>
-          </tr>
-        </thead>
-        <tbody id="benefits-results-body">
-          <tr>
-            <td colspan="8" style="text-align:center; color:#9ca3af;">
-              Načítám data…
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <!-- ===== PDF TLAČÍTKO – DOLE VLEVO ===== -->
-<div style="margin-top: 16px; display: flex; justify-content: flex-start;">
-  <button class="btn-secondary" onclick="pdfBenefits()">
-    PDF – rozdělení benefitů
-  </button>
-</div>
-
-
-<!-- ===== SPF – VÝPOČETNÍ MODUL ===== -->
-<div style="margin-top: 12px; display: flex; justify-content: flex-start;">
-  <a href="spf.html" style="text-decoration:none;">
-    <button class="btn-secondary" style="
-      display:flex;
-      align-items:center;
-      gap:8px;
-      border-color:#facc15;
-      color:#facc15;
-    ">
-      <span style="
-        width:8px;
-        height:8px;
-        border-radius:999px;
-        background:#facc15;
-        box-shadow:
-          0 0 6px rgba(250,204,21,0.9),
-          0 0 14px rgba(250,204,21,0.8),
-          0 0 28px rgba(250,204,21,0.6);
-      "></span>
-      SPF – síťový provizní fond
-    </button>
-  </a>
-</div>
-
-<!-- ===== ČLENSKÁ KARTA – INTERNÍ VÝJEZD ===== -->
-<div style="margin-top: 12px; display: flex; justify-content: flex-start;">
-  <a href="member-intelligence.html" style="text-decoration:none;">
-    <button class="btn-secondary" style="
-      display:flex;
-      align-items:center;
-      gap:8px;
-      border-color:#38bdf8;
-      color:#38bdf8;
-    ">
-      <span style="
-        width:8px;
-        height:8px;
-        border-radius:999px;
-        background:#38bdf8;
-        box-shadow:
-          0 0 6px rgba(56,189,248,0.9),
-          0 0 14px rgba(56,189,248,0.8),
-          0 0 28px rgba(56,189,248,0.6);
-      "></span>
-      Členská karta – interní výjezd
-    </button>
-  </a>
-</div>
-
-
-    <!-- ===== PATIČKA BLOKU ===== -->
-    <div class="muted" style="margin-top:10px;">
-      AYAS-7 · interní audit-ready administrativní výstup
-    </div>
-
-  </div>
-</section>
-
-
-<div class="footer">AYAS-7 • interní audit-ready administrační velín</div>
-</div>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-<script>
-/* =========================================================
-   GLOBÁLNÍ KONFIGURACE – MUSÍ BÝT PRVNÍ
-   ========================================================= */
-
-const SUPABASE_URL =
-  "https://azfrniqqtetoqploxwgq.supabase.co";
-
-const SUPABASE_ANON_KEY =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF6ZnJuaXFxdGV0b3FwbG94d2dxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3MzQ1OTYsImV4cCI6MjA4MzMxMDU5Nn0.QchmzNhs8owd6pkjZCk04u6PJoJ2Bhzz7oGV0KFyqdU";
-
-const READ_ENDPOINT_URL =
-  "https://azfrniqqtetoqploxwgq.supabase.co/functions/v1/smart-endpoint";
-
-/* =========================================================
-   SUPABASE CLIENT
-   ========================================================= */
-
-const supabaseClient = supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_ANON_KEY
-);
-
-/* ========================================================= */
-</script>
-<script>
-/* =========================================================
-   DATA – NA TOM ZÁVISÍ PDF (NEZASAHOVAT)
-   ========================================================= */
-let DATA = {
-  members: [],
-  certificates: [],
-  agents: [],
-  promo: [],
-  commissions: []
-};
-
-/* =========================================================
-   NAČTENÍ DAT PRO ADMINA
-   ========================================================= */
-async function loadAll() {
-  try {
-    const r = await fetch(READ_ENDPOINT_URL, {
-      method: "POST",
-      headers: {
-        "Authorization": "Bearer " + SUPABASE_ANON_KEY,
-        "apikey": SUPABASE_ANON_KEY,
-        "Content-Type": "application/json"
-      }
-    });
-
-    if (!r.ok) {
-      console.error("READ endpoint error:", await r.text());
-      return;
-    }
-
-    const json = await r.json();
-
-    /* =====================================================
-       SMART-ENDPOINT → DATA.members
-       ===================================================== */
-DATA.members = (json.payments || []).map(p => ({
-  id: p.member_id,
-  payment_id: p.payment_id,
-  account_id: p.account_id,
-  name: p.member_name,
-  email: p.email,
-  deposit: p.amount,
-  ww_key: p.ww_key_granted,
-  status: p.member_status,
-  paid: p.payment_status === "confirmed",
-  certificate_uid: p.certificate_uid ?? null
-}));
-
-/* =====================
-   SMART-ENDPOINT → DATA.certificates
-   ===================== */
-DATA.certificates = (json.payments || [])
-  .filter(p => p.certificate_uid)
-  .map(p => ({
-    certificate_uid: p.certificate_uid,
-    member_name: p.member_name,
-    member_email: p.email,
-    ww_key: p.ww_key_granted,
-    amount: p.amount ?? 0,          // ⬅️ fallback
-    issued_at: p.confirmed_at
-  }));
-
-    renderMembersTable();
-renderCertificatesTable();
-
-} catch (err) {
-  console.error("loadAll failed:", err);
-}
-}
-
-
-/* =========================================================
-   VYKRESLENÍ TABULKY ČLENŮ
-   ========================================================= */
-function renderMembersTable() {
-  if (!window.membersTable) return;
-
-  membersTable.innerHTML = DATA.members.map(m => {
-
-    let actionHtml = "—";
-
-    // čeká na potvrzení platby
-    if (!m.paid) {
-      actionHtml = `
-        <button onclick="confirmPayment(${m.id})">
-          Potvrdit platbu
-        </button>
-      `;
-    }
-
-    // zaplaceno + má WW-KEY + nemá certifikát
-    if (m.paid && m.ww_key && !m.certificate_uid) {
-      actionHtml = `
-        <button onclick="issueCertificate(${m.id})">
-          Vydat certifikát
-        </button>
-      `;
-    }
-
- // certifikát už vydán
-if (m.certificate_uid) {
-  actionHtml = `
-    <button
-      onclick="openCertificate('${m.certificate_uid}')"
-      style="background:#16a34a;color:#fff">
-      Zobrazit certifikát
-    </button>
-  `;
-}
-
-
-    return `
-<tr>
-  <td>${m.id}</td>
-
-  <td>
-    <div style="display:flex;align-items:center;gap:10px">
-      <span class="led ${m.paid ? 'green' : 'yellow'}"></span>
-      <div>
-        <b>${m.name}</b><br>
-        <small>${m.paid ? 'Platba potvrzena' : 'Čeká na potvrzení platby'}</small>
-      </div>
-    </div>
-  </td>
-
-  <td>${(m.deposit || 0).toLocaleString("cs-CZ")} CZK</td>
-  <td>${m.ww_key ?? "—"}</td>
-  <td>${m.status ?? "—"}</td>
-  <td>${actionHtml}</td>
-</tr>`;
-  }).join("");
-}
-
-function renderCertificatesTable() {
-  if (!window.certTable) return;
-
-  certTable.innerHTML = DATA.certificates.map(c => `
-<tr>
-  <td>${c.certificate_uid}</td>
-  <td>${c.member_name}</td>
-  <td>${c.ww_key}</td>
-  <td>${c.amount.toLocaleString("cs-CZ")} CZK</td>
-  <td>${new Date(c.issued_at).toLocaleDateString("cs-CZ")}</td>
-</tr>
-`).join("");
-}
-
-async function confirmPayment(memberId) {
-  if (!confirm("Opravdu potvrdit platbu tohoto člena?")) return;
-
-  const r = await fetch(CONFIRM_PAYMENT, {
-    method: "POST",
-    headers: {
-      "Authorization": "Bearer " + SUPABASE_ANON_KEY,
-      "apikey": SUPABASE_ANON_KEY,
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({ member_id: memberId })
-  });
-
-  if (!r.ok) {
-    alert("Chyba při potvrzení platby");
-    console.error(await r.text());
-    return;
-  }
-
- 
-}
-
-/* =========================================================
-   PROMO KÓDY – NAČTENÍ
-   ========================================================= */
-async function loadPromoCodes() {
-  const { data, error } = await supabaseClient
-    .from("promo_codes")
-    .select(`
-      id,
-      code,
-      commission_rate,
-      is_active,
-      created_at,
-      agent:agent_id (
-        id,
-        name
-      )
-    `)
-    .order("created_at", { ascending: false });
-
-  if (error) {
-    console.error("loadPromoCodes error:", error);
-    return;
-  }
-
-  DATA.promo = data || [];
-  renderPromoTable();
-}
-
-/* =========================================================
-   PROMO KÓDY – VYKRESLENÍ
-   ========================================================= */
-function renderPromoTable() {
-  if (!window.promoTable) return;
-
-  if (!DATA.promo.length) {
-    promoTable.innerHTML =
-      "<tr><td colspan='6'>Žádné promo kódy</td></tr>";
-    return;
-  }
-
-  promoTable.innerHTML = DATA.promo.map(p => `
-<tr>
-  <td><b>${p.code}</b></td>
-  <td>${p.agent?.name ?? "—"}</td>
-  <td>${(p.commission_rate * 100).toFixed(0)} %</td>
-  <td>—</td>
-  <td>${p.is_active ? "aktivní" : "neaktivní"}</td>
-  <td>${new Date(p.created_at).toLocaleDateString("cs-CZ")}</td>
-</tr>
-`).join("");
-}
-
-
-
-/* =========================================================
-   AKCE ADMINA – POTVRZENÍ PLATBY
-   ========================================================= */
-async function handleMemberAction(memberId, state) {
-  if (state !== "confirm-payment") return;
-
-  if (!confirm("Potvrdit platbu tohoto člena?")) return;
-
-  await fetch(CONFIRM_PAYMENT, {
-    method: "POST",
-    headers: {
-      "Authorization": "Bearer " + SUPABASE_ANON_KEY,
-      "apikey": SUPABASE_ANON_KEY,
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({ member_id: memberId })
-  });
-
-  
-}
-
-/* =========================================================
-   PDF FUNKCE – BEZE ZMĚNY
-   ========================================================= */
-function generateOfficialAudit() {
-  window.open("/audit-print.html?view=official&print=1", "_blank");
-}
-
-function getMemberName(id) {
-  const m = DATA.members.find(x => x.id === id);
-  return m ? m.name : "—";
-}
-
-/* =========================================================
-   INIT
-   ========================================================= */
-async function issueCertificate(memberId) {
-  if (!confirm("Opravdu vydat certifikát tomuto členovi?")) return;
-
-  const r = await fetch(
-    "https://azfrniqqtetoqploxwgq.supabase.co/functions/v1/issue-certificate",
-    {
-      method: "POST",
-      headers: {
-        "Authorization": "Bearer " + SUPABASE_ANON_KEY,
-        "apikey": SUPABASE_ANON_KEY,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ member_id: memberId })
-    }
-  );
-
-  const json = await r.json();
-
-  if (!r.ok) {
-    alert(json.error || "Chyba při vydání certifikátu");
-    return;
-  }
-
-  window.open(`/certificate.html?uid=${json.certificate_uid}`, "_blank");
-  
-}
-
-/* ⬇️⬇️⬇️ TUTO FUNKCI TAM TEĎ DOPLŇ ⬇️⬇️⬇️ */
-function openCertificate(uid) {
-  window.open(`/certificates/certificate.html?uid=${uid}`, "_blank");
-}
-/* =========================================================
-   SCHVALOVÁNÍ PŘÍSTUPU – NAČTENÍ ČEKAJÍCÍCH
-   ========================================================= */
-async function loadPendingUsers() {
-  const { data, error } = await supabaseClient
-    .from("member_accounts")
-    .select("id, user_id, created_at, status")
-    .eq("status", "pending")
-    .order("created_at", { ascending: true })
-    .limit(50);
-
-  if (error) {
-    console.error("loadPendingUsers error:", error);
-    return;
-  }
-
-  console.log("PENDING USERS:", data);
-
-  if (!window.pendingUsersTable) return;
-
-  pendingUsersTable.innerHTML = data.map(u => `
-    <tr>
-      <td>${u.id}</td>
-      <td>${u.user_id}</td>
-      <td>${new Date(u.created_at).toLocaleString("cs-CZ")}</td>
-      <td>
-        <button onclick="approveUser(${u.id})">Povolit</button>
-        <button onclick="rejectUser(${u.id})">Zamítnout</button>
-      </td>
-    </tr>
-  `).join("");
-}
-
-
-/* =========================================================
-   SCHVALOVÁNÍ / ZAMÍTNUTÍ UŽIVATELE
-   ========================================================= */
-async function approveUser(id) {
-  if (!confirm("Povolit přístup tomuto uživateli?")) return;
-
-  const { error } = await supabaseClient
-    .from("member_accounts")
-    .update({
-      status: "active"
-    })
-    .eq("id", id);
-
-  if (error) {
-    alert("Chyba při schvalování uživatele");
-    console.error(error);
-    return;
-  }
-
-  loadPendingUsers();
-  loadAll(); // ať se admin data ihned refreshnou
-}
-
-async function rejectUser(id) {
-  if (!confirm("Zamítnout přístup tomuto uživateli?")) return;
-
-  const { error } = await supabaseClient
-    .from("member_accounts")
-    .update({
-      status: "suspended"
-    })
-    .eq("id", id);
-
-  if (error) {
-    alert("Chyba při zamítnutí uživatele");
-    console.error(error);
-    return;
-  }
-
-  loadPendingUsers();
-}
-
-/* ⬇️⬇️⬇️ AŽ ÚPLNĚ POSLEDNÍ ŘÁDEK ⬇️⬇️⬇️ */
-
-
-</script>
-
-<script>
-async function addAgent() {
-  const name  = document.getElementById("aName").value.trim();
-  const email = document.getElementById("aEmail").value.trim();
-  const phone = document.getElementById("aPhone").value.trim();
-
-  if (!name || !email) {
-    alert("Vyplň jméno a email");
-    return;
-  }
-
-  const r = await fetch(
-    "https://azfrniqqtetoqploxwgq.supabase.co/functions/v1/create-agent",
-    {
-      method: "POST",
-      headers: {
-        "Authorization": "Bearer " + SUPABASE_ANON_KEY,
-        "apikey": SUPABASE_ANON_KEY,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        name,
-        email,
-        phone
-      })
-    }
-  );
-
-  const json = await r.json();
-
-  if (!r.ok) {
-    alert(json.error || "Chyba při vytváření obchodníka");
-    console.error(json);
-    return;
-  }
-
-  alert(
-    `Obchodník vytvořen\nPromo kód: ${json.promo_code}`
-  );
-
-  // vyčistit inputy
-  document.getElementById("aName").value = "";
-  document.getElementById("aEmail").value = "";
-  document.getElementById("aPhone").value = "";
-
-  // znovu načíst promo kódy
-  loadPromoCodes();
-}
-</script>
-
-<script>
-/* =========================================================
-   AYAS-7 • CLEAN HTML → PDF EXPORT
-   NO jsPDF • NO audit-print.html
-   ========================================================= */
-
-/* ===== VYTVOŘENÍ PDF OKNA ===== */
-function openPdfWindow(title, tableHtml) {
-  const w = window.open("", "_blank");
-
-  w.document.write(`
-<!DOCTYPE html>
-<html lang="cs">
-<head>
-<meta charset="UTF-8">
-<title>${title}</title>
-
-<style>
-@page { size: A4; margin: 20mm; }
-
-body{
-  font-family:"Segoe UI",Tahoma,Verdana,sans-serif;
-  font-size:11px;
-  color:#000;
-  line-height:1.45;
-}
-
-h1{
-  font-size:20px;
-  margin:0;
-}
-
-.sub{
-  font-size:11px;
-  margin-bottom:10px;
-}
-
-hr{
-  border:none;
-  border-top:1px solid #000;
-  margin:12px 0;
-}
-
+/* === TABLE === */
 table{
   width:100%;
   border-collapse:collapse;
-  font-size:10.5px;
+  font-size:12px;
 }
 
 th,td{
-  border:1px solid #000;
-  padding:4px 6px;
+  padding:10px;
+  border-bottom:1px solid var(--border);
   text-align:left;
 }
 
 th{
-  background:#f0f0f0;
+  font-size:11px;
+  color:var(--muted);
 }
 
+/* === CERTIFICATION BUTTON === */
+.btn{
+  display:inline-block;
+  padding:8px 14px;
+  font-size:12px;
+  border-radius:999px;
+  border:1px solid var(--border);
+}
+
+.btn-green{
+  border-color:var(--green);
+  color:var(--green);
+}
+
+/* === AUDIT PANEL === */
+.audit-box{
+  border:1px dashed var(--blue);
+  border-radius:16px;
+  padding:18px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+/* === FOOTER === */
 .footer{
-  margin-top:18px;
-  font-size:10px;
-  border-top:1px solid #000;
-  padding-top:6px;
-}
-
-@media print{
-  button{display:none;}
+  text-align:center;
+  font-size:11px;
+  color:var(--muted);
+  margin-top:30px;
 }
 </style>
 </head>
 
 <body>
+<div class="admin-wrap">
 
-<button onclick="window.print()">Uložit jako PDF</button>
-
-<h1>AYAS-7</h1>
-<div class="sub">Audit & Reporting • Interní dokument</div>
-
-<hr>
-
-<h2>${title}</h2>
-
-${tableHtml}
-
-<div class="footer">
-Vygenerováno z AYAS-7 Admin • ${new Date().toLocaleString("cs-CZ")}
+<!-- HEADER -->
+<div class="admin-header">
+  <div class="admin-title">AYAS-7 · Admin</div>
+  <div class="admin-sub">
+    Úřední deska řízení družstva · dohled · audit · přehled
+  </div>
 </div>
 
-</body>
-</html>
-`);
+<!-- QUICK ACTIONS -->
+<div class="quick-actions">
 
-  w.document.close();
-}
+  <a href="spf.html" class="qa-box qa-spf">
+    <div class="qa-led"></div>
+    <div class="qa-title">SPF – síťový provizní fond</div>
+    <div class="qa-desc">
+      Řízení období, výpočty a rozdělení CRX
+    </div>
+    <div class="qa-cta">→ Přejít na SPF řízení</div>
+  </a>
 
-/* =========================================================
-   PDF – ČLENOVÉ
-   ========================================================= */
-function pdfMembers() {
-  let rows = DATA.members.map((m,i)=>`
-  <tr>
-  <td>${i+1}</td>
-  <td>${m.name}</td>
-  <td>${m.email}</td>
-  <td>${m.deposit.toLocaleString("cs-CZ")} CZK</td>
-  <td>${m.ww_key}</td>
-  <td>${m.status}</td>
-  <td>
-    ${
-      m.status === "approved" && !m.certificate_uid
-        ? `<button onclick="issueCertificate(m)">Vydat certifikát</button>`
-        : m.certificate_uid
-          ? "Certifikát vydán"
-          : "—"
-    }
-  </td>
-</tr>
+  <a href="member-intelligence.html" class="qa-box qa-member">
+    <div class="qa-led"></div>
+    <div class="qa-title">Členská karta – interní výjezd</div>
+    <div class="qa-desc">
+      Detail člena, síť, role, historie
+    </div>
+    <div class="qa-cta">→ Otevřít členský přehled</div>
+  </a>
 
-  `).join("");
+  <a href="audit-print.html" target="_blank" class="qa-box qa-audit">
+    <div class="qa-led"></div>
+    <div class="qa-title">Audit uzavřeného období</div>
+    <div class="qa-desc">
+      Oficiální výstup podle stanov a příloh
+    </div>
+    <div class="qa-cta">→ Otevřít auditní výstup (PDF)</div>
+  </a>
 
-  const table = `
-<table>
-<thead>
-<tr>
-  <th>#</th>
-  <th>Jméno</th>
-  <th>Email</th>
-  <th>Vklad</th>
-  <th>WW-KEY</th>
-  <th>Stav</th>
-  <th>Akce</th>
-</tr>
-</thead>
-<tbody>${rows}</tbody>
-</table>
-`;
+</div>
 
-  openPdfWindow("Členové družstva", table);
-}
-function getMemberName(memberId){
-  const m = DATA.members.find(x => x.id === memberId);
-  return m ? m.name : "—";
-}
+<!-- STATS -->
+<div class="stats">
+  <div class="stat">
+    <div class="stat-title">Členové</div>
+    <div class="stat-value">—</div>
+  </div>
+  <div class="stat">
+    <div class="stat-title">WW-KEY (celkem)</div>
+    <div class="stat-value">—</div>
+  </div>
+  <div class="stat">
+    <div class="stat-title">CRX (celkem)</div>
+    <div class="stat-value">—</div>
+  </div>
+</div>
 
+<!-- MEMBERS -->
+<div class="section">
+  <h2>Členové družstva</h2>
+  <p>
+    Oficiální přehled WW-KEY, CRX, rolí a certifikace.
+  </p>
 
-/* =========================================================
-   PDF – CERTIFIKÁTY (FINÁLNÍ VERZE)
-   ========================================================= */
-function pdfCertificates() {
-  let rows = DATA.certificates.map((c,i)=>`
-    <tr>
-      <td>${i + 1}</td>
-      <td>${c.member_name}</td>
-      <td>${c.certificate_uid}</td>
-      <td>${c.ww_key}</td>
-      <td>${(c.amount || 0).toLocaleString("cs-CZ")} CZK</td>
-      <td>${new Date(c.issued_at).toLocaleDateString("cs-CZ")}</td>
-    </tr>
-  `).join("");
+  <table>
+    <thead>
+      <tr>
+        <th>Člen</th>
+        <th>WW-KEY</th>
+        <th>CRX</th>
+        <th>Role</th>
+        <th>Certifikát</th>
+        <th>Detail</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td colspan="6" style="color:#64748b">
+          Data budou načtena ze systému
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
 
-  const table = `
-<table>
-<thead>
-<tr>
-  <th>#</th>
-  <th>Člen</th>
-  <th>Certificate ID</th>
-  <th>WW-KEY</th>
-  <th>Vklad</th>
-  <th>Datum vydání</th>
-</tr>
-</thead>
-<tbody>
-${rows}
-</tbody>
-</table>
-`;
+<!-- CERTIFICATION -->
+<div class="section">
+  <h2>Certifikace členství</h2>
+  <p>
+    Potvrzení přijetí členského vkladu a vydání certifikátu WW-KEY.
+  </p>
 
-  openPdfWindow("Vydané certifikáty", table);
-}
+  <table>
+    <thead>
+      <tr>
+        <th>Člen</th>
+        <th>Vklad</th>
+        <th>WW-KEY</th>
+        <th>Stav</th>
+        <th>Akce</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td colspan="5" style="color:#64748b">
+          Žádné čekající certifikace
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
 
-/* =========================================================
-   PDF – PROMO KÓDY
-   ========================================================= */
-function pdfPromo() {
-  let rows = DATA.promo.map((p,i)=>`
-    <tr>
-      <td>${i+1}</td>
-      <td>${p.code}</td>
-      <td>${p.agent?.name ?? p.agent_id}</td>
-      <td>${(p.commission_rate * 100).toFixed(0)} %</td>
-      <td>${p.is_active ? "aktivní" : "neaktivní"}</td>
-      <td>${new Date(p.created_at).toLocaleDateString("cs-CZ")}</td>
-    </tr>
-  `).join("");
+<!-- AUDIT -->
+<div class="section">
+  <h2>Audit uzavřeného období</h2>
+  <p>
+    Auditní stopa podle stanov a příloh družstva.
+  </p>
 
-  const table = `
-<table>
-<thead>
-<tr>
-  <th>#</th>
-  <th>Kód</th>
-  <th>Obchodník</th>
-  <th>Provize</th>
-  <th>Stav</th>
-  <th>Vytvořeno</th>
-</tr>
-</thead>
-<tbody>${rows}</tbody>
-</table>
-`;
+  <div class="audit-box">
+    <div>
+      <div>Datum uzávěrky: —</div>
+      <div>Audit hash: —</div>
+    </div>
+    <a href="audit-print.html" target="_blank" class="btn btn-green">
+      Otevřít auditní výstup (PDF)
+    </a>
+  </div>
+</div>
 
-  openPdfWindow("Promo kódy", table);
-}
-document.addEventListener("DOMContentLoaded", () => {
-  loadAll();
-  loadPromoCodes();
-  loadPendingUsers();
-  console.log("INIT pending members");
-});
+<div class="footer">
+  AYAS-7 · Admin = dohled · SPF = samostatný řídicí modul · audit-ready
+</div>
 
-</script>
-
-<script>
-/* =========================================================
-   PROVIZE – KOMPLETNÍ ŘEŠENÍ (LOAD + TABLE + PDF)
-   ========================================================= */
-
-/* === UJISTÍME SE, ŽE DATA OBJEKT EXISTUJE === */
-window.DATA = window.DATA || {};
-DATA.commissions = [];
-
-/* =========================================================
-   NAČTENÍ PROVIZÍ Z DB
-   ========================================================= */
-async function loadCommissions() {
-  try {
-    const { data, error } = await supabaseClient
-      .from("agent_commissions")
-      .select(`
-        payment_id,
-        commission_rate,
-        commission_amount,
-        payment_amount,
-        created_at,
-        promo_codes ( code ),
-        agents ( name )
-      `)
-      .order("created_at", { ascending: false });
-
-    if (error) {
-      console.error("loadCommissions error:", error);
-      return;
-    }
-
-    DATA.commissions = (data || []).map(c => ({
-      promo_code: c.promo_codes?.code ?? "—",
-      agent_name: c.agents?.name ?? "—",
-      commission_rate: Number(c.commission_rate),
-      deposit_amount: Number(c.payment_amount),
-      commission_amount: Number(c.commission_amount),
-      payment_date: c.created_at,
-      payment_id: c.payment_id
-    }));
-
-    renderCommissionTable();
-
-  } catch (err) {
-    console.error("loadCommissions failed:", err);
-  }
-}
-
-/* =========================================================
-   VYKRESLENÍ TABULKY PROVIZÍ
-   ========================================================= */
-function renderCommissionTable() {
-  const tbody = document.getElementById("commissionTable");
-  if (!tbody) return;
-
-  if (!DATA.commissions.length) {
-    tbody.innerHTML =
-      "<tr><td colspan='6'>Žádné provize</td></tr>";
-    return;
-  }
-
-  tbody.innerHTML = DATA.commissions.map(c => `
-    <tr>
-      <td><b>${c.promo_code}</b></td>
-      <td>${c.agent_name}</td>
-      <td>${(c.commission_rate * 100).toFixed(0)} %</td>
-      <td>${c.deposit_amount.toLocaleString("cs-CZ")} CZK</td>
-      <td><b>${c.commission_amount.toLocaleString("cs-CZ")} CZK</b></td>
-      <td>${new Date(c.payment_date).toLocaleDateString("cs-CZ")}</td>
-    </tr>
-  `).join("");
-}
-
-/* =========================================================
-   PDF – PROVIZE
-   ========================================================= */
-function pdfCommissions() {
-  if (!DATA.commissions.length) {
-    alert("Žádné provize k exportu.");
-    return;
-  }
-
-  const rows = DATA.commissions.map((c,i)=>`
-    <tr>
-      <td>${i+1}</td>
-      <td>${c.promo_code}</td>
-      <td>${c.agent_name}</td>
-      <td>${(c.commission_rate * 100).toFixed(0)} %</td>
-      <td>${c.deposit_amount.toLocaleString("cs-CZ")} CZK</td>
-      <td><b>${c.commission_amount.toLocaleString("cs-CZ")} CZK</b></td>
-      <td>${new Date(c.payment_date).toLocaleDateString("cs-CZ")}</td>
-    </tr>
-  `).join("");
-
-  const table = `
-<table>
-<thead>
-<tr>
-  <th>#</th>
-  <th>Promo kód</th>
-  <th>Obchodník</th>
-  <th>%</th>
-  <th>Vklad</th>
-  <th>Provize</th>
-  <th>Datum</th>
-</tr>
-</thead>
-<tbody>${rows}</tbody>
-</table>
-`;
-
-  openPdfWindow("Provize – přehled", table);
-}
-
-/* =========================================================
-   INIT
-   ========================================================= */
-document.addEventListener("DOMContentLoaded", () => {
-  loadCommissions();
-});
-</script>
-
-<script type="module">
-import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
-
-/* ===============================
-   SUPABASE CLIENT
-================================ */
-const supabase = createClient(
-  "https://azfrniqqtetoqploxwgq.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF6ZnJuaXFxdGV0b3FwbG94d2dxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3MzQ1OTYsImV4cCI6MjA4MzMxMDU5Nn0.QchmzNhs8owd6pkjZCk04u6PJoJ2Bhzz7oGV0KFyqdU"
-);
-
-/* ===============================
-   LOAD BENEFIT RESULTS
-================================ */
-async function loadBenefitResults() {
-  const tableBody = document.getElementById("benefits-results-body");
-
-  if (!tableBody) {
-    console.error("❌ benefits-results-body nenalezen");
-    return;
-  }
-
-  const { data, error } = await supabase
-    .from("v_benefit_results_full")
-    .select("*")
-    .order("created_at", { ascending: false });
-
-  if (error) {
-    console.error("❌ DB ERROR:", error);
-    tableBody.innerHTML =
-      `<tr><td colspan="9" style="color:#f87171">Chyba DB</td></tr>`;
-    return;
-  }
-
-  if (!data || data.length === 0) {
-    tableBody.innerHTML =
-      `<tr><td colspan="9">Žádná data</td></tr>`;
-    return;
-  }
-
-  tableBody.innerHTML = "";
-
-  data.forEach(row => {
-  const tr = document.createElement("tr");
-
-  let actionHtml = "—";
-
-  if (row.status === "pending") {
-    actionHtml = `
-      <button onclick="approveBenefit('${row.id}')" style="margin-right:6px;">
-        ✔ Schválit
-      </button>
-      <button onclick="rejectBenefit('${row.id}')">
-        ✖ Zamítnout
-      </button>
-    `;
-  }
-
-  if (row.status === "approved") {
-    actionHtml = `<span style="color:#22c55e;font-weight:600;">Schváleno</span>`;
-  }
-
-  if (row.status === "rejected") {
-    actionHtml = `<span style="color:#ef4444;font-weight:600;">Zamítnuto</span>`;
-  }
-
-  tr.innerHTML = `
-    <td>${row.period}</td>
-    <td>
-      <b>${row.email ?? "—"}</b><br>
-      <small>${row.member_id}</small>
-    </td>
-    <td>${row.ww_key_snapshot}</td>
-    <td>${row.crx_snapshot}</td>
-    <td>${row.benefit_level}</td>
-    <td>${row.plx_allocated}</td>
-    <td>${row.crx_awarded}</td>
-    <td>${row.note ?? ""}</td>
-    <td>${actionHtml}</td>
-  `;
-
-  tableBody.appendChild(tr);
-});
-
-}
-
-/* ===============================
-   APPROVE
-================================ */
-window.approveBenefit = async function(id) {
-  if (!confirm("Schválit rozdělení benefitů?")) return;
-
-  const { error } = await supabase
-    .from("benefit_results")
-    .update({
-      status: "approved",
-      approved_at: new Date().toISOString()
-    })
-    .eq("id", id);
-
-  if (error) {
-    alert("Chyba při schválení");
-    console.error(error);
-    return;
-  }
-
-  loadBenefitResults();
-};
-
-/* ===============================
-   REJECT
-================================ */
-window.rejectBenefit = async function(id) {
-  const reason = prompt("Důvod zamítnutí:");
-  if (!reason) return;
-
-  const { error } = await supabase
-    .from("benefit_results")
-    .update({
-      status: "rejected",
-      rejected_reason: reason
-    })
-    .eq("id", id);
-
-  if (error) {
-    alert("Chyba při zamítnutí");
-    console.error(error);
-    return;
-  }
-
-  loadBenefitResults();
-};
-
-/* ===============================
-   INIT
-================================ */
-document.addEventListener("DOMContentLoaded", loadBenefitResults);
-</script>
-
-
-
-
-<script>
-/* =========================================================
-   PDF – ROZDĚLENÍ BENEFITŮ (STEJNÁ LOGIKA)
-   ========================================================= */
-function pdfBenefits() {
-  const table = document.getElementById("benefits-table");
-
-  if (!table) {
-    alert("Tabulka rozdělení benefitů nebyla nalezena.");
-    return;
-  }
-
-  // KLÍČOVÉ – převod DOM → HTML STRING
-  const tableHtml = table.outerHTML;
-
-  openPdfWindow(
-    "AYAS-7 · Rozdělení členských benefitů",
-    tableHtml
-  );
-}
-</script>
-
-
+</div>
 </body>
 </html>
