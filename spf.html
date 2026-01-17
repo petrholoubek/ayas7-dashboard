@@ -225,21 +225,18 @@ const supabase = createClient(
 );
 
 window.supabase = supabase;
+window.selectedPeriod = null;
 
 /* =========================================================
-   KARIÉRNÍ STATUSY – READ ONLY (DB → UI)
-   Zdroj: v_spf_career_summary
+   KARIÉRNÍ STATUSY – READ ONLY
    ========================================================= */
 async function loadCareerStatuses() {
-
   const tbody = document.getElementById("career-status-table");
   if (!tbody) return;
 
   tbody.innerHTML = `
     <tr>
-      <td colspan="5" style="color:#9ca3af">
-        Načítám data z databáze…
-      </td>
+      <td colspan="5" style="color:#9ca3af">Načítám data…</td>
     </tr>
   `;
 
@@ -257,12 +254,10 @@ async function loadCareerStatuses() {
     .order("wwkey_min");
 
   if (error) {
-    console.error("❌ Chyba načtení kariérních statusů:", error);
+    console.error("❌ Chyba kariér:", error);
     tbody.innerHTML = `
       <tr>
-        <td colspan="5" style="color:#ef4444">
-          Chyba načtení dat z DB
-        </td>
+        <td colspan="5" style="color:#ef4444">Chyba načtení dat</td>
       </tr>
     `;
     return;
@@ -271,9 +266,7 @@ async function loadCareerStatuses() {
   if (!data || !data.length) {
     tbody.innerHTML = `
       <tr>
-        <td colspan="5" style="color:#9ca3af">
-          Žádná data k zobrazení
-        </td>
+        <td colspan="5" style="color:#9ca3af">Žádná data</td>
       </tr>
     `;
     return;
@@ -281,73 +274,49 @@ async function loadCareerStatuses() {
 
   tbody.innerHTML = "";
 
-  data.forEach(row => {
-
-    const wwkeyRange = row.wwkey_max
-      ? `${row.wwkey_min.toLocaleString("cs-CZ")} – ${row.wwkey_max.toLocaleString("cs-CZ")}`
-      : `${row.wwkey_min.toLocaleString("cs-CZ")}+`;
-
-    const coefRange = `${row.crx_coef_min} – ${row.crx_coef_max}`;
+  data.forEach(r => {
+    const ww = r.wwkey_max
+      ? `${r.wwkey_min.toLocaleString("cs-CZ")} – ${r.wwkey_max.toLocaleString("cs-CZ")}`
+      : `${r.wwkey_min.toLocaleString("cs-CZ")}+`;
 
     tbody.insertAdjacentHTML("beforeend", `
       <tr>
-        <td><strong>${row.status}</strong></td>
-        <td>${wwkeyRange}</td>
-        <td>${coefRange}</td>
-        <td>${row.member_count}</td>
-        <td>${Number(row.crx_total_min).toLocaleString("cs-CZ")}</td>
+        <td><strong>${r.status}</strong></td>
+        <td>${ww}</td>
+        <td>${r.crx_coef_min} – ${r.crx_coef_max}</td>
+        <td>${r.member_count}</td>
+        <td>${Number(r.crx_total_min).toLocaleString("cs-CZ")}</td>
       </tr>
     `);
   });
 }
 
 /* =========================================================
-   ROZHODNUTÍ SPF ZA OBDOBÍ – NAČTENÍ
+   SPF OBDOBÍ – NAČTENÍ (VOLITELNÉ)
    ========================================================= */
 async function loadSPFPeriods() {
-
   const tbody = document.getElementById("spf-periods");
   if (!tbody) return;
 
-  tbody.innerHTML = `
-    <tr>
-      <td colspan="4" style="color:#9ca3af">
-        Načítám období…
-      </td>
-    </tr>
-  `;
-
-  const { data, error } = await supabase
+  const { data } = await supabase
     .from("spf_periods")
-    .select("id, period, spf_amount, status")
+    .select("period, spf_amount, status")
     .order("period", { ascending: false });
 
-  if (error || !data || !data.length) {
-    tbody.innerHTML = `
-      <tr>
-        <td colspan="4" style="color:#ef4444">
-          Žádná SPF období
-        </td>
-      </tr>
-    `;
-    return;
-  }
+  if (!data || !data.length) return;
 
-  tbody.innerHTML = "";
-
-  // 👉 AUTOMATICKY vybereme první „otevřené“ období
   const active = data.find(r =>
     r.status === "draft" || r.status === "approved"
   );
 
   if (active) {
     window.selectedPeriod = active.period;
-    highlightActivePeriod(active.period);
   }
 
+  tbody.innerHTML = "";
   data.forEach(r => {
     tbody.insertAdjacentHTML("beforeend", `
-      <tr ${r.period === window.selectedPeriod ? 'style="background:rgba(255,255,255,0.03)"' : ''}>
+      <tr>
         <td>${r.period}</td>
         <td style="text-align:right">${r.spf_amount ?? 0}</td>
         <td>${r.status}</td>
@@ -357,60 +326,51 @@ async function loadSPFPeriods() {
   });
 }
 
-
 /* =========================================================
-   AUDITNÍ UZÁVĚRKA OBDOBÍ (NEVRATNÁ)
+   AUDITNÍ UZÁVĚRKA
    ========================================================= */
-window.closePeriod = async function () {
-
+window.closePeriod = async () => {
   if (!window.selectedPeriod) {
     alert("Není vybráno žádné období.");
     return;
   }
 
-  if (!confirm(
-    "Uzavření období je auditní a nevratné.\n\nPokračovat?"
-  )) return;
+  if (!confirm("Uzávěrka je auditní a nevratná.\nPokračovat?")) return;
 
-  const { data, error } = await supabase
-    .rpc("close_spf_period", {
-      p_period: window.selectedPeriod
-    });
+  const { data, error } = await supabase.rpc(
+    "close_spf_period",
+    { p_period: window.selectedPeriod }
+  );
 
   if (error) {
-    console.error("❌ Uzávěrka období selhala:", error);
-    alert("Chyba při uzavírání období.");
+    console.error(error);
+    alert("Uzávěrka selhala.");
     return;
   }
 
-  if (!data || !data.length) {
-    alert("Uzávěrka nevrátila žádná data.");
-    return;
+  const row = data?.[0];
+  if (!row) return;
+
+  const el = document.getElementById("audit-info");
+  if (el) {
+    el.innerHTML = `
+      Uzavřeno: ${new Date(row.closed_at).toLocaleString("cs-CZ")}<br>
+      Audit hash: ${row.audit_hash}
+    `;
   }
 
-  const row = data[0];
-
-  document.getElementById("audit-info").innerHTML = `
-    Uzavřeno: ${new Date(row.closed_at).toLocaleString("cs-CZ")}<br>
-    Audit hash: ${row.audit_hash}
-  `;
-
-  alert("Období bylo auditně uzavřeno.");
-
-  if (typeof loadSPFPeriods === "function") {
-    loadSPFPeriods();
-  }
+  alert("Období bylo uzavřeno.");
 };
 
-
-
 /* =========================================================
-   INIT – POUZE TO, CO EXISTUJE
+   INIT – STABILNÍ
    ========================================================= */
 document.addEventListener("DOMContentLoaded", () => {
-  loadCareerStatuses();
+  loadCareerStatuses();      // ✅ vždy
+  loadSPFPeriods();          // ✅ jen když existuje tabulka
 });
 </script>
+
 
 <script type="module">
 /* =========================================================
