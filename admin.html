@@ -432,9 +432,14 @@ async function loadStats(){
     return;
   }
 
-  document.getElementById("stat-members").innerText = data.total_members;
-  document.getElementById("stat-wwkey").innerText = data.total_wwkey;
-  document.getElementById("stat-crx").innerText = data.total_crx;
+  document.getElementById("stat-members").innerText =
+    data.members_count ?? 0;
+
+  document.getElementById("stat-wwkey").innerText =
+    data.wwkey_total ?? 0;
+
+  document.getElementById("stat-crx").innerText =
+    data.crx_total ?? 0;
 }
 
 /* =========================
@@ -452,13 +457,15 @@ async function loadMembers(){
   }
 
   const tbody = document.getElementById("members-table-body");
+  if(!tbody) return;
+
   tbody.innerHTML = "";
 
   data.forEach(m => {
     tbody.innerHTML += `
       <tr>
         <td>${m.email}</td>
-        <td>${m.wwkey_total}</td>
+        <td>${m.wwkey_total ?? 0}</td>
         <td>${m.crx_total ?? 0}</td>
         <td>${m.role ?? "—"}</td>
         <td>${m.has_certificate ? "✔" : "—"}</td>
@@ -486,6 +493,8 @@ async function loadCertificationQueue(){
   }
 
   const tbody = document.getElementById("certification-table-body");
+  if(!tbody) return;
+
   tbody.innerHTML = "";
 
   if(!data.length){
@@ -529,11 +538,18 @@ async function loadAudit(){
     return;
   }
 
-  document.getElementById("audit-closed-at")
-    .innerText = "Uzavřeno: " + new Date(data.closed_at).toLocaleString("cs-CZ");
+  const closedEl = document.getElementById("audit-closed-at");
+  const hashEl   = document.getElementById("audit-hash");
 
-  document.getElementById("audit-hash")
-    .innerText = "Audit hash: " + data.audit_hash;
+  if(closedEl){
+    closedEl.innerText =
+      "Uzavřeno: " + new Date(data.closed_at).toLocaleString("cs-CZ");
+  }
+
+  if(hashEl){
+    hashEl.innerText =
+      "Audit hash: " + (data.audit_hash ?? "— zatím nevygenerován");
+  }
 }
 
 /* =========================
