@@ -299,6 +299,52 @@ async function loadCareerStatuses() {
 }
 
 /* =========================================================
+   AUDITNÍ UZÁVĚRKA OBDOBÍ (NEVRATNÁ)
+   ========================================================= */
+async function closePeriod() {
+
+  if (!window.selectedPeriod) {
+    alert("Není vybráno žádné období.");
+    return;
+  }
+
+  if (!confirm(
+    "Uzavření období je auditní a nevratné.\n\nPokračovat?"
+  )) return;
+
+  const { data, error } = await supabase
+    .rpc("close_spf_period", {
+      p_period: window.selectedPeriod
+    });
+
+  if (error) {
+    console.error("❌ Uzávěrka období selhala:", error);
+    alert("Chyba při uzavírání období.");
+    return;
+  }
+
+  if (!data || !data.length) {
+    alert("Uzávěrka nevrátila žádná data.");
+    return;
+  }
+
+  const row = data[0];
+
+  document.getElementById("audit-info").innerHTML = `
+    Uzavřeno: ${new Date(row.closed_at).toLocaleString("cs-CZ")}<br>
+    Audit hash: ${row.audit_hash}
+  `;
+
+  alert("Období bylo auditně uzavřeno.");
+
+  // refresh přehledů
+  if (typeof loadSPFPeriods === "function") {
+    loadSPFPeriods();
+  }
+}
+
+
+/* =========================================================
    INIT – POUZE TO, CO EXISTUJE
    ========================================================= */
 document.addEventListener("DOMContentLoaded", () => {
