@@ -225,7 +225,7 @@ window.supabase = supabase;
 
 /* =========================================================
    KARIÉRNÍ STATUSY – READ ONLY (DB → UI)
-   Zdroj: v_spf_career_status_summary
+   Zdroj: v_spf_career_summary
    ========================================================= */
 async function loadCareerStatuses() {
 
@@ -240,19 +240,18 @@ async function loadCareerStatuses() {
     </tr>
   `;
 
- const { data, error } = await supabase
-  .from("v_spf_career_summary")
-  .select(`
-    status,
-    wwkey_min,
-    wwkey_max,
-    crx_coef_min,
-    crx_coef_max,
-    member_count,
-    crx_total_min
-  `)
-  .order("wwkey_min");
-
+  const { data, error } = await supabase
+    .from("v_spf_career_summary")
+    .select(`
+      status,
+      wwkey_min,
+      wwkey_max,
+      crx_coef_min,
+      crx_coef_max,
+      member_count,
+      crx_total_min
+    `)
+    .order("wwkey_min");
 
   if (error) {
     console.error("❌ Chyba načtení kariérních statusů:", error);
@@ -300,14 +299,121 @@ async function loadCareerStatuses() {
 }
 
 /* =========================================================
-   INIT
+   INIT – POUZE TO, CO EXISTUJE
    ========================================================= */
 document.addEventListener("DOMContentLoaded", () => {
-  loadCareerStatuses();   // kariéry – už běží
-  loadBenefitStates();    // ⬅️ toto CHYBÍ
+  loadCareerStatuses();
 });
+</script>
 
+<script type="module">
+/* =========================================================
+   BENEFITY – PROVOZNÍ MODUL (NE SPF)
+   ========================================================= */
 
+const supabase = window.supabase;
+if (!supabase) {
+  console.error("❌ Supabase není dostupná pro benefit modul");
+}
+
+/* =========================
+   NAČTENÍ BENEFITŮ
+========================= */
+async function loadBenefitStates() {
+  const tbody = document.getElementById("benefitStatusTable");
+  if (!tbody) return;
+
+  tbody.innerHTML = `
+    <tr>
+      <td colspan="5" style="color:#9ca3af">
+        Načítám benefity…
+      </td>
+    </tr>
+  `;
+
+  const { data, error } = await supabase
+    .from("benefits")
+    .select("id, name, code, crx_cost, is_active")
+    .order("name");
+
+  if (error) {
+    console.error("❌ Chyba načtení benefitů:", error);
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="5" style="color:#ef4444">
+          Chyba načtení benefitů
+        </td>
+      </tr>
+    `;
+    return;
+  }
+
+  if (!data || !data.length) {
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="5" style="color:#9ca3af">
+          Žádné benefity
+        </td>
+      </tr>
+    `;
+    return;
+  }
+
+  tbody.innerHTML = "";
+
+  data.forEach(b => {
+    const statusLabel = b.is_active
+      ? `<span style="color:#22c55e">🟢 aktivní</span>`
+      : `<span style="color:#facc15">🟡 připravuje se</span>`;
+
+    tbody.insertAdjacentHTML("beforeend", `
+      <tr>
+        <td>${b.name}</td>
+        <td><code>${b.code}</code></td>
+        <td>${b.crx_cost ?? "—"}</td>
+        <td>${statusLabel}</td>
+        <td>
+          <select onchange="updateBenefitStatus('${b.id}', this.value)">
+            <option value="">— změnit —</option>
+            <option value="true">Aktivní</option>
+            <option value="false">Připravuje se</option>
+          </select>
+        </td>
+      </tr>
+    `);
+  });
+}
+
+/* =========================
+   ZMĚNA STAVU BENEFITU
+========================= */
+window.updateBenefitStatus = async (id, value) => {
+  if (!value) return;
+
+  const isActive = value === "true";
+
+  if (!confirm("Změnit dostupnost benefitu?")) return;
+
+  const { error } = await supabase
+    .from("benefits")
+    .update({ is_active: isActive })
+    .eq("id", id);
+
+  if (error) {
+    alert("Chyba při změně benefitu");
+    console.error(error);
+    return;
+  }
+
+  loadBenefitStates();
+};
+
+/* =========================
+   INIT BENEFIT MODULU
+========================= */
+document.addEventListener("DOMContentLoaded", () => {
+  loadBenefitStates();
+});
 </script>
 
 
