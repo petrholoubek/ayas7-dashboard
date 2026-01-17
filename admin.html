@@ -408,101 +408,85 @@ html, body {
 
 </div>
 
-
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
 <script>
-/* =========================================================
-   AYAS-7 ADMIN • JEDINÝ SCRIPT (FINÁL)
-   ========================================================= */
-
-/* === SUPABASE CLIENT (JEDINÝ, BEZ KOLIZÍ) === */
 const SUPABASE_URL = "https://azfrniqqtetoqploxwgq.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF6ZnJuaXFxdGV0b3FwbG94d2dxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3MzQ1OTYsImV4cCI6MjA4MzMxMDU5Nn0.QchmzNhs8owd6pkjZCk04u6PJoJ2Bhzz7oGV0KFyqdU";
 
-/* ⚠️ DŮLEŽITÉ:
-   klient se nejmenuje "supabase"
-   aby nedošlo ke kolizi s knihovnou
-*/
 const sb = supabase.createClient(
   SUPABASE_URL,
   SUPABASE_ANON_KEY
 );
 
-/* =========================================================
-   ADMIN STATS
-   ========================================================= */
-async function loadAdminStats(){
+/* =========================
+   STATISTIKY
+========================= */
+async function loadStats(){
   const { data, error } = await sb
     .from("v_admin_stats")
     .select("*")
     .single();
 
   if(error){
-    console.error("Admin stats error:", error);
+    console.error("Stats error", error);
     return;
   }
 
-  const stats = document.querySelectorAll(".stat-value");
-  if(stats.length < 3) return;
-
-  stats[0].innerText = data.total_members ?? "—";
-  stats[1].innerText = data.total_wwkey ?? "—";
-  stats[2].innerText = data.total_wwkey_balance ?? "—";
+  document.getElementById("stat-members").innerText = data.total_members;
+  document.getElementById("stat-wwkey").innerText = data.total_wwkey;
+  document.getElementById("stat-crx").innerText = data.total_crx;
 }
 
-/* =========================================================
-   MEMBERS OVERVIEW (READ-ONLY)
-   ========================================================= */
-async function loadAdminMembers(){
+/* =========================
+   ČLENOVÉ
+========================= */
+async function loadMembers(){
   const { data, error } = await sb
     .from("v_admin_members")
     .select("*")
     .order("email");
 
   if(error){
-    console.error("Admin members error:", error);
+    console.error("Members error", error);
     return;
   }
 
-  const tbody = document.querySelector(
-    ".section table tbody"
-  );
-  if(!tbody) return;
+  const tbody = document.getElementById("members-table-body");
+  tbody.innerHTML = "";
 
-  tbody.innerHTML = data.map(m => `
-    <tr>
-      <td>${m.email}</td>
-      <td>${m.wwkey_total}</td>
-      <td>${m.wwkey_balance}</td>
-      <td>${m.member_status}</td>
-      <td>${m.has_certificate ? "✔" : "—"}</td>
-      <td>
-        <a href="member-intelligence.html?member=${m.member_uuid}">
-          interní výjezd →
-        </a>
-      </td>
-    </tr>
-  `).join("");
+  data.forEach(m => {
+    tbody.innerHTML += `
+      <tr>
+        <td>${m.email}</td>
+        <td>${m.wwkey_total}</td>
+        <td>${m.crx_total ?? 0}</td>
+        <td>${m.role ?? "—"}</td>
+        <td>${m.has_certificate ? "✔" : "—"}</td>
+        <td>
+          <a href="member-intelligence.html?member=${m.member_uuid}">
+            detail →
+          </a>
+        </td>
+      </tr>
+    `;
+  });
 }
 
-/* =========================================================
-   CERTIFICATION QUEUE (JEDINÉ ROZHODNUTÍ)
-   ========================================================= */
+/* =========================
+   CERTIFIKACE
+========================= */
 async function loadCertificationQueue(){
   const { data, error } = await sb
     .from("v_admin_certification_queue")
     .select("*");
 
   if(error){
-    console.error("Certification queue error:", error);
+    console.error("Cert queue error", error);
     return;
   }
 
-  const tables = document.querySelectorAll(".section table");
-  if(tables.length < 2) return;
-
-  const tbody = tables[1].querySelector("tbody");
+  const tbody = document.getElementById("certification-table-body");
+  tbody.innerHTML = "";
 
   if(!data.length){
     tbody.innerHTML = `
@@ -514,29 +498,49 @@ async function loadCertificationQueue(){
     return;
   }
 
-  tbody.innerHTML = data.map(c => `
-    <tr>
-      <td>${c.email}</td>
-      <td>${c.deposit_amount}</td>
-      <td>${c.ww_key_granted}</td>
-      <td>čeká</td>
-      <td>
-        <button class="btn btn-green"
-          onclick="confirmCertification(${c.member_id})">
-          Potvrdit certifikaci
-        </button>
-      </td>
-    </tr>
-  `).join("");
+  data.forEach(c => {
+    tbody.innerHTML += `
+      <tr>
+        <td>${c.email}</td>
+        <td>${c.deposit_amount}</td>
+        <td>${c.ww_key_granted}</td>
+        <td>čeká</td>
+        <td>
+          <button onclick="confirmCertification(${c.member_id})">
+            Potvrdit
+          </button>
+        </td>
+      </tr>
+    `;
+  });
 }
 
-/* =========================================================
-   CONFIRM CERTIFICATION (SERVER DECISION)
-   ========================================================= */
+/* =========================
+   AUDIT
+========================= */
+async function loadAudit(){
+  const { data, error } = await sb
+    .from("v_admin_last_audit")
+    .select("*")
+    .single();
+
+  if(error){
+    console.warn("Audit not found");
+    return;
+  }
+
+  document.getElementById("audit-closed-at")
+    .innerText = "Uzavřeno: " + new Date(data.closed_at).toLocaleString("cs-CZ");
+
+  document.getElementById("audit-hash")
+    .innerText = "Audit hash: " + data.audit_hash;
+}
+
+/* =========================
+   CERTIFIKACE – AKCE
+========================= */
 async function confirmCertification(memberId){
-  if(!confirm(
-    "Potvrdit přijetí vkladu a vydat certifikát?\n\nTento krok je nevratný."
-  )) return;
+  if(!confirm("Potvrdit certifikaci?")) return;
 
   const res = await fetch(
     "/functions/v1/issue-certificate",
@@ -552,42 +556,18 @@ async function confirmCertification(memberId){
     return;
   }
 
-  await loadAdminMembers();
+  await loadMembers();
   await loadCertificationQueue();
 }
 
-/* =========================================================
-   LAST AUDIT (READ-ONLY)
-   ========================================================= */
-async function loadLastAudit(){
-  const { data, error } = await sb
-    .from("v_admin_last_audit")
-    .select("*")
-    .single();
-
-  if(error){
-    console.warn("Audit not found");
-    return;
-  }
-
-  const box = document.querySelector(".audit-box div");
-  if(!box) return;
-
-  box.innerHTML = `
-    <div>Období: ${data.period}</div>
-    <div>Uzavřeno: ${new Date(data.closed_at).toLocaleString("cs-CZ")}</div>
-    <div>Audit hash: ${data.audit_hash}</div>
-  `;
-}
-
-/* =========================================================
-   INIT (JEDINÉ MÍSTO)
-   ========================================================= */
+/* =========================
+   INIT
+========================= */
 document.addEventListener("DOMContentLoaded", async () => {
-  await loadAdminStats();
-  await loadAdminMembers();
+  await loadStats();
+  await loadMembers();
   await loadCertificationQueue();
-  await loadLastAudit();
+  await loadAudit();
 });
 </script>
 
