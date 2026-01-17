@@ -240,18 +240,19 @@ async function loadCareerStatuses() {
     </tr>
   `;
 
-  const { data, error } = await supabase
-    .from("v_spf_career_status_summary")
-    .select(`
-      status,
-      wwkey_min,
-      wwkey_max,
-      crx_coef_min,
-      crx_coef_max,
-      member_count,
-      crx_total_min
-    `)
-    .order("wwkey_min");
+ const { data, error } = await supabase
+  .from("v_spf_career_summary")
+  .select(`
+    status,
+    wwkey_min,
+    wwkey_max,
+    crx_coef_min,
+    crx_coef_max,
+    member_count,
+    crx_total_min
+  `)
+  .order("wwkey_min");
+
 
   if (error) {
     console.error("❌ Chyba načtení kariérních statusů:", error);
