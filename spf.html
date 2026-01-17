@@ -301,7 +301,7 @@ async function loadCareerStatuses() {
 /* =========================================================
    AUDITNÍ UZÁVĚRKA OBDOBÍ (NEVRATNÁ)
    ========================================================= */
-async function closePeriod() {
+window.closePeriod = async function () {
 
   if (!window.selectedPeriod) {
     alert("Není vybráno žádné období.");
@@ -337,11 +337,11 @@ async function closePeriod() {
 
   alert("Období bylo auditně uzavřeno.");
 
-  // refresh přehledů
   if (typeof loadSPFPeriods === "function") {
     loadSPFPeriods();
   }
-}
+};
+
 
 
 /* =========================================================
