@@ -172,10 +172,13 @@ th{color:var(--muted);text-align:left}
     Audit hash: — zatím nevygenerován
   </div>
 
-  <button style="margin-top:12px;color:#ef4444;border:1px solid #ef4444;background:none"
-    onclick="closePeriod()">
-    Uzavřít období
-  </button>
+  <button
+  title="Uzavře aktuálně aktivní SPF období"
+  style="margin-top:12px;color:#ef4444;border:1px solid #ef4444;background:none"
+  onclick="closePeriod()">
+  Uzavřít aktivní období
+</button>
+
 </div>
 
 <div class="card" style="border-color:#22c55e">
@@ -297,6 +300,63 @@ async function loadCareerStatuses() {
     `);
   });
 }
+
+/* =========================================================
+   ROZHODNUTÍ SPF ZA OBDOBÍ – NAČTENÍ
+   ========================================================= */
+async function loadSPFPeriods() {
+
+  const tbody = document.getElementById("spf-periods");
+  if (!tbody) return;
+
+  tbody.innerHTML = `
+    <tr>
+      <td colspan="4" style="color:#9ca3af">
+        Načítám období…
+      </td>
+    </tr>
+  `;
+
+  const { data, error } = await supabase
+    .from("spf_periods")
+    .select("id, period, spf_amount, status")
+    .order("period", { ascending: false });
+
+  if (error || !data || !data.length) {
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="4" style="color:#ef4444">
+          Žádná SPF období
+        </td>
+      </tr>
+    `;
+    return;
+  }
+
+  tbody.innerHTML = "";
+
+  // 👉 AUTOMATICKY vybereme první „otevřené“ období
+  const active = data.find(r =>
+    r.status === "draft" || r.status === "approved"
+  );
+
+  if (active) {
+    window.selectedPeriod = active.period;
+    highlightActivePeriod(active.period);
+  }
+
+  data.forEach(r => {
+    tbody.insertAdjacentHTML("beforeend", `
+      <tr ${r.period === window.selectedPeriod ? 'style="background:rgba(255,255,255,0.03)"' : ''}>
+        <td>${r.period}</td>
+        <td style="text-align:right">${r.spf_amount ?? 0}</td>
+        <td>${r.status}</td>
+        <td>—</td>
+      </tr>
+    `);
+  });
+}
+
 
 /* =========================================================
    AUDITNÍ UZÁVĚRKA OBDOBÍ (NEVRATNÁ)
@@ -458,8 +518,11 @@ window.updateBenefitStatus = async (id, value) => {
    INIT BENEFIT MODULU
 ========================= */
 document.addEventListener("DOMContentLoaded", () => {
+  loadCareerStatuses();
+  loadSPFPeriods();      // ⬅️ TOTO CHYBĚLO
   loadBenefitStates();
 });
+
 </script>
 
 
