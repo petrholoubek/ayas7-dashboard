@@ -365,19 +365,30 @@ th{
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script>
-const SUPABASE_URL = "https://azfrniqqtetoqploxwgq.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF6ZnJuaXFxdGV0b3FwbG94d2dxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3MzQ1OTYsImV4cCI6MjA4MzMxMDU5Nn0.QchmzNhs8owd6pkjZCk04u6PJoJ2Bhzz7oGV0KFyqdU"; // nech tam svůj
 
-const supabase = supabase.createClient(
+<script>
+/* =========================================================
+   AYAS-7 ADMIN • JEDINÝ SCRIPT (FINÁL)
+   ========================================================= */
+
+/* === SUPABASE CLIENT (JEDINÝ, BEZ KOLIZÍ) === */
+const SUPABASE_URL = "https://azfrniqqtetoqploxwgq.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF6ZnJuaXFxdGV0b3FwbG94d2dxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3MzQ1OTYsImV4cCI6MjA4MzMxMDU5Nn0.QchmzNhs8owd6pkjZCk04u6PJoJ2Bhzz7oGV0KFyqdU";
+
+/* ⚠️ DŮLEŽITÉ:
+   klient se nejmenuje "supabase"
+   aby nedošlo ke kolizi s knihovnou
+*/
+const sb = supabase.createClient(
   SUPABASE_URL,
   SUPABASE_ANON_KEY
 );
-</script>
 
-<script>
+/* =========================================================
+   ADMIN STATS
+   ========================================================= */
 async function loadAdminStats(){
-  const { data, error } = await supabase
+  const { data, error } = await sb
     .from("v_admin_stats")
     .select("*")
     .single();
@@ -388,15 +399,18 @@ async function loadAdminStats(){
   }
 
   const stats = document.querySelectorAll(".stat-value");
-  stats[0].innerText = data.total_members;
-  stats[1].innerText = data.total_wwkey;
-  stats[2].innerText = data.total_wwkey_balance;
-}
-</script>
+  if(stats.length < 3) return;
 
-<script>
+  stats[0].innerText = data.total_members ?? "—";
+  stats[1].innerText = data.total_wwkey ?? "—";
+  stats[2].innerText = data.total_wwkey_balance ?? "—";
+}
+
+/* =========================================================
+   MEMBERS OVERVIEW (READ-ONLY)
+   ========================================================= */
 async function loadAdminMembers(){
-  const { data, error } = await supabase
+  const { data, error } = await sb
     .from("v_admin_members")
     .select("*")
     .order("email");
@@ -409,6 +423,7 @@ async function loadAdminMembers(){
   const tbody = document.querySelector(
     ".section table tbody"
   );
+  if(!tbody) return;
 
   tbody.innerHTML = data.map(m => `
     <tr>
@@ -425,11 +440,12 @@ async function loadAdminMembers(){
     </tr>
   `).join("");
 }
-</script>
 
-<script>
+/* =========================================================
+   CERTIFICATION QUEUE (JEDINÉ ROZHODNUTÍ)
+   ========================================================= */
 async function loadCertificationQueue(){
-  const { data, error } = await supabase
+  const { data, error } = await sb
     .from("v_admin_certification_queue")
     .select("*");
 
@@ -439,8 +455,9 @@ async function loadCertificationQueue(){
   }
 
   const tables = document.querySelectorAll(".section table");
-  const certTable = tables[1]; // druhá tabulka = certifikace
-  const tbody = certTable.querySelector("tbody");
+  if(tables.length < 2) return;
+
+  const tbody = tables[1].querySelector("tbody");
 
   if(!data.length){
     tbody.innerHTML = `
@@ -460,16 +477,17 @@ async function loadCertificationQueue(){
       <td>čeká</td>
       <td>
         <button class="btn btn-green"
-          onclick="confirmCertification('${c.member_id}')">
+          onclick="confirmCertification(${c.member_id})">
           Potvrdit certifikaci
         </button>
       </td>
     </tr>
   `).join("");
 }
-</script>
 
-<script>
+/* =========================================================
+   CONFIRM CERTIFICATION (SERVER DECISION)
+   ========================================================= */
 async function confirmCertification(memberId){
   if(!confirm(
     "Potvrdit přijetí vkladu a vydat certifikát?\n\nTento krok je nevratný."
@@ -492,11 +510,12 @@ async function confirmCertification(memberId){
   await loadAdminMembers();
   await loadCertificationQueue();
 }
-</script>
 
-<script>
+/* =========================================================
+   LAST AUDIT (READ-ONLY)
+   ========================================================= */
 async function loadLastAudit(){
-  const { data, error } = await supabase
+  const { data, error } = await sb
     .from("v_admin_last_audit")
     .select("*")
     .single();
@@ -506,15 +525,19 @@ async function loadLastAudit(){
     return;
   }
 
-  document.querySelector(".audit-box div").innerHTML = `
+  const box = document.querySelector(".audit-box div");
+  if(!box) return;
+
+  box.innerHTML = `
     <div>Období: ${data.period}</div>
     <div>Uzavřeno: ${new Date(data.closed_at).toLocaleString("cs-CZ")}</div>
     <div>Audit hash: ${data.audit_hash}</div>
   `;
 }
-</script>
 
-<script>
+/* =========================================================
+   INIT (JEDINÉ MÍSTO)
+   ========================================================= */
 document.addEventListener("DOMContentLoaded", async () => {
   await loadAdminStats();
   await loadAdminMembers();
@@ -522,6 +545,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   await loadLastAudit();
 });
 </script>
+
 
 </body>
 </html>
