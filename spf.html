@@ -2,14 +2,11 @@
 <html lang="cs">
 <head>
 <meta charset="UTF-8">
-<title>SPF – Síťový provozní fond · WIN.WIN</title>
+<title>SPF – Provizní fond družstva WIN.WIN</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <script type="module" src="./assets/js/gate.js"></script>
-<!-- FAVICON / PWA -->
-  <link rel="icon" type="image/png" sizes="192x192" href="/ayas7-192.png">
-  <link rel="icon" type="image/png" sizes="512x512" href="/ayas7-512.png">
-  <link rel="apple-touch-icon" href="/ayas7-192.png">
-  <meta name="theme-color" content="#020617">
+
 <style>
 :root{
   --bg:#020617;
@@ -21,875 +18,167 @@
   --green:#22c55e;
   --red:#ef4444;
 }
-html, body {
-  min-height: 100%;
-  margin: 0;
-}
-
-body {
-  background-repeat: no-repeat;
-  background-attachment: fixed;
-  background-size: cover;
-  background-position: center top;
-}
-
-*{box-sizing:border-box;margin:0;padding:0}
 body{
-  background:radial-gradient(circle at 40% 0%, #0f172a 0%, #020617 65%, #000 100%);
+  margin:0;
   font-family:"Segoe UI",Tahoma,Verdana,sans-serif;
+  background:radial-gradient(circle at 40% 0%, #0f172a 0%, #020617 65%, #000 100%);
   color:var(--text);
 }
-
 .page{max-width:1400px;margin:auto;padding:42px 18px 80px}
-
 .card{
   background:radial-gradient(circle at top left,#0b1120,#020617 70%);
   border:1px solid var(--border);
   border-radius:20px;
-  padding:22px;
+  padding:24px;
   margin-bottom:26px;
 }
-
-.kicker{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  font-size:12px;
-  letter-spacing:.14em;
-  text-transform:uppercase;
-  color:var(--muted);
-  margin-bottom:6px;
-}
-
-.dot{
-  width:9px;height:9px;border-radius:999px;
-  background:var(--gold);
-  box-shadow:
-    0 0 6px var(--gold),
-    0 0 16px var(--gold),
-    0 0 36px rgba(250,204,21,.9);
-}
-
 h1{font-size:30px;margin-bottom:10px}
 h2{font-size:18px;margin-bottom:10px}
 p{font-size:13px;line-height:1.6;color:var(--muted)}
-
-table{
-  width:100%;
-  border-collapse:collapse;
-  font-size:12px;
-  table-layout:fixed;
-}
-
-/* === SPF TABULKA – TVRDÉ ZAROVNÁNÍ SLOUPCŮ === */
-table{
-  table-layout: fixed;
-}
-
-thead th,
-tbody td{
-  padding:10px;
-  vertical-align:middle;
-}
-
-/* Období */
-thead th:nth-child(1),
-tbody td:nth-child(1){
-  width:120px;
-}
-
-/* Celkový příděl CRX */
-thead th:nth-child(2),
-tbody td:nth-child(2){
-  width:180px;
-  text-align:right;
-}
-
-/* Návrh do SPF */
-thead th:nth-child(3),
-tbody td:nth-child(3){
-  width:160px;
-  text-align:right;
-}
-
-/* Stav */
-thead th:nth-child(4),
-tbody td:nth-child(4){
-  width:120px;
-}
-
-/* Akce */
-thead th:nth-child(5),
-tbody td:nth-child(5){
-  width:240px;
-}
-
-
-th,td{
-  padding:10px;
-  border-bottom:1px solid var(--border);
-}
-/* === TVRDÉ ZAROVNÁNÍ TEXTU V HLAVIČCE I DATECH === */
-thead th{
-  text-align:left;
-}
-
-tbody td{
-  text-align:left;
-}
-/* Období – HLAVIČKA I DATA NA STEJNOU POZICI */
-thead th:nth-child(1),
-tbody td:nth-child(1){
-  padding-left:10px;
-  text-align:left;
-}
-
-
-th{color:var(--muted)}
-
-/* PEVNÉ SLOUPCE – DŮLEŽITÉ */
-th:nth-child(1), td:nth-child(1){ width:120px; }
-th:nth-child(2), td:nth-child(2){ width:180px; text-align:right; }
-th:nth-child(3), td:nth-child(3){ width:160px; text-align:right; }
-th:nth-child(4), td:nth-child(4){ width:120px; }
-th:nth-child(5), td:nth-child(5){ width:220px; }
-
-/* TLAČÍTKA */
-.actions{
-  display:flex;
-  gap:14px;
-}
-
-
-button{
-  padding:6px 12px;
-  border-radius:10px;
-  font-size:11px;
-  cursor:pointer;
-  background:#020617;
-  border:1px solid var(--border);
-  color:var(--text);
-}
-.approve{border-color:var(--green);color:var(--green)}
-.reject{border-color:var(--red);color:var(--red)}
-
-.dot-gold{
-  background:#facc15;
-  box-shadow:
-    0 0 6px rgba(250,204,21,.9),
-    0 0 14px rgba(250,204,21,.8),
-    0 0 30px rgba(250,204,21,.6);
-}
-.cell-actions{
-  display:flex;
-  align-items:center;
-  gap:12px;
-  min-height:28px;
-}
-/* === FIX ZAROVNÁNÍ SPF TABULKY === */
-table thead th,
-table tbody td{
-  vertical-align: middle;
-}
-
-/* ČÍSLA VPRAVO – HLAVIČKA I DATA */
-table th:nth-child(2),
-table th:nth-child(3),
-table td:nth-child(2),
-table td:nth-child(3){
-  text-align: right;
-}
-
-/* STAV */
-table th:nth-child(4),
-table td:nth-child(4){
-  text-align: left;
-  white-space: nowrap;
-}
-
-/* AKCE – PEVNÝ BLOK */
-table th:nth-child(5),
-table td:nth-child(5){
-  text-align: left;
-  white-space: nowrap;
-}
-/* ===== NOVÁ PROVOZNÍ SEKCE – BENEFITY ===== */
-.benefit-control-box{
-  margin-top:32px;
-  border:1px solid rgba(34,197,94,.45);
-  background:
-    radial-gradient(circle at top left,
-      rgba(34,197,94,.12),
-      rgba(2,6,23,.95) 70%);
-  border-radius:16px;
-  padding:22px 24px;
-}
-
-.benefit-control-header{
-  display:flex;
-  align-items:center;
-  gap:12px;
-  margin-bottom:14px;
-}
-
-.benefit-led{
-  width:10px;
-  height:10px;
-  border-radius:999px;
-  background:#22c55e;
-  box-shadow:0 0 10px rgba(34,197,94,.9);
-  flex-shrink:0;
-}
-
-.benefit-control-title{
-  font-size:16px;
-  font-weight:600;
-  color:#eafff3;
-}
-
-.benefit-control-sub{
-  font-size:13px;
-  color:#c7f9dd;
-  margin-bottom:16px;
-  max-width:900px;
-  line-height:1.45;
-}
-
-/* === AUDIT – ŽLUTÁ === */
-.audit-yellow {
-  border: 1px solid rgba(250,204,21,.45);
-  background:
-    radial-gradient(circle at top left,
-      rgba(250,204,21,.12),
-      rgba(2,6,23,.95) 70%);
-}
-
-.audit-yellow .dot {
-  background: #facc15;
-  box-shadow:
-    0 0 6px rgba(250,204,21,.9),
-    0 0 14px rgba(250,204,21,.8),
-    0 0 30px rgba(250,204,21,.6);
-}
-
-/* === ODSAZENÍ AUDIT BOXU OD HORNÍHO OBSAHU === */
-.card.audit-yellow {
-  margin-top: 28px;   /* klidně 24–32 px */
-}
-
+table{width:100%;border-collapse:collapse;font-size:12px}
+th,td{padding:10px;border-bottom:1px solid var(--border)}
+th{color:var(--muted);text-align:left}
 
 </style>
 </head>
-
 <body>
-<div id="user-bar" style="
-  position:fixed;
-  top:12px;
-  right:16px;
-  z-index:9999;
-  font-size:12px;
-  color:#e5e7eb;
-  background:rgba(2,6,23,0.85);
-  border:1px solid rgba(148,163,184,0.3);
-  padding:6px 12px;
-  border-radius:999px;
-  display:none;
-">
-  Přihlášen: <span id="user-email"></span>
-  · <a href="#" id="logout" style="color:#4fa3ff;text-decoration:none;">Odhlásit</a>
-</div>
+
 
 <div class="page">
 <div class="card">
-  <div class="kicker">
-    <span class="dot"></span>
-    Interní rozhodovací vrstva
-  </div>
-  <h1>SPF – Síťový provozní fond družstva WIN.WIN</h1>
+  <h1>SPF – Síťový provizní fond družstva WIN.WIN</h1>
   <p>
-    Tato stránka slouží k <b>internímu vyhodnocení, schvalování a zamítání</b>
-    přídělů do SPF a matching bonusů. Nejedná se o veřejnou prezentaci
-    ani nárokový systém.
+    Tato stránka slouží k <b>internímu rozhodování, evidenci a auditu</b>
+    rozdělení prostředků SPF a matching bonusů.
+    <br><br>
+    <b>Nejedná se o nárokový systém</b> a žádná zde zobrazená hodnota
+    nezakládá automatické právo na výplatu či plnění.
   </p>
 </div>
-<div class="card">
-  <h2>Stav SPF za období</h2>
 
-  <table id="spf-table">
+<div class="card">
+  <h2>Kariérní statusy a koeficienty CRX</h2>
+  <p>
+    Přehled kariérních úrovní dle <b>Přílohy č. 1 k Proviznímu řádu</b>.
+    Koeficient CRX je aplikován automaticky dle splnění podmínek.
+  </p>
+
+  <table>
     <thead>
       <tr>
-        <th>Období</th>
-        <th>Celkový příděl CRX</th>
-        <th>Návrh do SPF</th>
-        <th>Stav</th>
-        <th>Akce</th>
+        <th>Status</th>
+        <th>Rozsah WW-KEY</th>
+        <th>Koeficient CRX / měsíc</th>
+        <th>Počet členů</th>
+        <th>Celkem CRX</th>
       </tr>
     </thead>
-    <tbody id="spf-periods">      <!-- DB -->
+    <tbody id="career-status-table">
+      <tr><td colspan="5">Načítám data…</td></tr>
     </tbody>
   </table>
 </div>
 <div class="card">
+  <h2>Rozhodnutí SPF za období</h2>
   <p>
-    SPF je interní nenárokový mechanismus družstva.
-    Přidělení prostředků podléhá výhradně rozhodnutí
-    orgánů družstva a nepředstavuje investici,
-    výnos ani garantované plnění.
+    Tato část slouží k formálnímu schválení nebo zamítnutí
+    návrhu rozdělení prostředků SPF.
   </p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Období</th>
+        <th>Návrh CRX</th>
+        <th>Stav</th>
+        <th>Akce</th>
+      </tr>
+    </thead>
+    <tbody id="spf-periods">
+      <tr><td colspan="4">Načítám období…</td></tr>
+    </tbody>
+  </table>
 </div>
 <div class="card">
-  <div class="actions" style="align-items:center; gap:16px;">
-  <span class="dot"></span>
-
-  <button class="btn-secondary" onclick="pdfSPF()">
-  PDF – rozhodnutí SPF (interní)
-</button>
-
-  <p class="muted" style="margin-top:8px;">
-    Generuje interní PDF přehled stavu SPF za zvolené období.
-    Dokument slouží výhradně pro evidenci a audit družstva.
-  </p>
-</div>
-
-
-<!-- ===== ČLENSKÁ KARTA – INTERNÍ VÝJEZD ===== -->
-<div style="margin-top: 12px; display: flex; justify-content: flex-start;">
-  <a href="member-intelligence.html" style="text-decoration:none;">
-    <button class="btn-secondary" style="
-      display:flex;
-      align-items:center;
-      gap:8px;
-      border-color:#38bdf8;
-      color:#38bdf8;
-    ">
-      <span style="
-        width:8px;
-        height:8px;
-        border-radius:999px;
-        background:#38bdf8;
-        box-shadow:
-          0 0 6px rgba(56,189,248,0.9),
-          0 0 14px rgba(56,189,248,0.8),
-          0 0 28px rgba(56,189,248,0.6);
-      "></span>
-      Členská karta – interní výjezd
-    </button>
-  </a>
-</div>
-<div class="card audit-yellow">
-  <div class="kicker">
-    <span class="dot dot-gold"></span>
-    Auditní výstup
-  </div>
-
-  <h2>Audit rozdělení SPF a matching bonusů</h2>
-
-  <p class="muted" style="margin-bottom:14px;">
-    Tento přehled zobrazuje <b>auditní záznam rozdělení prostředků
-    ze Síťového provozního fondu (SPF)</b> a odpovídající matching bonusy
-    za uzavřené období.<br>
-    Jedná se o <b>interní evidenční dokument</b>, který
-    <b>nezakládá právní nárok člena</b> na výplatu, odměnu ani jiné plnění.
+  <h2>Uzávěrka období</h2>
+  <p>
+    Formální uzavření období bez rozdělení prostředků.
+    Tento krok je <b>auditní a nevratný</b>.
   </p>
 
-  <div class="actions" style="align-items:center; gap:16px;">
-    <span class="dot dot-gold"></span>
-
-    <button class="btn-secondary"
-      onclick="openSPFDistributionAudit()">
-      Zobrazit audit rozdělení (PDF)
-    </button>
-
-    <span class="muted" style="font-size:12px;">
-      Uzavřené období
-    </span>
-  </div>
-</div>
-
-
-</div>
-<!-- ================= BENEFIT AVAILABILITY CONTROL ================= -->
-<section class="benefit-control-box">
-
-  <div class="benefit-control-header">
-    <span class="benefit-led"></span>
-    <div class="benefit-control-title">
-      Řízení dostupnosti členských benefitů
-    </div>
+  <div id="audit-info">
+    Uzavřeno: — <br>
+    Audit hash: — zatím nevygenerován
   </div>
 
-  <div class="benefit-control-sub">
-    Tato část slouží k <b>provoznímu řízení</b> dostupnosti benefitů
-    pro členy družstva WIN.WIN.<br>
-    Nejde o výpočet, přidělování ani nárokový systém – pouze o určení,
-    <b>které benefity jsou v dané fázi aktivní, připravované nebo pozastavené</b>.
+  <button style="margin-top:12px;color:#ef4444;border:1px solid #ef4444;background:none"
+    onclick="closePeriod()">
+    Uzavřít období
+  </button>
+</div>
+<div class="card" style="border-color:#22c55e">
+  <h2>Řízení dostupnosti členských benefitů</h2>
+  <p>
+    Tato část slouží k <b>provoznímu řízení dostupnosti benefitů</b>.
+    <br>
+    <b>Nejde o výpočet, přidělování ani nárokový systém.</b>
     Změny jsou auditně dohledatelné.
-  </div>
+  </p>
 
-  <div class="members-table-wrap">
-    <table class="members-table">
-      <thead>
-        <tr>
-          <th>Název</th>
-          <th>Kód</th>
-          <th>CRX</th>
-          <th>Stav</th>
-          <th>Akce</th>
-        </tr>
-      </thead>
-      <tbody id="benefitStatusTable">
-        <tr>
-          <td colspan="5">Načítám benefity…</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
-</section>
+  <table>
+    <thead>
+      <tr>
+        <th>Název</th>
+        <th>Kód</th>
+        <th>CRX</th>
+        <th>Stav</th>
+        <th>Akce</th>
+      </tr>
+    </thead>
+    <tbody id="benefitStatusTable">
+      <tr><td colspan="5">Načítám benefity…</td></tr>
+    </tbody>
+  </table>
+</div>
 <script type="module">
-import { createClient } from
-  "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-/* ================================
-   SUPABASE – JEDINÁ INSTANCE
-================================ */
 const supabase = createClient(
   "https://azfrniqqtetoqploxwgq.supabase.co",
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF6ZnJuaXFxdGV0b3FwbG94d2dxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3MzQ1OTYsImV4cCI6MjA4MzMxMDU5Nn0.QchmzNhs8owd6pkjZCk04u6PJoJ2Bhzz7oGV0KFyqdU"
 );
 
 window.supabase = supabase;
-window.selectedPeriod = null;
-
-/* ================================
-   LOAD SPF OBDOBÍ
-================================ */
-async function loadSPF() {
-  const { data, error } = await supabase
-    .from("spf_periods")
-    .select("*")
-    .order("period", { ascending: false });
-
-  const tbody = document.getElementById("spf-periods");
+async function loadCareerStatuses(){
+  const tbody = document.getElementById("career-status-table");
   tbody.innerHTML = "";
 
-  if (error || !data || !data.length) {
-    tbody.innerHTML =
-      "<tr><td colspan='5'>Žádná SPF období</td></tr>";
-    return;
-  }
+  const rows = [
+    ["MEMBER","0–999","0,23–0,25"],
+    ["METAL","1 000–1 999","0,25–0,30"],
+    ["BRONZE","2 000–5 999","0,30–0,32"],
+    ["SILVER","6 000–11 999","0,32–0,34"],
+    ["GOLD","12 000–19 999","0,34–0,36"],
+    ["PLATINUM","20 000–39 999","0,36–0,38"],
+    ["DIAMOND","40 000+","0,38–0,45"]
+  ];
 
-  window.selectedPeriod = null;
-
-  data.forEach(r => {
-
-    // automaticky bereme POSLEDNÍ UZAVŘENÉ období
-    if (!window.selectedPeriod && r.status === "distributed") {
-      window.selectedPeriod = r.period;
-    }
-
-    let actions = "—";
-
-    if (r.status === "draft") {
-  actions = `
-    <div class="actions">
-      <button class="approve"
-        onclick="decideSPF('${r.id}','approve')">
-        Schválit
-      </button>
-      <button class="reject"
-        onclick="decideSPF('${r.id}','reject')">
-        Zamítnout
-      </button>
-    </div>
-  `;
-}
-
-
-    if (r.status === "approved") {
-  actions = `
-    <div class="actions">
-      <button
-        onclick="distributeSPF('${r.id}', '${r.period}')"
-        style="background:#0f172a;color:#fff">
-        🔒 Rozdělit SPF
-      </button>
-    </div>
-  `;
-}
-
-
-    if (r.status === "distributed") {
-  actions = `
-    <div class="actions">
-      <span style="color:#22c55e;font-weight:600">
-        🟢 SPF uzavřeno
-      </span>
-    </div>
-  `;
-}
-
-
-    tbody.insertAdjacentHTML("beforeend", `
+  rows.forEach(r=>{
+    tbody.innerHTML += `
       <tr>
-        <td>${r.period}</td>
-        <td style="text-align:right">${r.total_crx_assigned}</td>
-        <td style="text-align:right">${r.spf_amount}</td>
-        <td>${r.status}</td>
-        <td>${actions}</td>
-      </tr>
-    `);
-  });
-}
-
-/* ================================
-   SPF ROZHODNUTÍ (EDGE)
-================================ */
-window.decideSPF = async (id, action) => {
-  if (!confirm("Rozhodnutí bude auditně zaznamenáno. Pokračovat?")) return;
-
-  const session = (await supabase.auth.getSession()).data.session;
-  if (!session) return alert("Nejste přihlášen.");
-
-  await fetch(
-    "https://azfrniqqtetoqploxwgq.supabase.co/functions/v1/decide_spf",
-    {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${session.access_token}`,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ id, action })
-    }
-  );
-
-  loadSPF();
-};
-
-/* ================================
-   SPF DISTRIBUCE + UZAVŘENÍ
-   (VARIANTA A – DB FUNKCE)
-================================ */
-window.distributeSPF = async (spfId, period) => {
-
-  const { data: already } = await supabase
-    .from("spf_distributions")
-    .select("id")
-    .eq("spf_period_id", spfId)
-    .limit(1);
-
-  if (already && already.length) {
-    alert("SPF už bylo rozděleno.");
-    return;
-  }
-
-  if (!confirm("Rozdělit SPF? Operace je auditně nevratná.")) return;
-
-  const session = (await supabase.auth.getSession()).data.session;
-  if (!session) return alert("Nejste přihlášen.");
-
-  const { data: benefits, error } = await supabase
-    .from("benefit_results")
-    .select("id, member_id, crx_awarded")
-    .eq("status", "approved")
-    .eq("period", period);
-
-  if (error || !benefits || !benefits.length) {
-    alert("Neexistují schválené benefity.");
-    return;
-  }
-
-  for (const b of benefits) {
-    await supabase.from("spf_distributions").insert({
-      spf_period_id: spfId,
-      benefit_result_id: b.id,
-      member_id: b.member_id,
-      crx_amount: b.crx_awarded,
-      audit_hash: crypto.randomUUID(),
-      source: "spf.html"
-    });
-  }
-
-  // 🔒 ROZHODNUTÍ DRUŽSTVA – OFICIÁLNÍ UZAVŘENÍ
-  await supabase.rpc("close_spf_period", {
-    p_spf_id: spfId,
-    p_decided_by: session.user.email
-  });
-
-  alert("SPF bylo rozděleno a období bylo rozhodnutím družstva uzavřeno.");
-  loadSPF();
-};
-
-/* ================================
-   PDF – ROZHODNUTÍ SPF (INTERNÍ)
-================================ */
-window.pdfSPF = () => {
-  const table = document.getElementById("spf-table");
-  if (!table) {
-    alert("Tabulka nenalezena.");
-    return;
-  }
-
-  openPdfWindow(
-    {
-      title: "AYAS-7 · WIN.WIN – Rozhodnutí SPF",
-      period: "—",
-      hash: "—"
-    },
-    table.outerHTML
-  );
-};
-
-
-/* ================================
-   PDF – AUDIT ROZDĚLENÍ SPF
-================================ */
-window.openSPFDistributionAudit = async () => {
-
-  if (!window.selectedPeriod) {
-    alert("Neexistuje žádné uzavřené období.");
-    return;
-  }
-
-  const { data, error } = await supabase
-    .from("v_spf_distribution_export")
-    .select("*")
-    .eq("period", window.selectedPeriod)
-    .order("member_name");
-
-  if (error || !data || !data.length) {
-    alert("Žádná data pro export.");
-    return;
-  }
-
-  let rows = "";
-  data.forEach(r => {
-    rows += `
-      <tr>
-        <td>${r.member_name}</td>
-        <td>${r.member_email}</td>
-        <td>${r.career_level ?? "—"}</td>
-        <td style="text-align:right">${r.matching_bonus_crx}</td>
-        <td style="text-align:right">${r.sources_count}</td>
+        <td>${r[0]}</td>
+        <td>${r[1]}</td>
+        <td>${r[2]}</td>
+        <td>0</td>
+        <td>0</td>
       </tr>
     `;
   });
-
-  /* === AUDITNÍ HASH === */
-  const auditPayload = JSON.stringify({
-    period: window.selectedPeriod,
-    rows: data.map(r => ({
-      member: r.member_email,
-      career: r.career_level,
-      amount: r.matching_bonus_crx
-    }))
-  });
-
-  const hashBuffer = await crypto.subtle.digest(
-    "SHA-256",
-    new TextEncoder().encode(auditPayload)
-  );
-
-  const auditHash = Array.from(new Uint8Array(hashBuffer))
-    .map(b => b.toString(16).padStart(2, "0"))
-    .join("");
-
-  openPdfWindow(
-    {
-      title: "Interní auditní záznam – SPF a matching bonusy",
-      period: window.selectedPeriod,
-      hash: auditHash
-    },
-    `
-    <table>
-      <tr>
-        <th>Člen</th>
-        <th>E-mail</th>
-        <th>Kariéra</th>
-        <th>MB (CRX)</th>
-        <th>Zdrojů</th>
-      </tr>
-      ${rows}
-    </table>
-    `
-  );
-};
-
-
-/* ================================
-   PDF OKNO – SPOLEČNÉ
-================================ */
-function openPdfWindow(meta, contentHtml) {
-  const win = window.open("", "_blank", "width=900,height=1200");
-  if (!win) {
-    alert("Nelze otevřít PDF okno.");
-    return;
-  }
-
-  win.document.write(`
-    <html>
-    <head>
-      <title>${meta.title}</title>
-      <style>
-        body {
-          font-family: Segoe UI, Arial, sans-serif;
-          padding: 40px;
-          color: #111;
-        }
-        .header {
-          border-bottom: 2px solid #000;
-          margin-bottom: 20px;
-          padding-bottom: 10px;
-        }
-        .brand {
-          font-size: 18px;
-          font-weight: 700;
-        }
-        .subtitle {
-          font-size: 13px;
-          color: #333;
-        }
-        table {
-          width: 100%;
-          border-collapse: collapse;
-          margin-top: 16px;
-        }
-        th, td {
-          border: 1px solid #ccc;
-          padding: 6px;
-          font-size: 12px;
-        }
-        th {
-          background: #f3f4f6;
-        }
-        .footer {
-          margin-top: 30px;
-          font-size: 11px;
-          color: #555;
-        }
-        .hash {
-          font-family: monospace;
-          font-size: 10px;
-          word-break: break-all;
-          margin-top: 6px;
-        }
-      </style>
-    </head>
-    <body>
-
-      <div class="header">
-        <div class="brand">AYAS-7 · WIN.WIN</div>
-        <div class="subtitle">
-          Interní auditní záznam – rozdělení SPF a matching bonusů<br>
-          <strong>Období:</strong> ${meta.period}
-        </div>
-      </div>
-
-      ${contentHtml}
-
-      <div class="footer">
-        Tento dokument je interním auditním a evidenčním výstupem družstva WIN.WIN.
-        Nezakládá právní nárok na výplatu, odměnu ani jiné plnění.
-        <div class="hash">
-          Auditní hash: ${meta.hash}
-        </div>
-      </div>
-
-    </body>
-    </html>
-  `);
-
-  win.document.close();
-  win.focus();
-}
-/* ================================
-   INIT
-================================ */
-loadSPF();
-</script>
-
-
-<script type="module">
-import { createClient } from
-  "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
-
-const supabase = createClient(
-  "https://azfrniqqtetoqploxwgq.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF6ZnJuaXFxdGV0b3FwbG94d2dxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3MzQ1OTYsImV4cCI6MjA4MzMxMDU5Nn0.QchmzNhs8owd6pkjZCk04u6PJoJ2Bhzz7oGV0KFyqdU"
-);
-
-window.supabase = supabase;
-/* ===============================
-   LOAD BENEFIT STATES
-================================ */
-async function loadBenefitStates() {
-  const tbody = document.getElementById("benefitStatusTable");
-
-  const { data, error } = await supabase
-    .from("benefits")
-    .select("id, name, code, crx_cost, is_active")
-    .order("name");
-
-  if (error || !data) {
-    tbody.innerHTML =
-      "<tr><td colspan='5'>Chyba načtení benefitů</td></tr>";
-    return;
-  }
-
-  tbody.innerHTML = "";
-
-  data.forEach(b => {
-
-    const statusLabel = b.is_active
-      ? "<span style='color:#22c55e;font-weight:600'>🟢 aktivní</span>"
-      : "<span style='color:#f59e0b'>🟡 připravuje se</span>";
-
-    tbody.insertAdjacentHTML("beforeend", `
-      <tr>
-        <td>${b.name}</td>
-        <td><code>${b.code}</code></td>
-        <td>${b.crx_cost ?? "—"}</td>
-        <td>${statusLabel}</td>
-        <td>
-          <select onchange="updateBenefitStatus('${b.id}', this.value === 'true')">
-            <option value="">— změnit —</option>
-            <option value="true">Aktivní</option>
-            <option value="false">Připravuje se</option>
-          </select>
-        </td>
-      </tr>
-    `);
-  });
 }
 
-/* ===============================
-   UPDATE BENEFIT ACTIVE STATE
-================================ */
-window.updateBenefitStatus = async (id, isActive) => {
-
-  if (!confirm(
-    "Změna dostupnosti benefitu se projeví okamžitě.\nPokračovat?"
-  )) return;
-
-  const { error } = await supabase
-    .from("benefits")
-    .update({ is_active: isActive })
-    .eq("id", id);
-
-  if (error) {
-    alert("Chyba při změně stavu benefitu");
-    console.error(error);
-    return;
-  }
-
-  loadBenefitStates();
-};
-
-/* ===============================
-   INIT
-================================ */
-document.addEventListener("DOMContentLoaded", loadBenefitStates);
+document.addEventListener("DOMContentLoaded", ()=>{
+  loadCareerStatuses();
+});
 </script>
-
 </body>
 </html>
