@@ -210,47 +210,103 @@ th{color:var(--muted);text-align:left}
 
 </div>
 
-
-
 <script type="module">
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
+/* =========================================================
+   SUPABASE – JEDINÁ INSTANCE PRO SPF
+   ========================================================= */
 const supabase = createClient(
   "https://azfrniqqtetoqploxwgq.supabase.co",
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF6ZnJuaXFxdGV0b3FwbG94d2dxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3MzQ1OTYsImV4cCI6MjA4MzMxMDU5Nn0.QchmzNhs8owd6pkjZCk04u6PJoJ2Bhzz7oGV0KFyqdU"
 );
 
 window.supabase = supabase;
-async function loadCareerStatuses(){
+
+/* =========================================================
+   KARIÉRNÍ STATUSY – READ ONLY (DB → UI)
+   Zdroj: v_spf_career_status_summary
+   ========================================================= */
+async function loadCareerStatuses() {
+
   const tbody = document.getElementById("career-status-table");
-  tbody.innerHTML = "";
+  if (!tbody) return;
 
-  const rows = [
-    ["MEMBER","0–999","0,23–0,25"],
-    ["METAL","1 000–1 999","0,25–0,30"],
-    ["BRONZE","2 000–5 999","0,30–0,32"],
-    ["SILVER","6 000–11 999","0,32–0,34"],
-    ["GOLD","12 000–19 999","0,34–0,36"],
-    ["PLATINUM","20 000–39 999","0,36–0,38"],
-    ["DIAMOND","40 000+","0,38–0,45"]
-  ];
+  tbody.innerHTML = `
+    <tr>
+      <td colspan="5" style="color:#9ca3af">
+        Načítám data z databáze…
+      </td>
+    </tr>
+  `;
 
-  rows.forEach(r=>{
-    tbody.innerHTML += `
+  const { data, error } = await supabase
+    .from("v_spf_career_status_summary")
+    .select(`
+      status,
+      wwkey_min,
+      wwkey_max,
+      crx_coef_min,
+      crx_coef_max,
+      member_count,
+      crx_total_min
+    `)
+    .order("wwkey_min");
+
+  if (error) {
+    console.error("❌ Chyba načtení kariérních statusů:", error);
+    tbody.innerHTML = `
       <tr>
-        <td>${r[0]}</td>
-        <td>${r[1]}</td>
-        <td>${r[2]}</td>
-        <td>0</td>
-        <td>0</td>
+        <td colspan="5" style="color:#ef4444">
+          Chyba načtení dat z DB
+        </td>
       </tr>
     `;
+    return;
+  }
+
+  if (!data || !data.length) {
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="5" style="color:#9ca3af">
+          Žádná data k zobrazení
+        </td>
+      </tr>
+    `;
+    return;
+  }
+
+  tbody.innerHTML = "";
+
+  data.forEach(row => {
+
+    const wwkeyRange = row.wwkey_max
+      ? `${row.wwkey_min.toLocaleString("cs-CZ")} – ${row.wwkey_max.toLocaleString("cs-CZ")}`
+      : `${row.wwkey_min.toLocaleString("cs-CZ")}+`;
+
+    const coefRange = `${row.crx_coef_min} – ${row.crx_coef_max}`;
+
+    tbody.insertAdjacentHTML("beforeend", `
+      <tr>
+        <td><strong>${row.status}</strong></td>
+        <td>${wwkeyRange}</td>
+        <td>${coefRange}</td>
+        <td>${row.member_count}</td>
+        <td>${Number(row.crx_total_min).toLocaleString("cs-CZ")}</td>
+      </tr>
+    `);
   });
 }
 
-document.addEventListener("DOMContentLoaded", ()=>{
+/* =========================================================
+   INIT
+   ========================================================= */
+document.addEventListener("DOMContentLoaded", () => {
   loadCareerStatuses();
 });
 </script>
+
+
+
 </body>
 </html>
