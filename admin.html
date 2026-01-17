@@ -223,6 +223,71 @@ th{
   color:var(--muted);
   margin-top:30px;
 }
+
+/* =========================================================
+   AYAS-7 ADMIN – JEDNOTNÉ POZADÍ (FINÁL)
+   ========================================================= */
+
+/* 1️⃣ CELÁ STRÁNKA – JEDNO POZADÍ */
+html, body {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+  background:
+    radial-gradient(
+      1200px 600px at 20% -10%,
+      #0b1220 0%,
+      #020617 60%
+    );
+  color: #e5e7eb;
+  font-family: "Segoe UI", Tahoma, Verdana, sans-serif;
+}
+
+/* 2️⃣ HLAVNÍ KONTEJNER ADMINU */
+.admin-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 48px 24px 64px;
+}
+
+/* 3️⃣ SEKCE JSOU PRŮHLEDNÉ (NELEPÍ SE) */
+.section {
+  background: transparent;
+  margin-bottom: 32px;
+}
+
+/* 4️⃣ KARTY / BOXY – JEDINÉ MÍSTO S POZADÍM */
+.card {
+  background: linear-gradient(
+    180deg,
+    rgba(15, 23, 42, 0.95),
+    rgba(2, 6, 23, 0.95)
+  );
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  border-radius: 18px;
+  padding: 22px 24px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.55);
+}
+
+/* 5️⃣ NADPISY KARET – LED MIMO TEXT */
+.card-header {
+  position: relative;
+  padding-left: 18px;
+}
+
+.card-header::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #22c55e;
+  box-shadow: 0 0 10px rgba(34, 197, 94, 0.9);
+}
+
 </style>
 </head>
 
@@ -239,59 +304,48 @@ th{
 
 <!-- QUICK ACTIONS -->
 <div class="quick-actions">
-
   <a href="spf.html" class="qa-box qa-spf">
     <div class="qa-led"></div>
     <div class="qa-title">SPF – síťový provizní fond</div>
-    <div class="qa-desc">
-      Řízení období, výpočty a rozdělení CRX
-    </div>
+    <div class="qa-desc">Řízení období, výpočty a rozdělení CRX</div>
     <div class="qa-cta">→ Přejít na SPF řízení</div>
   </a>
 
   <a href="member-intelligence.html" class="qa-box qa-member">
     <div class="qa-led"></div>
     <div class="qa-title">Členská karta – interní výjezd</div>
-    <div class="qa-desc">
-      Detail člena, síť, role, historie
-    </div>
-    <div class="qa-cta">→ Otevřít členský přehled</div>
+    <div class="qa-desc">Detail člena, role, historie</div>
+    <div class="qa-cta">→ Otevřít přehled</div>
   </a>
 
   <a href="audit-print.html" target="_blank" class="qa-box qa-audit">
     <div class="qa-led"></div>
     <div class="qa-title">Audit uzavřeného období</div>
-    <div class="qa-desc">
-      Oficiální výstup podle stanov a příloh
-    </div>
-    <div class="qa-cta">→ Otevřít auditní výstup (PDF)</div>
+    <div class="qa-desc">Oficiální výstup dle stanov</div>
+    <div class="qa-cta">→ Otevřít audit (PDF)</div>
   </a>
-
 </div>
 
 <!-- STATS -->
 <div class="stats">
   <div class="stat">
     <div class="stat-title">Členové</div>
-    <div class="stat-value">—</div>
+    <div class="stat-value" id="stat-members">—</div>
   </div>
   <div class="stat">
     <div class="stat-title">WW-KEY (celkem)</div>
-    <div class="stat-value">—</div>
+    <div class="stat-value" id="stat-wwkey">—</div>
   </div>
   <div class="stat">
     <div class="stat-title">CRX (celkem)</div>
-    <div class="stat-value">—</div>
+    <div class="stat-value" id="stat-crx">—</div>
   </div>
 </div>
 
 <!-- MEMBERS -->
 <div class="section">
   <h2>Členové družstva</h2>
-  <p>
-    Oficiální přehled WW-KEY, CRX, rolí a certifikace.
-  </p>
-
+  <p>Oficiální přehled WW-KEY, CRX, rolí a certifikace.</p>
   <table>
     <thead>
       <tr>
@@ -303,11 +357,9 @@ th{
         <th>Detail</th>
       </tr>
     </thead>
-    <tbody>
+    <tbody id="members-table-body">
       <tr>
-        <td colspan="6" style="color:#64748b">
-          Data budou načtena ze systému
-        </td>
+        <td colspan="6" style="color:#64748b">Načítám data…</td>
       </tr>
     </tbody>
   </table>
@@ -316,10 +368,7 @@ th{
 <!-- CERTIFICATION -->
 <div class="section">
   <h2>Certifikace členství</h2>
-  <p>
-    Potvrzení přijetí členského vkladu a vydání certifikátu WW-KEY.
-  </p>
-
+  <p>Potvrzení přijetí vkladu a vydání certifikátu WW-KEY.</p>
   <table>
     <thead>
       <tr>
@@ -330,11 +379,9 @@ th{
         <th>Akce</th>
       </tr>
     </thead>
-    <tbody>
+    <tbody id="certification-table-body">
       <tr>
-        <td colspan="5" style="color:#64748b">
-          Žádné čekající certifikace
-        </td>
+        <td colspan="5" style="color:#64748b">Žádné čekající certifikace</td>
       </tr>
     </tbody>
   </table>
@@ -343,26 +390,24 @@ th{
 <!-- AUDIT -->
 <div class="section">
   <h2>Audit uzavřeného období</h2>
-  <p>
-    Auditní stopa podle stanov a příloh družstva.
-  </p>
-
+  <p>Auditní stopa dle stanov a příloh družstva.</p>
   <div class="audit-box">
     <div>
-      <div>Datum uzávěrky: —</div>
-      <div>Audit hash: —</div>
+      <div id="audit-closed-at">Datum uzávěrky: —</div>
+      <div id="audit-hash">Audit hash: —</div>
     </div>
     <a href="audit-print.html" target="_blank" class="btn btn-green">
-      Otevřít auditní výstup (PDF)
+      Otevřít audit (PDF)
     </a>
   </div>
 </div>
 
 <div class="footer">
-  AYAS-7 · Admin = dohled · SPF = samostatný řídicí modul · audit-ready
+  AYAS-7 · Admin = dohled · SPF = samostatný modul · audit-ready
 </div>
 
 </div>
+
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
