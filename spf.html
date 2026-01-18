@@ -80,6 +80,11 @@ th{color:var(--muted);text-align:left}
   background:#22c55e;
   box-shadow:0 0 8px rgba(34,197,94,.9);
 }
+.table-wrapper {
+  max-height: 420px;   /* cca 10 řádků */
+  overflow-y: auto;
+  border-radius: 12px;
+}
 
 
 </style>
@@ -161,19 +166,24 @@ th{color:var(--muted);text-align:left}
     návrhu rozdělení prostředků SPF.
   </p>
 
-  <table>
-    <thead>
-      <tr>
-        <th>Období</th>
-        <th>Návrh CRX</th>
-        <th>Stav</th>
-        <th>Akce</th>
-      </tr>
-    </thead>
-    <tbody id="spf-periods">
-      <tr><td colspan="4">Načítám období…</td></tr>
-    </tbody>
-  </table>
+  <!-- ⬇️ JEDINÁ ZMĚNA: obal tabulky -->
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>Období</th>
+          <th>Návrh CRX</th>
+          <th>Stav</th>
+          <th>Akce</th>
+        </tr>
+      </thead>
+      <tbody id="spf-periods">
+        <tr>
+          <td colspan="4">Načítám období…</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </div>
 
 <div class="card">
