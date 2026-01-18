@@ -320,8 +320,8 @@ async function loadSPFPeriods() {
   if (!tbody) return;
 
   const { data } = await supabase
-    .from("spf_periods")
-    .select("period, spf_amount, status")
+    .from("spf_periods_ui")
+    .select("id, period, status")
     .order("period", { ascending: false });
 
   if (!data || !data.length) return;
@@ -358,29 +358,26 @@ window.closePeriod = async () => {
 
   if (!confirm("Uzávěrka je auditní a nevratná.\nPokračovat?")) return;
 
-  const { data, error } = await supabase.rpc(
-    "close_spf_period",
-    { p_period: window.selectedPeriod }
+  const res = await fetch(
+    "https://azfrniqqtetoqploxwgq.supabase.co/functions/v1/close-period",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "apikey": supabase?.supabaseKey ?? "",
+        "Authorization": `Bearer ${supabase?.supabaseKey ?? ""}`
+      },
+      body: JSON.stringify({ period: window.selectedPeriod })
+    }
   );
 
-  if (error) {
-    console.error(error);
+  if (!res.ok) {
     alert("Uzávěrka selhala.");
     return;
   }
 
-  const row = data?.[0];
-  if (!row) return;
-
-  const el = document.getElementById("audit-info");
-  if (el) {
-    el.innerHTML = `
-      Uzavřeno: ${new Date(row.closed_at).toLocaleString("cs-CZ")}<br>
-      Audit hash: ${row.audit_hash}
-    `;
-  }
-
-  alert("Období bylo uzavřeno.");
+  alert("Období bylo auditně uzavřeno.");
+  await loadSPFPeriods();
 };
 
 /* =========================================================
