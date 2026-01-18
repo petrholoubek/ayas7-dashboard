@@ -700,10 +700,14 @@ async function closePeriod(){
   }
 
   const res = await fetch(
-    "/functions/v1/close-period",
+    "https://azfrniqqtetoqploxwgq.supabase.co/functions/v1/close-period",
     {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        "apikey": SUPABASE_ANON_KEY,
+        "Authorization": `Bearer ${SUPABASE_ANON_KEY}`
+      },
       body: JSON.stringify({ period: periodId })
     }
   );
