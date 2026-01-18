@@ -287,6 +287,26 @@ searchInput.addEventListener("input", async () => {
 });
 
 /* ===============================
+   EXPORT PDF – ČLENSKÁ KARTA
+================================ */
+window.openMemberPdf = function () {
+  const email =
+    document.getElementById("mi-email").textContent;
+
+  if (!email || email === "—") {
+    alert("Nejprve načti člena.");
+    return;
+  }
+
+  window.open(
+    "member-card-pdf.html?email=" +
+      encodeURIComponent(email),
+    "_blank"
+  );
+};
+
+
+/* ===============================
    POTVRZENÉ NAČTENÍ ČLENA
 ================================ */
 window.confirmLoadMember = async () => {
@@ -311,11 +331,30 @@ window.confirmLoadMember = async () => {
       ? new Date(m.created_at).toLocaleString("cs-CZ")
       : "—";
 
-  /* === ZATÍM INFORMATIVNĚ (LZE ROZŠÍŘIT) === */
-  document.getElementById("net-direct").textContent = "—";
-  document.getElementById("net-total").textContent = "—";
-  document.getElementById("net-depth").textContent = "—";
+  /* ===============================
+   SÍŤ A ANGAŽOVANOST – READ ONLY
+================================ */
+const { data: network, error: netErr } = await supabase
+  .from("member_network")
+  .select("member_id")
+  .eq("parent_member_id", m.id);
+
+if (!netErr && network) {
+  document.getElementById("net-direct").textContent =
+    network.length;
+  document.getElementById("net-total").textContent =
+    network.length;
+  document.getElementById("net-depth").textContent =
+    network.length > 0 ? "1+" : "0";
+  document.getElementById("net-suggested").textContent =
+    "—";
+} else {
+  document.getElementById("net-direct").textContent = "0";
+  document.getElementById("net-total").textContent = "0";
+  document.getElementById("net-depth").textContent = "0";
   document.getElementById("net-suggested").textContent = "—";
+}
+
 };
 </script>
 
