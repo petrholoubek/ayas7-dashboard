@@ -556,15 +556,16 @@ async function loadMembers(){
 }
 
 /* =========================
-   CERTIFIKACE
+   CERTIFIKÁTY – POUZE INFO
 ========================= */
-async function loadCertificationQueue(){
+async function loadCertificates(){
   const { data, error } = await sb
-    .from("v_admin_certification_queue")
-    .select("*");
+    .from("v_admin_certificates")
+    .select("*")
+    .order("issued_at", { ascending: false });
 
   if(error){
-    console.error("Cert queue error", error);
+    console.error("Certificates error", error);
     return;
   }
 
@@ -576,8 +577,8 @@ async function loadCertificationQueue(){
   if(!data.length){
     tbody.innerHTML = `
       <tr>
-        <td colspan="5" style="color:#64748b">
-          Žádné čekající certifikace
+        <td colspan="6" style="color:#64748b">
+          Žádné certifikáty
         </td>
       </tr>`;
     return;
@@ -586,15 +587,12 @@ async function loadCertificationQueue(){
   data.forEach(c => {
     tbody.innerHTML += `
       <tr>
-        <td>${c.email}</td>
-        <td>${c.deposit_amount}</td>
-        <td>${c.ww_key_granted}</td>
-        <td>čeká</td>
-        <td>
-          <button onclick="confirmCertification(${c.member_id})">
-            Potvrdit
-          </button>
-        </td>
+        <td>${c.member_email}</td>
+        <td>${c.full_name ?? "—"}</td>
+        <td>${Number(c.deposit_amount).toLocaleString("cs-CZ")}</td>
+        <td>${c.ww_key_amount}</td>
+        <td>${new Date(c.issued_at).toLocaleString("cs-CZ")}</td>
+        <td>potvrzeno (platba)</td>
       </tr>
     `;
   });
@@ -727,7 +725,7 @@ async function closePeriod(){
 document.addEventListener("DOMContentLoaded", async () => {
   await loadStats();
   await loadMembers();
-  await loadCertificationQueue();
+  await loadCertificates();
   await loadAudit();
   await loadCurrentPeriod();
 
