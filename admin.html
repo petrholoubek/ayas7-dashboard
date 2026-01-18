@@ -656,7 +656,7 @@ async function confirmCertification(memberId){
 ========================= */
 async function loadCurrentPeriod(){
   const { data, error } = await sb
-    .from("spf_periods")
+    .from("spf_periods_ui")
     .select("id, period, status")
     .order("created_at", { ascending: false })
     .limit(1)
@@ -701,7 +701,7 @@ async function closePeriod(){
 
   // změna stavu období
   const { error } = await sb
-    .from("spf_periods")
+    .from("spf_periods_ui")
     .update({
       status: "closed",
       closed_at: new Date().toISOString()
