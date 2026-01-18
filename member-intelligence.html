@@ -147,6 +147,17 @@ td:first-child{color:var(--muted);width:40%}
          placeholder="Zadej e-mail nebo jméno člena…">
 
   <div id="search-results" style="margin-top:10px"></div>
+<div style="margin-top:12px;display:flex;gap:12px;align-items:center">
+  <div style="font-size:13px;color:#9ca3af">
+    Vybraný člen:
+    <b id="selected-member-label">— žádný —</b>
+  </div>
+
+  <button class="btn" onclick="confirmLoadMember()">
+    Načíst člena
+  </button>
+</div>
+
 </section>
 
 <!-- ======================================================
@@ -222,19 +233,92 @@ td:first-child{color:var(--muted);width:40%}
 <!-- ======================================================
    JS – HOOKY (DB DOPLNÍME)
 ====================================================== -->
-<script>
-function openMemberPdf(){
-  const email = document.getElementById("mi-email").textContent;
-  if(!email || email === "—"){
-    alert("Nejprve načti člena.");
+<script type="module">
+import { createClient } from
+  "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+
+/* ===============================
+   SUPABASE
+================================ */
+const supabase = createClient(
+  "https://azfrniqqtetoqploxwgq.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF6ZnJuaXFxdGV0b3FwbG94d2dxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3MzQ1OTYsImV4cCI6MjA4MzMxMDU5Nn0.QchmzNhs8owd6pkjZCk04u6PJoJ2Bhzz7oGV0KFyqdU"
+);
+
+let selectedMember = null;
+
+/* ===============================
+   LIVE SEARCH (EMAIL / JMÉNO)
+================================ */
+const searchInput = document.getElementById("member-search");
+const resultsBox = document.getElementById("search-results");
+
+searchInput.addEventListener("input", async () => {
+
+  const q = searchInput.value.trim();
+  resultsBox.innerHTML = "";
+  selectedMember = null;
+  document.getElementById("selected-member-label").textContent = "— žádný —";
+
+  if (q.length < 2) return;
+
+  const { data, error } = await supabase
+    .from("members_data")
+    .select("id, full_name, email, status, created_at")
+    .or(`email.ilike.%${q}%,full_name.ilike.%${q}%`)
+    .limit(10);
+
+  if (error || !data) return;
+
+  data.forEach(m => {
+    const div = document.createElement("div");
+    div.innerHTML = `
+      <b>${m.full_name ?? "—"}</b><br>
+      <span style="color:#9ca3af">${m.email}</span>
+    `;
+    div.onclick = () => {
+      selectedMember = m;
+      document.getElementById("selected-member-label").textContent =
+        `${m.full_name ?? "—"} · ${m.email}`;
+      resultsBox.innerHTML = "";
+    };
+    resultsBox.appendChild(div);
+  });
+});
+
+/* ===============================
+   POTVRZENÉ NAČTENÍ ČLENA
+================================ */
+window.confirmLoadMember = async () => {
+
+  if (!selectedMember) {
+    alert("Nejprve vyber člena ze seznamu.");
     return;
   }
-  window.open(
-    "member-card-pdf.html?email=" + encodeURIComponent(email),
-    "_blank"
-  );
-}
+
+  const m = selectedMember;
+
+  document.getElementById("mi-name").textContent =
+    m.full_name ?? "—";
+  document.getElementById("mi-email").textContent =
+    m.email;
+  document.getElementById("mi-status").textContent =
+    m.status ?? "—";
+  document.getElementById("mi-id").textContent =
+    m.id;
+  document.getElementById("mi-created").textContent =
+    m.created_at
+      ? new Date(m.created_at).toLocaleString("cs-CZ")
+      : "—";
+
+  /* === ZATÍM INFORMATIVNĚ (LZE ROZŠÍŘIT) === */
+  document.getElementById("net-direct").textContent = "—";
+  document.getElementById("net-total").textContent = "—";
+  document.getElementById("net-depth").textContent = "—";
+  document.getElementById("net-suggested").textContent = "—";
+};
 </script>
+
 
 </body>
 </html>
