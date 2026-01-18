@@ -321,6 +321,22 @@ html, body {
   box-shadow: none;
 }
 
+.table-wrapper {
+  max-height: 420px;       /* cca 10 řádků */
+  overflow-y: auto;
+  border-radius: 12px;
+}
+
+/* jemný scrollbar – volitelné */
+.table-wrapper::-webkit-scrollbar {
+  width: 8px;
+}
+.table-wrapper::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.2);
+  border-radius: 4px;
+}
+
+
 </style>
 </head>
 
@@ -397,45 +413,52 @@ html, body {
 <div class="section">
   <h2>Členové družstva</h2>
   <p>Oficiální přehled WW-KEY, CRX, rolí a certifikace.</p>
-  <table>
-    <thead>
-      <tr>
-        <th>Člen</th>
-        <th>WW-KEY</th>
-        <th>CRX</th>
-        <th>Role</th>
-        <th>Certifikát</th>
-        <th>Detail</th>
-      </tr>
-    </thead>
-    <tbody id="members-table-body">
-      <tr>
-        <td colspan="6" style="color:#64748b">Načítám data…</td>
-      </tr>
-    </tbody>
-  </table>
+
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>Člen</th>
+          <th>WW-KEY</th>
+          <th>CRX</th>
+          <th>Role</th>
+          <th>Certifikát</th>
+          <th>Detail</th>
+        </tr>
+      </thead>
+      <tbody id="members-table-body">
+        <tr>
+          <td colspan="6" style="color:#64748b">Načítám data…</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </div>
+
 
 <!-- CERTIFICATION -->
 <div class="section">
   <h2>Certifikace členství</h2>
   <p>Potvrzení přijetí vkladu a vydání certifikátu WW-KEY.</p>
-  <table>
-    <thead>
-      <tr>
-        <th>Člen</th>
-        <th>Vklad</th>
-        <th>CZK</th>
-        <th>WW-KEY</th>
-        <th>Akce</th>
-      </tr>
-    </thead>
-    <tbody id="certification-table-body">
-      <tr>
-        <td colspan="5" style="color:#64748b">Žádné čekající certifikace</td>
-      </tr>
-    </tbody>
-  </table>
+
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>Člen</th>
+          <th>Vklad (CZK)</th>
+          <th>WW-KEY</th>
+          <th>Stav</th>
+          <th>Akce</th>
+        </tr>
+      </thead>
+      <tbody id="certification-table-body">
+        <tr>
+          <td colspan="5" style="color:#64748b">Žádné čekající certifikace</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </div>
 
 <!-- AUDIT -->
