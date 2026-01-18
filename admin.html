@@ -699,32 +699,23 @@ async function closePeriod(){
     return;
   }
 
-  // změna stavu období
-  const { error } = await sb
-    .from("spf_periods_ui")
-    .update({
-      status: "closed",
-      closed_at: new Date().toISOString()
-    })
-    .eq("id", periodId);
+  const res = await fetch(
+    "/functions/v1/close-period",
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ period: periodId })
+    }
+  );
 
-  if(error){
+  if(!res.ok){
     alert("Chyba při uzavření období");
-    console.error(error);
     return;
   }
 
-  // auditní zápis
-  await sb.from("spf_decisions").insert({
-    spf_period_id: periodId,
-    action: "CLOSE_PERIOD",
-    note: "Období uzavřeno bez rozdělení prostředků"
-  });
-
-  alert("Období bylo uzavřeno.");
+  alert("Období bylo auditně uzavřeno.");
   await loadCurrentPeriod();
 }
-
 
 /* =========================
    INIT
