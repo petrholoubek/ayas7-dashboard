@@ -820,12 +820,12 @@ table.members-table tbody tr:nth-child(odd){
                </div>
 <div class="form-group">
   <label class="form-label" for="memberPromo">
-    Pokud máš promo kód od obchodníka, zadej jej zde.
+    Pokud máš E-mail od obchodníka, zadej jej zde.
   </label>
   <input
     id="memberPromo"
     class="form-input"
-    placeholder="např. AYAS-NOVAK-AB12"
+    placeholder="např. E-mail: jiri@seznam.cz"
   />
 </div>
 
@@ -1155,8 +1155,9 @@ if (!form) {
       document.getElementById("investmentAmount").value
     );
 
-    const promo_code =
-      document.getElementById("memberPromo").value.trim() || null;
+    const referrer_email =
+  document.getElementById("referrerEmail").value.trim().toLowerCase() || null;
+
 
     if (!amount || amount <= 0) {
       alert("Zadej částku");
@@ -1173,9 +1174,10 @@ if (!form) {
             "Authorization": "Bearer " + session.access_token
           },
           body: JSON.stringify({
-            amount,
-            promo_code
-          })
+  amount,
+  referrer_email
+})
+
         }
       );
 
