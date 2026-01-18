@@ -2,18 +2,17 @@
 <html lang="cs">
 <head>
 <meta charset="UTF-8">
-<title>WIN.WIN · Členská karta & Kariérní struktura</title>
+<title>WIN.WIN · Členská karta – interní výjezd</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#020617">
-<script type="module" src="./assets/js/gate.js"></script>
-<!-- FAVICON / PWA -->
-  <link rel="icon" type="image/png" sizes="192x192" href="/ayas7-192.png">
-  <link rel="icon" type="image/png" sizes="512x512" href="/ayas7-512.png">
-  <link rel="apple-touch-icon" href="/ayas7-192.png">
-  <meta name="theme-color" content="#020617">
+
+<!-- PWA -->
+<link rel="icon" href="/ayas7-192.png">
+<link rel="apple-touch-icon" href="/ayas7-192.png">
+
 <style>
 /* ======================================================
-   DNA SYSTÉMU
+   DNA SYSTÉMU – EZ POLICE STYLE
 ====================================================== */
 :root{
   --bg:#020617;
@@ -23,8 +22,8 @@
   --muted:#9ca3af;
 
   --gold:#facc15;
-  --teal:#2dd4bf;
-  --teal-soft:#0f2f2a;
+  --blue:#38bdf8;
+  --red:#ef4444;
 }
 
 *{box-sizing:border-box;margin:0;padding:0}
@@ -34,46 +33,44 @@ body{
   color:var(--text);
 }
 
-/* ======================================================
-   LAYOUT
-====================================================== */
 .page{
-  max-width:1400px;
+  max-width:1200px;
   margin:auto;
   padding:32px 16px 80px;
   display:grid;
-  gap:48px;
+  gap:36px;
 }
 
 .panel{
   background:radial-gradient(circle at top left,#0b1120,#020617 70%);
   border:1px solid var(--border);
-  border-radius:20px;
+  border-radius:18px;
   padding:22px;
 }
 
 .section-head{
   display:flex;
   align-items:center;
-  gap:12px;
+  gap:10px;
   font-size:12px;
-  letter-spacing:.18em;
+  letter-spacing:.14em;
   text-transform:uppercase;
-  margin-bottom:10px;
+  color:var(--muted);
+  margin-bottom:12px;
 }
 
 .led{
-  width:10px;height:10px;border-radius:999px;
+  width:8px;
+  height:8px;
+  border-radius:50%;
 }
 .led-gold{background:var(--gold);box-shadow:0 0 8px var(--gold)}
-.led-teal{background:var(--teal);box-shadow:0 0 10px var(--teal)}
+.led-blue{background:var(--blue);box-shadow:0 0 8px var(--blue)}
+.led-red{background:var(--red);box-shadow:0 0 8px var(--red)}
 
-p{color:var(--muted);font-size:13px;line-height:1.6}
+p{font-size:13px;line-height:1.6;color:var(--muted)}
 
-/* ======================================================
-   FORM
-====================================================== */
-.input, select{
+.input{
   width:100%;
   padding:10px 12px;
   border-radius:10px;
@@ -91,872 +88,153 @@ p{color:var(--muted);font-size:13px;line-height:1.6}
   cursor:pointer;
 }
 
-/* ======================================================
-   TABULKY
-====================================================== */
+.btn-danger{
+  border-color:var(--red);
+  color:var(--red);
+}
+
 table{
   width:100%;
   border-collapse:collapse;
-  font-size:12px;
+  font-size:13px;
 }
-
-th,td{
-  padding:12px;
+td{
+  padding:10px;
   border-bottom:1px solid var(--border);
-  text-align:left;
 }
+td:first-child{color:var(--muted);width:40%}
 
-tbody tr:nth-child(even){
-  background:rgba(255,255,255,.025);
+#search-results div{
+  padding:8px;
+  border-bottom:1px solid rgba(148,163,184,.15);
+  cursor:pointer;
 }
-
-/* ======================================================
-   OBCHODNÍCI – KLIDNÁ PRACOVNÍ ZÓNA
-====================================================== */
-.agents-panel{
-  background:
-    radial-gradient(circle at top left,
-      rgba(45,212,191,.12),
-      var(--teal-soft) 70%);
-  border:1px solid rgba(45,212,191,.35);
+#search-results div:hover{
+  background:rgba(255,255,255,.04);
 }
-
-/* ======================================================
-   GRID / RESPONSIVE
-====================================================== */
-.grid-2{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:24px;
-}
-.grid-3{
-  display:grid;
-  grid-template-columns:1fr 1fr 1fr;
-  gap:12px;
-}
-
-@media(max-width:900px){
-  .grid-2,.grid-3{grid-template-columns:1fr}
-}
-
-html, body {
-  height: 100%;
-  margin: 0;
-}
-
-body {
-  min-height: 100vh;
-  background:
-    radial-gradient(circle at 40% 0%,
-      #0f172a 0%,
-      #020617 65%,
-      #000 100%);
-  background-repeat: no-repeat;
-  background-attachment: fixed;
-  background-size: cover;
-  background-position: center top;
-
-  font-family: "Segoe UI", Tahoma, Verdana, sans-serif;
-  color: #e5e7eb;
-}
-
-/* ======================================================
-   LED STATUS DOT
-====================================================== */
-
-.led {
-  display: inline-block;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  margin-right: 8px;
-  vertical-align: middle;
-}
-
-/* MODRÁ – informační / stavová */
-.led-blue {
-  background: #38bdf8;
-  box-shadow:
-    0 0 6px rgba(56,189,248,0.8),
-    0 0 12px rgba(56,189,248,0.6);
-}
-
-/* ČERVENÁ – rozhodnutí / odpovědnost */
-.led-red {
-  background: #ef4444;
-  box-shadow:
-    0 0 6px rgba(239,68,68,0.8),
-    0 0 12px rgba(239,68,68,0.6);
-}
-
-/* ZLATÁ – audit / uzavření / autorita */
-.led-gold {
-  background: #facc15;
-  box-shadow:
-    0 0 6px rgba(250,204,21,0.8),
-    0 0 12px rgba(250,204,21,0.6);
-}
-/* ======================================================
-   ROZHODNUTÍ DRUŽSTVA – FINÁLNÍ ZAROVNÁNÍ
-====================================================== */
-
-.decision-form {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 10px;
-  max-width: 520px;   /* 🔒 sjednocení šířky */
-}
-
-.decision-form label {
-  font-size: 13px;
-  color: #9ca3af;
-}
-
-.decision-form select,
-.decision-form textarea {
-  width: 100%;
-  background: #020617;
-  border: 1px solid rgba(148,163,184,.25);
-  border-radius: 10px;
-  padding: 10px;
-  color: #e5e7eb;
-  font-family: inherit;
-}
-
-.decision-form textarea {
-  min-height: 90px;
-  resize: vertical;
-}
-
-/* TLAČÍTKO – STEJNÁ OSA JAKO TEXTAREA */
-.decision-submit {
-  align-self: flex-end;   /* 🔑 */
-  margin-top: 6px;
-}
-
-
 </style>
 </head>
 
 <body>
-<div id="user-bar" style="
-  position:fixed;
-  top:12px;
-  right:16px;
-  z-index:9999;
-  font-size:12px;
-  color:#e5e7eb;
-  background:rgba(2,6,23,0.85);
-  border:1px solid rgba(148,163,184,0.3);
-  padding:6px 12px;
-  border-radius:999px;
-  display:none;
-">
-  Přihlášen: <span id="user-email"></span>
-  · <a href="#" id="logout" style="color:#4fa3ff;text-decoration:none;">Odhlásit</a>
-</div>
 
 <div class="page">
 
 <!-- ======================================================
-   1️⃣ ČLENSKÁ KARTA – INTERNÍ VÝJEZD
+   HLAVIČKA
 ====================================================== -->
 <section class="panel">
   <div class="section-head">
     <span class="led led-gold"></span>
     Členská karta – interní výjezd
   </div>
-
-  <p>Autoritativní interní výstup systému. Nenárokové.</p>
-
-  <div class="grid-2" style="margin-top:20px">
-    <div>
-      <label>Email člena</label>
-      <input class="input" placeholder="clen@winwin.cz">
-      <div style="margin-top:12px;display:flex;gap:12px">
-        <button class="btn" onclick="loadMember()">
-  Načíst člena
-</button>
-
-<button class="btn" onclick="openMemberPdf()">
-  Export PDF
-</button>
-
-    </div>
-
-    <div class="panel">
-  <b>Výstup člena</b><br>
-  <span style="color:var(--muted)">
-    Identita · Angažovanost · SPF · Role · Matching
-  </span>
-
-  <hr style="margin:12px 0;opacity:.4">
-
-  <div style="font-size:13px;line-height:1.6">
-    <div><b>Jméno:</b> <span id="mi-name">—</span></div>
-    <div><b>Email:</b> <span id="mi-email">—</span></div>
-    <div><b>Stav:</b> <span id="mi-status">—</span></div>
-    <div><b>ID člena:</b> <span id="mi-id">—</span></div>
-    <div><b>Registrace:</b> <span id="mi-created">—</span></div>
-  </div>
-</div>
-
-  </div>
+  <p>
+    Autoritativní interní výstup systému WIN.WIN.  
+    Nenárokový dokument. Slouží výhradně k řízení, dohledu a auditu.
+  </p>
 </section>
 
 <!-- ======================================================
-   KARIÉRNÍ ODPOVĚDNOST A SCHVALOVÁNÍ POZICE ČLENA
+   RYCHLÉ VYHLEDÁNÍ ČLENA
 ====================================================== -->
 <section class="panel">
-
   <div class="section-head">
     <span class="led led-blue"></span>
-    Kariérní odpovědnost a schvalování pozice člena
+    Vyhledání člena
   </div>
 
-  <p class="muted">
-    Interní schvalovací rámec družstva WIN.WIN.
-    Uvedené hodnoty představují maximální matching bonus vyplývající
-    z potvrzené kariérní pozice a struktury sítě člena.
-  </p>
+  <input id="member-search"
+         class="input"
+         placeholder="Zadej e-mail nebo jméno člena…">
 
-  <!-- ===============================
-     HLAVNÍ KARTA
-  ============================== -->
-  <div class="card" id="career-approval-box">
-
-    <!-- ===== SOUHRN SÍTĚ ===== -->
-    <div class="subcard">
-      <div class="subcard-head">
-        <span class="led led-blue"></span>
-        Souhrn sítě člena
-      </div>
-
-      <table>
-        <tbody>
-          <tr>
-            <td>Přímí podřízení</td>
-            <td id="net-direct">—</td>
-          </tr>
-          <tr>
-            <td>Aktivní tým (celkem)</td>
-            <td id="net-total">—</td>
-          </tr>
-          <tr>
-            <td>Maximální hloubka struktury</td>
-            <td id="net-depth">—</td>
-          </tr>
-          <tr>
-            <td>Orientační návrh pozice (nezávazné)</td>
-            <td id="net-suggested-role">—</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-<div class="card">
-  <h3>Výběr člena</h3>
-
-  <select id="member-select" style="width:100%;padding:8px">
-    <option value="">— vyber člena —</option>
-  </select>
-</div>
-
-
-    <!-- ===== AKTUÁLNÍ KARIÉRNÍ STAV ===== -->
-    <div class="subcard">
-      <div class="subcard-head">
-        <span class="led led-blue"></span>
-        Aktuální kariérní pozice
-      </div>
-
-      <table>
-        <tbody>
-          <tr>
-            <td>Pozice</td>
-            <td id="career-current-role">—</td>
-          </tr>
-          <tr>
-            <td>Platná od</td>
-            <td id="career-valid-from">—</td>
-          </tr>
-          <tr>
-            <td>Schváleno kým</td>
-            <td id="career-approved-by">—</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <!-- ===== ROZHODNUTÍ DRUŽSTVA ===== -->
- <div class="subcard admin-only">
-  <h4>
-    <span class="led led-red"></span>
-    Rozhodnutí družstva
-  </h4>
-
-  <div class="decision-form">
-
-    <label for="career-role-select">
-      Schválit kariérní pozici
-    </label>
-    <select id="career-role-select">
-      <option value="">— vybrat pozici —</option>
-    </select>
-
-    <label for="career-decision-note">
-      Odůvodnění rozhodnutí (povinné)
-    </label>
-
-    <textarea
-      id="career-decision-note"
-      placeholder="Odůvodnění rozhodnutí družstva…">
-    </textarea>
-
-    <button class="btn-primary decision-submit"
-            onclick="approveCareerRole()">
-      Schválit kariérní pozici
-    </button>
-
-  </div>
-</div>
-
+  <div id="search-results" style="margin-top:10px"></div>
 </section>
 
 <!-- ======================================================
-   3️⃣ OBCHODNÍCI / AGENTS – KARIÉRNÍ REGISTRACE
+   HLAVNÍ KARTA ČLENA
 ====================================================== -->
-<section class="panel agents-panel">
+<section class="panel">
   <div class="section-head">
-    <span class="led led-teal"></span>
-    Obchodníci / Agents – kariérní registrace
+    <span class="led led-gold"></span>
+    Identita člena
+  </div>
+
+  <table>
+    <tr><td>Jméno</td><td id="mi-name">—</td></tr>
+    <tr><td>Email</td><td id="mi-email">—</td></tr>
+    <tr><td>Stav</td><td id="mi-status">—</td></tr>
+    <tr><td>ID člena</td><td id="mi-id">—</td></tr>
+    <tr><td>Registrace</td><td id="mi-created">—</td></tr>
+    <tr><td>Certifikace</td><td id="mi-cert">—</td></tr>
+  </table>
+
+  <div style="margin-top:16px">
+    <button class="btn" onclick="openMemberPdf()">
+      Export PDF – členská karta
+    </button>
+  </div>
+</section>
+
+<!-- ======================================================
+   SÍŤ A ANGAŽOVANOST (READ-ONLY)
+====================================================== -->
+<section class="panel">
+  <div class="section-head">
+    <span class="led led-blue"></span>
+    Síť a angažovanost (informativní)
+  </div>
+
+  <table>
+    <tr><td>Přímí podřízení</td><td id="net-direct">—</td></tr>
+    <tr><td>Velikost týmu</td><td id="net-total">—</td></tr>
+    <tr><td>Hloubka struktury</td><td id="net-depth">—</td></tr>
+    <tr><td>Orientační návrh pozice</td><td id="net-suggested">—</td></tr>
+  </table>
+</section>
+
+<!-- ======================================================
+   ROZHODNUTÍ DRUŽSTVA
+====================================================== -->
+<section class="panel">
+  <div class="section-head">
+    <span class="led led-red"></span>
+    Rozhodnutí družstva
   </div>
 
   <p>
-    Zde se vytváří dlouhodobá kariérní identita obchodníka.
-    Promo kódy a provize se spravují v admin sekci.
+    Tato část představuje formální rozhodnutí orgánů družstva.  
+    Každé rozhodnutí je auditně zaznamenáno.
   </p>
 
-  <!-- REGISTRACE -->
-  <div class="panel" style="margin-top:16px">
-    <b>Registrace obchodníka (kariérní vstup)</b>
+  <textarea id="decision-note"
+            class="input"
+            placeholder="Odůvodnění rozhodnutí…"
+            style="min-height:90px;margin-top:10px"></textarea>
 
-    <div class="grid-3" style="margin-top:12px">
-      <input class="input" placeholder="Jméno">
-      <input class="input" placeholder="Email">
-      <select>
-        <option value="">Vyber kariérní roli</option>
-        <option>T</option><option>T1</option><option>T2</option><option>T3</option>
-        <option>M</option><option>M1</option><option>M2</option><option>M3</option>
-        <option>TM</option><option>TM1</option><option>TM2</option><option>TM3</option><option>TM4</option>
-        <option>TL</option><option>TL1</option><option>TL2</option>
-        <option>VP</option><option>P</option>
-      </select>
-    </div>
-<button
-  class="btn"
-  style="margin-top:12px"
-  onclick="registerAgent()">
-  Zapsat obchodníka
-</button>
-
-  <!-- SEZNAM -->
-  <b style="display:block;margin-top:24px">Obchodníci (přehled)</b>
-
-  <table style="margin-top:8px">
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Jméno</th>
-        <th>Email</th>
-        <th>Kariérní role</th>
-        <th>Promo kódy</th>
-      </tr>
-    </thead>
-    <tbody id="agents-career-body">
-  <tr>
-    <td colspan="5">Načítám obchodníky…</td>
-  </tr>
-</tbody>
-
-  </table>
-<button class="btn" onclick="openAgentsPdf()">
-  PDF – evidence obchodníků
-</button>
-
+  <div style="margin-top:12px">
+    <button class="btn btn-danger">
+      Potvrdit rozhodnutí
+    </button>
+  </div>
 </section>
 
 </div>
 
 <!-- ======================================================
-     SUPABASE KLIENT
+   JS – HOOKY (DB DOPLNÍME)
 ====================================================== -->
-<script type="module">
-import { createClient } from
-  "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
-
-window.supabase = createClient(
-  "https://azfrniqqtetoqploxwgq.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF6ZnJuaXFxdGV0b3FwbG94d2dxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3MzQ1OTYsImV4cCI6MjA4MzMxMDU5Nn0.QchmzNhs8owd6pkjZCk04u6PJoJ2Bhzz7oGV0KFyqdU"
-);
-</script>
-
 <script>
-/* =========================================
-   REGISTRACE OBCHODNÍKA (JEDINÁ VERZE)
-========================================= */
-async function registerAgent() {
-
-  const name = document.querySelector(
-    "input[placeholder='Jméno']"
-  )?.value.trim();
-
-  const email = document.querySelector(
-    "input[placeholder='Email']"
-  )?.value.trim();
-
-  const role = document.querySelector("select")?.value;
-
-  if (!name || !email || !role) {
-    alert("Vyplň jméno, e-mail a kariérní roli.");
-    return;
-  }
-
-  // 🔒 zatím jen UI + log (DB připojíme později)
-  console.log("REGISTRACE OBCHODNÍKA:", {
-    name, email, role
-  });
-
-  alert(
-    "Obchodník je připraven k zápisu.\n" +
-    "Další krok: INSERT do DB."
-  );
-}
-
-/* =========================================
-   PDF – EVIDENCE OBCHODNÍKŮ
-========================================= */
-function openAgentsPdf() {
-  window.open(
-    "/agents-career-pdf.html?v=20260115",
-    "_blank"
-  );
-}
-
-
-/* =========================================
-   NAČTENÍ ČLENA – MEMBER INTELLIGENCE
-========================================= */
-async function loadMember() {
-
-  const emailInput = document.querySelector(
-    "input[placeholder='clen@winwin.cz']"
-  );
-
-  if (!emailInput || !emailInput.value) {
-    alert("Zadej e-mail člena.");
-    return;
-  }
-
-  const email = emailInput.value.trim().toLowerCase();
-
-  const { data, error } = await window.supabase
-    .from("members_data")
-    .select("*")
-    .eq("email", email)
-    .single();
-
-  if (error || !data) {
-    console.error(error);
-    alert("Člen nebyl nalezen.");
-    return;
-  }
-
-  document.getElementById("mi-name").textContent =
-    data.full_name || data.name || "—";
-
-  document.getElementById("mi-email").textContent =
-    data.email;
-
-  document.getElementById("mi-status").textContent =
-    data.status || "—";
-
-  document.getElementById("mi-id").textContent =
-    data.id ?? "—";
-
-  document.getElementById("mi-created").textContent =
-    data.created_at
-      ? new Date(data.created_at).toLocaleString("cs-CZ")
-      : "—";
-}
-
-/* =========================================
-   EXPORT PDF – ČLENSKÁ KARTA (S EMAIL)
-========================================= */
-function openMemberPdf() {
-
-  const emailInput = document.querySelector(
-    "input[placeholder='clen@winwin.cz']"
-  );
-
-  if (!emailInput || !emailInput.value) {
+function openMemberPdf(){
+  const email = document.getElementById("mi-email").textContent;
+  if(!email || email === "—"){
     alert("Nejprve načti člena.");
     return;
   }
-
-  const email = emailInput.value.trim().toLowerCase();
-
   window.open(
-    "member-card-pdf.html?email=" +
-      encodeURIComponent(email),
+    "member-card-pdf.html?email=" + encodeURIComponent(email),
     "_blank"
   );
 }
 </script>
-<script>
-async function registerAgent() {
-
-  const nameInput = document.querySelector("input[placeholder='Jméno']");
-  const emailInput = document.querySelector("input[placeholder='Email']");
-  const roleSelect = document.querySelector("select");
-
-  if (!nameInput || !emailInput || !roleSelect) {
-    alert("Formulář není kompletní.");
-    return;
-  }
-
-  const name = nameInput.value.trim();
-  const email = emailInput.value.trim().toLowerCase();
-  const roleCode = roleSelect.value;
-
-  if (!name || !email || !roleCode) {
-    alert("Vyplň jméno, e-mail a kariérní roli.");
-    return;
-  }
-
-  /* 1️⃣ najdeme člena */
-  const { data: member, error: memberError } = await window.supabase
-    .from("members_data")
-    .select("id")
-    .eq("email", email)
-    .single();
-
-  if (memberError || !member) {
-    alert("Člen s tímto e-mailem neexistuje.");
-    return;
-  }
-
-  /* 2️⃣ najdeme kariérní roli */
-  const { data: role, error: roleError } = await window.supabase
-    .from("career_roles")
-    .select("id")
-    .eq("code", roleCode)
-    .single();
-
-  if (roleError || !role) {
-    alert("Neplatná kariérní role.");
-    return;
-  }
-
-  /* 3️⃣ deaktivujeme staré role */
-await window.supabase
-  .from("member_career")
-  .update({ status: "revoked" })
-  .eq("member_id", member.id)
-  .eq("status", "active");
-
-/* 4️⃣ zapíšeme novou kariéru */
-const { error: insertError } = await window.supabase
-  .from("member_career")
-  .insert({
-    member_id: member.id,
-    role_id: role.id,
-    status: "active",
-    assigned_by: "admin",
-    note: "Kariérní registrace – interní rozhodnutí"
-  });
-
-
-  if (insertError) {
-    console.error(insertError);
-    alert("Chyba při zápisu kariéry.");
-    return;
-  }
-
-  alert("✅ Obchodník byl úspěšně zaregistrován.");
-
-  nameInput.value = "";
-  emailInput.value = "";
-  roleSelect.value = "";
-}
-</script>
-
-<script>
-async function loadAgentsCareer() {
-
-  const tbody = document.getElementById("agents-career-body");
-  if (!tbody) return;
-
-  tbody.innerHTML =
-    `<tr><td colspan="5">Načítám obchodníky…</td></tr>`;
-
-  const { data, error } = await window.supabase
-    .from("member_career")
-    .select(`
-      id,
-      assigned_at,
-      members_data (
-        full_name,
-        email
-      ),
-      career_roles (
-        code,
-        name
-      )
-    `)
-    .eq("status", "active");
-
-  if (error) {
-    console.error("Chyba při načítání kariéry:", error);
-    tbody.innerHTML =
-      `<tr><td colspan="5">Chyba načtení kariéry</td></tr>`;
-    return;
-  }
-
-  if (!data || data.length === 0) {
-    tbody.innerHTML =
-      `<tr><td colspan="5">Žádní obchodníci nejsou evidováni.</td></tr>`;
-    return;
-  }
-
-  tbody.innerHTML = "";
-
-  data.forEach(row => {
-
-    const name = row.members_data?.full_name ?? "—";
-    const email = row.members_data?.email ?? "—";
-    const role =
-      row.career_roles
-        ? `${row.career_roles.code} – ${row.career_roles.name}`
-        : "—";
-
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td>${row.id}</td>
-      <td>${name}</td>
-      <td>${email}</td>
-      <td>${role}</td>
-      <td>—</td>
-    `;
-
-    tbody.appendChild(tr);
-  });
-}
-
-/* automatické načtení po otevření stránky */
-document.addEventListener("DOMContentLoaded", loadAgentsCareer);
-</script>
-
-<script type="module">
-import { createClient } from
-  "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
-
-/* ===============================
-   SUPABASE
-================================ */
-const supabase = createClient(
-  "https://azfrniqqtetoqploxwgq.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF6ZnJuaXFxdGV0b3FwbG94d2dxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3MzQ1OTYsImV4cCI6MjA4MzMxMDU5Nn0.QchmzNhs8owd6pkjZCk04u6PJoJ2Bhzz7oGV0KFyqdU"
-);
-
-window.supabase = supabase;
-
-let currentMemberId = null;
-
-/* ===============================
-   LOAD CAREER ROLES (REFERENCE)
-================================ */
-async function loadCareerRoles() {
-  const { data, error } = await supabase
-    .from("career_roles")
-    .select("code, name, max_matching_percent")
-    .eq("is_active", true)
-    .order("max_matching_percent");
-
-  const select = document.getElementById("career-role-select");
-  select.innerHTML = `<option value="">— vybrat pozici —</option>`;
-
-  if (error || !data) return;
-
-  data.forEach(r => {
-    select.insertAdjacentHTML(
-      "beforeend",
-      `<option value="${r.code}">
-        ${r.code} – ${r.name} (${r.max_matching_percent}%)
-      </option>`
-    );
-  });
-}
-
-/* ===============================
-   LOAD MEMBER SUMMARY
-================================ */
-async function loadMemberCareerSummary(memberId) {
-  currentMemberId = memberId;
-
-  /* --- SÍŤ (ZATÍM JEDNODUCHÉ) --- */
-  const { data: net } = await supabase
-    .from("member_network")
-    .select("member_id")
-    .eq("parent_member_id", memberId);
-
-  document.getElementById("net-direct").innerText =
-    net?.length ?? "0";
-
-  document.getElementById("net-total").innerText =
-    net?.length ?? "0";
-
-  document.getElementById("net-depth").innerText =
-    net?.length ? "1+" : "0";
-
-  document.getElementById("net-suggested-role").innerText =
-    "—";
-
-  /* --- AKTUÁLNÍ KARIÉRA --- */
-  const { data: career } = await supabase
-    .from("member_career_history")
-    .select("career_level, valid_from, approved_by")
-    .eq("member_id", memberId)
-    .order("valid_from", { ascending: false })
-    .limit(1);
-
-  if (career && career.length) {
-    const c = career[0];
-
-    document.getElementById("career-current-role").innerText =
-      c.career_level ?? "—";
-
-    document.getElementById("career-valid-from").innerText =
-      c.valid_from
-        ? new Date(c.valid_from).toLocaleDateString()
-        : "—";
-
-    document.getElementById("career-approved-by").innerText =
-      c.approved_by ?? "—";
-  } else {
-    document.getElementById("career-current-role").innerText = "—";
-    document.getElementById("career-valid-from").innerText = "—";
-    document.getElementById("career-approved-by").innerText = "—";
-  }
-}
-
-/* ===============================
-   LOAD MEMBERS LIST
-================================ */
-async function loadMembersList() {
-  const { data, error } = await supabase
-    .from("members_data")
-    .select("id, email, full_name")
-    .order("id");
-
-  if (error || !data) {
-    console.error(error);
-    return;
-  }
-
-  const select = document.getElementById("member-select");
-  select.innerHTML = `<option value="">— vyber člena —</option>`;
-
-  data.forEach(m => {
-    select.insertAdjacentHTML(
-      "beforeend",
-      `<option value="${m.id}">
-        ${m.full_name ?? m.email} (ID ${m.id})
-      </option>`
-    );
-  });
-}
-
-/* ===============================
-   APPROVE CAREER ROLE
-================================ */
-window.approveCareerRole = async () => {
-
-  if (!currentMemberId) {
-    alert("Nejprve načti člena.");
-    return;
-  }
-
-  const careerLevel =
-    document.getElementById("career-role-select").value;
-
-  const note =
-    document.getElementById("career-decision-note").value.trim();
-
-  if (!careerLevel) {
-    alert("Vyber kariérní pozici.");
-    return;
-  }
-
-  if (!note) {
-    alert("Odůvodnění je povinné.");
-    return;
-  }
-
-  if (!confirm(
-    "Schválit kariérní pozici?\nRozhodnutí bude auditně zaznamenáno."
-  )) return;
-
-  const session = (await supabase.auth.getSession()).data.session;
-  if (!session) {
-    alert("Nejste přihlášen.");
-    return;
-  }
-
-  const { error } = await supabase
-    .from("member_career_history")
-    .insert({
-      member_id: currentMemberId,
-      career_level: careerLevel,
-      valid_from: new Date().toISOString().slice(0,10),
-      approved_by: session.user.id,
-      note: note,
-      source: "member-intelligence"
-    });
-
-  if (error) {
-    alert("Chyba při schválení pozice.");
-    console.error(error);
-    return;
-  }
-
-  alert("Kariérní pozice byla schválena.");
-  loadMemberCareerSummary(currentMemberId);
-};
-
-/* ===============================
-   INIT
-================================ */
-document.addEventListener("DOMContentLoaded", () => {
-
-  loadMembersList();
-  loadCareerRoles();
-
-  const memberSelect =
-    document.getElementById("member-select");
-
-  if (memberSelect) {
-    memberSelect.addEventListener("change", e => {
-      const memberId = e.target.value;
-      if (memberId) {
-        loadMemberCareerSummary(Number(memberId));
-      }
-    });
-  }
-
-});
-</script>
-
 
 </body>
 </html>
