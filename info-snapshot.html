@@ -178,6 +178,196 @@ footer{
   background:#22c55e;
   box-shadow:0 0 6px rgba(34,197,94,.8);
 }
+/* =========================
+   TOKEN ROW – SIDE BY SIDE
+========================= */
+
+.token-row{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:22px;
+}
+
+/* Na menších mobilech se to zlomí – přirozeně */
+@media(max-width:760px){
+  .token-row{
+    grid-template-columns:1fr;
+  }
+}
+
+.token-box{
+  position:relative;
+  padding:22px 22px 26px;
+  border-radius:20px;
+  background:linear-gradient(180deg,rgba(15,23,42,.95),rgba(2,6,23,.98));
+  border:1px solid var(--border);
+  overflow:hidden;
+}
+
+.token-box::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  opacity:.12;
+  pointer-events:none;
+}
+
+/* HEAD */
+.token-head h3{
+  margin:0;
+  font-size:15px;
+  letter-spacing:.1em;
+}
+.token-head span{
+  display:block;
+  margin-top:4px;
+  font-size:11px;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:var(--muted);
+}
+
+/* VALUE */
+.token-value{
+  margin:18px 0 16px;
+  font-size:32px;
+  font-weight:900;
+  font-variant-numeric:tabular-nums;
+}
+.token-value.internal{
+  font-size:20px;
+  letter-spacing:.2em;
+  color:#c084fc;
+}
+
+/* META */
+.token-meta{
+  display:flex;
+  justify-content:space-between;
+  font-size:13px;
+  margin-top:6px;
+}
+
+/* FOOT */
+.token-foot{
+  margin-top:14px;
+  font-size:11px;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+  color:var(--muted);
+}
+.token-foot.prestige{
+  color:#d8b4fe;
+  font-weight:600;
+}
+
+/* COLOR IDENTITY */
+.token-box.unit{
+  border-top:3px solid var(--blue);
+}
+.token-box.unit::before{
+  background:radial-gradient(circle at 20% 0%, var(--blue), transparent 60%);
+}
+
+.token-box.reserve{
+  border-top:3px solid var(--yellow);
+}
+.token-box.reserve::before{
+  background:radial-gradient(circle at 20% 0%, var(--yellow), transparent 60%);
+}
+
+.token-box.key{
+  border-top:3px solid var(--purple);
+}
+.token-box.key::before{
+  background:radial-gradient(circle at 20% 0%, var(--purple), transparent 60%);
+}
+.trust-panel{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+
+.trust-row{
+  display:flex;
+  justify-content:space-between;
+  font-size:13px;
+  padding:6px 0;
+  border-bottom:1px dashed rgba(255,255,255,.06);
+}
+
+.trust{
+  font-weight:700;
+  letter-spacing:.08em;
+}
+
+.trust.ok{
+  color:#22c55e;
+}
+/* =========================
+   SYSTEM TRACE PANEL
+========================= */
+
+.trace-panel{
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+}
+
+/* FLOW */
+.trace-flow{
+  height:90px;
+  border-radius:12px;
+  background:linear-gradient(
+    180deg,
+    rgba(56,189,248,.08),
+    rgba(2,6,23,.95)
+  );
+  position:relative;
+  overflow:hidden;
+}
+
+.trace-line{
+  position:absolute;
+  inset:0;
+  background:linear-gradient(
+    120deg,
+    transparent 30%,
+    rgba(56,189,248,.35),
+    transparent 70%
+  );
+  animation:traceFlow 6s linear infinite;
+}
+
+@keyframes traceFlow{
+  from{transform:translateX(-100%)}
+  to{transform:translateX(100%)}
+}
+
+/* TIMELINE */
+.trace-log{
+  font-size:12px;
+  line-height:1.7;
+  color:#9ca3af;
+}
+
+.trace-note{
+  font-size:11px;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:#64748b;
+}
+/* OFFLINE MODE – TRACE */
+body.offline .trace-line{
+  animation:none;
+  opacity:.3;
+}
+
+body.offline .trace-note::after{
+  content:" · waiting for snapshot";
+  color:#64748b;
+}
+
 
 </style>
 </head>
@@ -199,6 +389,72 @@ footer{
   </div>
 </section>
 
+<!-- TOKEN COCKPIT -->
+<section class="section">
+  <div class="section-label">Tokens · Core Layers</div>
+
+  <div class="token-row">
+
+    <!-- WW-UNIT -->
+    <div class="token-box unit">
+      <div class="token-head">
+        <h3>WW-UNIT</h3>
+        <span>Operational</span>
+      </div>
+
+      <div class="token-value" id="unitPrice">$1.14</div>
+
+      <div class="token-meta">
+        <span>Deploy</span>
+        <span id="unitSupply" class="value">—</span>
+      </div>
+
+      <div class="token-foot">DEX · Pool Active</div>
+    </div>
+
+    <!-- WW-RESERVE -->
+    <div class="token-box reserve">
+      <div class="token-head">
+        <h3>WW-RESERVE</h3>
+        <span>Stability</span>
+      </div>
+
+      <div class="token-value" id="reservePrice">$0.99</div>
+
+      <div class="token-meta">
+        <span>Backing</span>
+        <span id="reserveBacking" class="value">—</span>
+      </div>
+
+      <div class="token-foot">DEX · Backed</div>
+    </div>
+
+    <!-- WW-KEY -->
+    <div class="token-box key">
+      <div class="token-head">
+        <h3>WW-KEY</h3>
+        <span>Internal</span>
+      </div>
+
+      <div class="token-value internal">INTERNAL</div>
+
+      <div class="token-meta">
+        <span>Issued</span>
+        <span id="keyIssued" class="value">—</span>
+      </div>
+
+      <div class="token-meta">
+        <span>Holders</span>
+        <span id="keyHolders" class="value">—</span>
+      </div>
+
+      <div class="token-foot prestige">FOUNDING CIRCLE</div>
+    </div>
+
+  </div>
+</section>
+
+
 <!-- SYSTEM -->
 <section class="section">
   <div class="section-label">System</div>
@@ -210,46 +466,53 @@ footer{
   </div>
 </section>
 
-<!-- LIQUIDITY + TOKENS -->
 <section class="section grid">
 
-  <div class="card">
-    <div class="section-label">Liquidity</div>
-    <div class="metric"><span>TVL</span><span id="liqTVL" class="value">—</span></div>
-    <div class="metric"><span>Utilization</span><span id="liqUtil" class="value">—</span></div>
-    <div class="metric"><span>Depth</span><span id="liqDepth" class="value">—</span></div>
-    <div class="metric"><span>Slippage</span><span id="liqSlip" class="value">—</span></div>
+  <!-- LEFT: SYSTEM TRACE -->
+  <div class="card trace-panel">
+    <div class="section-label">System Trace</div>
+
+    <div class="trace-flow">
+      <div class="trace-line"></div>
+    </div>
+
+    <div class="trace-log">
+      <div>• Snapshot generated</div>
+      <div>• Pool verified</div>
+      <div>• Reserve checked</div>
+      <div>• Snapshot generated</div>
+    </div>
+
+    <div class="trace-note">Snapshot-based system activity</div>
   </div>
 
-<div class="card">
-  <div class="section-label">Tokens</div>
+  <!-- RIGHT: SYSTEM LINKS -->
+  <div class="card trust-panel">
+  <div class="section-label">System Links</div>
 
-  <div class="metric">
-    <span>WW-UNIT · supply</span>
-    <span id="unitSupply" class="value">—</span>
+  <div class="trust-row">
+    <span>Snapshot Writer</span>
+    <span class="trust ok">RUNNING</span>
   </div>
 
-  
-
-  <div class="metric">
-  <span>WW-RESERVE · price</span>
-  <span id="reservePrice" class="value">—</span>
-</div>
-
-<div class="metric">
-  <span>WW-RESERVE · backing</span>
-  <span id="reserveBacking" class="value">—</span>
-</div>
-
-
-  <div class="metric">
-    <span>WW-KEY · issued</span>
-    <span id="keyIssued" class="value">—</span>
+  <div class="trust-row">
+    <span>Snapshot API</span>
+    <span class="trust ok">LIVE</span>
   </div>
 
-  <div class="metric">
-    <span>WW-KEY · holders</span>
-    <span id="keyHolders" class="value">—</span>
+  <div class="trust-row">
+    <span>Cloud Tunnel</span>
+    <span class="trust ok">CONNECTED</span>
+  </div>
+
+  <div class="trust-row">
+    <span>DEX</span>
+    <span class="trust ok">AVAILABLE</span>
+  </div>
+
+  <div class="trust-row">
+    <span>Liquidity Pool</span>
+    <span class="trust ok">ACTIVE</span>
   </div>
 </div>
 
@@ -478,6 +741,7 @@ function updateNet(online) {
   if (sectionDot) {
     sectionDot.classList.toggle("live", online);
   }
+document.body.classList.toggle("offline", !online);
 }
 
 
