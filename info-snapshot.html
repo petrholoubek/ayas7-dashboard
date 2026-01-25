@@ -225,14 +225,22 @@ footer{
   <div class="section-label">Tokens</div>
 
   <div class="metric">
-    <span>WW-UNIT</span>
+    <span>WW-UNIT · supply</span>
     <span id="unitSupply" class="value">—</span>
   </div>
 
+  
+
   <div class="metric">
-    <span>WW-RESERVE</span>
-    <span id="reserveSupply" class="value">—</span>
-  </div>
+  <span>WW-RESERVE · price</span>
+  <span id="reservePrice" class="value">—</span>
+</div>
+
+<div class="metric">
+  <span>WW-RESERVE · backing</span>
+  <span id="reserveBacking" class="value">—</span>
+</div>
+
 
   <div class="metric">
     <span>WW-KEY · issued</span>
@@ -344,29 +352,53 @@ function updateHealthBar(v){
   }
 
   function render(s) {
-    /* SYSTEM */
-    set("sysMode",   s.meta?.mode ?? "—");
-    set("sysHealth", formatPct(s.meta?.health));
-    updateHealthBar(s.meta?.health);
-    set("healthState", healthStateLabel(s.meta?.health, true));
+console.log("SNAPSHOT TOKENS →", s.tokens);
 
-    set("sysUptime", s.meta?.uptime ?? "—");
-    set("snapTime",  formatTime(s.meta?.generatedAt));
 
-    /* LIQUIDITY */
-    set("liqTVL",  formatUSD(s.pools?.liquidityUSD));
-    set("liqUtil", formatPct(s.pools?.utilization));
-    set("liqDepth", s.pools?.depth ?? "—");
-    set("liqSlip", formatPct(s.pools?.slippage));
+  /* SYSTEM */
+  set("sysMode", s.meta?.mode ?? "—");
+  set("sysHealth", formatPct(s.meta?.health));
+  updateHealthBar(s.meta?.health);
+  set("healthState", healthStateLabel(s.meta?.health, true));
+  set("sysUptime", s.meta?.uptime ?? "—");
+  set("snapTime", formatTime(s.meta?.generatedAt));
 
-    /* TOKENS */
-set("unitSupply",     formatNum(s.tokens?.WW_UNIT?.supply));
-set("reserveSupply",  formatUSD(s.tokens?.WW_RESERVE?.balance));
+  /* LIQUIDITY */
+  set("liqTVL", formatUSD(s.pools?.liquidityUSD));
+  set("liqUtil", formatPct(s.pools?.utilization));
+  set("liqDepth", s.pools?.depth ?? "—");
+  set("liqSlip", formatPct(s.pools?.slippage));
 
-set("keyIssued",      formatNum(s.tokens?.WW_KEY?.issued));
-set("keyHolders",     formatNum(s.tokens?.WW_KEY?.holders));
+  /* TOKENS */
+set(
+  "unitSupply",
+  formatNum(s.tokens?.WW_UNIT?.supply)
+);
 
-  }
+set(
+  "reservePrice",
+  "$" + Number(s.tokens?.WW_RESERVE?.priceUSD || 0).toFixed(6)
+);
+
+set(
+  "reserveBacking",
+  formatUSD(s.tokens?.WW_RESERVE?.systemValueUSD)
+);
+
+set(
+  "keyIssued",
+  formatNum(s.tokens?.WW_KEY?.issued)
+);
+
+set(
+  "keyHolders",
+  formatNum(s.tokens?.WW_KEY?.holders)
+);
+
+
+
+}
+
 
   function renderError() {
     set("healthState", "OFFLINE");
