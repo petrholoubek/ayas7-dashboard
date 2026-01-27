@@ -409,6 +409,12 @@ html, body {
   </div>
 </div>
 
+<div class="stat">
+  <div class="stat-title">CRX v poolu</div>
+  <div class="stat-value" id="stat-crx-pool">—</div>
+</div>
+
+
 <!-- MEMBERS -->
 <div class="section">
   <h2>Členové družstva</h2>
@@ -540,6 +546,26 @@ async function loadStats(){
   document.getElementById("stat-crx").innerText =
     data.crx_total ?? 0;
 }
+
+async function loadCrxPool(){
+  const { data, error } = await sb
+    .from("crx_period_totals")
+    .select("total_crx")
+    .order("calculated_at", { ascending: false })
+    .limit(1)
+    .single();
+
+  if(error){
+    console.error("CRX pool error", error);
+    return;
+  }
+
+  const el = document.getElementById("stat-crx-pool");
+  if(el){
+    el.innerText = data.total_crx ?? 0;
+  }
+}
+
 
 /* =========================
    ČLENOVÉ
@@ -747,11 +773,11 @@ async function closePeriod(){
 ========================= */
 document.addEventListener("DOMContentLoaded", async () => {
   await loadStats();
+  await loadCrxPool();   // ← TOTO JSME PŘIDALI
   await loadMembers();
   await loadCertificates();
   await loadAudit();
   await loadCurrentPeriod();
-
 });
 </script>
 
