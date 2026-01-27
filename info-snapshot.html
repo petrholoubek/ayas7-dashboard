@@ -475,6 +475,29 @@ body.offline .trace-note::after{
   </div>
 </section>
 
+<!-- CRX DISTRIBUTION -->
+<section class="section">
+  <div class="section-label">CRX · Rozdělení</div>
+
+  <div class="card">
+    <div class="metric">
+      <span>CRX družstva</span>
+      <span id="crxCoop" class="value">—</span>
+    </div>
+
+    <div class="metric">
+      <span>CRX členů</span>
+      <span id="crxMembers" class="value">—</span>
+    </div>
+
+    <div class="metric" style="opacity:.7">
+      <span>Stav</span>
+      <span id="crxState" class="value">—</span>
+    </div>
+  </div>
+</section>
+
+
 <section class="section grid">
 
  <!-- LEFT: POOLS & DEX -->
@@ -695,6 +718,33 @@ set(
   formatNum(s.tokens?.WW_KEY?.holders)
 );
 
+/* ===============================
+   CRX DISTRIBUTION
+=============================== */
+
+// CRX družstva – vzniklé z poolu
+set(
+  "crxCoop",
+  s.crx?.total != null
+    ? Number(s.crx.total).toFixed(2)
+    : "—"
+);
+
+// CRX členů – přidělené benefity
+set(
+  "crxMembers",
+  s.crx?.allocated != null
+    ? Number(s.crx.allocated).toFixed(2)
+    : "0.00"
+);
+
+// Stav rozdělení
+set(
+  "crxState",
+  (s.crx?.allocated ?? 0) > 0
+    ? "ROZDĚLOVÁNO"
+    : "BOOTSTRAP – bez rozdělení"
+);
 
 
 }
