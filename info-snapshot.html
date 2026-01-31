@@ -690,6 +690,14 @@ console.log("WW_RESERVE RAW →", s.tokens.WW_RESERVE);
 =============================== */
 
 set(
+  "unitPrice",
+  s.tokens?.WW_UNIT?.priceUSD != null
+    ? "$" + Number(s.tokens.WW_UNIT.priceUSD).toFixed(6)
+    : "—"
+);
+
+
+set(
   "unitSupply",
   formatNum(s.tokens?.WW_UNIT?.supply)
 );
