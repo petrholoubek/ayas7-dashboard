@@ -511,7 +511,7 @@ body.offline .trace-note::after{
 
   <div class="metric">
     <span>Liquidity</span>
-    <span class="value">$990,087,000</span>
+    <span class="value" id="poolReserveLiquidity">—</span>
   </div>
 
   <div class="metric">
@@ -533,7 +533,7 @@ body.offline .trace-note::after{
 
   <div class="metric">
     <span>Total Value</span>
-    <span class="value">$11,400,000</span>
+    <span class="value" id="poolUnitLiquidity">—</span>
   </div>
 
   <div class="metric">
@@ -668,6 +668,8 @@ async function loadSnapshot() {
 
   function render(s) {
 console.log("WW_RESERVE RAW →", s.tokens.WW_RESERVE);
+console.log("SNAPSHOT POOLS →", s.pools);
+
 
 
 
@@ -684,6 +686,25 @@ console.log("WW_RESERVE RAW →", s.tokens.WW_RESERVE);
   set("liqUtil", formatPct(s.pools?.utilization));
   set("liqDepth", s.pools?.depth ?? "—");
   set("liqSlip", formatPct(s.pools?.slippage));
+
+  /* ===============================
+     POOLS — REAL ON-CHAIN TVL
+  =============================== */
+
+  set(
+  "poolReserveLiquidity",
+  s.dexPools?.WW_RESERVE_USDT?.liquidityUSD != null
+    ? formatUSD(s.dexPools.WW_RESERVE_USDT.liquidityUSD)
+    : "—"
+);
+
+set(
+  "poolUnitLiquidity",
+  s.dexPools?.WW_UNIT_USDT?.liquidityUSD != null
+    ? formatUSD(s.dexPools.WW_UNIT_USDT.liquidityUSD)
+    : "—"
+);
+
 
 /* ===============================
    TOKENS — SNAPSHOT v2.0 (SSOT)
