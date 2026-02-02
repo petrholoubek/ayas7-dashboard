@@ -500,112 +500,113 @@ body.offline .trace-note::after{
 
 <section class="section grid">
 
- <!-- LEFT: POOLS & DEX -->
-<div class="card">
-  <div class="section-label">Pools & DEX</div>
+  <!-- LEFT COLUMN -->
+  <div>
+    <div class="card">
+      <div class="section-label">Pools & DEX</div>
 
-  <div class="metric">
-    <span>WW-RESERVE / USDT</span>
-    <span class="value">ACTIVE</span>
+      <div class="metric">
+        <span>WW-RESERVE / USDT</span>
+        <span class="value">ACTIVE</span>
+      </div>
+
+      <div class="metric">
+        <span>Liquidity</span>
+        <span class="value" id="poolReserveLiquidity">—</span>
+      </div>
+
+      <div class="metric">
+        <span>DEX</span>
+        <span class="value">PancakeSwap (BSC)</span>
+      </div>
+
+      <div class="metric">
+        <span>LP Custody</span>
+        <span class="value">MULTISIG</span>
+      </div>
+
+      <hr style="opacity:.15;margin:14px 0"/>
+
+      <div class="metric">
+        <span>WW-UNIT / USDT</span>
+        <span class="value">ACTIVE</span>
+      </div>
+
+      <div class="metric">
+        <span>Total Value</span>
+        <span class="value" id="poolUnitLiquidity">—</span>
+      </div>
+
+      <div class="metric">
+        <span>DEX</span>
+        <span class="value">PancakeSwap (BSC)</span>
+      </div>
+
+      <hr style="opacity:.15;margin:14px 0"/>
+
+      <div class="metric">
+        <span>USDT / BNB</span>
+        <span class="value">ACTIVE</span>
+      </div>
+
+      <div class="metric">
+        <span>Total Value</span>
+        <span class="value" id="poolUsdtBnbLiquidity">—</span>
+      </div>
+
+      <div class="metric">
+        <span>DEX</span>
+        <span class="value">PancakeSwap (BSC)</span>
+      </div>
+
+      <div class="metric">
+        <span>LP Custody</span>
+        <span class="value">MULTISIG</span>
+      </div>
+    </div>
   </div>
 
-  <div class="metric">
-    <span>Liquidity</span>
-    <span class="value" id="poolReserveLiquidity">—</span>
+  <!-- RIGHT COLUMN -->
+  <div>
+    <div class="card trust-panel">
+      <div class="section-label">System Links</div>
+
+      <div class="trust-row">
+        <span>Snapshot Writer</span>
+        <span class="trust ok">RUNNING</span>
+      </div>
+
+      <div class="trust-row">
+        <span>Snapshot API</span>
+        <span class="trust ok">LIVE</span>
+      </div>
+
+      <div class="trust-row">
+        <span>Cloud Tunnel</span>
+        <span class="trust ok">CONNECTED</span>
+      </div>
+
+      <div class="trust-row">
+        <span>DEX</span>
+        <span class="trust ok">AVAILABLE</span>
+      </div>
+
+      <div class="trust-row">
+        <span>Liquidity Pool</span>
+        <span class="trust ok">ACTIVE</span>
+      </div>
+
+      <div class="trust-row">
+        <span>Governance</span>
+        <span class="trust ok">MULTISIG</span>
+      </div>
+
+      <div class="trust-row">
+        <span>Decision Logic</span>
+        <span class="trust ok">AI + FSM</span>
+      </div>
+    </div>
   </div>
-
-  <div class="metric">
-    <span>DEX</span>
-    <span class="value">PancakeSwap (BSC)</span>
-  </div>
-
-  <div class="metric">
-    <span>LP Custody</span>
-    <span class="value">MULTISIG</span>
-  </div>
-
-  <hr style="opacity:.15;margin:14px 0"/>
-
-  <div class="metric">
-    <span>WW-UNIT / USDT</span>
-    <span class="value">ACTIVE</span>
-  </div>
-
-  <div class="metric">
-    <span>Total Value</span>
-    <span class="value" id="poolUnitLiquidity">—</span>
-  </div>
-
-  <div class="metric">
-    <span>DEX</span>
-    <span class="value">PancakeSwap (BSC)</span>
-  </div>
-<hr style="opacity:.15;margin:14px 0"/>
-
-<div class="metric">
-  <span>USDT / BNB</span>
-  <span class="value">ACTIVE</span>
-</div>
-
-<div class="metric">
-  <span>Total Value</span>
-  <span class="value" id="poolUsdtBnbLiquidity">—</span>
-</div>
-
-<div class="metric">
-  <span>DEX</span>
-  <span class="value">PancakeSwap (BSC)</span>
-</div>
-
-<div class="metric">
-  <span>LP Custody</span>
-  <span class="value">MULTISIG</span>
-</div>
-
-</div>
-
-
-  <!-- RIGHT: SYSTEM LINKS -->
-<div class="card trust-panel">
-  <div class="section-label">System Links</div>
-
-  <div class="trust-row">
-    <span>Snapshot Writer</span>
-    <span class="trust ok">RUNNING</span>
-  </div>
-
-  <div class="trust-row">
-    <span>Snapshot API</span>
-    <span class="trust ok">LIVE</span>
-  </div>
-
-  <div class="trust-row">
-    <span>Cloud Tunnel</span>
-    <span class="trust ok">CONNECTED</span>
-  </div>
-
-  <div class="trust-row">
-    <span>DEX</span>
-    <span class="trust ok">AVAILABLE</span>
-  </div>
-
-  <div class="trust-row">
-    <span>Liquidity Pool</span>
-    <span class="trust ok">ACTIVE</span>
-  </div>
-
-  <!-- ➕ NOVÉ ŘÁDKY -->
-  <div class="trust-row">
-    <span>Governance</span>
-    <span class="trust ok">MULTISIG</span>
-  </div>
-
-  <div class="trust-row">
-    <span>Decision Logic</span>
-    <span class="trust ok">AI + FSM</span>
-  </div>
-</div>
-
 
 </section>
 
