@@ -413,9 +413,10 @@ body.offline .trace-note::after{
 /* mobil */
 @media(max-width:900px){
   .pool-grid{
-    grid-template-columns:1fr 1fr;
+    grid-template-columns:1fr;
   }
 }
+
 /* ================= LED STATUS ================= */
 
 .led-dot{
@@ -891,14 +892,21 @@ async function loadYield() {
     // ✅ APR
     set("yieldApr", formatPct(y.apr));
 
-    // ✅ DENNÍ VÝNOS (z měsíčního)
- // hodinový výnos z API
-const hourly = Number(y.monthly) || 0;
+// ===============================
+// REÁLNÝ DENNÍ VÝNOS Z POOLU
+// ===============================
 
-// reálný denní výnos poolu
-const daily = hourly * 24;
+// fee PancakeSwap V2 = 3.25 %
+const feeRate = 0.25;
+
+// denní fee v USD
+const dailyFees = (Number(y.volume24h) || 0) * feeRate;
+
+// denní výnos v %
+const daily = y.tvl > 0 ? (dailyFees / y.tvl) * 100 : 0;
 
 set("yieldDaily", formatPct(daily));
+
 
 
 
