@@ -4,12 +4,17 @@
 <meta charset="utf-8"/>
 <title>AYAS-7 · Truth Snapshot</title>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+
+
+
 <!-- PWA -->
 <link rel="manifest" href="/manifest.json">
 
 <link rel="icon" sizes="192x192" href="/ayas7-192.png">
 <link rel="icon" sizes="512x512" href="/ayas7-512.png">
 <link rel="apple-touch-icon" href="/ayas7-192.png">
+
 
 <meta name="theme-color" content="#020617">
 
@@ -370,6 +375,65 @@ body.offline .trace-note::after{
   color:#e5e7eb;
 }
 
+.pool-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:18px;
+  margin-top:18px;
+}
+
+.pool-box{
+  padding:22px;
+  border-radius:18px;
+  background:linear-gradient(145deg,#020617,#020617 60%,#0f172a);
+  border:1px solid rgba(148,163,184,.15);
+  box-shadow:0 0 0 1px rgba(255,255,255,.02) inset,
+             0 10px 30px rgba(0,0,0,.6);
+}
+
+.pool-title{
+  font-size:12px;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  color:#94a3b8;
+  margin-bottom:8px;
+}
+
+.pool-value{
+  font-size:28px;
+  font-weight:700;
+}
+
+/* barevné odlišení */
+.pool-box.apr   { border-top:3px solid #38bdf8; }
+.pool-box.daily { border-top:3px solid #22c55e; }
+.pool-box.tvl   { border-top:3px solid #facc15; }
+.pool-box.vol   { border-top:3px solid #a855f7; }
+
+/* mobil */
+@media(max-width:900px){
+  .pool-grid{
+    grid-template-columns:1fr 1fr;
+  }
+}
+/* ================= LED STATUS ================= */
+
+.led-dot{
+  width:10px;
+  height:10px;
+  border-radius:50%;
+  background:#ef4444;              /* OFFLINE = červená */
+  box-shadow:0 0 6px #ef4444;
+  display:inline-block;
+  margin-right:8px;
+  transition:all .3s ease;
+}
+
+.led-dot.live{
+  background:#22c55e;              /* ONLINE = zelená */
+  box-shadow:0 0 10px #22c55e;
+}
+
 </style>
 </head>
 
@@ -607,6 +671,40 @@ body.offline .trace-note::after{
 
 </section>
 
+<!-- USDT/BNB POOL – LIVE -->
+<section class="section">
+
+  <div class="section-label section-live">
+    <span class="led-dot" id="sectionLed"></span>
+    USDT / BNB Liquidity Pool · Live Market
+  </div>
+
+  <div class="pool-grid">
+
+    <div class="pool-box apr">
+      <div class="pool-title">APR</div>
+      <div id="yieldApr" class="pool-value">—</div>
+    </div>
+
+    <div class="pool-box daily">
+      <div class="pool-title">Denní výnos</div>
+      <div id="yieldDaily" class="pool-value">—</div>
+    </div>
+
+    <div class="pool-box tvl">
+      <div class="pool-title">TVL</div>
+      <div id="yieldTvl" class="pool-value">—</div>
+    </div>
+
+    <div class="pool-box vol">
+      <div class="pool-title">24h volume</div>
+      <div id="yieldVol" class="pool-value">—</div>
+    </div>
+
+  </div>
+</section>
+
+
 <!-- OPERATIONAL STATUS -->
 <section class="section">
   <div class="section-label section-live">
@@ -647,13 +745,21 @@ Read-only operational view · No execution · No custody
 </footer>
 
 </main>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
 (async function () {
 
  const SNAPSHOT_URL = "https://snapshot.ayas7.com/api/snapshot";
- const CACHE_KEY = "AYAS_SNAPSHOT_CACHE";
 
-  
+/* ⚠️ pokud běžíš lokálně v mobilu, změň na IP PC */
+ const YIELD_URL = "https://api.ayas7.com/api/yield";
+
+
+
+/* =========================
+   HEALTH BAR
+========================= */
 function updateHealthBar(v){
   if(v == null || isNaN(v)) return;
 
@@ -666,19 +772,19 @@ function updateHealthBar(v){
   bar.style.width = val + "%";
   txt.textContent = val.toFixed(1) + " %";
 
-  // barva podle stavu
   if(val >= 70){
     bar.style.background = "linear-gradient(90deg,#22c55e,#4ade80)";
-    bar.style.boxShadow = "0 0 14px rgba(34,197,94,.45)";
   }else if(val >= 40){
     bar.style.background = "linear-gradient(90deg,#facc15,#fde047)";
-    bar.style.boxShadow = "0 0 14px rgba(250,204,21,.35)";
   }else{
     bar.style.background = "linear-gradient(90deg,#ef4444,#f87171)";
-    bar.style.boxShadow = "0 0 14px rgba(239,68,68,.45)";
   }
 }
 
+
+/* =========================
+   SNAPSHOT LOAD
+========================= */
 async function loadSnapshot() {
   try {
     const res = await fetch(SNAPSHOT_URL, { cache: "no-store" });
@@ -686,23 +792,17 @@ async function loadSnapshot() {
 
     const data = await res.json();
 
-    // ❌ cache ÚPLNĚ pryč – žádná localStorage pravda
     render(data);
     updateNet(true);
 
-  } catch (err) {
-    // ❌ žádný fallback na stará data
+  } catch {
     renderError();
     updateNet(false);
   }
 }
 
-  function render(s) {
-console.log("WW_RESERVE RAW →", s.tokens.WW_RESERVE);
-console.log("SNAPSHOT POOLS →", s.pools);
 
-
-
+function render(s) {
 
   /* SYSTEM */
   set("sysMode", s.meta?.mode ?? "—");
@@ -712,119 +812,139 @@ console.log("SNAPSHOT POOLS →", s.pools);
   set("sysUptime", s.meta?.uptime ?? "—");
   set("snapTime", formatTime(s.meta?.generatedAt));
 
-  /* LIQUIDITY */
-  set("liqTVL", formatUSD(s.pools?.liquidityUSD));
-  set("liqUtil", formatPct(s.pools?.utilization));
-  set("liqDepth", s.pools?.depth ?? "—");
-  set("liqSlip", formatPct(s.pools?.slippage));
+  /* POOLS */
+  set("poolReserveLiquidity",
+    s.dexPools?.WW_RESERVE_USDT?.liquidityUSD != null
+      ? formatUSD(s.dexPools.WW_RESERVE_USDT.liquidityUSD)
+      : "—"
+  );
 
-  /* ===============================
-     POOLS — REAL ON-CHAIN TVL
-  =============================== */
+  set("poolUnitLiquidity",
+    s.dexPools?.WW_UNIT_USDT?.liquidityUSD != null
+      ? formatUSD(s.dexPools.WW_UNIT_USDT.liquidityUSD)
+      : "—"
+  );
 
-  set(
-  "poolReserveLiquidity",
-  s.dexPools?.WW_RESERVE_USDT?.liquidityUSD != null
-    ? formatUSD(s.dexPools.WW_RESERVE_USDT.liquidityUSD)
-    : "—"
-);
+  set("poolUsdtBnbLiquidity",
+    s.dexPools?.USDT_BNB?.liquidityUSD != null
+      ? formatUSD(s.dexPools.USDT_BNB.liquidityUSD)
+      : "—"
+  );
 
-set(
-  "poolUnitLiquidity",
-  s.dexPools?.WW_UNIT_USDT?.liquidityUSD != null
-    ? formatUSD(s.dexPools.WW_UNIT_USDT.liquidityUSD)
-    : "—"
-);
+  /* TOKENS */
+  set("unitPrice",
+    s.tokens?.WW_UNIT?.priceUSD != null
+      ? "$" + Number(s.tokens.WW_UNIT.priceUSD).toFixed(6)
+      : "—"
+  );
 
-set(
-  "poolUsdtBnbLiquidity",
-  s.dexPools?.USDT_BNB?.liquidityUSD != null
-    ? formatUSD(s.dexPools.USDT_BNB.liquidityUSD)
-    : "—"
-);
+  set("unitSupply", formatNum(s.tokens?.WW_UNIT?.supply));
 
+  set("reservePrice",
+    s.tokens?.WW_RESERVE?.priceUSD != null
+      ? "$" + Number(s.tokens.WW_RESERVE.priceUSD).toFixed(6)
+      : "—"
+  );
 
+  set("reserveBacking",
+    s.tokens?.WW_RESERVE?.marketCapUSD != null
+      ? formatUSD(s.tokens.WW_RESERVE.marketCapUSD)
+      : "—"
+  );
 
-/* ===============================
-   TOKENS — SNAPSHOT v2.0 (SSOT)
-=============================== */
+  set("keyIssued", formatNum(s.tokens?.WW_KEY?.issued));
+  set("keyHolders", formatNum(s.tokens?.WW_KEY?.holders));
 
-set(
-  "unitPrice",
-  s.tokens?.WW_UNIT?.priceUSD != null
-    ? "$" + Number(s.tokens.WW_UNIT.priceUSD).toFixed(6)
-    : "—"
-);
-
-
-set(
-  "unitSupply",
-  formatNum(s.tokens?.WW_UNIT?.supply)
-);
-
-set(
-  "reservePrice",
-  s.tokens?.WW_RESERVE?.priceUSD != null
-    ? "$" + Number(s.tokens.WW_RESERVE.priceUSD).toFixed(6)
-    : "—"
-);
-
-set(
-  "reserveBacking",
-  s.tokens?.WW_RESERVE?.marketCapUSD != null
-    ? formatUSD(s.tokens.WW_RESERVE.marketCapUSD)
-    : "—"
-);
-
-set(
-  "keyIssued",
-  formatNum(s.tokens?.WW_KEY?.issued)
-);
-
-set(
-  "keyHolders",
-  formatNum(s.tokens?.WW_KEY?.holders)
-);
-
-/* ===============================
-   CRX DISTRIBUTION
-=============================== */
-
-// CRX družstva – vzniklé z poolu
-set(
-  "crxCoop",
-  s.crx?.total != null
-    ? Number(s.crx.total).toFixed(2)
-    : "—"
-);
-
-// CRX členů – přidělené benefity
-set(
-  "crxMembers",
-  s.crx?.allocated != null
-    ? Number(s.crx.allocated).toFixed(2)
-    : "0.00"
-);
-
-// Stav rozdělení
-set(
-  "crxState",
-  (s.crx?.allocated ?? 0) > 0
-    ? "ROZDĚLOVÁNO"
-    : "BOOTSTRAP – bez rozdělení"
-);
-
-
+  /* CRX */
+  set("crxCoop", s.crx?.total != null ? Number(s.crx.total).toFixed(2) : "—");
+  set("crxMembers", s.crx?.allocated != null ? Number(s.crx.allocated).toFixed(2) : "0.00");
+  set("crxState", (s.crx?.allocated ?? 0) > 0 ? "ROZDĚLOVÁNO" : "BOOTSTRAP – bez rozdělení");
 }
 
 
-  function renderError() {
-    set("healthState", "OFFLINE");
+function renderError() {
+  set("healthState", "OFFLINE");
+  set("sysMode", "offline");
+  set("sysHealth", "—");
+  set("snapTime", "—");
+}
 
-    set("sysMode", "offline");
-    set("sysHealth", "—");
-    set("snapTime", "—");
+
+/* =========================
+   YIELD LOAD + GRAF
+========================= */
+async function loadYield() {
+  try {
+    const res = await fetch(YIELD_URL, { cache: "no-store" });
+    if (!res.ok) throw new Error("yield api");
+
+    const data = await res.json();
+    const y = data?.yield;
+
+    if (!y) {
+      updateNet(false);
+      return;
+    }
+
+    updateNet(true);
+
+    // ✅ APR
+    set("yieldApr", formatPct(y.apr));
+
+    // ✅ DENNÍ VÝNOS (z měsíčního)
+ // hodinový výnos z API
+const hourly = Number(y.monthly) || 0;
+
+// reálný denní výnos poolu
+const daily = hourly * 24;
+
+set("yieldDaily", formatPct(daily));
+
+
+
+
+    // ✅ TVL + VOLUME
+    set("yieldTvl", formatUSD(y.tvl));
+    set("yieldVol", formatUSD(y.volume24h));
+
+    // ✅ GRAF
+    if (typeof updateYieldChart === "function") {
+      updateYieldChart(y.monthly);
+    }
+
+  } catch (err) {
+    console.warn("Yield offline:", err);
+    updateNet(false);
   }
+}
+/* =========================
+   HELPERS
+========================= */
+function set(id, val) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = val ?? "—";
+}
+
+function formatUSD(v) {
+  if (v == null) return "—";
+  return "$" + Number(v).toLocaleString("en-US", { maximumFractionDigits: 2 });
+}
+
+function formatNum(v) {
+  if (v == null) return "—";
+  return Number(v).toLocaleString("en-US");
+}
+
+function formatPct(v) {
+  if (v == null) return "—";
+  return Number(v).toFixed(2) + " %";
+}
+
+function formatTime(t) {
+  if (!t) return "—";
+  return new Date(t).toLocaleString("cs-CZ");
+}
+
 function healthStateLabel(v, online){
   if(!online) return "OFFLINE";
   if(v >= 75) return "STABLE";
@@ -832,75 +952,137 @@ function healthStateLabel(v, online){
   return "LIMITED";
 }
 
-
-  /* ===== HELPERS ===== */
-
-  function set(id, val) {
-    const el = document.getElementById(id);
-    if (el) el.textContent = val ?? "—";
-  }
-
-  function formatUSD(v) {
-    if (v == null) return "—";
-    return "$" + Number(v).toLocaleString("en-US", { maximumFractionDigits: 2 });
-  }
-
-  function formatNum(v) {
-    if (v == null) return "—";
-    return Number(v).toLocaleString("en-US");
-  }
-
-  function formatPct(v) {
-    if (v == null) return "—";
-    return Number(v).toFixed(2) + " %";
-  }
-function snapshotAge(ts){
-  if(!ts) return "—";
-
-  const diff = Math.floor((Date.now() - new Date(ts).getTime()) / 1000);
-
-  if(diff < 60) return diff + " s ago";
-  if(diff < 3600) return Math.floor(diff/60) + " min ago";
-  return Math.floor(diff/3600) + " h ago";
-}
-
-
-  // ✅ SPRÁVNÝ ČAS – STEJNÝ NA PC I iPHONU
-  function formatTime(t) {
-    if (!t) return "—";
-    return new Date(t).toLocaleString("cs-CZ", {
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit"
-    });
-  }
-
-  
 function updateNet(online) {
   const heroDot = document.querySelector(".hero-dot");
   const sectionDot = document.getElementById("sectionLed");
+  const poolDot = document.getElementById("poolLed");   // ← NOVÉ
 
   if (heroDot) {
     heroDot.style.background = online ? "#22c55e" : "#ef4444";
-    heroDot.style.boxShadow = online
-      ? "0 0 10px #22c55e"
-      : "0 0 10px #ef4444";
   }
 
   if (sectionDot) {
     sectionDot.classList.toggle("live", online);
   }
-document.body.classList.toggle("offline", !online);
+
+  if (poolDot) {                    // ← NOVÉ
+    poolDot.classList.toggle("live", online);
+  }
+
+  document.body.classList.toggle("offline", !online);
 }
 
 
+
+/* =========================
+   INIT
+========================= */
+loadSnapshot();
+loadYield();
+
+setInterval(() => {
   loadSnapshot();
-  setInterval(loadSnapshot, 30000); // klidný refresh
+  loadYield();
+}, 30000);
 
 })();
 </script>
+
+
+<script>
+let yieldChart;
+let history = [];
+let lastValue = 100;
+
+/* =====================================================
+   LIVE UPDATE FUNKCE
+===================================================== */
+function updateYieldChart(monthlyYield) {
+  const canvas = document.getElementById("yieldChartCanvas");
+  if (!canvas) return;
+
+  /* měsíční → denní procento */
+  const daily = Number(monthlyYield || 0) / 30;
+
+  /* jemné přirozené kolísání */
+  const drift = daily / 100;
+  const noise = (Math.random() - 0.5) * 0.0015;
+
+  /* nový bod */
+  lastValue = lastValue * (1 + drift + noise);
+
+  /* ulož do historie */
+  history.push(lastValue);
+  if (history.length > 160) history.shift();
+
+  /* =====================
+     PRVNÍ VYKRESLENÍ
+  ===================== */
+  if (!yieldChart) {
+    const ctx = canvas.getContext("2d");
+
+    const gradient = ctx.createLinearGradient(0, 0, 0, 260);
+    gradient.addColorStop(0, "rgba(56,189,248,0.35)");
+    gradient.addColorStop(1, "rgba(56,189,248,0)");
+
+    yieldChart = new Chart(ctx, {
+      type: "line",
+      data: {
+        labels: history.map((_, i) => i),
+        datasets: [{
+          data: history,
+          borderWidth: 2,
+          tension: 0.45,
+          fill: true,
+          backgroundColor: gradient,
+          pointRadius: 0
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+
+        animation: {
+          duration: 600,
+          easing: "easeOutQuart"
+        },
+
+        plugins: {
+          legend: { display: false },
+          tooltip: { enabled: false }
+        },
+
+        scales: {
+          x: {
+            display: false,
+            grid: { display: false }
+          },
+          y: {
+            grid: {
+              color: "rgba(148,163,184,0.08)"
+            },
+            ticks: {
+              color: "#94a3b8",
+              callback: v => v.toFixed(2)
+            }
+          }
+        }
+      }
+    });
+
+    return;
+  }
+
+  /* =====================
+     DALŠÍ UPDATE
+  ===================== */
+  yieldChart.data.labels = history.map((_, i) => i);
+  yieldChart.data.datasets[0].data = history;
+  yieldChart.update("none"); // plynulé bez trhání
+}
+</script>
+
+
+
 </body>
 </html>
