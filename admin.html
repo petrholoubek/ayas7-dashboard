@@ -538,7 +538,7 @@ async function loadStats(){
   }
 
   document.getElementById("stat-members").innerText =
-    data.members_count ?? 0;
+  data.total_members ?? 0;
 
   document.getElementById("stat-wwkey").innerText =
     data.wwkey_total ?? 0;
