@@ -285,6 +285,32 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   const db = supabase.createClient(supabaseUrl, supabaseAnonKey);
 
+// ================= GENESIS AUDIT SUMMARY =================
+
+const { data: auditRow } = await db
+  .from("v_admin_full_audit")
+  .select("*")
+  .single();
+
+if (auditRow) {
+  document.getElementById("sumCerts").textContent =
+    auditRow.issued_certificates ?? "0";
+
+  document.getElementById("sumKeys").textContent =
+    Number(auditRow.total_wwkey || 0).toLocaleString("cs-CZ");
+
+  document.getElementById("sumDeposit").textContent =
+    Number(auditRow.total_deposit_czk || 0).toLocaleString("cs-CZ");
+
+  if (auditRow.first_certificate_at && auditRow.last_certificate_at) {
+    document.getElementById("auditRange").textContent =
+      new Date(auditRow.first_certificate_at).toLocaleDateString("cs-CZ") +
+      " → " +
+      new Date(auditRow.last_certificate_at).toLocaleDateString("cs-CZ");
+  }
+}
+
+
   const now = new Date();
   document.getElementById("localTime").textContent = now.toLocaleString("cs-CZ");
   document.getElementById("utcTime").textContent = now.toISOString();
