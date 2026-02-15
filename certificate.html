@@ -270,15 +270,14 @@ if (!certRes.ok) {
   return;
 }
 
-const data = await certRes.json();
+const json = await certRes.json();
 
-/* 📄 kontrola existence záznamu */
-if (!Array.isArray(data) || data.length === 0) {
-  alert("Certifikát nebyl nalezen.");
+if (!Array.isArray(json) || json.length === 0) {
+  alert("Certifikát nebyl nalezen nebo RLS blokuje přístup.");
   return;
 }
 
-const c = data[0];
+const c = json[0];
 
   /* ===============================
      2) DOSAZENÍ DO CERTIFIKÁTU
