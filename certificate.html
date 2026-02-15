@@ -255,21 +255,30 @@ async function loadCertificate() {
      1) NAČTENÍ CERTIFIKÁTU
   =============================== */
   const certRes = await fetch(
-    `${SUPABASE_URL}/rest/v1/member_certificates?certificate_uid=eq.${uid}&select=*`,
-    {
-      headers: {
-        "apikey": SUPABASE_ANON_KEY,
-        "Authorization": "Bearer " + SUPABASE_ANON_KEY
-      }
+  `${SUPABASE_URL}/rest/v1/member_certificates?certificate_uid=eq.${uid}&select=*`,
+  {
+    headers: {
+      "apikey": SUPABASE_ANON_KEY,
+      "Authorization": "Bearer " + SUPABASE_ANON_KEY
     }
-  );
-
-  const [c] = await certRes.json();
-
-  if (!c) {
-    alert("Certifikát nebyl nalezen");
-    return;
   }
+);
+
+/* 🔐 kontrola HTTP odpovědi */
+if (!certRes.ok) {
+  alert("Chyba přístupu k certifikátu (401 / RLS).");
+  return;
+}
+
+const data = await certRes.json();
+
+/* 📄 kontrola existence záznamu */
+if (!Array.isArray(data) || data.length === 0) {
+  alert("Certifikát nebyl nalezen.");
+  return;
+}
+
+const c = data[0];
 
   /* ===============================
      2) DOSAZENÍ DO CERTIFIKÁTU
