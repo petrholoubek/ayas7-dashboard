@@ -166,6 +166,23 @@ footer{
   margin-top:4px;
 }
 
+.btn-cert{
+  display:inline-block;
+  padding:10px 18px;
+  border-radius:999px;
+  border:1px solid #22c55e;
+  color:#22c55e;
+  font-size:13px;
+  text-decoration:none;
+  transition:.2s;
+}
+
+.btn-cert:hover{
+  background:rgba(34,197,94,.12);
+  box-shadow:0 0 12px rgba(34,197,94,.35);
+}
+
+
 </style>
 </head>
 
@@ -221,6 +238,16 @@ footer{
   <div class="row"><span>Status účtu</span><span id="status">—</span></div>
   <div class="row"><span>Poslední snapshot</span><span id="snapshot">—</span></div>
   <div class="row"><span>Member ID</span><span id="memberId">—</span></div>
+
+<div style="margin-top:18px">
+  <a id="certLink"
+     class="btn-cert"
+     href="#"
+     target="_blank">
+     Stáhnout certifikát WW-KEY
+  </a>
+</div>
+
 </section>
 
 <footer>AYAS‑7 · Digital Cooperative Banking</footer>
@@ -254,6 +281,12 @@ function renderMember(d){
   status.innerText   = d.status ?? "—";
   snapshot.innerText = new Date(d.last_snapshot_at).toLocaleString("cs-CZ");
   memberId.innerText = d.member_uuid;
+
+  /* 🔗 PROLINK NA CERTIFIKÁT */
+  const certLink = document.getElementById("certLink");
+  if(certLink){
+    certLink.href = "certificate.html?m=" + d.member_uuid;
+  }
 
   renderChart([]);
 }
