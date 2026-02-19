@@ -182,33 +182,74 @@ const SUPABASE_URL = "https://azfrniqqtetoqploxwgq.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF6ZnJuaXFxdGV0b3FwbG94d2dxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3MzQ1OTYsImV4cCI6MjA4MzMxMDU5Nn0.QchmzNhs8owd6pkjZCk04u6PJoJ2Bhzz7oGV0KFyqdU";
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+/* =============================
+   RENDER
+============================= */
 function renderMember(d){
-  memberName.innerText = d.full_name;
-  crxTotal.innerText = d.crx_total + " CRX";
-  wwkeyTotal.innerText = d.wwkey_total;
-  yieldPct.innerText = d.yield_percent + " %";
-  status.innerText = d.status;
-  snapshot.innerText = new Date(d.last_snapshot_at).toLocaleString("cs-CZ");
-  memberId.innerText = d.member_uuid;
-  renderChart(d.crx_history || []);
+  memberName.innerText = d.full_name ?? d.email;
+  crxTotal.innerText   = (d.crx_total ?? 0) + " CRX";
+  wwkeyTotal.innerText = d.wwkey_total ?? 0;
+  yieldPct.innerText   = (d.yield_percent ?? 0).toFixed(2) + " %";
+  status.innerText     = d.status;
+  snapshot.innerText   = new Date(d.last_snapshot_at).toLocaleString("cs-CZ");
+  memberId.innerText   = d.member_uuid;
+
+  renderChart([]); // zatím prázdná historie
 }
 
+/* =============================
+   LOAD BY UUID (QR režim)
+============================= */
+async function loadByUUID(uuid){
+  const { data, error } = await sb
+    .from("v_member_account")
+    .select("*")
+    .eq("member_uuid", uuid)
+    .single();
+
+  if(error || !data){
+    console.error(error);
+    alert("Člen nebyl nalezen.");
+    return;
+  }
+
+  renderMember(data);
+}
+
+/* =============================
+   LOAD MANUAL (email / UUID)
+============================= */
 async function loadManual(){
   const val = manualInput.value.trim();
   if(!val) return;
 
   let q = sb.from("v_member_account").select("*");
-  q = val.includes("@") ? q.eq("email", val) : q.eq("member_uuid", val);
+
+  q = val.includes("@")
+      ? q.eq("email", val)
+      : q.eq("member_uuid", val);
 
   const { data, error } = await q.single();
-  if(error){ alert("Člen nenalezen nebo RLS blokuje přístup"); return; }
+
+  if(error || !data){
+    alert("Člen nenalezen.");
+    return;
+  }
 
   renderMember(data);
 }
 
-function renderChart(history){
-  new Chart(chart,{type:"line",data:{labels:history.map((_,i)=>i),datasets:[{data:history,tension:.4,borderWidth:2,pointRadius:0}]},options:{plugins:{legend:{display:false}},scales:{x:{display:false},y:{ticks:{color:"#94a3b8"}}}}});
-}
+/* =============================
+   LOAD ON START
+============================= */
+(function init(){
+  const url = new URL(window.location.href);
+  const uuid = url.searchParams.get("m");
+
+  if(uuid){
+    loadByUUID(uuid);
+  }
+})();
 </script>
 
 </body>
