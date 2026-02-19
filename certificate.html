@@ -160,11 +160,11 @@ html,body{
 
 /* FOOTER */
 .footer{
-  margin-top:auto;
-  margin-bottom:-10mm;  /* ⬅⬅ TADY */
+  margin-top:14mm;   /* místo auto */
   font-size:10px;
   color:#9ca3af;
 }
+
 .footer hr{
   border:none;
   border-top:1px solid rgba(148,163,184,.25);
@@ -342,7 +342,8 @@ async function loadCertificate() {
   }
 }
 
-loadCertificate();
+window.addEventListener("load", loadCertificate);
+
 </script>
 
 </body>
