@@ -271,14 +271,6 @@ html,body{
       </div>
     </div>
 
-<!-- QR CODE -->
-<div class="qr-wrap" style="margin-top:40px;text-align:center">
-  <div id="qr"></div>
-  <div style="margin-top:10px;font-size:12px;opacity:.6">
-    Ověření certifikátu AYAS-7
-  </div>
-</div>
-
 
     <div class="footer">
       <hr>
@@ -295,10 +287,12 @@ html,body{
   </div>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-
 <script>
 console.log("CERT SCRIPT START");
+
+/* ===============================
+   KONFIGURACE
+=============================== */
 
 const SUPABASE_ANON_KEY =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF6ZnJuaXFxdGV0b3FwbG94d2dxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3MzQ1OTYsImV4cCI6MjA4MzMxMDU5Nn0.QchmzNhs8owd6pkjZCk04u6PJoJ2Bhzz7oGV0KFyqdU";
@@ -306,12 +300,20 @@ const SUPABASE_ANON_KEY =
 const SUPABASE_URL =
   "https://azfrniqqtetoqploxwgq.supabase.co";
 
+/* ===============================
+   UID Z URL
+=============================== */
+
 const params = new URLSearchParams(location.search);
 const uid = params.get("uid");
 
 if (!uid) {
   alert("Chybí ID certifikátu");
 }
+
+/* ===============================
+   HLAVNÍ FUNKCE
+=============================== */
 
 async function loadCertificate() {
   try {
@@ -339,9 +341,9 @@ async function loadCertificate() {
 
     const c = json[0];
 
-    /* 2) DOSAZENÍ DAT */
-    const wwkey = c.ww_key_amount || 0;
-    const deposit = c.deposit_amount || 0;
+    /* 2) DOSAZENÍ DAT DO DOKUMENTU */
+    const wwkey   = c.ww_key_amount   || 0;
+    const deposit = c.deposit_amount  || 0;
 
     document.querySelector("[data-name]").textContent =
       c.full_name || c.member_name || "—";
@@ -372,28 +374,6 @@ async function loadCertificate() {
         .map(b => b.toString(16).padStart(2, "0"))
         .join("");
 
-    /* 4) QR KÓD */
-    const qrContainer = document.getElementById("qr");
-
-    if (qrContainer && typeof QRCode !== "undefined") {
-
-      qrContainer.innerHTML = "";
-
-      const url =
-        "https://www.ayas7.com/certificate.html?uid=" + c.certificate_uid;
-
-      new QRCode(qrContainer, {
-        text: url,
-        width: 200,
-        height: 200,
-        colorDark: "#60a5fa",
-        colorLight: "#ffffff",
-        correctLevel: QRCode.CorrectLevel.H
-      });
-
-      console.log("QR OK");
-    }
-
     console.log("CERT OK");
 
   } catch (e) {
@@ -401,6 +381,10 @@ async function loadCertificate() {
     alert("Chyba načtení certifikátu.");
   }
 }
+
+/* ===============================
+   START PO NAČTENÍ STRÁNKY
+=============================== */
 
 window.addEventListener("load", loadCertificate);
 </script>
