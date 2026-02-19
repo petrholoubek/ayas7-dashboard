@@ -5,6 +5,12 @@
 <title>AYAS-7 · Member Bank Account</title>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 
+<!-- FAVICON / PWA -->
+  <link rel="icon" type="image/png" sizes="192x192" href="/ayas7-192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="/ayas7-512.png">
+  <link rel="apple-touch-icon" href="/ayas7-192.png">
+  <meta name="theme-color" content="#020617">
+
 <style>
 :root{
   --bg:#020617;
@@ -127,6 +133,39 @@ footer{
   text-transform:uppercase;
   color:#64748b;
 }
+
+.balance-main{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-end;
+  margin-bottom:24px;
+}
+
+.crx-value{
+  font-size:64px;
+  font-weight:800;
+}
+
+.wwkey-value{
+  font-size:28px;
+  font-weight:700;
+  color:#38bdf8;
+}
+
+.yield-value{
+  font-size:22px;
+  font-weight:700;
+  color:#22c55e;
+}
+
+.crx-label,
+.wwkey-label,
+.yield-label{
+  font-size:12px;
+  color:#94a3b8;
+  margin-top:4px;
+}
+
 </style>
 </head>
 
@@ -151,16 +190,30 @@ footer{
 
 <!-- MAIN BALANCE -->
 <section class="card">
-  <div id="crxTotal" class="balance">—</div>
 
-  <div class="meta">
-    <span>WW‑KEY: <b id="wwkeyTotal">—</b></span>
-    <span>Podíl: <b id="yieldPct">—</b></span>
+  <div class="balance-main">
+
+    <div class="balance-crx">
+      <div id="crxTotal" class="crx-value">0 CRX</div>
+      <div class="crx-label">Tokenový zůstatek</div>
+    </div>
+
+    <div class="balance-wwkey">
+      <div id="wwkeyTotal" class="wwkey-value">0</div>
+      <div class="wwkey-label">WW-KEY podíl</div>
+    </div>
+
+    <div class="balance-yield">
+      <div id="yieldPct" class="yield-value">0.00 %</div>
+      <div class="yield-label">Podíl na výnosu</div>
+    </div>
+
   </div>
 
   <div class="graph">
     <canvas id="chart"></canvas>
   </div>
+
 </section>
 
 <!-- ACCOUNT INFO -->
