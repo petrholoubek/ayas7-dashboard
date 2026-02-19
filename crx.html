@@ -235,83 +235,68 @@ const SUPABASE_URL = "https://azfrniqqtetoqploxwgq.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF6ZnJuaXFxdGV0b3FwbG94d2dxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3MzQ1OTYsImV4cCI6MjA4MzMxMDU5Nn0.QchmzNhs8owd6pkjZCk04u6PJoJ2Bhzz7oGV0KFyqdU";
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-/* =============================
-   RENDER
-============================= */
-function renderMember(d){
-  memberName.innerText = d.full_name ?? d.email;
-  crxTotal.innerText   = (d.crx_total ?? 0) + " CRX";
-  wwkeyTotal.innerText = d.wwkey_total ?? 0;
-  yieldPct.innerText   = (d.yield_percent ?? 0).toFixed(2) + " %";
-  status.innerText     = d.status;
-  snapshot.innerText   = new Date(d.last_snapshot_at).toLocaleString("cs-CZ");
-  memberId.innerText   = d.member_uuid;
+/* ================= RENDER ================= */
 
-  renderChart([]); // zatím prázdná historie
+function renderMember(d){
+  console.log("RENDER:", d);
+
+  memberName.innerText = d.full_name ?? d.email;
+
+  crxTotal.innerText =
+    Number(d.crx_total ?? 0).toLocaleString("cs-CZ") + " CRX";
+
+  wwkeyTotal.innerText =
+    Number(d.wwkey_total ?? 0).toLocaleString("cs-CZ");
+
+  yieldPct.innerText =
+    Number(d.yield_percent ?? 0).toFixed(2) + " %";
+
+  status.innerText   = d.status ?? "—";
+  snapshot.innerText = new Date(d.last_snapshot_at).toLocaleString("cs-CZ");
+  memberId.innerText = d.member_uuid;
+
+  renderChart([]);
 }
 
-/* =============================
-   LOAD BY UUID (QR režim)
-============================= */
-async function loadByUUID(uuid){
-  const { data, error } = await sb
-    .from("v_member_account")
-    .select("*")
-    .eq("member_uuid", uuid)
-    .single();
+/* ================= LOAD MANUAL ================= */
 
-  if(error || !data){
-    console.error(error);
-    alert("Člen nebyl nalezen.");
+async function loadManual(){
+  console.log("LOAD MANUAL START");
+
+  const val = manualInput.value.trim();
+  if(!val){
+    alert("Zadej e-mail nebo UUID");
     return;
   }
 
-  renderMember(data);
-}
-
-/* =============================
-   LOAD MANUAL (email / UUID)
-============================= */
-async function loadManual(){
-  const val = manualInput.value.trim();
-  if(!val) return;
-
   let query = sb.from("v_member_account").select("*");
 
-  // hledání podle e-mailu nebo UUID
   if(val.includes("@")){
-    query = query.ilike("email", val);   // ← case-insensitive
+    query = query.ilike("email", val);
   }else{
     query = query.eq("member_uuid", val);
   }
 
   const { data, error } = await query.limit(1);
 
+  console.log("SUPABASE RESULT:", data, error);
+
   if(error){
-    console.error(error);
-    alert("Chyba načtení člena.");
+    alert("Chyba DB: " + error.message);
     return;
   }
 
   if(!data || !data.length){
-    alert("Člen nebyl nalezen.");
+    alert("Člen nenalezen.");
     return;
   }
 
-  renderMember(data[0]);   // ← jisté předání
+  renderMember(data[0]);
 }
 
-/* =============================
-   LOAD ON START
-============================= */
-(function init(){
-  const url = new URL(window.location.href);
-  const uuid = url.searchParams.get("m");
+/* ================= INIT ================= */
 
-  if(uuid){
-    loadByUUID(uuid);
-  }
-})();
+document.querySelector("button").addEventListener("click", loadManual);
 </script>
 
 <script>
