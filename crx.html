@@ -282,20 +282,24 @@ async function renderMember(d){
   snapshot.innerText = new Date(d.last_snapshot_at).toLocaleString("cs-CZ");
   memberId.innerText = d.member_uuid;
 
-  /* ===============================
-     NAJDI certificate_uid
-  =============================== */
-  const { data: cert } = await sb
+  /* 🔎 načti certificate_uid */
+  const { data: cert, error } = await sb
     .from("member_certificates")
     .select("certificate_uid")
     .eq("member_id", d.member_uuid)
     .limit(1)
-    .single();
+    .maybeSingle();
+
+  console.log("CERT:", cert, error);
 
   const certLink = document.getElementById("certLink");
 
   if (certLink && cert?.certificate_uid) {
     certLink.href = "certificate.html?uid=" + cert.certificate_uid;
+  } else if (certLink) {
+    certLink.href = "#";
+    certLink.style.opacity = "0.5";
+    certLink.style.pointerEvents = "none";
   }
 
   renderChart([]);
