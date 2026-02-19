@@ -276,20 +276,29 @@ async function loadManual(){
   const val = manualInput.value.trim();
   if(!val) return;
 
-  let q = sb.from("v_member_account").select("*");
+  let query = sb.from("v_member_account").select("*");
 
-  q = val.includes("@")
-      ? q.eq("email", val)
-      : q.eq("member_uuid", val);
+  // hledání podle e-mailu nebo UUID
+  if(val.includes("@")){
+    query = query.ilike("email", val);   // ← case-insensitive
+  }else{
+    query = query.eq("member_uuid", val);
+  }
 
-  const { data, error } = await q.single();
+  const { data, error } = await query.limit(1);
 
-  if(error || !data){
-    alert("Člen nenalezen.");
+  if(error){
+    console.error(error);
+    alert("Chyba načtení člena.");
     return;
   }
 
-  renderMember(data);
+  if(!data || !data.length){
+    alert("Člen nebyl nalezen.");
+    return;
+  }
+
+  renderMember(data[0]);   // ← jisté předání
 }
 
 /* =============================
