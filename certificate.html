@@ -220,6 +220,15 @@ html,body{
       </div>
     </div>
 
+<!-- QR CODE -->
+<div class="qr-wrap" style="margin-top:40px;text-align:center">
+  <canvas id="qr" width="220" height="220"></canvas>
+  <div style="margin-top:10px;font-size:12px;opacity:.6">
+    Ověření certifikátu AYAS-7
+  </div>
+</div>
+
+
     <div class="footer">
       <hr>
       <div class="hash">
@@ -311,16 +320,40 @@ const c = json[0];
     new TextEncoder().encode(raw)
   );
 
-  document.querySelector("[data-hash]").textContent =
-    [...new Uint8Array(buf)]
-      .map(b => b.toString(16).padStart(2, "0"))
-      .join("");
+document.querySelector("[data-hash]").textContent =
+  [...new Uint8Array(buf)]
+    .map(b => b.toString(16).padStart(2, "0"))
+    .join("");
+
+/* ===============================
+   4) QR KÓD CERTIFIKÁTU
+=============================== */
+if (c.certificate_uid) {
+
+  const url =
+    "https://www.ayas7.com/certificate.html?uid=" + c.certificate_uid;
+
+  QRCode.toCanvas(
+    document.getElementById("qr"),
+    url,
+    {
+      width: 220,
+      margin: 2,
+      errorCorrectionLevel: "H",
+      color: {
+        dark: "#60a5fa",
+        light: "#00000000"
+      }
+    }
+  );
 }
+
 
 loadCertificate();
 </script>
 
 
+<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.4/build/qrcode.min.js"></script>
 
 </body>
 </html>
