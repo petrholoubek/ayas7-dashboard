@@ -287,18 +287,16 @@ const SUPABASE_URL =
 const params = new URLSearchParams(location.search);
 const uid = params.get("uid");
 
-if (!uid) {
-  alert("Chybí ID certifikátu");
-}
-
-/* ================= LOAD ================= */
-
 async function loadCertificate() {
-
   try {
 
-    /* 1) NAČTENÍ CERTIFIKÁTU */
-    const certRes = await fetch(
+    if (!uid) {
+      alert("Chybí ID certifikátu");
+      return;
+    }
+
+    /* načtení certifikátu */
+    const res = await fetch(
       `${SUPABASE_URL}/rest/v1/member_certificates?certificate_uid=eq.${uid}&select=*`,
       {
         headers: {
@@ -308,24 +306,20 @@ async function loadCertificate() {
       }
     );
 
-    if (!certRes.ok) {
-      alert("Chyba přístupu k certifikátu (401 / RLS).");
+    if (!res.ok) {
+      alert("Nelze načíst certifikát.");
       return;
     }
 
-    const json = await certRes.json();
-
-    if (!Array.isArray(json) || json.length === 0) {
-      alert("Certifikát nebyl nalezen.");
+    const data = await res.json();
+    if (!data.length) {
+      alert("Certifikát nenalezen.");
       return;
     }
 
-    const c = json[0];
+    const c = data[0];
 
-    /* 2) DOSAZENÍ DAT */
-    const wwkey = c.ww_key_amount || 0;
-    const deposit = c.deposit_amount || 0;
-
+    /* dosazení dat */
     document.querySelector("[data-name]").textContent =
       c.full_name || c.member_name;
 
@@ -333,17 +327,17 @@ async function loadCertificate() {
       new Date(c.issued_at).toLocaleDateString("cs-CZ");
 
     document.querySelector("[data-amount]").textContent =
-      `${deposit.toLocaleString("cs-CZ")} CZK`;
+      (c.deposit_amount || 0).toLocaleString("cs-CZ") + " CZK";
 
     document.querySelector("[data-keys]").textContent =
-      wwkey.toLocaleString("cs-CZ");
+      (c.ww_key_amount || 0).toLocaleString("cs-CZ");
 
     document.querySelector("[data-id]").textContent =
       c.certificate_uid;
 
-    /* 3) SHA-256 HASH */
+    /* hash */
     const raw =
-      `${c.member_name}|${deposit}|${wwkey}|${c.issued_at}|${c.certificate_uid}|AYAS7`;
+      `${c.member_name}|${c.deposit_amount}|${c.ww_key_amount}|${c.issued_at}|${c.certificate_uid}|AYAS7`;
 
     const buf = await crypto.subtle.digest(
       "SHA-256",
@@ -355,15 +349,12 @@ async function loadCertificate() {
         .map(b => b.toString(16).padStart(2, "0"))
         .join("");
 
-    /* 4) QR KÓD */
-    const url =
-      "https://www.ayas7.com/certificate.html?uid=" + c.certificate_uid;
+    /* QR */
+    const qr = document.getElementById("qr");
+    qr.innerHTML = "";
 
-    const qrContainer = document.getElementById("qr");
-    qrContainer.innerHTML = "";
-
-    new QRCode(qrContainer, {
-      text: url,
+    new QRCode(qr, {
+      text: "https://www.ayas7.com/certificate.html?uid=" + c.certificate_uid,
       width: 220,
       height: 220,
       colorDark: "#60a5fa",
@@ -371,18 +362,17 @@ async function loadCertificate() {
       correctLevel: QRCode.CorrectLevel.H
     });
 
-    console.log("CERT LOADED OK");
+    console.log("CERT OK");
 
-  } catch (err) {
-    console.error("CERT ERROR:", err);
+  } catch (e) {
+    console.error("CERT ERROR:", e);
     alert("Chyba načtení certifikátu.");
   }
 }
 
-/* ================= INIT ================= */
-
 window.addEventListener("load", loadCertificate);
 </script>
+
 
 
 </body>
