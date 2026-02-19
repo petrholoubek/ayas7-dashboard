@@ -282,13 +282,14 @@ async function renderMember(d){
   snapshot.innerText = new Date(d.last_snapshot_at).toLocaleString("cs-CZ");
   memberId.innerText = d.member_uuid;
 
-  /* 🔎 načti certificate_uid */
+  /* ===============================
+     NAČTENÍ certificate_uid
+  =============================== */
   const { data: cert, error } = await sb
     .from("member_certificates")
     .select("certificate_uid")
     .eq("member_id", d.member_uuid)
-    .limit(1)
-    .maybeSingle();
+    .maybeSingle();   // ← KLÍČOVÁ OPRAVA
 
   console.log("CERT:", cert, error);
 
