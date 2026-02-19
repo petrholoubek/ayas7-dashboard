@@ -283,26 +283,26 @@ async function renderMember(d){
   memberId.innerText = d.member_uuid;
 
   /* ===============================
-     1) NAJDI account_id Z UUID
+     NAJDI account_id VE v_admin_members
   =============================== */
-  const { data: acc, error: accErr } = await sb
-    .from("member_accounts")
-    .select("id")
+  const { data: admin, error: adminErr } = await sb
+    .from("v_admin_members")
+    .select("account_id")
     .eq("member_uuid", d.member_uuid)
     .maybeSingle();
 
-  console.log("ACCOUNT:", acc, accErr);
+  console.log("ADMIN:", admin, adminErr);
 
   let certUid = null;
 
   /* ===============================
-     2) NAJDI CERTIFIKÁT PODLE account_id
+     NAJDI CERTIFIKÁT
   =============================== */
-  if (acc?.id) {
+  if (admin?.account_id) {
     const { data: cert, error: certErr } = await sb
       .from("member_certificates")
       .select("certificate_uid")
-      .eq("account_id", acc.id)
+      .eq("account_id", admin.account_id)
       .limit(1)
       .maybeSingle();
 
@@ -312,7 +312,7 @@ async function renderMember(d){
   }
 
   /* ===============================
-     3) NASTAV ODKAZ TLAČÍTKA
+     NASTAV TLAČÍTKO
   =============================== */
   const certLink = document.getElementById("certLink");
 
