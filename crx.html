@@ -283,26 +283,27 @@ async function renderMember(d){
   memberId.innerText = d.member_uuid;
 
   /* ===============================
-     NAJDI account_id VE v_admin_members
+     1) NAJDI account_id z member_accounts
+     (správná vazba: user_id = UUID člena)
   =============================== */
-  const { data: admin, error: adminErr } = await sb
-    .from("v_admin_members")
-    .select("account_id")
-    .eq("member_uuid", d.member_uuid)
+  const { data: acc, error: accErr } = await sb
+    .from("member_accounts")
+    .select("id")
+    .eq("user_id", d.member_uuid)
     .maybeSingle();
 
-  console.log("ADMIN:", admin, adminErr);
+  console.log("ACCOUNT:", acc, accErr);
 
   let certUid = null;
 
   /* ===============================
-     NAJDI CERTIFIKÁT
+     2) NAJDI CERTIFIKÁT
   =============================== */
-  if (admin?.account_id) {
+  if (acc?.id) {
     const { data: cert, error: certErr } = await sb
       .from("member_certificates")
       .select("certificate_uid")
-      .eq("account_id", admin.account_id)
+      .eq("account_id", acc.id)
       .limit(1)
       .maybeSingle();
 
@@ -312,7 +313,7 @@ async function renderMember(d){
   }
 
   /* ===============================
-     NASTAV TLAČÍTKO
+     3) NASTAV TLAČÍTKO CERTIFIKÁTU
   =============================== */
   const certLink = document.getElementById("certLink");
 
@@ -321,11 +322,14 @@ async function renderMember(d){
     certLink.style.opacity = "1";
     certLink.style.pointerEvents = "auto";
   } else if (certLink) {
-    certLink.href = "#";
-    certLink.style.opacity = "0.4";
+    certLink.href = "javascript:void(0)";
+    certLink.style.opacity = "0.35";
     certLink.style.pointerEvents = "none";
   }
 
+  /* ===============================
+     4) GRAF
+  =============================== */
   renderChart([]);
 }
 
