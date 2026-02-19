@@ -217,6 +217,23 @@ html,body{
     margin-top:18px;
   }
 }
+#qr canvas,
+#qr img{
+  display:block;
+  margin:0 auto;
+}
+
+@media print{
+  #qr canvas,
+  #qr img{
+    filter: none;
+  }
+}
+@media print{
+  .page{
+    page-break-inside: avoid;
+  }
+}
 
 
 </style>
@@ -354,25 +371,30 @@ async function loadCertificate() {
         .map(b => b.toString(16).padStart(2, "0"))
         .join("");
 
-/* QR */
-const qr = document.getElementById("qr");
-qr.innerHTML = "";
+/* 4) QR KÓD */
+if (c.certificate_uid) {
 
-new QRCode(qr, {
-  text: "https://www.ayas7.com/certificate.html?uid=" + c.certificate_uid,
-  width: 200,
-  height: 200,
-  colorDark: "#60a5fa",
-  colorLight: "transparent",
-  correctLevel: QRCode.CorrectLevel.H
-});
+  const url =
+    "https://www.ayas7.com/certificate.html?uid=" + c.certificate_uid;
 
-console.log("CERT OK");
+  const qrContainer = document.getElementById("qr");
 
+  if (qrContainer && typeof QRCode !== "undefined") {
 
-  } catch (e) {
-    console.error("CERT ERROR:", e);
-    alert("Chyba načtení certifikátu.");
+    qrContainer.innerHTML = "";
+
+    new QRCode(qrContainer, {
+      text: url,
+      width: 200,
+      height: 200,
+      colorDark: "#60a5fa",
+      colorLight: "#ffffff",
+      correctLevel: QRCode.CorrectLevel.H
+    });
+
+    console.log("QR OK");
+  } else {
+    console.error("QRCode knihovna není načtena.");
   }
 }
 
