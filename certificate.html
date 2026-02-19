@@ -194,28 +194,24 @@ html,body{
 @media print{
 
   html, body{
-    width: 210mm;
-    height: 297mm;
-    overflow: hidden;
-    background: #000;
+    width:210mm;
+    height:297mm;
+    overflow:hidden;
   }
 
   .page{
-    margin: 0;
-    width: 210mm;
-    height: 297mm;
+    width:210mm;
+    height:297mm;
+    margin:0;
     page-break-after: avoid;
     page-break-inside: avoid;
   }
 
-  .qr-wrap{
-    page-break-inside: avoid;
-  }
-
   .footer{
-    page-break-inside: avoid;
+    margin-top:6mm;   /* KLÍČOVÉ – stáhne obsah nahoru */
   }
 }
+
 
 
 </style>
