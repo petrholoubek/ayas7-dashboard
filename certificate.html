@@ -244,6 +244,8 @@ html,body{
   </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.4/build/qrcode.min.js"></script>
+
 <script>
 const SUPABASE_ANON_KEY =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF6ZnJuaXFxdGV0b3FwbG94d2dxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3MzQ1OTYsImV4cCI6MjA4MzMxMDU5Nn0.QchmzNhs8owd6pkjZCk04u6PJoJ2Bhzz7oGV0KFyqdU";
@@ -260,37 +262,32 @@ if (!uid) {
 
 async function loadCertificate() {
 
-  /* ===============================
-     1) NAČTENÍ CERTIFIKÁTU
-  =============================== */
+  /* 1) NAČTENÍ CERTIFIKÁTU */
   const certRes = await fetch(
-  `${SUPABASE_URL}/rest/v1/member_certificates?certificate_uid=eq.${uid}&select=*`,
-  {
-    headers: {
-      "apikey": SUPABASE_ANON_KEY,
-      "Authorization": "Bearer " + SUPABASE_ANON_KEY
+    `${SUPABASE_URL}/rest/v1/member_certificates?certificate_uid=eq.${uid}&select=*`,
+    {
+      headers: {
+        "apikey": SUPABASE_ANON_KEY,
+        "Authorization": "Bearer " + SUPABASE_ANON_KEY
+      }
     }
+  );
+
+  if (!certRes.ok) {
+    alert("Chyba přístupu k certifikátu (401 / RLS).");
+    return;
   }
-);
 
-/* 🔐 kontrola HTTP odpovědi */
-if (!certRes.ok) {
-  alert("Chyba přístupu k certifikátu (401 / RLS).");
-  return;
-}
+  const json = await certRes.json();
 
-const json = await certRes.json();
+  if (!Array.isArray(json) || json.length === 0) {
+    alert("Certifikát nebyl nalezen nebo RLS blokuje přístup.");
+    return;
+  }
 
-if (!Array.isArray(json) || json.length === 0) {
-  alert("Certifikát nebyl nalezen nebo RLS blokuje přístup.");
-  return;
-}
+  const c = json[0];
 
-const c = json[0];
-
-  /* ===============================
-     2) DOSAZENÍ DO CERTIFIKÁTU
-  =============================== */
+  /* 2) DOSAZENÍ DO CERTIFIKÁTU */
   const wwkey = c.ww_key_amount || c.ww_key || 0;
   const deposit = c.deposit_amount || c.amount || 0;
 
@@ -309,9 +306,7 @@ const c = json[0];
   document.querySelector("[data-id]").textContent =
     c.certificate_uid;
 
-  /* ===============================
-     3) SHA-256 HASH (POUZE WW-KEY)
-  =============================== */
+  /* 3) SHA-256 HASH */
   const raw =
     `${c.member_name}|${deposit}|${wwkey}|${c.issued_at}|${c.certificate_uid}|AYAS7`;
 
@@ -320,39 +315,35 @@ const c = json[0];
     new TextEncoder().encode(raw)
   );
 
-document.querySelector("[data-hash]").textContent =
-  [...new Uint8Array(buf)]
-    .map(b => b.toString(16).padStart(2, "0"))
-    .join("");
+  document.querySelector("[data-hash]").textContent =
+    [...new Uint8Array(buf)]
+      .map(b => b.toString(16).padStart(2, "0"))
+      .join("");
 
-/* ===============================
-   4) QR KÓD CERTIFIKÁTU
-=============================== */
-if (c.certificate_uid) {
+  /* 4) QR KÓD */
+  if (c.certificate_uid) {
 
-  const url =
-    "https://www.ayas7.com/certificate.html?uid=" + c.certificate_uid;
+    const url =
+      "https://www.ayas7.com/certificate.html?uid=" + c.certificate_uid;
 
-  QRCode.toCanvas(
-    document.getElementById("qr"),
-    url,
-    {
-      width: 220,
-      margin: 2,
-      errorCorrectionLevel: "H",
-      color: {
-        dark: "#60a5fa",
-        light: "#00000000"
+    QRCode.toCanvas(
+      document.getElementById("qr"),
+      url,
+      {
+        width: 220,
+        margin: 2,
+        errorCorrectionLevel: "H",
+        color: {
+          dark: "#60a5fa",
+          light: "#00000000"
+        }
       }
-    }
-  );
+    );
+  }
 }
-
 
 loadCertificate();
 </script>
-
-<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.4/build/qrcode.min.js"></script>
 
 </body>
 </html>
