@@ -160,7 +160,7 @@ html,body{
 
 /* FOOTER */
 .footer{
-  margin-top:14mm;   /* místo auto */
+  margin-top:8mm;   /* místo auto */
   font-size:10px;
   color:#9ca3af;
 }
@@ -185,6 +185,39 @@ html,body{
   body{background:#000}
   .page{margin:0}
 }
+
+@page{
+  size: A4;
+  margin: 0;
+}
+
+@media print{
+
+  html, body{
+    width: 210mm;
+    height: 297mm;
+    overflow: hidden;
+    background: #000;
+  }
+
+  .page{
+    margin: 0;
+    width: 210mm;
+    height: 297mm;
+    page-break-after: avoid;
+    page-break-inside: avoid;
+  }
+
+  .qr-wrap{
+    page-break-inside: avoid;
+  }
+
+  .footer{
+    page-break-inside: avoid;
+  }
+}
+
+
 </style>
 </head>
 
@@ -244,7 +277,7 @@ html,body{
   </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.4/build/qrcode.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
 <script>
 const SUPABASE_ANON_KEY =
@@ -320,27 +353,25 @@ async function loadCertificate() {
       .map(b => b.toString(16).padStart(2, "0"))
       .join("");
 
-  /* 4) QR KÓD */
-  if (c.certificate_uid) {
+/* 4) QR KÓD */
+if (c.certificate_uid) {
 
-    const url =
-      "https://www.ayas7.com/certificate.html?uid=" + c.certificate_uid;
+  const url =
+    "https://www.ayas7.com/certificate.html?uid=" + c.certificate_uid;
 
-    QRCode.toCanvas(
-      document.getElementById("qr"),
-      url,
-      {
-        width: 220,
-        margin: 2,
-        errorCorrectionLevel: "H",
-        color: {
-          dark: "#60a5fa",
-          light: "#00000000"
-        }
-      }
-    );
-  }
+  const qrContainer = document.getElementById("qr");
+  qrContainer.innerHTML = ""; // vyčištění při reloadu
+
+  new QRCode(qrContainer, {
+    text: url,
+    width: 220,
+    height: 220,
+    colorDark: "#60a5fa",
+    colorLight: "transparent",
+    correctLevel: QRCode.CorrectLevel.H
+  });
 }
+
 
 window.addEventListener("load", loadCertificate);
 
