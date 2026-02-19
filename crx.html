@@ -264,7 +264,7 @@ const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 /* ================= RENDER ================= */
 
-function renderMember(d){
+async function renderMember(d){
   console.log("RENDER:", d);
 
   memberName.innerText = d.full_name ?? d.email;
@@ -282,10 +282,20 @@ function renderMember(d){
   snapshot.innerText = new Date(d.last_snapshot_at).toLocaleString("cs-CZ");
   memberId.innerText = d.member_uuid;
 
-  /* 🔗 PROLINK NA CERTIFIKÁT */
+  /* ===============================
+     NAJDI certificate_uid
+  =============================== */
+  const { data: cert } = await sb
+    .from("member_certificates")
+    .select("certificate_uid")
+    .eq("member_id", d.member_uuid)
+    .limit(1)
+    .single();
+
   const certLink = document.getElementById("certLink");
-  if(certLink){
-    certLink.href = "certificate.html?m=" + d.member_uuid;
+
+  if (certLink && cert?.certificate_uid) {
+    certLink.href = "certificate.html?uid=" + cert.certificate_uid;
   }
 
   renderChart([]);
