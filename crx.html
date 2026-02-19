@@ -283,23 +283,46 @@ async function renderMember(d){
   memberId.innerText = d.member_uuid;
 
   /* ===============================
-     NAČTENÍ certificate_uid
+     1) NAJDI account_id Z UUID
   =============================== */
-  const { data: cert, error } = await sb
-    .from("member_certificates")
-    .select("certificate_uid")
-    .eq("member_id", d.member_uuid)
-    .maybeSingle();   // ← KLÍČOVÁ OPRAVA
+  const { data: acc, error: accErr } = await sb
+    .from("member_accounts")
+    .select("id")
+    .eq("member_uuid", d.member_uuid)
+    .maybeSingle();
 
-  console.log("CERT:", cert, error);
+  console.log("ACCOUNT:", acc, accErr);
 
+  let certUid = null;
+
+  /* ===============================
+     2) NAJDI CERTIFIKÁT PODLE account_id
+  =============================== */
+  if (acc?.id) {
+    const { data: cert, error: certErr } = await sb
+      .from("member_certificates")
+      .select("certificate_uid")
+      .eq("account_id", acc.id)
+      .limit(1)
+      .maybeSingle();
+
+    console.log("CERT:", cert, certErr);
+
+    certUid = cert?.certificate_uid ?? null;
+  }
+
+  /* ===============================
+     3) NASTAV ODKAZ TLAČÍTKA
+  =============================== */
   const certLink = document.getElementById("certLink");
 
-  if (certLink && cert?.certificate_uid) {
-    certLink.href = "certificate.html?uid=" + cert.certificate_uid;
+  if (certLink && certUid) {
+    certLink.href = "certificate.html?uid=" + certUid;
+    certLink.style.opacity = "1";
+    certLink.style.pointerEvents = "auto";
   } else if (certLink) {
     certLink.href = "#";
-    certLink.style.opacity = "0.5";
+    certLink.style.opacity = "0.4";
     certLink.style.pointerEvents = "none";
   }
 
