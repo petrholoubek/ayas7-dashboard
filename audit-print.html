@@ -456,8 +456,21 @@ document.getElementById("spfDistributed").textContent =
 document.getElementById("spfRemaining").textContent =
   spfRemaining.toLocaleString("cs-CZ");
 
-document.getElementById("spfStatus").textContent =
-  spfRow?.status ?? "—";
+let spfStatus = "—";
+
+if (!spfRow) {
+  spfStatus = "NO PERIOD";
+} else if (spfDistributed === 0) {
+  spfStatus = "ALLOCATED (NOT DISTRIBUTED)";
+} else if (spfDistributed < crxSpf) {
+  spfStatus = "PARTIALLY DISTRIBUTED";
+} else if (spfDistributed === crxSpf) {
+  spfStatus = "FULLY DISTRIBUTED";
+} else {
+  spfStatus = "INCONSISTENT";
+}
+
+document.getElementById("spfStatus").textContent = spfStatus;
 
 // ===== HLAVIČKA AUDITU =====
 
