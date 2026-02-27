@@ -409,7 +409,13 @@ const { data: crxRow } = await db
   .eq("period", auditPeriod)
   .maybeSingle();
 
-const crxTotalEngine = Number(crxRow?.total_crx || 0);
+if (!crxRow) {
+  console.error("CRX NOT LOADED");
+  document.getElementById("crx-total").textContent = "ERROR";
+  return;
+}
+
+const crxTotalEngine = Number(crxRow.total_crx);
 
 // 2️⃣ SPF
 const { data: spfRow } = await db
@@ -418,13 +424,13 @@ const { data: spfRow } = await db
   .eq("period", auditPeriod)
   .maybeSingle();
 
-// 🔥 TOTO CHYBĚLO
 const crxSpf = Number(spfRow?.spf_amount_total || 0);
 
 // 3️⃣ výpočty
 const crxMembers = 45;
 const crxTotal = crxTotalEngine;
 const crxReserve = crxTotal - crxMembers - crxSpf;
+
 
 // ================= SPF DISTRIBUTION (REAL DATA) =================
 
