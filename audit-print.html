@@ -413,15 +413,15 @@ const crxMembers = (benefitRows || []).reduce(
 // 2️⃣ SPRÁVNÉ OBDOBÍ (YYYY-MM)
 const auditPeriod = Object.keys(byDay)[0].slice(0, 7);
 
-// 3️⃣ SPF PERIOD – MUSÍM NAČÍST ID
+// 3️⃣ SPF FUND – FINÁLNÍ AUDIT DATA
 const { data: spfRow } = await db
-  .from("spf_periods")
-  .select("id, spf_amount, status, decided_at, decided_by, decision_source")
+  .from("spf_fund_periods")
+  .select("id, spf_amount_total, status, decided_at, decided_by")
   .eq("period", auditPeriod)
   .maybeSingle();
 
 // 4️⃣ ZÁKLADNÍ HODNOTY
-const crxSpf = Number(spfRow?.spf_amount || 0);
+const crxSpf = Number(spfRow?.spf_amount_total || 0);
 const crxTotal = crxMembers + crxSpf;
 const crxReserve = 0;
 
@@ -489,8 +489,7 @@ document.getElementById("spfApprovedAt").textContent =
 document.getElementById("spfApprovedBy").textContent =
   spfRow?.decided_by ?? "—";
 
-document.getElementById("spfDecisionSource").textContent =
-  spfRow?.decision_source ?? "—";
+document.getElementById("spfDecisionSource").textContent = "AYAS-7 ENGINE";
 
 // ===== SOUHRN CRX =====
 
