@@ -555,8 +555,8 @@ async function loadCrxPool(){
   // 1️⃣ najdi poslední uzavřené období
   const { data: periodRow, error: periodError } = await sb
     .from("spf_periods_ui")
-    .select("period")
-    .eq("status", "closed")
+    .select("id, period, status")
+    .eq("status", "draft")              // 🔥 KLÍČOVÉ
     .order("created_at", { ascending: false })
     .limit(1)
     .single();
