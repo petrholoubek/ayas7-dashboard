@@ -552,28 +552,32 @@ async function loadStats(){
 ========================= */
 async function loadCrxPool(){
 
+  // 1️⃣ vezmi poslední UZAVŘENÉ období
   const { data: periodRow } = await sb
     .from("spf_periods_ui")
     .select("period")
-    .eq("status", "closed")   // 🔥 ZPÁTKY NA CLOSED
-    .not("period", "ilike", "%TEST%")
+    .eq("status", "closed")
     .order("period", { ascending: false })
     .limit(1)
-    .single();
+    .maybeSingle();
 
   if(!periodRow){
-    console.warn("No closed period");
+    console.warn("No closed period for CRX");
     return;
   }
 
+  // 2️⃣ načti CRX z toho období
   const { data } = await sb
     .from("v_crx_period_with_pool")
     .select("total_crx")
     .eq("period", periodRow.period)
     .maybeSingle();
 
-  document.getElementById("stat-crx-pool").innerText =
-    Number(data?.total_crx || 0).toFixed(2);
+  // 3️⃣ render
+  const el = document.getElementById("stat-crx-pool");
+  if(el){
+    el.innerText = Number(data?.total_crx || 0).toFixed(2);
+  }
 
   console.log("CRX from CLOSED:", periodRow.period);
 }
