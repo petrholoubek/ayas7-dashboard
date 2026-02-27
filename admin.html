@@ -567,9 +567,11 @@ async function loadCrxPool(){
   const period = periodRow[0].period;
 
   const { data, error } = await sb
-    .from("v_crx_period_with_pool")
+    .from("crx_period_totals")   // 🔥 FIX
     .select("total_crx")
-    .eq("period", period);
+    .eq("period", period)
+    .order("calculated_at", { ascending: false })
+    .limit(1);
 
   if(error){
     console.error("CRX error", error);
@@ -578,12 +580,10 @@ async function loadCrxPool(){
 
   const total = data?.length ? data[0].total_crx : 0;
 
-  const el = document.getElementById("stat-crx-pool");
-  if(el){
-    el.innerText = Number(total || 0).toFixed(2);
-  }
+  document.getElementById("stat-crx-pool").innerText =
+    Number(total || 0).toFixed(2);
 
-  console.log("CRX OK:", total, "period:", period);
+  console.log("CRX FIXED:", total, "period:", period);
 }
 
 /* =========================
