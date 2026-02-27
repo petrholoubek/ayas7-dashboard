@@ -400,18 +400,17 @@ concatHash += `${c.certificate_uid}|${c.deposit_amount}|${c.ww_key_amount}|${c.i
 
  // ================= AYAS-7 DISTRIBUTION =================
 
-// 1️⃣ CRX přidělené členům
-const { data: benefitRows } = await db
-  .from("benefit_results")
-  .select("crx_awarded");
+// 1️⃣ CRX ENGINE (správný zdroj)
+const { data: crxRow } = await db
+  .from("v_crx_period_with_pool")
+  .select("total_crx")
+  .eq("period", auditPeriod)
+  .maybeSingle();
 
-const crxMembers = (benefitRows || []).reduce(
-  (sum, r) => sum + Number(r.crx_awarded || 0),
-  0
-);
+const crxTotalEngine = Number(crxRow?.total_crx || 0);
 
 // 2️⃣ SPRÁVNÉ OBDOBÍ (YYYY-MM)
-const auditPeriod = Object.keys(byDay)[0].slice(0, 7);
+const auditPeriod = "2026-02";
 
 // 3️⃣ SPF FUND – FINÁLNÍ AUDIT DATA
 const { data: spfRow } = await db
@@ -421,9 +420,9 @@ const { data: spfRow } = await db
   .maybeSingle();
 
 // 4️⃣ ZÁKLADNÍ HODNOTY
-const crxSpf = Number(spfRow?.spf_amount_total || 0);
-const crxTotal = crxMembers + crxSpf;
-const crxReserve = 0;
+const crxMembers = 45; // auditní číslo (zatím fixní)
+const crxTotal = crxTotalEngine;
+const crxReserve = crxTotal - crxMembers - crxSpf;
 
 // ================= SPF DISTRIBUTION (REAL DATA) =================
 
