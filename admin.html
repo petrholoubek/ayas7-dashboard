@@ -556,7 +556,8 @@ async function loadCrxPool(){
     .from("crx_period_totals")
     .select("period, total_crx")
     .not("period", "ilike", "%TEST%")
-    .order("calculated_at", { ascending: false })
+    .not("period", "ilike", "%LIVE%")
+    .order("period", { ascending: false }) // 🔥 KLÍČOVÉ
     .limit(1);
 
   if(error){
@@ -576,7 +577,7 @@ async function loadCrxPool(){
     el.innerText = Number(row.total_crx || 0).toFixed(2);
   }
 
-  console.log("CRX OK:", row);
+  console.log("CRX FINAL:", row);
 }
 
 /* =========================
@@ -810,6 +811,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   await loadCurrentPeriod();
 });
 </script>
+
 
 </body>
 </html>
