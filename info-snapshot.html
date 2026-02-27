@@ -751,7 +751,7 @@ Read-only operational view · No execution · No custody
 (async function () {
 
 const $ = id => document.getElementById(id);
-
+const VERSION = "v2_" + Date.now();   // ← TADY TO PŘIDEJ
 
  const SNAPSHOT_URL = "https://snapshot.ayas7.com/api/snapshot";
 
@@ -790,7 +790,7 @@ function updateHealthBar(v){
 ========================= */
 async function loadSnapshot() {
   try {
-    const res = await fetch(SNAPSHOT_URL, { cache: "no-store" });
+    const res = await fetch(SNAPSHOT_URL + "?v=" + VERSION, { cache: "no-store" });
     if (!res.ok) throw new Error("API error");
 
     const data = await res.json();
@@ -878,7 +878,7 @@ function renderError() {
 ========================= */
 async function loadYield() {
   try {
-    const res = await fetch(YIELD_URL, { cache: "no-store" });
+    const res = await fetch(YIELD_URL + "?v=" + VERSION, { cache: "no-store" });
     
 
     const data = await res.json();
