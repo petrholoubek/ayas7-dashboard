@@ -552,27 +552,11 @@ async function loadStats(){
 ========================= */
 async function loadCrxPool(){
 
-  // 1️⃣ vezmi poslední uzavřené období (čisté YYYY-MM)
-  const { data: periodRow } = await sb
-    .from("spf_periods_ui")
-    .select("period")
-    .eq("status", "closed")
-    .not("period", "ilike", "%TEST%")
-    .order("period", { ascending: false })
-    .limit(1);
-
-  if(!periodRow?.length){
-    console.warn("No closed period");
-    return;
-  }
-
-  const period = periodRow[0].period;
-
-  // 2️⃣ načti CRX přímo z tabulky (OBEJDI VIEW)
   const { data, error } = await sb
     .from("crx_period_totals")
-    .select("total_crx")
-    .eq("period", period)
+    .select("period, total_crx")
+    .not("period", "ilike", "%TEST%")
+    .order("calculated_at", { ascending: false })
     .limit(1);
 
   if(error){
@@ -580,14 +564,19 @@ async function loadCrxPool(){
     return;
   }
 
-  const total = data?.length ? data[0].total_crx : 0;
+  if(!data?.length){
+    console.warn("NO CRX DATA");
+    return;
+  }
+
+  const row = data[0];
 
   const el = document.getElementById("stat-crx-pool");
   if(el){
-    el.innerText = Number(total || 0).toFixed(2);
+    el.innerText = Number(row.total_crx || 0).toFixed(2);
   }
 
-  console.log("CRX OK:", total, "period:", period);
+  console.log("CRX OK:", row);
 }
 
 /* =========================
