@@ -722,15 +722,23 @@ async function confirmCertification(memberId){
    OBDOBÍ – NAČTENÍ STAVU
 ========================= */
 async function loadCurrentPeriod(){
+
+  // 🔥 vezmi aktivní (draft) období
   const { data, error } = await sb
     .from("spf_periods_ui")
     .select("id, period, status")
+    .eq("status", "draft")
     .order("created_at", { ascending: false })
     .limit(1)
-    .single();
+    .maybeSingle();
 
   if(error){
-    console.warn("Period not found");
+    console.warn("Period error", error);
+    return;
+  }
+
+  if(!data){
+    console.warn("No active (draft) period found");
     return;
   }
 
@@ -740,16 +748,24 @@ async function loadCurrentPeriod(){
   document.getElementById("period-status").innerText =
     "Stav: " + data.status;
 
-  // pokud je už uzavřeno, zakážeme tlačítko
-  if(data.status !== "draft"){
-    const btn = document.getElementById("close-period-btn");
-    btn.disabled = true;
-    btn.innerText = "Období je uzavřeno";
+  const btn = document.getElementById("close-period-btn");
+
+  if(btn){
+    if(data.status !== "draft"){
+      btn.disabled = true;
+      btn.innerText = "Období je uzavřeno";
+    } else {
+      btn.disabled = false;
+      btn.innerText = "Uzavřít období";
+    }
   }
 
-  // uložíme si ID pro uzávěrku
+  // uložíme ID
   window.__CURRENT_PERIOD_ID__ = data.id;
+
+  console.log("ACTIVE PERIOD:", data.period);
 }
+
 /* =========================
    OBDOBÍ – UZAVŘENÍ
 ========================= */
