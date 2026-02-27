@@ -879,7 +879,7 @@ function renderError() {
 async function loadYield() {
   try {
     const res = await fetch(YIELD_URL, { cache: "no-store" });
-    if (!res.ok) throw new Error("yield api");
+    
 
     const data = await res.json();
     const y = data.yield;
@@ -924,11 +924,12 @@ set("yieldDaily", formatPct(daily));
       updateYieldChart(y.monthly);
     }
 
-  } catch (err) {
-    console.warn("Yield offline:", err);
-    updateNet(false);
-  }
+ } catch (err) {
+  console.warn("Yield fallback:", err);
 }
+
+}
+
 /* =========================
    HELPERS
 ========================= */
