@@ -288,6 +288,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   const supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF6ZnJuaXFxdGV0b3FwbG94d2dxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3MzQ1OTYsImV4cCI6MjA4MzMxMDU5Nn0.QchmzNhs8owd6pkjZCk04u6PJoJ2Bhzz7oGV0KFyqdU";
 
   const db = supabase.createClient(supabaseUrl, supabaseAnonKey);
+// 🔥 MUSÍ BÝT ÚPLNĚ NAHOŘE
+const auditPeriod = "2026-02";
 
 // ================= GENESIS AUDIT SUMMARY =================
 
@@ -400,7 +402,7 @@ concatHash += `${c.certificate_uid}|${c.deposit_amount}|${c.ww_key_amount}|${c.i
 
  // ================= AYAS-7 DISTRIBUTION =================
 
-// 1️⃣ CRX ENGINE (správný zdroj)
+// 1️⃣ CRX ENGINE
 const { data: crxRow } = await db
   .from("v_crx_period_with_pool")
   .select("total_crx")
@@ -409,18 +411,18 @@ const { data: crxRow } = await db
 
 const crxTotalEngine = Number(crxRow?.total_crx || 0);
 
-// 2️⃣ SPRÁVNÉ OBDOBÍ (YYYY-MM)
-const auditPeriod = "2026-02";
-
-// 3️⃣ SPF FUND – FINÁLNÍ AUDIT DATA
+// 2️⃣ SPF
 const { data: spfRow } = await db
   .from("spf_fund_periods")
   .select("id, spf_amount_total, status, decided_at, decided_by")
   .eq("period", auditPeriod)
   .maybeSingle();
 
-// 4️⃣ ZÁKLADNÍ HODNOTY
-const crxMembers = 45; // auditní číslo (zatím fixní)
+// 🔥 TOTO CHYBĚLO
+const crxSpf = Number(spfRow?.spf_amount_total || 0);
+
+// 3️⃣ výpočty
+const crxMembers = 45;
 const crxTotal = crxTotalEngine;
 const crxReserve = crxTotal - crxMembers - crxSpf;
 
