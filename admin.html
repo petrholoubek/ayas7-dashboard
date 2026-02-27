@@ -523,6 +523,30 @@ const sb = supabase.createClient(
   SUPABASE_ANON_KEY
 );
 
+async function loadStats(){
+
+  const { data, error } = await sb
+    .from("v_admin_stats")
+    .select("*")
+    .single();
+
+  if(error){
+    console.error("Stats error", error);
+    return;
+  }
+
+  document.getElementById("stat-members").innerText =
+    data?.total_members ?? 0;
+
+  document.getElementById("stat-wwkey").innerText =
+    Number(data?.total_wwkey || 0).toFixed(2);
+
+  document.getElementById("stat-crx").innerText =
+    Number(data?.crx_total || 0).toFixed(2);
+
+  console.log("STATS:", data);
+}
+
 /* =========================
    STATISTIKY
 ========================= */
@@ -768,7 +792,8 @@ async function closePeriod(){
    INIT
 ========================= */
 document.addEventListener("DOMContentLoaded", async () => {
-  await loadCrxPool();   // ← TOTO JSME PŘIDALI
+  await loadStats();        // 🔥 TOTO TI CHYBÍ
+  await loadCrxPool();
   await loadMembers();
   await loadCertificates();
   await loadAudit();
