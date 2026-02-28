@@ -279,11 +279,13 @@ searchInput.addEventListener("input", async () => {
 
   if (q.length < 2) return;
 
-  const { data, error } = await supabase
+ const { data, error } = await supabase
   .from("members_data")
   .select("id, full_name, name, email, status, created_at")
   .or(`email.ilike.%${q}%,full_name.ilike.%${q}%,name.ilike.%${q}%`)
   .limit(10);
+
+console.log("SEARCH RESULT:", data, error);
 
   if (error || !data) return;
 
