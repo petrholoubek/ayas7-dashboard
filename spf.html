@@ -357,32 +357,64 @@ async function loadSPFPeriods() {
   const tbody = document.getElementById("spf-periods");
   if (!tbody) return;
 
-  const { data } = await supabase
+  tbody.innerHTML = `
+    <tr>
+      <td colspan="4" style="color:#9ca3af">Načítám období…</td>
+    </tr>
+  `;
+
+  /* 1️⃣ Načteme období */
+  const { data: periods, error: periodError } = await supabase
     .from("spf_periods_ui")
     .select("id, period, status")
     .order("period", { ascending: false });
 
-  if (!data || !data.length) return;
+  if (periodError || !periods) {
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="4" style="color:#ef4444">Chyba načtení období</td>
+      </tr>
+    `;
+    return;
+  }
 
-  const active = data.find(r =>
-    r.status === "draft" || r.status === "approved"
-  );
+  /* 2️⃣ Načteme CRX z poolu */
+  const { data: crxTotals } = await supabase
+    .from("crx_period_totals")
+    .select("period, total_crx");
 
-  if (active) {
-    window.selectedPeriod = active.period;
+  const crxMap = {};
+  if (crxTotals) {
+    crxTotals.forEach(r => {
+      crxMap[r.period] = Number(r.total_crx || 0);
+    });
   }
 
   tbody.innerHTML = "";
-  data.forEach(r => {
+
+  periods.forEach(r => {
+    const crxValue = crxMap[r.period] ?? 0;
+
     tbody.insertAdjacentHTML("beforeend", `
       <tr>
         <td>${r.period}</td>
-        <td style="text-align:right">${r.spf_amount ?? 0}</td>
+        <td style="text-align:right">
+          ${crxValue.toLocaleString("cs-CZ", { minimumFractionDigits: 2 })}
+        </td>
         <td>${r.status}</td>
         <td>—</td>
       </tr>
     `);
   });
+
+  /* 3️⃣ Aktivní období */
+  const active = periods.find(p =>
+    p.status === "draft" || p.status === "approved"
+  );
+
+  if (active) {
+    window.selectedPeriod = active.period;
+  }
 }
 
 /* =========================================================
