@@ -276,7 +276,7 @@ async function renderMember(d){
 const { data: crxData, error: crxErr } = await sb
   .from("v_member_crx_balance")
   .select("crx_total")
-  .eq("member_id", d.member_id)
+  .eq("member_id", d.member_numeric_id)
   .maybeSingle();
 
 console.log("CRX:", crxData, crxErr);
@@ -368,7 +368,7 @@ const wwShare = (d.wwkey_total / wwTotal) * 100;
 const { data: history, error: histErr } = await sb
   .from("member_crx_ledger")
   .select("crx_amount, created_at")
-  .eq("member_id", d.member_id)
+  .eq("member_id", d.member_numeric_id)
   .order("created_at");
 
 console.log("CRX HISTORY:", history, histErr);
