@@ -269,14 +269,48 @@ async function renderMember(d){
 
   memberName.innerText = d.full_name ?? d.email;
 
-  crxTotal.innerText =
-    Number(d.crx_total ?? 0).toLocaleString("cs-CZ") + " CRX";
+  /* ===============================
+   CRX BALANCE
+=============================== */
+
+const { data: crxData, error: crxErr } = await sb
+  .from("v_member_crx_balance")
+  .select("crx_total")
+  .eq("member_id", d.member_id)
+  .maybeSingle();
+
+console.log("CRX:", crxData, crxErr);
+
+let crx = 0;
+
+if(crxData?.crx_total){
+  crx = Number(crxData.crx_total);
+}
+
+crxTotal.innerText =
+  crx.toLocaleString("cs-CZ") + " CRX";
 
   wwkeyTotal.innerText =
     Number(d.wwkey_total ?? 0).toLocaleString("cs-CZ");
 
+/* ===============================
+   WWKEY SYSTEM SHARE
+=============================== */
+
+const { data: wwTotalData } = await sb
+  .from("member_accounts")
+  .select("ww_key_balance");
+
+let wwTotal = 0;
+
+wwTotalData.forEach(r=>{
+  wwTotal += Number(r.ww_key_balance);
+});
+
+const wwShare = (d.wwkey_total / wwTotal) * 100;
+
   yieldPct.innerText =
-    Number(d.yield_percent ?? 0).toFixed(2) + " %";
+  wwShare.toFixed(4) + " %";
 
   status.innerText   = d.status ?? "—";
   snapshot.innerText = new Date(d.last_snapshot_at).toLocaleString("cs-CZ");
@@ -328,9 +362,25 @@ async function renderMember(d){
   }
 
   /* ===============================
-     4) GRAF
-  =============================== */
-  renderChart([]);
+   CRX HISTORY
+=============================== */
+
+const { data: history, error: histErr } = await sb
+  .from("member_crx_ledger")
+  .select("crx_amount, created_at")
+  .eq("member_id", d.member_id)
+  .order("created_at");
+
+console.log("CRX HISTORY:", history, histErr);
+
+let cumulative = 0;
+
+const chartData = (history || []).map(r=>{
+  cumulative += Number(r.crx_amount);
+  return cumulative;
+});
+
+renderChart(chartData);
 }
 
 /* ================= LOAD MANUAL ================= */
