@@ -276,7 +276,7 @@ async function renderMember(d){
 const { data: crxData, error: crxErr } = await sb
   .from("v_member_crx_balance")
   .select("crx_total")
-  .eq("member_id", d.member_numeric_id)
+  .eq("member_id", acc.id)
   .maybeSingle();
 
 console.log("CRX:", crxData, crxErr);
