@@ -368,7 +368,7 @@ const wwShare = (d.wwkey_total / wwTotal) * 100;
 const { data: history, error: histErr } = await sb
   .from("member_crx_ledger")
   .select("crx_amount, created_at")
-  .eq("member_id", d.member_numeric_id)
+  .eq("member_id", acc.id)
   .order("created_at");
 
 console.log("CRX HISTORY:", history, histErr);
