@@ -243,8 +243,33 @@ footer{
 
 </section>
 
+<!-- SYSTEM ECONOMY -->
+<section class="card">
+
+  <div style="font-size:14px;font-weight:600;margin-bottom:14px">
+    Ekonomika systému AYAS-7
+  </div>
+
+  <div class="row">
+    <span>WW-KEY celkem</span>
+    <span id="sysWwkey">—</span>
+  </div>
+
+  <div class="row">
+    <span>Kapitál systému</span>
+    <span id="sysCapital">—</span>
+  </div>
+
+  <div class="row">
+    <span>Počet členů</span>
+    <span id="sysMembers">—</span>
+  </div>
+
+</section>
+
 <!-- ACCOUNT INFO -->
 <section class="card">
+
   <div class="row"><span>Status účtu</span><span id="status">—</span></div>
   <div class="row"><span>Poslední snapshot</span><span id="snapshot">—</span></div>
   <div class="row"><span>Member ID</span><span id="memberNumericId">—</span></div>
@@ -350,9 +375,37 @@ if(wwTotal > 0){
 
 yieldPct.innerText = wwShare.toFixed(4) + " %";
 
-  status.innerText   = d.status ?? "—";
-  snapshot.innerText = new Date(d.last_snapshot_at).toLocaleString("cs-CZ");
-  document.getElementById("memberNumericId").innerText = memberNumericId;
+/* ===============================
+   SYSTEM ECONOMY
+=============================== */
+
+const { data: sysMembersData } = await sb
+  .from("v_member_count")
+  .select("total")
+  .maybeSingle();
+
+let totalMembers = sysMembersData?.total ?? 0;
+
+const sysMembersEl = document.getElementById("sysMembers");
+const sysWwkeyEl = document.getElementById("sysWwkey");
+const sysCapitalEl = document.getElementById("sysCapital");
+
+if(sysMembersEl){
+  sysMembersEl.innerText = totalMembers.toLocaleString("cs-CZ");
+}
+
+if(sysWwkeyEl){
+  sysWwkeyEl.innerText = wwTotal.toLocaleString("cs-CZ");
+}
+
+if(sysCapitalEl){
+  const sysCapital = wwTotal * 25;
+  sysCapitalEl.innerText = sysCapital.toLocaleString("cs-CZ") + " Kč";
+}
+
+status.innerText   = d.status ?? "—";
+snapshot.innerText = new Date(d.last_snapshot_at).toLocaleString("cs-CZ");
+document.getElementById("memberNumericId").innerText = memberNumericId;
 
  /* ===============================
    CERTIFICATE
