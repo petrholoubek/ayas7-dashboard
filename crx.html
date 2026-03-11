@@ -278,7 +278,7 @@ async function renderMember(d){
   =============================== */
 
 const { data: acc, error: accErr } = await sb
-  .from("members_data")
+  .from("member_accounts")
   .select("id")
   .eq("user_id", d.member_uuid)
   .maybeSingle();
@@ -364,6 +364,8 @@ if(accountId){
 
   certUid = cert?.certificate_uid ?? null;
 
+  console.log("CERT DEBUG", accountId, cert);
+
 }
 
 const certLink = document.getElementById("certLink");
@@ -372,7 +374,7 @@ if(certLink && certUid){
   certLink.href = "certificate.html?uid=" + certUid;
   certLink.style.opacity = "1";
   certLink.style.pointerEvents = "auto";
-}else if(certLink){
+}else{
   certLink.removeAttribute("href");
   certLink.style.opacity = "0.35";
   certLink.style.pointerEvents = "none";
