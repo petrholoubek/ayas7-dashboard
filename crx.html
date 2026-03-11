@@ -277,12 +277,13 @@ async function renderMember(d){
   =============================== */
 
 const { data: acc, error: accErr } = await sb
-  .from("member_accounts")
+  .from("members_data")
   .select("id")
   .eq("user_id", d.member_uuid)
   .maybeSingle();
 
 const accountId = acc?.id;
+const memberId = acc?.id;
 
 console.log("ACCOUNT ID:", accountId);
 
@@ -300,7 +301,7 @@ console.log("ACCOUNT ID:", accountId);
   const { data: crxData, error: crxErr } = await sb
     .from("v_member_crx_balance")
     .select("crx_total")
-    .eq("member_id", d.member_numeric_id)
+    .eq("member_id", memberId)
     .maybeSingle();
 
   console.log("CRX:", crxData, crxErr);
@@ -379,7 +380,7 @@ console.log("CERT DEBUG", {
   const { data: history, error: histErr } = await sb
   .from("member_crx_ledger")
   .select("crx_amount, created_at")
-  .eq("member_id", d.member_numeric_id)
+  .eq("member_id", memberId)
   .order("created_at");
 
   console.log("CRX HISTORY:", history, histErr);
@@ -391,7 +392,7 @@ console.log("CERT DEBUG", {
     return cumulative;
   });
 
-  renderChart(chartData.length ? chartData : [0, crx, crx]);
+  renderChart(chartData.length ? chartData : [0, crx]);
 }
 
 /* ================= LOAD MANUAL ================= */
