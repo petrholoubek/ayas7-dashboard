@@ -211,22 +211,29 @@ footer{
 <!-- MAIN BALANCE -->
 <section class="card">
 
-  <div class="balance-main">
+ <div class="balance-main">
 
-    <div class="balance-crx">
-      <div id="crxTotal" class="crx-value">0 CRX</div>
-      <div class="crx-label">Tokenový zůstatek</div>
-    </div>
+  <div class="balance-crx">
+    <div id="crxTotal" class="crx-value">0 CRX</div>
+    <div class="crx-label">Tokenový zůstatek</div>
+  </div>
 
-    <div class="balance-wwkey">
-      <div id="wwkeyTotal" class="wwkey-value">0</div>
-      <div class="wwkey-label">WW-KEY podíl</div>
-    </div>
+  <div class="balance-wwkey">
+    <div id="wwkeyTotal" class="wwkey-value">0</div>
+    <div class="wwkey-label">WW-KEY podíl</div>
+  </div>
 
-    <div class="balance-yield">
-      <div id="yieldPct" class="yield-value">0.00 %</div>
-      <div class="yield-label">Podíl na výnosu</div>
-    </div>
+  <div class="balance-capital">
+    <div id="capitalValue" class="wwkey-value">0 Kč</div>
+    <div class="wwkey-label">Kapitál člena</div>
+  </div>
+
+  <div class="balance-yield">
+    <div id="yieldPct" class="yield-value">0.00 %</div>
+    <div class="yield-label">Podíl na výnosu</div>
+  </div>
+
+</div>
 
   </div>
 
@@ -316,8 +323,13 @@ console.log("ACCOUNT ID:", accountId);
      3) WWKEY
   =============================== */
 
-  wwkeyTotal.innerText =
-    Number(d.wwkey_total ?? 0).toLocaleString("cs-CZ");
+wwkeyTotal.innerText =
+  Number(d.wwkey_total ?? 0).toLocaleString("cs-CZ");
+
+const capital = (d.wwkey_total ?? 0) * 25;
+
+document.getElementById("capitalValue").innerText =
+  capital.toLocaleString("cs-CZ") + " Kč";
 
   /* ===============================
    WWKEY SHARE
