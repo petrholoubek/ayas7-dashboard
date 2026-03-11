@@ -240,7 +240,7 @@ footer{
 <section class="card">
   <div class="row"><span>Status účtu</span><span id="status">—</span></div>
   <div class="row"><span>Poslední snapshot</span><span id="snapshot">—</span></div>
-  <div class="row"><span>Member ID</span><span id="memberId">—</span></div>
+  <div class="row"><span>Member ID</span><span id="memberNumericId">—</span></div>
 
 <div style="margin-top:18px">
   <a id="certLink"
@@ -265,6 +265,8 @@ const SUPABASE_URL = "https://azfrniqqtetoqploxwgq.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF6ZnJuaXFxdGV0b3FwbG94d2dxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3MzQ1OTYsImV4cCI6MjA4MzMxMDU5Nn0.QchmzNhs8owd6pkjZCk04u6PJoJ2Bhzz7oGV0KFyqdU";
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+const manualInput = document.getElementById("manualInput");
+
 /* ================= RENDER ================= */
 
 async function renderMember(d){
@@ -283,7 +285,7 @@ const { data: acc, error: accErr } = await sb
   .maybeSingle();
 
 const accountId = acc?.id;
-const memberId = acc?.id;
+const memberNumericId = acc?.id;
 
 console.log("ACCOUNT ID:", accountId);
 
@@ -301,7 +303,7 @@ console.log("ACCOUNT ID:", accountId);
   const { data: crxData, error: crxErr } = await sb
     .from("v_member_crx_balance")
     .select("crx_total")
-    .eq("member_id", memberId)
+    .eq("member_id", memberNumericId)
     .maybeSingle();
 
   console.log("CRX:", crxData, crxErr);
@@ -338,7 +340,7 @@ console.log("ACCOUNT ID:", accountId);
 
   status.innerText   = d.status ?? "—";
   snapshot.innerText = new Date(d.last_snapshot_at).toLocaleString("cs-CZ");
-  memberId.innerText = d.member_uuid;
+  memberNumericId.innerText = d.member_uuid;
 
  /* ===============================
    CERTIFICATE
@@ -350,7 +352,7 @@ const { data: account } = await sb
   .eq("user_id", d.member_uuid)
   .maybeSingle();
 
-const accountId = account?.id;
+const accountIdCert = account?.id;
 
 let certUid = null;
 
@@ -359,7 +361,7 @@ if(accountId){
   const { data: cert } = await sb
     .from("member_certificates")
     .select("certificate_uid")
-    .eq("account_id", accountId)
+    .eq("account_id", accountIdCert)
     .limit(1)
     .maybeSingle();
 
@@ -386,7 +388,7 @@ if(certLink && certUid){
   const { data: history, error: histErr } = await sb
   .from("member_crx_ledger")
   .select("crx_amount, created_at")
-  .eq("member_id", memberId)
+  .eq("member_id", memberNumericId)
   .order("created_at");
 
   console.log("CRX HISTORY:", history, histErr);
@@ -398,12 +400,13 @@ if(certLink && certUid){
     return cumulative;
   });
 
-  renderChart(chartData.length ? chartData : [0, crx]);
+  renderChart(chartData.length ? chartData : [0, crx, crx]);
 }
 
 /* ================= LOAD MANUAL ================= */
 
 window.loadManual = async function(){
+
   console.log("LOAD MANUAL START");
 
   const val = manualInput.value.trim();
