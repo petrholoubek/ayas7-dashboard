@@ -270,56 +270,9 @@ async function renderMember(d){
   memberName.innerText = d.full_name ?? d.email;
 
   /* ===============================
-   CRX BALANCE
-=============================== */
-
-const { data: crxData, error: crxErr } = await sb
-  .from("v_member_crx_balance")
-  .select("crx_total")
-  .eq("member_id", acc.id)
-  .maybeSingle();
-
-console.log("CRX:", crxData, crxErr);
-
-let crx = 0;
-
-if(crxData?.crx_total){
-  crx = Number(crxData.crx_total);
-}
-
-crxTotal.innerText =
-  crx.toLocaleString("cs-CZ") + " CRX";
-
-  wwkeyTotal.innerText =
-    Number(d.wwkey_total ?? 0).toLocaleString("cs-CZ");
-
-/* ===============================
-   WWKEY SYSTEM SHARE
-=============================== */
-
-const { data: wwTotalData } = await sb
-  .from("member_accounts")
-  .select("ww_key_balance");
-
-let wwTotal = 0;
-
-wwTotalData.forEach(r=>{
-  wwTotal += Number(r.ww_key_balance);
-});
-
-const wwShare = (d.wwkey_total / wwTotal) * 100;
-
-  yieldPct.innerText =
-  wwShare.toFixed(4) + " %";
-
-  status.innerText   = d.status ?? "—";
-  snapshot.innerText = new Date(d.last_snapshot_at).toLocaleString("cs-CZ");
-  memberId.innerText = d.member_uuid;
-
-  /* ===============================
-     1) NAJDI account_id z member_accounts
-     (správná vazba: user_id = UUID člena)
+     1) NAJDI ACCOUNT
   =============================== */
+
   const { data: acc, error: accErr } = await sb
     .from("member_accounts")
     .select("id")
@@ -328,27 +281,72 @@ const wwShare = (d.wwkey_total / wwTotal) * 100;
 
   console.log("ACCOUNT:", acc, accErr);
 
-  let certUid = null;
-
-  /* ===============================
-     2) NAJDI CERTIFIKÁT
-  =============================== */
-  if (acc?.id) {
-    const { data: cert, error: certErr } = await sb
-      .from("member_certificates")
-      .select("certificate_uid")
-      .eq("account_id", acc.id)
-      .limit(1)
-      .maybeSingle();
-
-    console.log("CERT:", cert, certErr);
-
-    certUid = cert?.certificate_uid ?? null;
+  if(!acc){
+    console.log("ACCOUNT NOT FOUND");
+    return;
   }
 
   /* ===============================
-     3) NASTAV TLAČÍTKO CERTIFIKÁTU
+     2) CRX BALANCE
   =============================== */
+
+  const { data: crxData, error: crxErr } = await sb
+    .from("v_member_crx_balance")
+    .select("crx_total")
+    .eq("member_id", acc.id)
+    .maybeSingle();
+
+  console.log("CRX:", crxData, crxErr);
+
+  let crx = crxData?.crx_total ?? 0;
+
+  crxTotal.innerText =
+    Number(crx).toLocaleString("cs-CZ") + " CRX";
+
+  /* ===============================
+     3) WWKEY
+  =============================== */
+
+  wwkeyTotal.innerText =
+    Number(d.wwkey_total ?? 0).toLocaleString("cs-CZ");
+
+  /* ===============================
+     WWKEY SHARE
+  =============================== */
+
+  const { data: wwTotalData } = await sb
+    .from("member_accounts")
+    .select("ww_key_balance");
+
+  let wwTotal = 0;
+
+  wwTotalData.forEach(r=>{
+    wwTotal += Number(r.ww_key_balance);
+  });
+
+  const wwShare = (d.wwkey_total / wwTotal) * 100;
+
+  yieldPct.innerText = wwShare.toFixed(4) + " %";
+
+  status.innerText   = d.status ?? "—";
+  snapshot.innerText = new Date(d.last_snapshot_at).toLocaleString("cs-CZ");
+  memberId.innerText = d.member_uuid;
+
+  /* ===============================
+     4) CERTIFIKÁT
+  =============================== */
+
+  let certUid = null;
+
+  const { data: cert } = await sb
+    .from("member_certificates")
+    .select("certificate_uid")
+    .eq("account_id", acc.id)
+    .limit(1)
+    .maybeSingle();
+
+  certUid = cert?.certificate_uid ?? null;
+
   const certLink = document.getElementById("certLink");
 
   if (certLink && certUid) {
@@ -362,25 +360,25 @@ const wwShare = (d.wwkey_total / wwTotal) * 100;
   }
 
   /* ===============================
-   CRX HISTORY
-=============================== */
+     5) CRX HISTORY
+  =============================== */
 
-const { data: history, error: histErr } = await sb
-  .from("member_crx_ledger")
-  .select("crx_amount, created_at")
-  .eq("member_id", acc.id)
-  .order("created_at");
+  const { data: history, error: histErr } = await sb
+    .from("member_crx_ledger")
+    .select("crx_amount, created_at")
+    .eq("member_id", acc.id)
+    .order("created_at");
 
-console.log("CRX HISTORY:", history, histErr);
+  console.log("CRX HISTORY:", history, histErr);
 
-let cumulative = 0;
+  let cumulative = 0;
 
-const chartData = (history || []).map(r=>{
-  cumulative += Number(r.crx_amount);
-  return cumulative;
-});
+  const chartData = (history || []).map(r=>{
+    cumulative += Number(r.crx_amount);
+    return cumulative;
+  });
 
-renderChart(chartData);
+  renderChart(chartData);
 }
 
 /* ================= LOAD MANUAL ================= */
