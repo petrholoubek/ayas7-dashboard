@@ -273,11 +273,11 @@ async function renderMember(d){
      1) NAJDI ACCOUNT
   =============================== */
 
-  const { data: acc, error: accErr } = await sb
-    .from("member_accounts")
-    .select("id")
-    .eq("user_id", d.member_uuid)
-    .maybeSingle();
+ const { data: acc, error: accErr } = await sb
+  .from("members_data")
+  .select("id")
+  .eq("user_id", d.member_uuid)
+  .maybeSingle();
 
   console.log("ACCOUNT:", acc, accErr);
 
