@@ -347,9 +347,9 @@ yieldPct.innerText = wwShare.toFixed(4) + " %";
 ================================ */
 
 const { data: account } = await sb
-  .from("member_accounts")
-  .select("id")
-  .eq("user_id", d.member_uuid)
+  .from("v_member_account")
+.select("account_id")
+.eq("member_uuid", d.member_uuid)
   .maybeSingle();
 
 const realAccountId = account?.id;
@@ -388,7 +388,7 @@ if(certLink && certUid){
   =============================== */
 
   const { data: history, error: histErr } = await sb
-  .from("member_crx_ledger")
+  .from("v_member_crx_history")
   .select("crx_amount, created_at")
   .eq("member_id", acc.id)
   .order("created_at");
