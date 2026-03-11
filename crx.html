@@ -328,17 +328,13 @@ console.log("ACCOUNT ID:", accountId);
   .from("member_accounts")
   .select("ww_key_balance");
 
-let wwTotal = 0;
+let wwShare = 0;
 
-if(wwTotalData){
-  wwTotalData.forEach(r=>{
-    wwTotal += Number(r.ww_key_balance);
-  });
+if(wwTotal > 0){
+  wwShare = (d.wwkey_total / wwTotal) * 100;
 }
 
-  const wwShare = (d.wwkey_total / wwTotal) * 100;
-
-  yieldPct.innerText = wwShare.toFixed(4) + " %";
+yieldPct.innerText = wwShare.toFixed(4) + " %";
 
   status.innerText   = d.status ?? "—";
   snapshot.innerText = new Date(d.last_snapshot_at).toLocaleString("cs-CZ");
@@ -348,14 +344,6 @@ if(wwTotalData){
    CERTIFICATE
 ================================ */
 
-const { data: account } = await sb
-  .from("member_accounts")
-  .select("id")
-  .eq("user_id", d.member_uuid)
-  .maybeSingle();
-
-const accountIdCert = account?.id;
-
 let certUid = null;
 
 if(accountId){
@@ -363,7 +351,7 @@ if(accountId){
   const { data: cert } = await sb
     .from("member_certificates")
     .select("certificate_uid")
-    .eq("account_id", accountIdCert)
+    .eq("account_id", accountId)
     .limit(1)
     .maybeSingle();
 
