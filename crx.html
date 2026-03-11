@@ -320,20 +320,15 @@ console.log("ACCOUNT ID:", accountId);
     Number(d.wwkey_total ?? 0).toLocaleString("cs-CZ");
 
   /* ===============================
-     WWKEY SHARE
-  =============================== */
+   WWKEY SHARE
+=============================== */
 
 const { data: wwTotalData } = await sb
-  .from("member_accounts")
-  .select("ww_key_balance");
+  .from("v_wwkey_total")
+  .select("total")
+  .maybeSingle();
 
-let wwTotal = 0;
-
-if(wwTotalData){
-  wwTotalData.forEach(r=>{
-    wwTotal += Number(r.ww_key_balance);
-  });
-}
+let wwTotal = wwTotalData?.total ?? 0;
 
 let wwShare = 0;
 
