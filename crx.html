@@ -346,30 +346,17 @@ yieldPct.innerText = wwShare.toFixed(4) + " %";
    CERTIFICATE
 ================================ */
 
-const { data: account } = await sb
-  .from("member_accounts")
-  .select("id")
-  .eq("user_id", d.member_uuid)
-  .maybeSingle();;
-
-const realAccountId = account?.id;
-
 let certUid = null;
 
-if(realAccountId){
+const { data: cert } = await sb
+  .from("v_member_certificate")
+  .select("certificate_uid")
+  .eq("member_uuid", d.member_uuid)
+  .maybeSingle();
 
-  const { data: cert } = await sb
-    .from("member_certificates")
-    .select("certificate_uid")
-    .eq("account_id", realAccountId)
-    .limit(1)
-    .maybeSingle();
+certUid = cert?.certificate_uid ?? null;
 
-  certUid = cert?.certificate_uid ?? null;
-
-  console.log("CERT DEBUG", realAccountId, certUid);
-
-}
+console.log("CERT DEBUG", certUid);
 
 const certLink = document.getElementById("certLink");
 
