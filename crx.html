@@ -340,38 +340,44 @@ console.log("ACCOUNT ID:", accountId);
   snapshot.innerText = new Date(d.last_snapshot_at).toLocaleString("cs-CZ");
   memberId.innerText = d.member_uuid;
 
-  /* ===============================
-     4) CERTIFIKÁT
-  =============================== */
+ /* ===============================
+   CERTIFICATE
+================================ */
+
+const { data: account } = await sb
+  .from("member_accounts")
+  .select("id")
+  .eq("user_id", d.member_uuid)
+  .maybeSingle();
+
+const accountId = account?.id;
 
 let certUid = null;
 
-const { data: cert } = await sb
-  .from("member_certificates")
-  .select("certificate_uid")
-  .eq("account_id", accountId)
-  .limit(1)
-  .maybeSingle();
+if(accountId){
 
-certUid = cert?.certificate_uid ?? null;
+  const { data: cert } = await sb
+    .from("member_certificates")
+    .select("certificate_uid")
+    .eq("account_id", accountId)
+    .limit(1)
+    .maybeSingle();
 
-console.log("CERT DEBUG", {
-  account_id: acc?.id,
-  cert: cert
-});
+  certUid = cert?.certificate_uid ?? null;
 
+}
 
-  const certLink = document.getElementById("certLink");
+const certLink = document.getElementById("certLink");
 
-  if (certLink && certUid) {
-    certLink.href = "certificate.html?uid=" + certUid;
-    certLink.style.opacity = "1";
-    certLink.style.pointerEvents = "auto";
-  } else if (certLink) {
-    certLink.href = "javascript:void(0)";
-    certLink.style.opacity = "0.35";
-    certLink.style.pointerEvents = "none";
-  }
+if(certLink && certUid){
+  certLink.href = "certificate.html?uid=" + certUid;
+  certLink.style.opacity = "1";
+  certLink.style.pointerEvents = "auto";
+}else if(certLink){
+  certLink.href = "#";
+  certLink.style.opacity = "0.35";
+  certLink.style.pointerEvents = "none";
+}
 
   /* ===============================
      5) CRX HISTORY
