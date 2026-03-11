@@ -347,10 +347,10 @@ yieldPct.innerText = wwShare.toFixed(4) + " %";
 ================================ */
 
 const { data: account } = await sb
-  .from("v_member_account")
-.select("account_id")
-.eq("member_uuid", d.member_uuid)
-  .maybeSingle();
+  .from("member_accounts")
+  .select("id")
+  .eq("user_id", d.member_uuid)
+  .maybeSingle();;
 
 const realAccountId = account?.id;
 
