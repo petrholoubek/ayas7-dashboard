@@ -282,6 +282,10 @@ async function renderMember(d){
   .eq("user_id", d.member_uuid)
   .maybeSingle();
 
+const accountId = acc?.id;
+
+console.log("ACCOUNT ID:", accountId);
+
   console.log("ACCOUNT:", acc, accErr);
 
   if(!acc){
@@ -339,12 +343,12 @@ async function renderMember(d){
      4) CERTIFIKÁT
   =============================== */
 
-  let certUid = null;
+  const accountId = acc?.id;
 
 const { data: cert } = await sb
   .from("member_certificates")
   .select("certificate_uid")
-  .eq("account_id", acc.id)
+  .eq("account_id", accountId)
   .limit(1)
   .maybeSingle();
 
@@ -387,7 +391,7 @@ console.log("CERT DEBUG", {
     return cumulative;
   });
 
-  renderChart(chartData);
+  renderChart(chartData.length ? chartData : [0, crx]);
 }
 
 /* ================= LOAD MANUAL ================= */
@@ -435,9 +439,9 @@ let chartInstance = null;
 function renderChart(history){
 
   const canvas = document.getElementById("chart");
-  if(!canvas) return;
+if(!canvas) return;
 
-  const ctx = canvas.getContext("2d");
+const ctx = canvas.getContext("2d");
 
   if(!history || !history.length){
     history = Array.from({length: 30}, (_, i) => 100 + i * 0.2);
