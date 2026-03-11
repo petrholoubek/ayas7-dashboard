@@ -417,19 +417,19 @@ async function loadManual(){
   renderMember(data[0]);
 }
 
-/* ================= INIT ================= */
-
-document.querySelector("button").addEventListener("click", loadManual);
 </script>
 
 <script>
+
 let chartInstance = null;
 
 function renderChart(history){
-  const ctx = document.getElementById("chart");
-  if(!ctx) return;
 
-  // pokud není historie, vytvoříme jemnou rovnou křivku
+  const canvas = document.getElementById("chart");
+  if(!canvas) return;
+
+  const ctx = canvas.getContext("2d");
+
   if(!history || !history.length){
     history = Array.from({length: 30}, (_, i) => 100 + i * 0.2);
   }
@@ -448,13 +448,16 @@ function renderChart(history){
         borderWidth: 2,
         pointRadius: 0,
         fill: true,
+        borderColor: "#22c55e",
         backgroundColor: "rgba(34,197,94,0.15)"
       }]
     },
     options: {
       responsive: true,
       maintainAspectRatio: false,
-      plugins: { legend: { display: false } },
+      plugins: {
+        legend: { display: false }
+      },
       scales: {
         x: { display: false },
         y: {
@@ -464,9 +467,10 @@ function renderChart(history){
       }
     }
   });
-}
-</script>
 
+}
+
+</script>
 
 </body>
 </html>
