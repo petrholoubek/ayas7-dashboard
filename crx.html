@@ -265,7 +265,7 @@ const SUPABASE_URL = "https://azfrniqqtetoqploxwgq.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF6ZnJuaXFxdGV0b3FwbG94d2dxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3MzQ1OTYsImV4cCI6MjA4MzMxMDU5Nn0.QchmzNhs8owd6pkjZCk04u6PJoJ2Bhzz7oGV0KFyqdU";
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-const manualInput = document.getElementById("manualInput");
+const memberIdEl = document.getElementById("memberId");
 
 /* ================= RENDER ================= */
 
@@ -324,15 +324,17 @@ console.log("ACCOUNT ID:", accountId);
      WWKEY SHARE
   =============================== */
 
-  const { data: wwTotalData } = await sb
-    .from("member_accounts")
-    .select("ww_key_balance");
+ const { data: wwTotalData } = await sb
+  .from("member_accounts")
+  .select("ww_key_balance");
 
-  let wwTotal = 0;
+let wwTotal = 0;
 
+if(wwTotalData){
   wwTotalData.forEach(r=>{
     wwTotal += Number(r.ww_key_balance);
   });
+}
 
   const wwShare = (d.wwkey_total / wwTotal) * 100;
 
