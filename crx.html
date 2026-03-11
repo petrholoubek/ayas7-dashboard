@@ -343,7 +343,7 @@ console.log("ACCOUNT ID:", accountId);
      4) CERTIFIKÁT
   =============================== */
 
-  const accountId = acc?.id;
+let certUid = null;
 
 const { data: cert } = await sb
   .from("member_certificates")
@@ -391,7 +391,7 @@ console.log("CERT DEBUG", {
     return cumulative;
   });
 
-  renderChart(chartData.length ? chartData : [0, crx]);
+  renderChart(chartData.length ? chartData : [0, Number(crx)]);
 }
 
 /* ================= LOAD MANUAL ================= */
