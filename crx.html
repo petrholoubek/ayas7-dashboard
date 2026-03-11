@@ -278,7 +278,7 @@ async function renderMember(d){
   =============================== */
 
 const { data: acc, error: accErr } = await sb
-  .from("member_accounts")
+  .from("members_data")
   .select("id")
   .eq("user_id", d.member_uuid)
   .maybeSingle();
@@ -302,7 +302,7 @@ console.log("ACCOUNT ID:", accountId);
   const { data: crxData, error: crxErr } = await sb
     .from("v_member_crx_balance")
     .select("crx_total")
-    .eq("member_id", memberNumericId)
+    .eq("member_id", acc.id)
     .maybeSingle();
 
   console.log("CRX:", crxData, crxErr);
@@ -387,7 +387,7 @@ if(certLink && certUid){
   const { data: history, error: histErr } = await sb
   .from("member_crx_ledger")
   .select("crx_amount, created_at")
-  .eq("member_id", memberNumericId)
+  .eq("member_id", acc.id)
   .order("created_at");
 
   console.log("CRX HISTORY:", history, histErr);
