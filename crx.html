@@ -276,8 +276,8 @@ async function renderMember(d){
      1) NAJDI ACCOUNT
   =============================== */
 
- const { data: acc, error: accErr } = await sb
-  .from("members_data")
+const { data: acc, error: accErr } = await sb
+  .from("member_accounts")
   .select("id")
   .eq("user_id", d.member_uuid)
   .maybeSingle();
@@ -391,7 +391,7 @@ console.log("CERT DEBUG", {
     return cumulative;
   });
 
-  renderChart(chartData.length ? chartData : [0, Number(crx)]);
+  renderChart(chartData.length ? chartData : [0, crx, crx]);
 }
 
 /* ================= LOAD MANUAL ================= */
@@ -438,8 +438,11 @@ let chartInstance = null;
 
 function renderChart(history){
 
-  const canvas = document.getElementById("chart");
-if(!canvas) return;
+const canvas = document.getElementById("chart");
+if(!canvas){
+  console.log("Canvas not found");
+  return;
+}
 
 const ctx = canvas.getContext("2d");
 
