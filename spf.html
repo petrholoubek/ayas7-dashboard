@@ -352,8 +352,7 @@ async function loadCareerStatuses() {
     `;
     return;
   }
-
- tbody.innerHTML = "";
+tbody.innerHTML = "";
 
 let totalCRX = 0;
 
@@ -382,6 +381,8 @@ const totalEl = document.getElementById("spfTotalCRX");
 if(totalEl){
   totalEl.innerText =
     totalCRX.toLocaleString("cs-CZ",{minimumFractionDigits:2}) + " CRX";
+}
+
 }
 
 /* =========================================================
