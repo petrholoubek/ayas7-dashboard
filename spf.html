@@ -166,7 +166,29 @@ th{color:var(--muted);text-align:left}
     <tbody id="career-status-table">
       <tr><td colspan="5">Načítám data…</td></tr>
     </tbody>
-  </table>
+</table>
+
+<div style="
+margin-top:14px;
+padding:12px 16px;
+border:1px solid rgba(34,197,94,.4);
+border-radius:10px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+background:rgba(34,197,94,.05);
+">
+
+<div style="font-size:13px;color:#9ca3af">
+Celková simulovaná potřeba CRX
+</div>
+
+<div id="spfTotalCRX"
+style="font-size:20px;font-weight:700;color:#22c55e">
+—
+</div>
+
+</div>
 
 <p style="margin-top:10px;font-size:12px;color:#9ca3af">
 Simulace CRX vychází z aktuálního WW-KEY snapshotu a koeficientů dle Přílohy č. 1 k Proviznímu řádu.
@@ -331,23 +353,35 @@ async function loadCareerStatuses() {
     return;
   }
 
-  tbody.innerHTML = "";
+ tbody.innerHTML = "";
 
-  data.forEach(r => {
-    const ww = r.wwkey_max
-      ? `${r.wwkey_min.toLocaleString("cs-CZ")} – ${r.wwkey_max.toLocaleString("cs-CZ")}`
-      : `${r.wwkey_min.toLocaleString("cs-CZ")}+`;
+let totalCRX = 0;
 
-    tbody.insertAdjacentHTML("beforeend", `
-      <tr>
-        <td><strong>${r.status}</strong></td>
-        <td>${ww}</td>
-        <td>${r.crx_coef_min} – ${r.crx_coef_max}</td>
-        <td>${r.member_count}</td>
-        <td>${Number(r.crx_total_min).toLocaleString("cs-CZ")}</td>
-      </tr>
-    `);
-  });
+data.forEach(r => {
+
+  totalCRX += Number(r.crx_total_min || 0);
+
+  const ww = r.wwkey_max
+    ? `${r.wwkey_min.toLocaleString("cs-CZ")} – ${r.wwkey_max.toLocaleString("cs-CZ")}`
+    : `${r.wwkey_min.toLocaleString("cs-CZ")}+`;
+
+  tbody.insertAdjacentHTML("beforeend", `
+    <tr>
+      <td><strong>${r.status}</strong></td>
+      <td>${ww}</td>
+      <td>${r.crx_coef_min} – ${r.crx_coef_max}</td>
+      <td>${r.member_count}</td>
+      <td>${Number(r.crx_total_min).toLocaleString("cs-CZ")}</td>
+    </tr>
+  `);
+
+});
+
+const totalEl = document.getElementById("spfTotalCRX");
+
+if(totalEl){
+  totalEl.innerText =
+    totalCRX.toLocaleString("cs-CZ",{minimumFractionDigits:2}) + " CRX";
 }
 
 /* =========================================================
