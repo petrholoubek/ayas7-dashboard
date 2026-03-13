@@ -186,6 +186,50 @@ footer{
   height:220px;
 }
 
+/* ================= MOBILE ================= */
+
+@media (max-width: 640px){
+
+main{
+  margin:24px auto 80px;
+}
+
+.title{
+  font-size:22px;
+}
+
+.balance-main{
+  flex-direction:column;
+  align-items:flex-start;
+  gap:18px;
+}
+
+.crx-value{
+  font-size:42px;
+}
+
+.wwkey-value{
+  font-size:22px;
+}
+
+.yield-value{
+  font-size:20px;
+}
+
+.graph{
+  height:180px;
+}
+
+.manual{
+  flex-direction:column;
+}
+
+button{
+  width:100%;
+}
+
+}
+
 </style>
 </head>
 
@@ -234,8 +278,6 @@ footer{
   </div>
 
 </div>
-
-  </div>
 
   <div class="graph">
     <canvas id="chart"></canvas>
