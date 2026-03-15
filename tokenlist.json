@@ -9,8 +9,7 @@
 "keywords": [
 "ayas7",
 "defi",
-"bsc",
-"tron"
+"bsc"
 ],
 "tokens": [
 {
@@ -20,14 +19,6 @@
 "symbol": "USDTZ",
 "decimals": 18,
 "logoURI": "https://www.ayas7.com/token/usdtz.png"
-},
-{
-"chainId": 728126428,
-"address": "TWmi8rRf8qEfmqE9EcC12dgUzbUjrnEtg5",
-"name": "USDT",
-"symbol": "USDT",
-"decimals": 6,
-"logoURI": "https://www.ayas7.com/token/usdt.png"
 }
 ]
 }
