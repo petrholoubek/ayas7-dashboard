@@ -106,24 +106,22 @@ View on Tronscan
 
 <script>
 
-const tokenAddress="TWmi8rRf8qEfmqE9EcC12dgUzbUjrnEtg5";
+const tokenAddress = "TWmi8rRf8qEfmqE9EcC12dgUzbUjrnEtg5";
 
 function isMobile(){
-
 return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-
 }
 
 function openTronLink(){
+
+const url = encodeURIComponent(window.location.href);
 
 /* mobil */
 
 if(isMobile()){
 
-const url=encodeURIComponent(window.location.href);
-
-window.location.href=
-"https://www.tronlink.org/open?url="+url;
+window.location.href =
+"tronlink://open_url?url=" + url;
 
 return;
 
