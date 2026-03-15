@@ -122,14 +122,26 @@ View on BscScan
 
 <script>
 
-const tokenAddress = "0xFFD225737d0607bAaf330C0550A5D6BbB0Ab9717";
-const tokenSymbol = "USDTZ";   // bezpečnější bez tečky
-const tokenDecimals = 18;
-const tokenImage = "https://www.ayas7.com/token/usdtz.png";
+const tokenAddress="0xFFD225737d0607bAaf330C0550A5D6BbB0Ab9717";
+const tokenSymbol="USDTZ";
+const tokenDecimals=18;
+const tokenImage="https://www.ayas7.com/token/usdtz.png";
 
-/* detekce mobilu */
+/* mobil */
 function isMobile(){
 return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+}
+
+/* správný provider */
+function getProvider(){
+
+if(!window.ethereum) return null;
+
+if(window.ethereum.providers){
+return window.ethereum.providers.find(p=>p.isMetaMask);
+}
+
+return window.ethereum;
 }
 
 /* přepnutí na BSC */
@@ -167,33 +179,30 @@ blockExplorerUrls:["https://bscscan.com"]
 
 }
 
+/* přidání tokenu */
 async function addToken(){
 
-/* mobil bez wallet provideru */
-if(!window.ethereum && isMobile()){
+const provider=getProvider();
 
-const url = encodeURIComponent(window.location.href);
+/* mobil bez wallet */
+if(!provider && isMobile()){
 
-window.location.href =
+const url=encodeURIComponent(window.location.href);
+
+window.location.href=
 "https://metamask.app.link/dapp/"+url;
 
 return;
 
 }
 
-/* desktop bez wallet */
-if(!window.ethereum){
+if(!provider){
 
 alert("Otevřete stránku v MetaMask nebo Trust Wallet.");
 
 return;
 
 }
-
-/* výběr správného provideru (MetaMask vs TronLink) */
-const provider = window.ethereum.providers
-? window.ethereum.providers.find(p => p.isMetaMask)
-: window.ethereum;
 
 try{
 
@@ -203,7 +212,7 @@ method:"eth_requestAccounts"
 
 await switchNetwork(provider);
 
-const wasAdded = await provider.request({
+const wasAdded=await provider.request({
 
 method:"wallet_watchAsset",
 
@@ -235,6 +244,7 @@ alert("Nepodařilo se přidat token.");
 
 }
 
+/* copy */
 function copyAddress(){
 
 navigator.clipboard.writeText(tokenAddress);
@@ -244,5 +254,6 @@ alert("Contract address copied");
 }
 
 </script>
+
 </body>
 </html>
