@@ -106,7 +106,7 @@ View on Tronscan
 
 <script>
 
-const tokenAddress="TWmi8rRf8qEfmqE9EcC12dgUzbUjrnEtg5";
+const tokenAddress = "TWmi8rRf8qEfmqE9EcC12dgUzbUjrnEtg5";
 
 function isMobile(){
 return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
@@ -114,12 +114,25 @@ return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
 function openTronLink(){
 
+const tronScanUrl =
+"https://tronscan.org/#/token20/" + tokenAddress;
+
 /* mobil */
 
 if(isMobile()){
 
-window.location.href =
-"https://tronscan.org/#/token20/"+tokenAddress;
+const deepLink =
+"tronlink://open_url?url=" + encodeURIComponent(tronScanUrl);
+
+/* pokus otevřít TronLink */
+
+window.location.href = deepLink;
+
+/* fallback po 1.5s */
+
+setTimeout(function(){
+window.location.href = tronScanUrl;
+},1500);
 
 return;
 
@@ -129,16 +142,12 @@ return;
 
 if(!window.tronWeb){
 
-alert("Otevřete stránku v TronLink wallet.");
-
+window.open(tronScanUrl,"_blank");
 return;
 
 }
 
-window.open(
-"https://tronscan.org/#/token20/"+tokenAddress,
-"_blank"
-);
+window.open(tronScanUrl,"_blank");
 
 }
 
@@ -151,6 +160,5 @@ alert("Contract address copied");
 }
 
 </script>
-
 </body>
 </html>
