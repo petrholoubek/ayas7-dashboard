@@ -1,0 +1,33 @@
+{
+"name": "AYAS-7 Token List",
+"timestamp": "2026-03-15T00:00:00+00:00",
+"version": {
+"major": 1,
+"minor": 0,
+"patch": 0
+},
+"keywords": [
+"ayas7",
+"defi",
+"bsc",
+"tron"
+],
+"tokens": [
+{
+"chainId": 56,
+"address": "0xFFD225737d0607bAaf330C0550A5D6BbB0Ab9717",
+"name": "USDt.z",
+"symbol": "USDTZ",
+"decimals": 18,
+"logoURI": "https://www.ayas7.com/token/usdtz.png"
+},
+{
+"chainId": 728126428,
+"address": "TWmi8rRf8qEfmqE9EcC12dgUzbUjrnEtg5",
+"name": "USDT",
+"symbol": "USDT",
+"decimals": 6,
+"logoURI": "https://www.ayas7.com/token/usdt.png"
+}
+]
+}
