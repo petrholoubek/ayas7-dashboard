@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<title>USDT – TRON</title>
+
+<style>
+
+body{
+font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+background:#071124;
+margin:0;
+display:flex;
+align-items:center;
+justify-content:center;
+height:100vh;
+color:white;
+}
+
+.card{
+background:#0f1b33;
+padding:40px;
+border-radius:16px;
+text-align:center;
+width:360px;
+box-shadow:0 20px 60px rgba(0,0,0,0.6);
+}
+
+.logo{
+width:90px;
+margin-bottom:15px;
+}
+
+button{
+background:#e50914;
+border:none;
+padding:14px 26px;
+border-radius:10px;
+font-size:16px;
+font-weight:600;
+cursor:pointer;
+margin:6px;
+color:white;
+}
+
+button:hover{
+background:#ff2e2e;
+}
+
+.secondary{
+background:#1e2a47;
+}
+
+.secondary:hover{
+background:#2d3a5e;
+}
+
+.address{
+font-size:13px;
+color:#9fb0d6;
+margin-top:10px;
+word-break:break-all;
+}
+
+.link{
+margin-top:10px;
+}
+
+.link a{
+color:#e50914;
+text-decoration:none;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="card">
+
+<img class="logo" src="https://www.ayas7.com/token/usdt.png">
+
+<h1>USDT</h1>
+
+<p>TRC-20 token na TRON</p>
+
+<button onclick="openTronLink()">Open in TronLink</button>
+
+<br>
+
+<button class="secondary" onclick="copyAddress()">Copy Contract</button>
+
+<div class="address">
+TWmi8rRf8qEfmqE9EcC12dgUzbUjrnEtg5
+</div>
+
+<div class="link">
+<a href="https://tronscan.org/#/token20/TWmi8rRf8qEfmqE9EcC12dgUzbUjrnEtg5" target="_blank">
+View on Tronscan
+</a>
+</div>
+
+</div>
+
+<script>
+
+const tokenAddress="TWmi8rRf8qEfmqE9EcC12dgUzbUjrnEtg5";
+
+function isMobile(){
+
+return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+}
+
+function openTronLink(){
+
+/* mobil */
+
+if(isMobile()){
+
+const url=encodeURIComponent(window.location.href);
+
+window.location.href=
+"https://www.tronlink.org/open?url="+url;
+
+return;
+
+}
+
+/* desktop */
+
+if(!window.tronWeb){
+
+alert("Otevřete stránku v TronLink wallet.");
+
+return;
+
+}
+
+alert("Token můžete přidat ve správě tokenů TronLink.");
+
+}
+
+function copyAddress(){
+
+navigator.clipboard.writeText(tokenAddress);
+
+alert("Contract address copied");
+
+}
+
+</script>
+
+</body>
+</html>
