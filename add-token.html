@@ -3,27 +3,28 @@
 <html lang="cs">
 <head>
 <meta charset="UTF-8">
-<title>USDt.z – Add Token</title>
+<title>USDt.z – Token</title>
 
 <style>
+
 body{
 font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-background:#0b0f1a;
-color:white;
+background:#071124;
 margin:0;
 display:flex;
 align-items:center;
 justify-content:center;
 height:100vh;
+color:white;
 }
 
-.container{
-background:#111827;
+.card{
+background:#0f1b33;
 padding:40px;
-border-radius:14px;
+border-radius:16px;
 text-align:center;
-box-shadow:0 10px 40px rgba(0,0,0,0.6);
-width:340px;
+width:360px;
+box-shadow:0 20px 60px rgba(0,0,0,0.6);
 }
 
 .logo{
@@ -33,12 +34,11 @@ margin-bottom:15px;
 
 h1{
 margin:10px 0;
-font-size:26px;
+font-size:28px;
 }
 
 p{
-color:#cbd5e1;
-font-size:14px;
+color:#b8c1d9;
 margin-bottom:25px;
 }
 
@@ -47,40 +47,50 @@ font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 background:#f0b90b;
 border:none;
 padding:14px 26px;
-border-radius:8px;
+border-radius:10px;
 font-size:16px;
 font-weight:600;
 cursor:pointer;
-transition:0.2s;
+margin:6px;
 }
 
 button:hover{
 background:#ffd84d;
 }
 
-.info{
-margin-top:18px;
+.secondary{
+background:#1e2a47;
+color:white;
+}
+
+.secondary:hover{
+background:#2d3a5e;
+}
+
+.address{
 font-size:13px;
-color:#9ca3af;
+color:#9fb0d6;
+margin-top:10px;
 word-break:break-all;
 }
 
 .link{
-margin-top:10px;
-font-size:13px;
+margin-top:12px;
+font-size:14px;
 }
 
 .link a{
 color:#f0b90b;
 text-decoration:none;
 }
+
 </style>
 
 </head>
 
 <body>
 
-<div class="container">
+<div class="card">
 
 <img class="logo" src="https://www.ayas7.com/token/usdtz.png">
 
@@ -90,7 +100,15 @@ text-decoration:none;
 
 <button onclick="addToken()">Add Token to Wallet</button>
 
-<div class="info">
+<br>
+
+<button class="secondary" onclick="copyAddress()">Copy Contract</button>
+
+<a href="https://pancakeswap.finance/swap?outputCurrency=0xFFD225737d0607bAaf330C0550A5D6BbB0Ab9717" target="_blank">
+<button class="secondary">Buy on PancakeSwap</button>
+</a>
+
+<div class="address">
 0xFFD225737d0607bAaf330C0550A5D6BbB0Ab9717
 </div>
 
@@ -104,16 +122,16 @@ View on BscScan
 
 <script>
 
-const tokenAddress = "0xFFD225737d0607bAaf330C0550A5D6BbB0Ab9717";
-const tokenSymbol = "USDt.z";
-const tokenDecimals = 18;
-const tokenImage = "https://www.ayas7.com/token/usdtz.png";
+const tokenAddress="0xFFD225737d0607bAaf330C0550A5D6BbB0Ab9717";
+const tokenSymbol="USDt.z";
+const tokenDecimals=18;
+const tokenImage="https://www.ayas7.com/token/usdtz.png";
 
 
 async function switchNetwork(){
 
 if(!window.ethereum){
-alert("Wallet nebyla nalezena. Otevřete stránku ve wallet browseru.");
+alert("Wallet nebyla nalezena.");
 return;
 }
 
@@ -121,12 +139,14 @@ try{
 
 await window.ethereum.request({
 method:"wallet_switchEthereumChain",
-params:[{ chainId:"0x38" }]
+params:[{chainId:"0x38"}]
 });
 
-}catch(error){
+}
 
-if(error.code === 4902){
+catch(error){
+
+if(error.code===4902){
 
 await window.ethereum.request({
 method:"wallet_addEthereumChain",
@@ -150,7 +170,6 @@ blockExplorerUrls:["https://bscscan.com"]
 }
 
 
-
 async function addToken(){
 
 if(!window.ethereum){
@@ -162,7 +181,7 @@ try{
 
 await switchNetwork();
 
-const added = await window.ethereum.request({
+const added=await window.ethereum.request({
 method:"wallet_watchAsset",
 params:{
 type:"ERC20",
@@ -177,16 +196,23 @@ image:tokenImage
 
 if(added){
 alert("Token byl přidán do peněženky.");
-}else{
-console.log("Uživatel operaci zrušil");
 }
 
-}catch(err){
+}
 
+catch(err){
 console.error(err);
-alert("Došlo k chybě při přidávání tokenu.");
+alert("Chyba při přidávání tokenu.");
+}
 
 }
+
+
+function copyAddress(){
+
+navigator.clipboard.writeText(tokenAddress);
+
+alert("Contract address copied");
 
 }
 
