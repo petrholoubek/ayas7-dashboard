@@ -122,10 +122,15 @@ View on BscScan
 
 <script>
 
-const tokenAddress = "0xFFD225737d0607bAaf330C0550A5D6BbB0Ab9717";
-const tokenSymbol = "USDt.z";
-const tokenDecimals = 18;
-const tokenImage = "https://www.ayas7.com/token/usdtz.png";
+const tokenAddress="0xFFD225737d0607bAaf330C0550A5D6BbB0Ab9717";
+const tokenSymbol="USDt.z";
+const tokenDecimals=18;
+const tokenImage="https://www.ayas7.com/token/usdtz.png";
+
+/* detekce mobilu */
+function isMobile(){
+return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+}
 
 async function switchNetwork(){
 
@@ -133,12 +138,12 @@ try{
 
 await window.ethereum.request({
 method:"wallet_switchEthereumChain",
-params:[{ chainId:"0x38" }]
+params:[{chainId:"0x38"}]
 });
 
 }catch(error){
 
-if(error.code === 4902){
+if(error.code===4902){
 
 await window.ethereum.request({
 method:"wallet_addEthereumChain",
@@ -155,22 +160,30 @@ blockExplorerUrls:["https://bscscan.com"]
 }]
 });
 
-}else{
-
-throw error;
-
 }
 
 }
 
 }
-
 
 async function addToken(){
 
+/* mobil bez wallet provideru */
+if(!window.ethereum && isMobile()){
+
+const url=encodeURIComponent(window.location.href);
+
+window.location.href=
+"https://metamask.app.link/dapp/"+window.location.host;
+
+return;
+
+}
+
+/* desktop */
 if(!window.ethereum){
 
-alert("Pro přidání tokenu otevřete stránku v MetaMask nebo Trust Wallet.");
+alert("Otevřete stránku v MetaMask nebo Trust Wallet.");
 
 return;
 
@@ -178,16 +191,13 @@ return;
 
 try{
 
-/* připojení wallet */
 await window.ethereum.request({
 method:"eth_requestAccounts"
 });
 
-/* přepnutí na BSC */
 await switchNetwork();
 
-/* přidání tokenu */
-const wasAdded = await window.ethereum.request({
+const wasAdded=await window.ethereum.request({
 
 method:"wallet_watchAsset",
 
@@ -204,25 +214,18 @@ image:tokenImage
 });
 
 if(wasAdded){
-
-alert("Token USDt.z byl přidán do peněženky.");
-
-}else{
-
-console.log("Uživatel přidání zrušil.");
-
+alert("Token byl přidán do peněženky.");
 }
 
 }catch(err){
 
-console.error("ADD TOKEN ERROR:", err);
+console.error(err);
 
-alert("Nepodařilo se přidat token: " + err.message);
-
-}
+alert("Nepodařilo se přidat token.");
 
 }
 
+}
 
 function copyAddress(){
 
@@ -233,5 +236,6 @@ alert("Contract address copied");
 }
 
 </script>
+
 </body>
 </html>
