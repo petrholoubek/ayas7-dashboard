@@ -122,21 +122,22 @@ View on BscScan
 
 <script>
 
-const tokenAddress="0xFFD225737d0607bAaf330C0550A5D6BbB0Ab9717";
-const tokenSymbol="USDt.z";
-const tokenDecimals=18;
-const tokenImage="https://www.ayas7.com/token/usdtz.png";
+const tokenAddress = "0xFFD225737d0607bAaf330C0550A5D6BbB0Ab9717";
+const tokenSymbol = "USDTZ";   // bezpečnější bez tečky
+const tokenDecimals = 18;
+const tokenImage = "https://www.ayas7.com/token/usdtz.png";
 
 /* detekce mobilu */
 function isMobile(){
 return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 }
 
-async function switchNetwork(){
+/* přepnutí na BSC */
+async function switchNetwork(provider){
 
 try{
 
-await window.ethereum.request({
+await provider.request({
 method:"wallet_switchEthereumChain",
 params:[{chainId:"0x38"}]
 });
@@ -145,7 +146,7 @@ params:[{chainId:"0x38"}]
 
 if(error.code===4902){
 
-await window.ethereum.request({
+await provider.request({
 method:"wallet_addEthereumChain",
 params:[{
 chainId:"0x38",
@@ -171,16 +172,16 @@ async function addToken(){
 /* mobil bez wallet provideru */
 if(!window.ethereum && isMobile()){
 
-const url=encodeURIComponent(window.location.href);
+const url = encodeURIComponent(window.location.href);
 
-window.location.href=
-"https://metamask.app.link/dapp/"+window.location.host;
+window.location.href =
+"https://metamask.app.link/dapp/"+url;
 
 return;
 
 }
 
-/* desktop */
+/* desktop bez wallet */
 if(!window.ethereum){
 
 alert("Otevřete stránku v MetaMask nebo Trust Wallet.");
@@ -189,15 +190,20 @@ return;
 
 }
 
+/* výběr správného provideru (MetaMask vs TronLink) */
+const provider = window.ethereum.providers
+? window.ethereum.providers.find(p => p.isMetaMask)
+: window.ethereum;
+
 try{
 
-await window.ethereum.request({
+await provider.request({
 method:"eth_requestAccounts"
 });
 
-await switchNetwork();
+await switchNetwork(provider);
 
-const wasAdded=await window.ethereum.request({
+const wasAdded = await provider.request({
 
 method:"wallet_watchAsset",
 
@@ -214,7 +220,9 @@ image:tokenImage
 });
 
 if(wasAdded){
+
 alert("Token byl přidán do peněženky.");
+
 }
 
 }catch(err){
@@ -236,6 +244,5 @@ alert("Contract address copied");
 }
 
 </script>
-
 </body>
 </html>
