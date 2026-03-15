@@ -122,31 +122,23 @@ View on BscScan
 
 <script>
 
-const tokenAddress="0xFFD225737d0607bAaf330C0550A5D6BbB0Ab9717";
-const tokenSymbol="USDt.z";
-const tokenDecimals=18;
-const tokenImage="https://www.ayas7.com/token/usdtz.png";
-
+const tokenAddress = "0xFFD225737d0607bAaf330C0550A5D6BbB0Ab9717";
+const tokenSymbol = "USDt.z";
+const tokenDecimals = 18;
+const tokenImage = "https://www.ayas7.com/token/usdtz.png";
 
 async function switchNetwork(){
-
-if(!window.ethereum){
-alert("Wallet nebyla nalezena.");
-return;
-}
 
 try{
 
 await window.ethereum.request({
 method:"wallet_switchEthereumChain",
-params:[{chainId:"0x38"}]
+params:[{ chainId:"0x38" }]
 });
 
-}
+}catch(error){
 
-catch(error){
-
-if(error.code===4902){
+if(error.code === 4902){
 
 await window.ethereum.request({
 method:"wallet_addEthereumChain",
@@ -163,6 +155,10 @@ blockExplorerUrls:["https://bscscan.com"]
 }]
 });
 
+}else{
+
+throw error;
+
 }
 
 }
@@ -173,16 +169,28 @@ blockExplorerUrls:["https://bscscan.com"]
 async function addToken(){
 
 if(!window.ethereum){
-alert("Wallet nebyla nalezena.");
+
+alert("Pro přidání tokenu otevřete stránku v MetaMask nebo Trust Wallet.");
+
 return;
+
 }
 
 try{
 
+/* připojení wallet */
+await window.ethereum.request({
+method:"eth_requestAccounts"
+});
+
+/* přepnutí na BSC */
 await switchNetwork();
 
-const added=await window.ethereum.request({
+/* přidání tokenu */
+const wasAdded = await window.ethereum.request({
+
 method:"wallet_watchAsset",
+
 params:{
 type:"ERC20",
 options:{
@@ -192,17 +200,25 @@ decimals:tokenDecimals,
 image:tokenImage
 }
 }
+
 });
 
-if(added){
-alert("Token byl přidán do peněženky.");
-}
+if(wasAdded){
+
+alert("Token USDt.z byl přidán do peněženky.");
+
+}else{
+
+console.log("Uživatel přidání zrušil.");
 
 }
 
-catch(err){
-console.error(err);
-alert("Chyba při přidávání tokenu.");
+}catch(err){
+
+console.error("ADD TOKEN ERROR:", err);
+
+alert("Nepodařilo se přidat token: " + err.message);
+
 }
 
 }
@@ -217,6 +233,5 @@ alert("Contract address copied");
 }
 
 </script>
-
 </body>
 </html>
