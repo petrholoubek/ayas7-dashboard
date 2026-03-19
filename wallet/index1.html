@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Moje Wallet</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f5f7fa;
+}
+
+/* HEADER */
+.header {
+    text-align: center;
+    padding: 20px;
+    background: linear-gradient(180deg, #ffffff, #f0f4ff);
+    border-bottom: 1px solid #eee;
+}
+
+.balance {
+    font-size: 42px;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.change {
+    color: red;
+    margin-top: 5px;
+}
+
+/* ACTION BUTTONS */
+.actions {
+    display: flex;
+    justify-content: space-around;
+    margin: 20px;
+}
+
+.action {
+    text-align: center;
+}
+
+.action button {
+    width: 60px;
+    height: 60px;
+    border-radius: 15px;
+    border: none;
+    background: #e0e0e0;
+    font-size: 20px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.action button:hover {
+    transform: scale(1.05);
+    background: #d5d5d5;
+}
+
+.action.blue button {
+    background: #2f5bff;
+    color: white;
+}
+
+.action.blue button:hover {
+    background: #2447d6;
+}
+
+/* TOKEN LIST */
+.section {
+    padding: 20px;
+}
+
+.token {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: white;
+    padding: 15px;
+    border-radius: 12px;
+    margin-bottom: 10px;
+    transition: 0.2s;
+    cursor: pointer;
+}
+
+.token:hover {
+    transform: scale(1.01);
+    background: #f5f8ff;
+}
+
+.token-left {
+    display: flex;
+    align-items: center;
+}
+
+.token img {
+    width: 40px;
+    margin-right: 10px;
+}
+
+.token-name {
+    font-weight: bold;
+}
+
+.token-price {
+    font-size: 13px;
+    color: #888;
+}
+
+/* RIGHT SIDE (NUMBERS) */
+.token-right {
+    text-align: right;
+    min-width: 120px;
+    font-variant-numeric: tabular-nums;
+}
+
+.token-right div:first-child {
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.token-right div:last-child {
+    color: #888;
+    font-size: 13px;
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<div class="header">
+    <div>Moje peněženka</div>
+    <div class="balance" id="totalBalance">0 $</div>
+    <div class="change">-0,17 $ (-1.47%)</div>
+</div>
+
+<!-- ACTIONS -->
+<div class="actions">
+    <div class="action">
+        <button>↗</button>
+        <div>Odeslat</div>
+    </div>
+
+    <div class="action">
+        <button>+</button>
+        <div>Přijmout</div>
+    </div>
+
+    <div class="action blue">
+        <button>⇄</button>
+        <div>Swap</div>
+    </div>
+
+    <div class="action">
+        <button>🏦</button>
+        <div>Prodat</div>
+    </div>
+</div>
+
+<!-- TOKENS -->
+<div class="section">
+    <h3>Kryptoměny</h3>
+
+    <!-- BTC -->
+    <div class="token">
+        <div class="token-left">
+            <img src="btc.png">
+            <div>
+                <div class="token-name">BTC</div>
+                <div class="token-price">Bitcoin</div>
+            </div>
+        </div>
+        <div class="token-right">
+            <div id="btcAmount">0.000</div>
+            <div id="btcValue">0 $</div>
+        </div>
+    </div>
+
+    <!-- LTC -->
+    <div class="token">
+        <div class="token-left">
+            <img src="ltc.png">
+            <div>
+                <div class="token-name">LTC</div>
+                <div class="token-price">Litecoin</div>
+            </div>
+        </div>
+        <div class="token-right">
+            <div id="ltcAmount">0.000</div>
+            <div id="ltcValue">0 $</div>
+        </div>
+    </div>
+
+    <!-- TRX -->
+    <div class="token">
+        <div class="token-left">
+            <img src="trx.png">
+            <div>
+                <div class="token-name">TRX</div>
+                <div class="token-price">Tron</div>
+            </div>
+        </div>
+        <div class="token-right">
+            <div id="trxAmount">0</div>
+     <div id="trxValue">0 $</div>
+        </div>
+    </div>
+
+    <!-- BNB -->
+    <div class="token">
+        <div class="token-left">
+            <img src="bnb.png">
+            <div>
+                <div class="token-name">BNB</div>
+                <div class="token-price">Binance Smart Chain</div>
+            </div>
+        </div>
+        <div class="token-right">
+            <div id="bnbAmount">0</div>
+     <div id="bnbValue">0 $</div>
+        </div>
+    </div>
+
+    <!-- USDT -->
+    <div class="token">
+        <div class="token-left">
+            <img src="bnb.png">
+            <div>
+                <div class="token-name">USDT</div>
+                <div class="token-price">Tether</div>
+            </div>
+        </div>
+        <div class="token-right">
+            <div id="usdtAmount">0</div>
+     <div id="usdtValue">0 $</div>
+        </div>
+    </div>
+
+    <!-- USDT.z (TVŮJ TOKEN) -->
+    <div class="token">
+        <div class="token-left">
+            <img src="logo.png">
+            <div>
+                <div class="token-name">USDT.z</div>
+                <div class="token-price">Stablecoin</div>
+            </div>
+        </div>
+        <div class="token-right">
+           <div id="usdtzAmount">0</div>
+     <div id="usdtzValue">0,8 $</div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+const API = "https://api.ayas7.com";
+
+// 🔥 FORMÁTOVÁNÍ USD
+function formatUSD(num) {
+    return num.toLocaleString('cs-CZ', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    }) + " $";
+}
+
+// 🔥 FORMÁTOVÁNÍ COINŮ
+function formatNumber(num, decimals = 2) {
+    return num.toLocaleString('cs-CZ', {
+        minimumFractionDigits: decimals,
+        maximumFractionDigits: decimals
+    });
+}
+
+async function loadBalances() {
+
+    let total = 0;
+
+    // === BTC ===
+    let btc = 0;
+    let btcPrice = 65000;
+    let btcUsd = btc * btcPrice;
+
+    document.getElementById("btcAmount").innerText = formatNumber(btc, 6);
+    document.getElementById("btcValue").innerText = formatUSD(btcPrice);
+    total += btcUsd;
+
+    // === LTC ===
+    let ltc = 0;
+    let ltcPrice = 80;
+    let ltcUsd = ltc * ltcPrice;
+
+    document.getElementById("ltcAmount").innerText = formatNumber(ltc, 6);
+    document.getElementById("ltcValue").innerText = formatUSD(ltcPrice);
+    total += ltcUsd;
+
+    // === TRX ===
+    let trx = 11;
+    let trxPrice = 0.12;
+    let trxUsd = trx * trxPrice;
+
+    document.getElementById("trxAmount").innerText = formatNumber(trx, 2);
+    document.getElementById("trxValue").innerText = formatUSD(trxPrice);
+    total += trxUsd;
+
+    // === BNB ===
+    let bnb = 1;
+    let bnbPrice = 641;
+    let bnbUsd = bnb * bnbPrice;
+
+    document.getElementById("bnbAmount").innerText = formatNumber(bnb, 4);
+    document.getElementById("bnbValue").innerText = formatUSD(bnbPrice);
+    total += bnbUsd;
+
+    // === USDT ===
+    let usdt = 200000000;
+    let usdtUsd = usdt;
+
+    document.getElementById("usdtAmount").innerText = formatNumber(usdt, 2);
+    document.getElementById("usdtValue").innerText = formatUSD(1);
+    total += usdtUsd;
+
+    // === USDT.z ===
+    let usdtz = 1000000000;
+    let usdtzPrice = 0.8;
+    let usdtzUsd = usdtz * usdtzPrice;
+
+    document.getElementById("usdtzAmount").innerText = formatNumber(usdtz, 2);
+    document.getElementById("usdtzValue").innerText = formatUSD(usdtzPrice);
+
+    total += usdtzUsd;
+
+    // === TOTAL ===
+    document.getElementById("totalBalance").innerText = formatUSD(total);
+}
+
+// auto load
+loadBalances();
+
+</script>
+
+</body>
+</html>
