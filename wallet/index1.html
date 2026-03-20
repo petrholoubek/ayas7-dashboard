@@ -6,6 +6,14 @@
 <title>Moje Wallet</title>
 
 <link rel="icon" type="image/png" href="wallet.png">
+<head>
+<script>
+fetch('head.html')
+  .then(res => res.text())
+  .then(data => {
+    document.head.insertAdjacentHTML('afterbegin', data);
+  });
+</script>
 
 <style>
 body {
