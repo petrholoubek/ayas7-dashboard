@@ -167,7 +167,7 @@ body {
     <h3>Kryptoměny</h3>
 
     <!-- BTC -->
-    <div class="token">
+    <div class="token" data-coin="btc">
         <div class="token-left">
             <img src="btc.png">
             <div>
@@ -182,7 +182,7 @@ body {
     </div>
 
     <!-- LTC -->
-    <div class="token">
+    <div class="token" data-coin="ltc">
         <div class="token-left">
             <img src="ltc.png">
             <div>
@@ -197,7 +197,7 @@ body {
     </div>
 
     <!-- TRX -->
-    <div class="token">
+    <div class="token" data-coin="trx">
         <div class="token-left">
             <img src="trx.png">
             <div>
@@ -212,7 +212,7 @@ body {
     </div>
 
     <!-- BNB -->
-    <div class="token">
+    <div class="token" data-coin="bnb">
         <div class="token-left">
             <img src="bnb.png">
             <div>
@@ -227,7 +227,7 @@ body {
     </div>
 
     <!-- USDT -->
-    <div class="token">
+    <div class="token" data-coin="usdt">
         <div class="token-left">
             <img src="usdt.png">
             <div>
@@ -242,7 +242,7 @@ body {
     </div>
 
     <!-- USDT.z (TVŮJ TOKEN) -->
-    <div class="token">
+    <div class="token" data-coin="usdtz">
         <div class="token-left">
             <img src="logo.png">
             <div>
@@ -318,8 +318,8 @@ async function loadBalances() {
     total += bnbUsd;
 
     // === USDT ===
-    let usdt = 200000000;
-    let usdtUsd = usdt;
+  let usdt = 200000000;
+let usdtUsd = Number(usdt) * 1;
 
     document.getElementById("usdtAmount").innerText = formatNumber(usdt, 2);
     document.getElementById("usdtValue").innerText = formatUSD(1);
@@ -336,8 +336,25 @@ async function loadBalances() {
     total += usdtzUsd;
 
     // === TOTAL ===
-    document.getElementById("totalBalance").innerText = formatUSD(total);
+    document.getElementById("totalBalance").innerText = total.toLocaleString('cs-CZ', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+}) + " $";
 }
+
+// 🔥 KLIK NA TOKEN = OTEVŘE DETAIL
+document.querySelectorAll(".token").forEach(el => {
+    el.addEventListener("click", () => {
+
+        const coin = el.getAttribute("data-coin");
+
+        // uloží coin
+        localStorage.setItem("selectedCoin", coin);
+
+        // přesměruje na stránku
+        window.location.href = coin + ".html";
+    });
+});
 
 // auto load
 loadBalances();
