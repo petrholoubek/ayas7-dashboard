@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<title>TRX</title>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+body {
+    margin: 0;
+    background: #ffffff;
+    color: black;
+    font-family: Segoe UI, Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* HEADER */
+.header {
+    display: flex;
+    justify-content: space-between;
+    padding: 15px;
+    align-items: center;
+    font-weight: bold;
+}
+
+/* PRICE */
+.price {
+    text-align: center;
+}
+
+.price h1 {
+    font-size: 36px;
+    font-weight: 700;
+}
+
+.green { color: #22c55e; }
+
+/* CHART */
+.chart-container {
+    height: 220px;
+    padding: 10px;
+}
+
+/* BUY BOX */
+.buy-box {
+    background: #f1f5f9;
+    margin: 15px;
+    padding: 15px;
+    border-radius: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.buy-btn {
+    background: blue;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 20px;
+}
+
+/* TABS */
+.tabs {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+.tabs div {
+    padding: 10px;
+}
+
+/* BALANCE */
+.balance {
+    padding: 15px;
+}
+
+/* EXTRA */
+.extra {
+    display: flex;
+    justify-content: space-around;
+    margin: 10px;
+}
+
+.box {
+    background: #f1f5f9;
+    padding: 15px;
+    border-radius: 10px;
+    width: 45%;
+    text-align: center;
+}
+
+/* ACTIONS */
+.actions {
+    display: flex;
+    justify-content: space-around;
+    position: fixed;
+    bottom: 10px;
+    width: 100%;
+}
+
+.actions button {
+    background: #f1f5f9;
+    border: none;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.actions button.primary {
+    background: blue;
+    color: white;
+}
+</style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<div class="header">
+    <div onclick="goBack()" style="cursor:pointer;">←</div>
+
+    <div style="display:flex; align-items:center; gap:8px;">
+        <img src="trx.png" style="width:24px; height:24px;">
+        <div>TRX</div>
+    </div>
+
+    <div>⭐</div>
+</div>
+
+<!-- PRICE -->
+<div class="price">
+    <h1>$0.30</h1>
+    <div class="green">+2.42%</div>
+</div>
+
+<!-- CHART -->
+<div class="chart-container">
+    <canvas id="chart"></canvas>
+</div>
+
+<!-- BUY -->
+<div class="buy-box">
+    <div style="font-weight:700; font-size:20px;">3 185 CZK</div>
+    <button class="buy-btn">Koupit</button>
+</div>
+
+<!-- TABS -->
+<div class="tabs">
+    <div>V držení</div>
+    <div>Historie</div>
+    <div>Info</div>
+</div>
+
+<!-- BALANCE -->
+<div class="balance">
+    <div>Můj zůstatek</div>
+
+    <div style="
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+        background:#f1f5f9;
+        padding:12px;
+        border-radius:12px;
+        margin-top:10px;
+    ">
+
+        <!-- LEVÁ STRANA -->
+        <div style="display:flex; align-items:center; gap:10px;">
+            <img src="trx.png" style="width:32px; height:32px;">
+
+            <div>
+                <div style="font-weight:bold;">TRON</div>
+                <div style="color:gray; font-weight:600;">0.000001 TRX</div>
+            </div>
+        </div>
+
+        <!-- PRAVÁ STRANA -->
+        <div style="text-align:right;">
+            <div style="font-weight:700; font-size:18px;">$0.3098</div>
+<div style="color:#22c55e; font-weight:600;">+$0.3098</div>
+        </div>
+
+    </div>
+</div>
+
+<!-- ENERGY -->
+<div class="extra">
+    <div class="box">Energie<br><b>0</b></div>
+    <div class="box">Bandwidth<br><b>600</b></div>
+</div>
+
+<!-- ACTIONS -->
+<div class="actions">
+    <button>↗</button>
+    <button>↓</button>
+    <button>⇄</button>
+    <button class="primary">🛒</button>
+    <button>🏦</button>
+</div>
+
+<script>
+
+// BACK
+function goBack() {
+    window.location.href = "index1.html";
+}
+
+// DATA (zatím demo)
+const data = [0.28,0.29,0.30,0.31,0.305,0.309];
+
+// CHART
+const ctx = document.getElementById("chart");
+
+new Chart(ctx, {
+    type: "line",
+    data: {
+        labels: data.map((_, i) => i),
+        datasets: [{
+            data: data,
+            borderColor: "#22c55e",
+            tension: 0.4,
+            pointRadius: 0,
+            pointHoverRadius: 0,
+            borderWidth: 3
+        }]
+    },
+    options: {
+        plugins: { legend: { display: false } },
+        scales: {
+            x: { display: false },
+            y: { display: false }
+        },
+        elements: {
+            line: {
+                borderJoinStyle: 'round'
+            }
+        }
+    }
+});
+
+</script>
+
+</body>
+</html>
