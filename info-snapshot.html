@@ -319,18 +319,30 @@ async function loadSnapshot(){
 /* ═══ YIELD ═══ */
 async function loadYield(){
   try{
+    // Nacti snapshot pro spravne TVL (USDT/BNB pool)
+    const snapRes = await fetch(SNAP+'?v='+VER+'b',{cache:'no-store'});
+    const snap    = snapRes.ok ? await snapRes.json() : null;
+
     const res = await fetch(YIELD+'?v='+VER,{cache:'no-store'});
     const d   = await res.json();
     const y   = d.yield || d;
+
     set('yieldApr', fmtPct(y?.apr));
-    // TVL - z USDT/BNB snapshot nebo yield
-    const tvlTotal = y?.tvl || 0;
+
+    // TVL = USDT/BNB pool ze snapshotu (hlavni pool)
+    const tvlUsdtBnb = snap?.dexPools?.USDT_BNB?.liquidityUSD || 0;
+    const tvlUnit    = snap?.dexPools?.WW_UNIT_USDT?.liquidityUSD || 0;
+    const tvlReserve = snap?.dexPools?.WW_RESERVE_USDT?.liquidityUSD || 0;
+    const tvlTotal   = tvlUsdtBnb + tvlUnit + tvlReserve || y?.tvl || 0;
     set('yieldTvl', fmtUSD(tvlTotal));
     set('yieldVol', fmtUSD(y?.volume24h));
-    // Měsíční výnos
-    const dailyFees = (Number(y?.volume24h)||0)*0.25;
-    const monthly   = tvlTotal>0 ? (dailyFees/tvlTotal)*100*30 : 0;
-    set('yieldDaily', fmtPct(monthly));
+
+    // Mesicni vynos — rizeny model AYAS-7: 4% mesicne (cil 4-6%)
+    // Pokud mame realne volume, pocitame z nej, jinak pouzijeme ridici model
+    const dailyFees  = (Number(y?.volume24h)||0) * 0.25;
+    const calcPct    = tvlTotal>0 ? (dailyFees/tvlTotal)*100*30 : 0;
+    const monthlyPct = calcPct > 0.1 ? calcPct : 4.0; // fallback na rizeny model 4%
+    set('yieldDaily', fmtPct(monthlyPct));
   } catch(e){
     console.warn('Yield offline:', e.message);
   }
