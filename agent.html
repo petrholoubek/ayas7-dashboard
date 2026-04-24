@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8"/>
+<title>AYAS-7 · AI Poradce</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<link rel="icon" type="image/png" sizes="192x192" href="/ayas7-192.png">
+<meta name="theme-color" content="#020917">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+
+<style>
+:root{
+  --bg:#020917;--card:rgba(6,14,31,0.97);
+  --b1:rgba(56,189,248,0.1);--b2:rgba(56,189,248,0.22);
+  --blue:#38bdf8;--blue2:#0ea5e9;--blue3:#7dd3fc;
+  --green:#22c55e;--purple:#a855f7;
+  --white:#f8fafc;--text:#e2e8f0;--muted:#475569;--m2:#94a3b8;
+  --font:'Space Grotesk',sans-serif;--fontb:'DM Sans',sans-serif;--mono:'DM Mono',monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{min-height:100%;font-family:var(--fontb);background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{text-decoration:none;color:inherit}
+
+/* ═══ TOPBAR ═══ */
+.topbar{height:54px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;background:rgba(2,9,23,0.92);backdrop-filter:blur(24px);border-bottom:1px solid var(--b1);position:sticky;top:0;z-index:100}
+.brand{display:flex;align-items:center;gap:10px}
+.brand-logo{width:30px;height:30px;border-radius:7px;background:linear-gradient(135deg,rgba(56,189,248,0.15),rgba(56,189,248,0.04));border:1px solid var(--b2);display:flex;align-items:center;justify-content:center}
+.brand-logo svg{width:16px;height:16px}
+.brand-name{font-family:var(--font);font-size:14px;font-weight:700;color:var(--white)}
+.brand-sub{font-size:8px;letter-spacing:0.2em;text-transform:uppercase;color:var(--m2);display:block}
+.back-btn{display:inline-flex;align-items:center;gap:7px;padding:6px 14px;border-radius:8px;background:rgba(255,255,255,.05);border:1px solid var(--b1);color:var(--m2);font-size:13px;transition:all .15s}
+.back-btn:hover{color:var(--text);border-color:var(--b2)}
+
+/* ═══ LAYOUT ═══ */
+.page{max-width:900px;margin:0 auto;padding:28px 22px 80px;display:flex;flex-direction:column;height:calc(100vh - 54px)}
+
+/* ═══ HERO ═══ */
+.agent-hero{text-align:center;padding:24px 0 20px;flex-shrink:0}
+.agent-avatar{
+  width:72px;height:72px;border-radius:50%;margin:0 auto 16px;
+  background:linear-gradient(135deg,rgba(56,189,248,.2),rgba(168,85,247,.15));
+  border:1px solid var(--b2);display:flex;align-items:center;justify-content:center;
+  position:relative;
+}
+.agent-avatar::before{
+  content:'';position:absolute;inset:-4px;border-radius:50%;
+  background:conic-gradient(from 0deg,transparent,rgba(56,189,248,.3),transparent,rgba(168,85,247,.2),transparent);
+  animation:spin 8s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+.agent-avatar svg{width:32px;height:32px;position:relative;z-index:1}
+.agent-name{font-family:var(--font);font-size:20px;font-weight:700;color:var(--white);margin-bottom:4px}
+.agent-desc{font-size:13px;color:var(--m2);max-width:500px;margin:0 auto 12px;line-height:1.6}
+.agent-status{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--green)}
+.agent-status-dot{width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 8px rgba(34,197,94,.8);animation:lp 2s ease-in-out infinite}
+@keyframes lp{0%,100%{opacity:1}50%{opacity:.4}}
+
+/* ═══ CHAT ═══ */
+.chat-wrap{flex:1;overflow:hidden;display:flex;flex-direction:column;min-height:0}
+.chat-messages{flex:1;overflow-y:auto;padding:16px 0;display:flex;flex-direction:column;gap:16px;scroll-behavior:smooth}
+.chat-messages::-webkit-scrollbar{width:4px}
+.chat-messages::-webkit-scrollbar-track{background:transparent}
+.chat-messages::-webkit-scrollbar-thumb{background:rgba(56,189,248,.2);border-radius:999px}
+
+/* Zprávy */
+.msg{display:flex;gap:12px;animation:msgIn .3s ease both}
+@keyframes msgIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.msg.user{flex-direction:row-reverse}
+.msg-avatar{width:32px;height:32px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:var(--font);font-size:13px;font-weight:700}
+.msg.agent .msg-avatar{background:linear-gradient(135deg,rgba(56,189,248,.2),rgba(56,189,248,.08));border:1px solid var(--b2);color:var(--blue3)}
+.msg.user .msg-avatar{background:linear-gradient(135deg,rgba(34,197,94,.2),rgba(34,197,94,.08));border:1px solid rgba(34,197,94,.25);color:var(--green)}
+.msg-body{max-width:75%}
+.msg-bubble{padding:12px 16px;border-radius:16px;font-size:14px;line-height:1.65}
+.msg.agent .msg-bubble{background:rgba(56,189,248,.06);border:1px solid var(--b1);border-bottom-left-radius:4px;color:var(--text)}
+.msg.user .msg-bubble{background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.15);border-bottom-right-radius:4px;color:var(--text)}
+.msg-time{font-size:10px;color:var(--muted);margin-top:4px;letter-spacing:.06em}
+.msg.user .msg-time{text-align:right}
+
+/* Typing indicator */
+.typing-indicator{display:none;align-items:center;gap:6px;padding:10px 14px;background:rgba(56,189,248,.06);border:1px solid var(--b1);border-radius:16px;border-bottom-left-radius:4px;width:fit-content}
+.typing-indicator.active{display:flex}
+.typing-dot{width:6px;height:6px;border-radius:50%;background:var(--blue3);animation:td .9s ease-in-out infinite}
+.typing-dot:nth-child(2){animation-delay:.15s}
+.typing-dot:nth-child(3){animation-delay:.3s}
+@keyframes td{0%,80%,100%{transform:scale(.6);opacity:.4}40%{transform:scale(1);opacity:1}}
+
+/* Rychlé dotazy */
+.quick-questions{display:flex;flex-wrap:wrap;gap:8px;padding:12px 0;flex-shrink:0}
+.quick-btn{padding:7px 14px;border-radius:999px;background:rgba(56,189,248,.07);border:1px solid var(--b1);color:var(--m2);font-size:12px;font-family:var(--fontb);cursor:pointer;transition:all .15s;white-space:nowrap}
+.quick-btn:hover{background:rgba(56,189,248,.14);border-color:var(--b2);color:var(--blue3)}
+
+/* ═══ INPUT ═══ */
+.chat-input-wrap{flex-shrink:0;padding:16px 0 0;border-top:1px solid var(--b1)}
+.chat-input-row{display:flex;gap:10px;align-items:flex-end}
+.chat-textarea{
+  flex:1;min-height:48px;max-height:140px;
+  padding:12px 16px;border-radius:14px;
+  background:rgba(255,255,255,.05);border:1px solid var(--b1);
+  color:var(--text);font-family:var(--fontb);font-size:14px;
+  resize:none;outline:none;transition:border-color .15s;line-height:1.5;
+}
+.chat-textarea::placeholder{color:var(--muted)}
+.chat-textarea:focus{border-color:var(--b2)}
+.send-btn{
+  width:48px;height:48px;border-radius:12px;border:none;flex-shrink:0;
+  background:linear-gradient(135deg,var(--blue2),rgba(56,189,248,.7));
+  color:var(--white);cursor:pointer;display:flex;align-items:center;justify-content:center;
+  transition:all .15s;
+}
+.send-btn:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(14,165,233,.4)}
+.send-btn:active{transform:translateY(0)}
+.send-btn:disabled{opacity:.4;cursor:default;transform:none;box-shadow:none}
+.send-btn svg{width:18px;height:18px}
+
+/* Markdown v zprávách */
+.msg-bubble strong{color:var(--white);font-weight:600}
+.msg-bubble em{color:var(--blue3)}
+.msg-bubble code{font-family:var(--mono);font-size:12px;background:rgba(56,189,248,.1);padding:1px 5px;border-radius:4px;color:var(--blue3)}
+.msg-bubble ul,.msg-bubble ol{padding-left:18px;margin:6px 0}
+.msg-bubble li{margin-bottom:3px}
+.msg-bubble p{margin-bottom:8px}
+.msg-bubble p:last-child{margin-bottom:0}
+
+/* ═══ FOOTER ═══ */
+.chat-footer{text-align:center;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding:10px 0 0}
+
+@media(max-width:640px){
+  .topbar{padding:0 14px}
+  .page{padding:16px 14px 60px}
+  .agent-avatar{width:56px;height:56px}
+  .agent-name{font-size:17px}
+  .msg-body{max-width:88%}
+  .quick-btn{font-size:11px;padding:6px 11px}
+}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <a href="/login/member.html" class="brand">
+    <div class="brand-logo">
+      <svg viewBox="0 0 24 24" fill="none">
+        <path d="M12 2L20 7V12L12 17L4 12V7L12 2Z" stroke="#38bdf8" stroke-width="1.5" stroke-linejoin="round"/>
+        <path d="M12 7L16 10V14L12 17L8 14V10L12 7Z" fill="rgba(56,189,248,0.2)" stroke="#38bdf8" stroke-width="1"/>
+      </svg>
+    </div>
+    <div><span class="brand-name">WIN.WIN</span><span class="brand-sub">Cooperative</span></div>
+  </a>
+  <a href="/login/support.html" class="back-btn">← Podpora</a>
+</div>
+
+<!-- PAGE -->
+<div class="page">
+
+  <!-- HERO -->
+  <div class="agent-hero">
+    <div class="agent-avatar">
+      <svg viewBox="0 0 32 32" fill="none">
+        <circle cx="16" cy="12" r="5" stroke="#38bdf8" stroke-width="1.5"/>
+        <path d="M8 26c0-4.418 3.582-8 8-8s8 3.582 8 8" stroke="#38bdf8" stroke-width="1.5" stroke-linecap="round"/>
+        <circle cx="16" cy="12" r="2" fill="rgba(56,189,248,0.3)"/>
+      </svg>
+    </div>
+    <div class="agent-name">ARIA · AI Poradce AYAS-7</div>
+    <div class="agent-desc">Jsem váš průvodce systémem WIN.WIN Cooperative. Ptejte se na WW-Key, CRX, benefity, kariérní program nebo cokoli o AYAS-7.</div>
+    <div class="agent-status"><span class="agent-status-dot"></span>Online · AYAS-7 Engine</div>
+  </div>
+
+  <!-- CHAT -->
+  <div class="chat-wrap">
+    <div class="chat-messages" id="chatMessages">
+      <!-- Uvítací zpráva se přidá přes JS -->
+    </div>
+
+    <!-- Typing indicator -->
+    <div class="msg" style="display:none" id="typingMsg">
+      <div class="msg-avatar">A</div>
+      <div>
+        <div class="typing-indicator active" id="typingIndicator">
+          <span class="typing-dot"></span>
+          <span class="typing-dot"></span>
+          <span class="typing-dot"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Rychlé dotazy -->
+    <div class="quick-questions" id="quickQuestions">
+      <button class="quick-btn" onclick="askQuick('Co je WW-Key a k čemu slouží?')">Co je WW-Key?</button>
+      <button class="quick-btn" onclick="askQuick('Jak funguje CRX systém?')">Jak funguje CRX?</button>
+      <button class="quick-btn" onclick="askQuick('Jak funguje kariérní program a affiliate?')">Kariérní program</button>
+      <button class="quick-btn" onclick="askQuick('Jaké benefity mohu uplatnit?')">Benefity</button>
+      <button class="quick-btn" onclick="askQuick('Co je AYAS-7 engine a jak funguje?')">Co je AYAS-7?</button>
+      <button class="quick-btn" onclick="askQuick('Jak mohu získat více CRX?')">Více CRX?</button>
+    </div>
+
+    <!-- Input -->
+    <div class="chat-input-wrap">
+      <div class="chat-input-row">
+        <textarea class="chat-textarea" id="chatInput" placeholder="Zeptejte se na cokoliv o systému WIN.WIN..." rows="1" onkeydown="handleKey(event)"></textarea>
+        <button class="send-btn" id="sendBtn" onclick="sendMessage()" title="Odeslat">
+          <svg viewBox="0 0 24 24" fill="none">
+            <path d="M22 2L11 13M22 2L15 22L11 13L2 9L22 2Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+      <div class="chat-footer">ARIA · WIN.WIN AI Poradce · Odpovědi jsou informativní a nejsou právní ani finanční poradou</div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ═══ CONFIG ═══
+const ARIA_API = 'https://ayas7.com/api/aria'; // API klíč je bezpečně na serveru
+const SB_URL  = 'https://azfrniqqtetoqploxwgq.supabase.co';
+const SB_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF6ZnJuaXFxdGV0b3FwbG94d2dxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3MzQ1OTYsImV4cCI6MjA4MzMxMDU5Nn0.QchmzNhs8owd6pkjZCk04u6PJoJ2Bhzz7oGV0KFyqdU';
+const sb = supabase.createClient(SB_URL, SB_ANON);
+
+// Konverzace
+let messages = [];
+let memberData = null;
+let snapshotData = null;
+let isLoading = false;
+
+// ═══ SYSTEM PROMPT ═══
+const SYSTEM_PROMPT = `Jsi ARIA — AI poradce systému AYAS-7 a kooperativy WIN.WIN. Jsi milý, přátelský, odborný a mluvíš česky.
+
+SYSTÉM WIN.WIN / AYAS-7:
+
+**WW-KEY (Členské jednotky):**
+- Interní evidenční jednotka členské participace v družstvu WIN-WIN
+- Kurz: 1 WW-Key = 25 Kč
+- Není cenný papír ani investiční nástroj
+- Určuje podíl člena v systému a výši CRX alokace
+- Vydáno celkem: 2 600 jednotek (k 2/2026)
+
+**CRX (CREDIX — věrnostní poukázky):**
+- Interní jednotky výnosu generované ze zisku systému AYAS-7
+- Generují se z čistého zisku likviditních poolů (DEX/PancakeSwap)
+- Distribuovány členům úměrně jejich WW-Key podílu
+- Lze uplatnit v tržnici benefitů (elektřina, PHM, zlato, autobonus, Pluxee)
+- Kurz CRX se odvíjí od výkonu systému
+- 1 CRX = cca 1 Kč (orientační hodnota)
+
+**KARIÉRNÍ PROGRAM (Affiliate):**
+- Stupně: Trader (T) → Trader I (T1) → Trader II (T2) → Manager (M1) → Director (D1)
+- Matching bonus z CRX alokace členů ve vaší síti:
+  * Trader: 16% | Trader I: 21% | Trader II: 26% | Manager: 36% | Director: 30%
+- Pro postup na Trader I potřebujete 10 členů v síti
+- Referral odkaz sdílíte přes WhatsApp, Telegram nebo email
+
+**BENEFITY:**
+- Aktivují se za CRX poukázky
+- Každý benefit stojí 30 CRX
+- Dostupné programy: Elektřina SHX, PHM FLX, Zlato AUX, Pluxee, AutoBonus ATX
+- Benefit se aktivuje v tržnici benefitů
+
+**AYAS-7 ENGINE:**
+- 7-vrstvý deterministický finanční systém
+- Multisig governance — žádná jednotlivá osoba nemá jednostrannou kontrolu
+- Napojení na BSC blockchain a PancakeSwap DEX
+- Live snapshot každých 30 sekund
+- Cíl: 4–6% měsíční řízený výnos pro družstvo
+
+**TOKENY:**
+- WW-UNIT: operační token, aktuální cena ~$1.156
+- WW-RESERVE: stabilizační token, ~$1.009
+- WW-KEY: interní, nekótovaný
+
+**LIKVIDITNÍ POOLY (PancakeSwap BSC):**
+- USDT/BNB: hlavní pool, TVL ~$17.1M
+- WW-UNIT/USDT: ~$881
+- WW-RESERVE/USDT: ~$603
+
+**DŮLEŽITÉ INFORMACE:**
+- Systém je v produkčním provozu od 1/2026
+- Certifikát WW-Key je auditní doklad o přidělení jednotek
+- Všechny operace jsou auditovatelné a hashované
+- Systém NENÍ investiční produkt ani cenný papír
+
+POKUD ZNÁŠ DATA ČLENA:
+{MEMBER_DATA}
+
+POKUD MÁŠ LIVE DATA ZE SNAPSHOTU:
+{SNAPSHOT_DATA}
+
+Odpovídej stručně, přátelsky a věcně. Pokud nevíš, řekni to upřímně. Nedávej finanční ani právní rady. Vždy zmiň, že jde o informativní odpověď.`;
+
+// ═══ HELPERS ═══
+function now() {
+  return new Date().toLocaleTimeString('cs-CZ', {hour:'2-digit', minute:'2-digit'});
+}
+
+function escapeHtml(text) {
+  return text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function renderMarkdown(text) {
+  return text
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g, '<em>$1</em>')
+    .replace(/`(.+?)`/g, '<code>$1</code>')
+    .replace(/^### (.+)$/gm, '<strong>$1</strong>')
+    .replace(/^## (.+)$/gm, '<strong>$1</strong>')
+    .replace(/^- (.+)$/gm, '<li>$1</li>')
+    .replace(/(<li>.*<\/li>)/gs, '<ul>$1</ul>')
+    .replace(/\n\n/g, '</p><p>')
+    .replace(/^(.+)$/gm, (m) => m.startsWith('<') ? m : m);
+}
+
+function addMessage(role, content, animate = true) {
+  const msgs = document.getElementById('chatMessages');
+  const div = document.createElement('div');
+  div.className = `msg ${role}`;
+  div.style.animationDuration = animate ? '.3s' : '0s';
+
+  const avatarChar = role === 'agent' ? 'A' : 'Ty';
+  const bubbleHtml = role === 'agent'
+    ? `<div class="msg-bubble">${renderMarkdown(content)}</div>`
+    : `<div class="msg-bubble">${escapeHtml(content)}</div>`;
+
+  div.innerHTML = `
+    <div class="msg-avatar">${avatarChar}</div>
+    <div class="msg-body">
+      ${bubbleHtml}
+      <div class="msg-time">${now()}</div>
+    </div>`;
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+  return div;
+}
+
+function setTyping(show) {
+  document.getElementById('typingMsg').style.display = show ? 'flex' : 'none';
+  const msgs = document.getElementById('chatMessages');
+  if (show) msgs.scrollTop = msgs.scrollHeight;
+}
+
+function setLoading(loading) {
+  isLoading = loading;
+  document.getElementById('sendBtn').disabled = loading;
+  document.getElementById('chatInput').disabled = loading;
+  setTyping(loading);
+}
+
+// ═══ NAČTENÍ KONTEXTU ═══
+async function loadContext() {
+  try {
+    // Snapshot data
+    const snap = await fetch('https://ayas7.com/api/snapshot?v=' + Date.now(), {cache:'no-store'});
+    if (snap.ok) snapshotData = await snap.json();
+  } catch(e) {}
+
+  try {
+    // Člen data
+    const { data: { user } } = await sb.auth.getUser();
+    if (user) {
+      const { data: acc } = await sb.from('member_accounts').select('*').eq('user_id', user.id).single();
+      const { data: crx } = await sb.from('member_crx_total').select('total_crx').eq('member_id', user.id).maybeSingle();
+      memberData = { email: user.email, ...acc, crx_balance: crx?.total_crx };
+    }
+  } catch(e) {}
+}
+
+function buildSystemPrompt() {
+  let system = SYSTEM_PROMPT;
+
+  if (memberData) {
+    const md = `Jméno/email: ${memberData.email || '—'}, WW-Key: ${memberData.ww_key_balance || 0}, CRX zůstatek: ${memberData.crx_balance || 0}, Status: ${memberData.status || '—'}`;
+    system = system.replace('{MEMBER_DATA}', md);
+  } else {
+    system = system.replace('{MEMBER_DATA}', 'Člen není přihlášen nebo data nejsou dostupná.');
+  }
+
+  if (snapshotData) {
+    const s = snapshotData;
+    const sd = `WW-UNIT cena: $${Number(s.tokens?.WW_UNIT?.priceUSD||0).toFixed(6)}, WW-RESERVE: $${Number(s.tokens?.WW_RESERVE?.priceUSD||0).toFixed(6)}, WW-KEY vydáno: ${s.tokens?.WW_KEY?.issued||0}, TVL: $${((s.dexPools?.USDT_BNB?.liquidityUSD||0)+(s.dexPools?.WW_UNIT_USDT?.liquidityUSD||0)+(s.dexPools?.WW_RESERVE_USDT?.liquidityUSD||0)).toLocaleString('cs-CZ')}, Health: ${s.meta?.health||0}%, CRX systém: ${s.crx?.total||0}`;
+    system = system.replace('{SNAPSHOT_DATA}', sd);
+  } else {
+    system = system.replace('{SNAPSHOT_DATA}', 'Live data momentálně nedostupná.');
+  }
+
+  return system;
+}
+
+// ═══ ODESLÁNÍ ═══
+async function sendMessage(text) {
+  const input = document.getElementById('chatInput');
+  const msg = (text || input.value).trim();
+  if (!msg || isLoading) return;
+
+  input.value = '';
+  input.style.height = 'auto';
+
+  // Skryj rychlé dotazy po první zprávě
+  document.getElementById('quickQuestions').style.display = 'none';
+
+  addMessage('user', msg);
+  messages.push({ role: 'user', content: msg });
+
+  setLoading(true);
+
+  try {
+    const response = await fetch(ARIA_API, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        messages: messages.slice(-20),
+        systemExtra: buildSystemPrompt()
+      })
+    });
+
+    if (!response.ok) {
+      const err = await response.json();
+      throw new Error(err.error?.message || 'API chyba');
+    }
+
+    const data = await response.json();
+    const reply = data.content?.[0]?.text || 'Omlouvám se, nepodařilo se získat odpověď.';
+
+    messages.push({ role: 'assistant', content: reply });
+    setLoading(false);
+    addMessage('agent', reply);
+
+  } catch(e) {
+    setLoading(false);
+    addMessage('agent', `Omlouvám se, nastala chyba: ${e.message}. Zkuste to prosím znovu.`);
+  }
+}
+
+function askQuick(question) {
+  document.getElementById('chatInput').value = question;
+  sendMessage();
+}
+
+function handleKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    sendMessage();
+  }
+  // Auto-resize textarea
+  const ta = document.getElementById('chatInput');
+  ta.style.height = 'auto';
+  ta.style.height = Math.min(ta.scrollHeight, 140) + 'px';
+}
+
+// ═══ INIT ═══
+async function init() {
+  await loadContext();
+
+  // Uvítací zpráva
+  const greeting = memberData
+    ? `Ahoj! Jsem **ARIA**, váš průvodce systémem WIN.WIN 👋\n\nVidím, že jste přihlášen jako **${memberData.email}** — máte **${Number(memberData.ww_key_balance||0).toLocaleString('cs-CZ')} WW-Key** a **${Number(memberData.crx_balance||0).toFixed(0)} CRX**.\n\nJak vám mohu dnes pomoci?`
+    : `Ahoj! Jsem **ARIA**, AI poradce kooperativy WIN.WIN a systému AYAS-7 👋\n\nMohu vám odpovědět na otázky o WW-Key, CRX věrnostních poukázkách, benefitech, kariérním programu nebo fungování systému.\n\nJak vám mohu pomoci?`;
+
+  addMessage('agent', greeting, false);
+}
+
+init();
+</script>
+</body>
+</html>
