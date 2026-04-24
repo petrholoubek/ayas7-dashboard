@@ -485,11 +485,11 @@ async function renderMember(userId, isAdmin) {
       .eq('user_id', userId)
       .maybeSingle();
 
-    /* 3. CRX balance */
+    /* 3. CRX balance — z member_crx_total (aggreguje crx_ledger) */
     const { data: crx } = await sb
-      .from('member_crx_balances_internal')
+      .from('member_crx_total')
       .select('*')
-      .eq('member_id', md.id)
+      .eq('member_id', userId)
       .maybeSingle();
 
     /* 4. Career */
@@ -565,7 +565,7 @@ async function renderMember(userId, isAdmin) {
     $('memberStatusPill').className = 'status-pill ' + (st === 'active' ? 'active' : 'pending');
 
     // CRX
-    const crxBal = Number(crx?.available || crx?.balance || 0);
+    const crxBal = Number(crx?.total_crx || crx?.available || crx?.balance || 0);
     $('crxBalance').textContent = fmt(crxBal.toFixed(0));
 
     // Stats
