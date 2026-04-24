@@ -1,598 +1,660 @@
 <!DOCTYPE html>
 <html lang="cs">
 <head>
-<meta charset="utf-8" />
-<title>AYAS-7 · Member Bank Account</title>
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-
-<!-- FAVICON / PWA -->
-  <link rel="icon" type="image/png" sizes="192x192" href="/ayas7-192.png">
-  <link rel="icon" type="image/png" sizes="512x512" href="/ayas7-512.png">
-  <link rel="apple-touch-icon" href="/ayas7-192.png">
-  <meta name="theme-color" content="#020617">
+<meta charset="UTF-8"/>
+<title>WIN.WIN · CRX Účet</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<link rel="icon" type="image/png" sizes="192x192" href="/ayas7-192.png">
+<link rel="apple-touch-icon" href="/ayas7-192.png">
+<meta name="theme-color" content="#020917">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 
 <style>
-:root{
-  --bg:#020617;
-  --panel:#0b1222;
-  --border:#1e293b;
-  --text:#e5e7eb;
-  --muted:#94a3b8;
+:root {
+  --bg:    #020917;
+  --card:  rgba(6,14,31,0.92);
+  --b1:    rgba(56,189,248,0.1);
+  --b2:    rgba(56,189,248,0.22);
+  --blue:  #38bdf8;
+  --blue2: #0ea5e9;
+  --blue3: #7dd3fc;
+  --green: #22c55e;
+  --green2:#16a34a;
+  --green3:#4ade80;
+  --white: #f8fafc;
+  --text:  #e2e8f0;
+  --muted: #475569;
+  --m2:    #94a3b8;
+  --purple:#818cf8;
+  --font:  'Space Grotesk', sans-serif;
+  --fontb: 'DM Sans', sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{min-height:100%;font-family:var(--fontb);background:var(--bg);color:var(--text);overflow-x:hidden;-webkit-font-smoothing:antialiased}
+a{text-decoration:none;color:inherit}
 
-  --accent:#22c55e;   /* bankovní zelená */
-  --accent-soft:rgba(34,197,94,0.15);
+/* ═══ TOPBAR ═══ */
+.topbar{
+  position:sticky;top:0;z-index:200;height:54px;
+  display:flex;align-items:center;justify-content:space-between;padding:0 28px;
+  background:rgba(2,9,23,0.85);backdrop-filter:blur(24px);
+  border-bottom:1px solid var(--b1);
+}
+.brand{display:flex;align-items:center;gap:10px}
+.brand-logo{
+  width:30px;height:30px;border-radius:7px;flex-shrink:0;
+  background:linear-gradient(135deg,rgba(56,189,248,0.15),rgba(56,189,248,0.04));
+  border:1px solid var(--b2);display:flex;align-items:center;justify-content:center;
+}
+.brand-logo svg{width:16px;height:16px}
+.brand-name{font-family:var(--font);font-size:14px;font-weight:700;letter-spacing:-0.01em;color:var(--white)}
+.brand-sub{font-size:8px;letter-spacing:0.2em;text-transform:uppercase;color:var(--m2);display:block}
+nav{display:flex;gap:2px}
+nav a{padding:5px 13px;border-radius:8px;font-family:var(--fontb);font-size:13px;font-weight:500;color:var(--m2);transition:all .15s}
+nav a:hover{color:var(--text);background:rgba(255,255,255,.06)}
+nav a.active{color:var(--blue3);background:rgba(56,189,248,0.08);border:1px solid var(--b1)}
+.user-chip{display:flex;align-items:center;gap:8px;padding:4px 12px 4px 6px;border-radius:999px;border:1px solid var(--b1);background:rgba(255,255,255,.04);cursor:pointer;transition:all .15s;flex-shrink:0}
+.user-chip:hover{border-color:var(--b2)}
+.user-av{width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#0ea5e9,#0369a1);display:flex;align-items:center;justify-content:center;font-family:var(--font);font-size:11px;font-weight:700;color:#fff}
+.user-name{font-family:var(--fontb);font-size:12px;font-weight:500;max-width:110px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* LED */
+.led{display:inline-block;border-radius:50%;flex-shrink:0;animation:lp 2.4s ease-in-out infinite}
+.led-g{width:7px;height:7px;background:var(--green);box-shadow:0 0 0 2px rgba(34,197,94,.2),0 0 10px rgba(34,197,94,.8)}
+.led-b{width:7px;height:7px;background:var(--blue);box-shadow:0 0 0 2px rgba(56,189,248,.2),0 0 10px rgba(56,189,248,.8)}
+.led-sg{width:5px;height:5px;background:var(--green);box-shadow:0 0 0 1px rgba(34,197,94,.2),0 0 7px rgba(34,197,94,.8)}
+.led-sb{width:5px;height:5px;background:var(--blue);box-shadow:0 0 0 1px rgba(56,189,248,.2),0 0 7px rgba(56,189,248,.8)}
+@keyframes lp{0%,100%{opacity:1}50%{opacity:.5}}
+
+/* ═══ PAGE ═══ */
+.page{max-width:1000px;margin:0 auto;padding:40px 22px 80px}
+
+/* Section head */
+.sec{display:flex;align-items:center;gap:14px;margin-bottom:18px}
+.sec-title{font-family:var(--font);font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--m2);white-space:nowrap}
+.sec-line{flex:1;height:1px;background:linear-gradient(90deg,var(--b2),transparent)}
+.sec-dot{display:flex;align-items:center;gap:6px;font-family:var(--fontb);font-size:11px;color:var(--muted);flex-shrink:0}
+
+/* ═══ HERO BALANCE ═══ */
+.balance-hero{
+  background:var(--card);border:1px solid var(--b1);border-radius:20px;
+  padding:32px 28px;margin-bottom:20px;position:relative;overflow:hidden;
+}
+.balance-hero::before{
+  content:'';position:absolute;top:0;left:8%;right:8%;height:1px;
+  background:linear-gradient(90deg,transparent,var(--green),transparent);opacity:.6;
+}
+.balance-hero::after{
+  content:'';position:absolute;top:0;left:0;right:0;bottom:0;pointer-events:none;
+  background:radial-gradient(ellipse 70% 60% at 20% 0%,rgba(34,197,94,0.06),transparent 60%);
 }
 
-*{box-sizing:border-box}
+.balance-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:16px}
+.balance-left{}
+.balance-kicker{display:inline-flex;align-items:center;gap:7px;font-family:var(--fontb);font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--m2);margin-bottom:10px}
+.balance-name{font-family:var(--font);font-size:22px;font-weight:700;letter-spacing:-.01em;color:var(--white);margin-bottom:2px}
+.balance-email{font-family:var(--fontb);font-size:13px;color:var(--m2)}
 
-html,body{
-  margin:0;
-  padding:0;
-  min-height:100%;
-  background:radial-gradient(1200px 600px at 50% -10%, #0b1220, #020617);
-  font-family:"Segoe UI", Tahoma, Verdana, sans-serif;
-  color:var(--text);
+.balance-status{display:flex;align-items:center;gap:8px}
+.status-pill{display:inline-flex;align-items:center;gap:6px;padding:5px 14px;border-radius:999px;font-family:var(--font);font-size:12px;font-weight:600;letter-spacing:.04em}
+.status-pill.active{background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.25);color:var(--green)}
+.status-pill.pending{background:rgba(250,204,21,0.08);border:1px solid rgba(250,204,21,0.2);color:#fbbf24}
+
+/* Big CRX number */
+.crx-main{
+  display:flex;align-items:baseline;gap:16px;margin-bottom:8px;
 }
-
-main{
-  max-width:880px;
-  margin:48px auto 120px;
-  padding:0 18px;
+.crx-number{
+  font-family:var(--font);font-size:clamp(52px,8vw,80px);font-weight:700;
+  line-height:1;letter-spacing:-.03em;
+  color:var(--green);
+  text-shadow:0 0 30px rgba(34,197,94,0.5),0 0 60px rgba(34,197,94,0.2);
 }
+.crx-label{font-family:var(--fontb);font-size:20px;font-weight:400;color:var(--m2);letter-spacing:.08em;align-self:flex-end;margin-bottom:8px}
 
-/* ================= HEADER ================= */
-.header{margin-bottom:32px}
+.crx-sub{font-family:var(--fontb);font-size:13px;color:var(--m2);margin-bottom:20px}
 
-.kicker{
-  display:flex;align-items:center;gap:8px;
-  font-size:11px;letter-spacing:.18em;
-  text-transform:uppercase;color:var(--muted);
-}
+/* Stat row */
+.stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;padding-top:20px;border-top:1px solid rgba(255,255,255,.06)}
+.stat-item{}
+.stat-lbl{font-family:var(--fontb);font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.stat-val{font-family:var(--font);font-size:20px;font-weight:700;letter-spacing:-.01em}
+.stat-val.b{color:var(--blue3)}
+.stat-val.g{color:var(--green)}
+.stat-val.p{color:var(--purple)}
+.stat-val.w{color:var(--white)}
 
-.dot{
-  width:8px;height:8px;border-radius:50%;
-  background:var(--accent);
-  box-shadow:0 0 10px var(--accent);
-}
+/* ═══ CHART CARD ═══ */
+.chart-card{background:var(--card);border:1px solid var(--b1);border-radius:16px;padding:22px 20px;margin-bottom:20px}
+.chart-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:8px}
+.chart-title{font-family:var(--font);font-size:15px;font-weight:600;color:var(--white)}
+.chart-sub{font-family:var(--fontb);font-size:12px;color:var(--m2);margin-top:2px}
+.chart-wrap{height:200px;position:relative}
 
-.title{margin-top:10px;font-size:26px;font-weight:700}
-.subtitle{margin-top:4px;font-size:13px;color:var(--muted)}
+/* ═══ INFO CARDS GRID ═══ */
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px}
 
-/* ================= CARD BASE ================= */
-.card{
-  background:linear-gradient(180deg, rgba(15,23,42,.92), rgba(2,6,23,.96));
-  border:1px solid var(--border);
-  border-radius:18px;
-  padding:22px 24px 26px;
-  margin-top:18px;
-}
+.info-card{background:var(--card);border:1px solid var(--b1);border-radius:16px;padding:22px 20px;position:relative;overflow:hidden;transition:border-color .2s}
+.info-card:hover{border-color:var(--b2)}
+.info-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:var(--ic-line,linear-gradient(90deg,var(--blue),transparent));opacity:.5}
+.info-card.green{--ic-line:linear-gradient(90deg,var(--green),transparent)}
+.info-card.blue{--ic-line:linear-gradient(90deg,var(--blue),transparent)}
+.info-card.purple{--ic-line:linear-gradient(90deg,var(--purple),transparent)}
 
-/* ================= BANK BALANCE ================= */
-.balance{
-  font-size:54px;
-  font-weight:800;
-  letter-spacing:.02em;
-  margin:6px 0 8px;
-}
+.ic-tag{font-family:var(--fontb);font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--m2);margin-bottom:6px}
+.ic-title{font-family:var(--font);font-size:15px;font-weight:600;color:var(--white);margin-bottom:14px}
+.ic-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.05);font-size:13px}
+.ic-row:last-child{border-bottom:none}
+.ic-row span:first-child{color:var(--m2);font-family:var(--fontb)}
+.ic-row span:last-child{font-family:var(--font);font-weight:600;color:var(--white)}
 
-.meta{
-  display:flex;
-  justify-content:space-between;
-  font-size:13px;
-  color:var(--muted);
-}
-
-/* ================= GRAPH ================= */
-.graph{
-  height:160px;
-  margin-top:16px;
-  border-top:1px solid rgba(148,163,184,.15);
-  padding-top:12px;
-}
-
-canvas{width:100%;height:100%}
-
-/* ================= INFO TABLE ================= */
-.row{
-  display:flex;
-  justify-content:space-between;
-  font-size:13px;
-  padding:8px 0;
-  border-bottom:1px dashed rgba(255,255,255,.06);
-}
-
-/* ================= MANUAL LOAD ================= */
-.manual{
-  display:flex;
-  gap:10px;
-}
-
-.manual input{
-  flex:1;
-  padding:10px;
-  background:#020617;
-  border:1px solid var(--border);
-  color:var(--text);
-  border-radius:10px;
-}
-
-button{
-  background:var(--accent);
-  color:#000;
-  border:none;
-  padding:10px 16px;
-  border-radius:10px;
-  font-weight:600;
-  cursor:pointer;
-}
-
-footer{
-  margin-top:42px;
-  font-size:11px;
-  letter-spacing:.16em;
-  text-transform:uppercase;
-  color:#64748b;
-}
-
-.balance-main{
-  display:flex;
-  justify-content:space-between;
-  align-items:flex-end;
-  margin-bottom:24px;
-}
-
-.crx-value{
-  font-size:64px;
-  font-weight:800;
-}
-
-.wwkey-value{
-  font-size:28px;
-  font-weight:700;
-  color:#38bdf8;
-}
-
-.yield-value{
-  font-size:22px;
-  font-weight:700;
-  color:#22c55e;
-}
-
-.crx-label,
-.wwkey-label,
-.yield-label{
-  font-size:12px;
-  color:#94a3b8;
-  margin-top:4px;
-}
+/* ═══ CERT BUTTON ═══ */
+.cert-section{background:var(--card);border:1px solid var(--b1);border-radius:16px;padding:24px 22px;margin-bottom:20px}
+.cert-inner{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.cert-info{}
+.cert-title{font-family:var(--font);font-size:16px;font-weight:600;color:var(--white);margin-bottom:4px}
+.cert-sub{font-family:var(--fontb);font-size:13px;color:var(--m2);line-height:1.6}
 
 .btn-cert{
-  display:inline-block;
-  padding:10px 18px;
-  border-radius:999px;
-  border:1px solid #22c55e;
-  color:#22c55e;
-  font-size:13px;
-  text-decoration:none;
-  transition:.2s;
+  display:inline-flex;align-items:center;gap:9px;
+  padding:12px 26px;border-radius:11px;border:none;
+  background:linear-gradient(135deg,var(--green2),var(--green),var(--green3));
+  background-size:200% 200%;
+  color:#fff;font-family:var(--font);font-size:14px;font-weight:700;
+  cursor:pointer;flex-shrink:0;
+  box-shadow:0 0 0 1px rgba(34,197,94,.3),0 4px 20px rgba(34,197,94,.4);
+  transition:transform .15s,box-shadow .15s,filter .15s;
+  animation:btnShift 4s ease-in-out infinite;
+  position:relative;overflow:hidden;
 }
+@keyframes btnShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+.btn-cert::before{content:'';position:absolute;top:0;left:-100%;width:60%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.18),transparent);transition:left .5s}
+.btn-cert:hover{transform:translateY(-2px);filter:brightness(1.08);box-shadow:0 0 0 1px rgba(34,197,94,.5),0 8px 30px rgba(34,197,94,.6)}
+.btn-cert:hover::before{left:150%}
+.btn-cert.disabled{opacity:.4;cursor:not-allowed;animation:none;transform:none;filter:none}
+.btn-led{display:inline-block;width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.9);box-shadow:0 0 10px rgba(255,255,255,.8);margin-right:4px;vertical-align:middle;animation:lp 1.5s ease-in-out infinite}
 
-.btn-cert:hover{
-  background:rgba(34,197,94,.12);
-  box-shadow:0 0 12px rgba(34,197,94,.35);
+/* ═══ ADMIN LOOKUP ═══ */
+.admin-card{background:rgba(255,255,255,.02);border:1px dashed rgba(56,189,248,.15);border-radius:14px;padding:18px 20px;margin-bottom:20px}
+.admin-tag{font-family:var(--fontb);font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.admin-row{display:flex;gap:10px}
+.admin-input{
+  flex:1;padding:10px 14px;background:rgba(255,255,255,.03);
+  border:1px solid var(--b1);border-radius:10px;
+  color:var(--text);font-family:var(--fontb);font-size:13px;outline:none;
+  transition:border-color .15s,box-shadow .15s;
 }
-
-.graph{
-  height:220px;
+.admin-input::placeholder{color:rgba(148,163,184,.35)}
+.admin-input:focus{border-color:var(--b2);box-shadow:0 0 0 3px rgba(56,189,248,.08)}
+.btn-load{
+  padding:10px 20px;border-radius:10px;border:none;
+  background:rgba(56,189,248,.1);border:1px solid var(--b2);
+  color:var(--blue3);font-family:var(--font);font-size:13px;font-weight:600;
+  cursor:pointer;transition:all .15s;white-space:nowrap;
 }
+.btn-load:hover{background:rgba(56,189,248,.18)}
 
-/* ================= MOBILE ================= */
+/* ═══ LOADING STATE ═══ */
+.loading{text-align:center;padding:60px 20px;color:var(--m2)}
+.loading-icon{font-size:32px;margin-bottom:12px;animation:spin 2s linear infinite;display:block}
+@keyframes spin{to{transform:rotate(360deg)}}
 
-@media (max-width: 640px){
+/* ═══ FOOTER ═══ */
+.foot{border-top:1px solid var(--b1);margin-top:40px;padding:18px;text-align:center;font-family:var(--fontb);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
 
-main{
-  margin:24px auto 80px;
+/* ═══ RESPONSIVE ═══ */
+@media(max-width:768px){
+  nav{display:none}
+  .info-grid{grid-template-columns:1fr}
+  .stat-row{grid-template-columns:1fr 1fr}
+  .cert-inner{flex-direction:column;align-items:flex-start}
+  .btn-cert{width:100%;justify-content:center}
 }
-
-.title{
-  font-size:22px;
+@media(max-width:480px){
+  .topbar{padding:0 14px}
+  .user-name{display:none}
+  .page{padding:24px 14px 60px}
+  .balance-hero{padding:22px 16px}
+  .crx-number{font-size:48px}
+  .stat-row{grid-template-columns:1fr 1fr;gap:10px}
+  .stat-val{font-size:16px}
+  .admin-row{flex-direction:column}
+  .btn-load{width:100%}
 }
-
-.balance-main{
-  flex-direction:column;
-  align-items:flex-start;
-  gap:18px;
-}
-
-.crx-value{
-  font-size:42px;
-}
-
-.wwkey-value{
-  font-size:22px;
-}
-
-.yield-value{
-  font-size:20px;
-}
-
-.graph{
-  height:180px;
-}
-
-.manual{
-  flex-direction:column;
-}
-
-button{
-  width:100%;
-}
-
-}
-
 </style>
 </head>
-
 <body>
 
-<main>
-
-<!-- HEADER -->
-<section class="header">
-  <div class="kicker"><span class="dot"></span>Member Account · Secure View</div>
-  <div class="title">AYAS-7 · Osobní účet</div>
-  <div id="memberName" class="subtitle">Načítám data člena…</div>
-</section>
-
-<!-- MANUAL LOAD (ADMIN / TEST) -->
-<section class="card">
-  <div class="manual">
-    <input id="manualInput" placeholder="Zadej e-mail nebo UUID člena" />
-    <button onclick="loadManual()">Načíst</button>
-  </div>
-</section>
-
-<!-- MAIN BALANCE -->
-<section class="card">
-
- <div class="balance-main">
-
-  <div class="balance-crx">
-    <div id="crxTotal" class="crx-value">0 CRX</div>
-    <div class="crx-label">Tokenový zůstatek</div>
-  </div>
-
-  <div class="balance-wwkey">
-    <div id="wwkeyTotal" class="wwkey-value">0</div>
-    <div class="wwkey-label">WW-KEY podíl</div>
-  </div>
-
-  <div class="balance-capital">
-    <div id="capitalValue" class="wwkey-value">0 Kč</div>
-    <div class="wwkey-label">Kapitál člena</div>
-  </div>
-
-  <div class="balance-yield">
-    <div id="yieldPct" class="yield-value">0.00 %</div>
-    <div class="yield-label">Podíl na výnosu</div>
-  </div>
-
-</div>
-
-  <div class="graph">
-    <canvas id="chart"></canvas>
-  </div>
-
-</section>
-
-<!-- SYSTEM ECONOMY -->
-<section class="card">
-
-  <div style="font-size:14px;font-weight:600;margin-bottom:14px">
-    Ekonomika systému AYAS-7
-  </div>
-
-  <div class="row">
-    <span>WW-KEY celkem</span>
-    <span id="sysWwkey">—</span>
-  </div>
-
-  <div class="row">
-    <span>Kapitál systému</span>
-    <span id="sysCapital">—</span>
-  </div>
-
-  <div class="row">
-    <span>Počet členů</span>
-    <span id="sysMembers">—</span>
-  </div>
-
-</section>
-
-<!-- ACCOUNT INFO -->
-<section class="card">
-
-  <div class="row"><span>Status účtu</span><span id="status">—</span></div>
-  <div class="row"><span>Poslední snapshot</span><span id="snapshot">—</span></div>
-  <div class="row"><span>Member ID</span><span id="memberNumericId">—</span></div>
-
-<div style="margin-top:18px">
-  <a id="certLink"
-     class="btn-cert"
-     href="#"
-     target="_blank">
-     Stáhnout certifikát WW-KEY
+<!-- TOPBAR -->
+<div class="topbar">
+  <a href="/login/member.html" class="brand">
+    <div class="brand-logo">
+      <svg viewBox="0 0 24 24" fill="none">
+        <path d="M12 2L20 7V12L12 17L4 12V7L12 2Z" stroke="#38bdf8" stroke-width="1.5" stroke-linejoin="round"/>
+        <path d="M12 7L16 10V14L12 17L8 14V10L12 7Z" fill="rgba(56,189,248,0.2)" stroke="#38bdf8" stroke-width="1"/>
+      </svg>
+    </div>
+    <div>
+      <span class="brand-name">WIN.WIN</span>
+      <span class="brand-sub">Cooperative</span>
+    </div>
   </a>
+  <nav>
+    <a href="/login/member.html">Dashboard</a>
+    <a href="/crx.html" class="active">CRX Účet</a>
+    <a href="/login/benefits.html">Benefity</a>
+    <a href="/login/affiliate.html">Síť</a>
+    <a href="/login/support.html">Podpora</a>
+  </nav>
+  <div class="user-chip" id="userChip" onclick="doLogout()">
+    <div class="user-av" id="userAv">?</div>
+    <span class="user-name" id="userName">…</span>
+    <span class="led led-g"></span>
+  </div>
 </div>
 
-</section>
+<!-- PAGE -->
+<div class="page">
 
-<footer>AYAS‑7 · Digital Cooperative Banking</footer>
+  <!-- ADMIN LOOKUP — pouze pokud je admin -->
+  <div class="admin-card" id="adminSection" style="display:none">
+    <div class="admin-tag"><span class="led led-sb" style="animation:none"></span>Admin · Vyhledat člena</div>
+    <div class="admin-row">
+      <input id="adminInput" class="admin-input" placeholder="E-mail nebo UUID člena…"/>
+      <button class="btn-load" onclick="loadByAdmin()">Načíst</button>
+    </div>
+  </div>
 
-</main>
+  <!-- LOADING -->
+  <div id="loadingState" class="loading">
+    <span class="loading-icon">⟳</span>
+    Načítám váš CRX účet…
+  </div>
 
+  <!-- OBSAH — skrytý dokud se nenačte -->
+  <div id="mainContent" style="display:none">
+
+    <!-- HERO BALANCE -->
+    <div class="sec">
+      <div class="sec-title">CRX Účet</div>
+      <div class="sec-line"></div>
+      <div class="sec-dot"><span class="led led-sg"></span>Osobní účet</div>
+    </div>
+
+    <div class="balance-hero">
+      <div class="balance-top">
+        <div class="balance-left">
+          <div class="balance-kicker"><span class="led led-sg"></span>Věrnostní poukázky · WIN.WIN</div>
+          <div class="balance-name" id="memberName">—</div>
+          <div class="balance-email" id="memberEmail">—</div>
+        </div>
+        <div class="balance-status">
+          <div class="status-pill active" id="memberStatusPill">
+            <span class="led led-sg" style="width:5px;height:5px"></span>
+            <span id="memberStatus">—</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="crx-main">
+        <div class="crx-number" id="crxBalance">—</div>
+        <div class="crx-label">CRX</div>
+      </div>
+      <div class="crx-sub">Interní věrnostní poukázky · k dispozici v tržnici</div>
+
+      <div class="stat-row">
+        <div class="stat-item">
+          <div class="stat-lbl">WW-Key</div>
+          <div class="stat-val b" id="wwkeyVal">—</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-lbl">Kapitál člena</div>
+          <div class="stat-val w" id="capitalVal">—</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-lbl">Podíl na systému</div>
+          <div class="stat-val p" id="shareVal">—</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-lbl">Member ID</div>
+          <div class="stat-val w" id="memberIdVal">—</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- GRAF -->
+    <div class="chart-card">
+      <div class="chart-head">
+        <div>
+          <div class="chart-title">Historie CRX alokace</div>
+          <div class="chart-sub">Kumulativní přírůstek od začátku členství</div>
+        </div>
+        <div class="sec-dot"><span class="led led-sb"></span>Live</div>
+      </div>
+      <div class="chart-wrap">
+        <canvas id="crxChart"></canvas>
+      </div>
+    </div>
+
+    <!-- INFO KARTY -->
+    <div class="info-grid">
+
+      <!-- ÚČET INFO -->
+      <div class="info-card blue">
+        <div class="ic-tag">Informace o účtu</div>
+        <div class="ic-title">Detail členství</div>
+        <div class="ic-row"><span>Status</span><span id="accStatus">—</span></div>
+        <div class="ic-row"><span>Kariérní stupeň</span><span id="accCareer">—</span></div>
+        <div class="ic-row"><span>Angažovanost status</span><span id="accEngagement">—</span></div>
+        <div class="ic-row"><span>Aktivní od</span><span id="accSince">—</span></div>
+        <div class="ic-row"><span>Poslední alokace</span><span id="accLastAlloc">—</span></div>
+      </div>
+
+      <!-- SYSTÉM EKONOMIKA -->
+      <div class="info-card green">
+        <div class="ic-tag">Ekonomika systému</div>
+        <div class="ic-title">AYAS-7 · Přehled</div>
+        <div class="ic-row"><span>WW-Key celkem v systému</span><span id="sysWwkey">—</span></div>
+        <div class="ic-row"><span>Kapitál systému</span><span id="sysCapital">—</span></div>
+        <div class="ic-row"><span>Počet členů</span><span id="sysMembers">—</span></div>
+        <div class="ic-row"><span>Váš podíl</span><span id="sysShare" style="color:var(--purple)">—</span></div>
+      </div>
+
+    </div>
+
+    <!-- CERTIFIKÁT -->
+    <div class="cert-section">
+      <div class="cert-inner">
+        <div class="cert-info">
+          <div class="cert-title">📄 WW-Key Certifikát</div>
+          <div class="cert-sub">
+            Officiální potvrzení přidělení WW-Key v systému WIN.WIN.<br>
+            Obsahuje unikátní ID, hash otisk a datum vydání.
+          </div>
+        </div>
+        <button class="btn-cert disabled" id="certBtn" onclick="openCert()">
+          <span class="btn-led"></span>Stáhnout certifikát
+        </button>
+      </div>
+    </div>
+
+  </div><!-- /mainContent -->
+</div>
+
+<footer class="foot">© 2025 WIN-WIN Družstvo · AYAS-7 Engine · Digital Cooperative Banking</footer>
+
+<!-- LIBS -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 
 <script>
-const SUPABASE_URL = "https://azfrniqqtetoqploxwgq.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF6ZnJuaXFxdGV0b3FwbG94d2dxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3MzQ1OTYsImV4cCI6MjA4MzMxMDU5Nn0.QchmzNhs8owd6pkjZCk04u6PJoJ2Bhzz7oGV0KFyqdU";
-const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const SB_URL  = 'https://azfrniqqtetoqploxwgq.supabase.co';
+const SB_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF6ZnJuaXFxdGV0b3FwbG94d2dxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3MzQ1OTYsImV4cCI6MjA4MzMxMDU5Nn0.QchmzNhs8owd6pkjZCk04u6PJoJ2Bhzz7oGV0KFyqdU';
+const sb  = supabase.createClient(SB_URL, SB_ANON);
+const $   = id => document.getElementById(id);
+const fmt = n => n != null ? Number(n).toLocaleString('cs-CZ') : '—';
+const fmtDate = s => s ? new Date(s).toLocaleDateString('cs-CZ') : '—';
 
+let certUid    = null;
+let chartInst  = null;
+let currentSession = null;
 
-/* ================= RENDER ================= */
-
-async function renderMember(d){
-  console.log("RENDER:", d);
-
-  memberName.innerText = d.full_name ?? d.email;
-
-  /* ===============================
-     1) NAJDI ACCOUNT
-  =============================== */
-
-const { data: acc, error: accErr } = await sb
-  .from("members_data")
-  .select("id")
-  .eq("user_id", d.member_uuid)
-  .maybeSingle();
-
-const accountId = acc?.id;
-const memberNumericId = acc?.id;
-
-console.log("ACCOUNT ID:", accountId);
-
-  console.log("ACCOUNT:", acc, accErr);
-
-  if(!acc){
-    console.log("ACCOUNT NOT FOUND");
-    return;
-  }
-
-  /* ===============================
-     2) CRX BALANCE
-  =============================== */
-
-  const { data: crxData, error: crxErr } = await sb
-    .from("v_member_crx_balance")
-    .select("crx_total")
-    .eq("member_id", acc.id)
-    .maybeSingle();
-
-  console.log("CRX:", crxData, crxErr);
-
-  let crx = crxData?.crx_total ?? 0;
-
-  crxTotal.innerText =
-    Number(crx).toLocaleString("cs-CZ") + " CRX";
-
-  /* ===============================
-     3) WWKEY
-  =============================== */
-
-wwkeyTotal.innerText =
-  Number(d.wwkey_total ?? 0).toLocaleString("cs-CZ");
-
-const capital = (d.wwkey_total ?? 0) * 25;
-
-document.getElementById("capitalValue").innerText =
-  capital.toLocaleString("cs-CZ") + " Kč";
-
-  /* ===============================
-   WWKEY SHARE
-=============================== */
-
-const { data: wwTotalData } = await sb
-  .from("v_wwkey_total")
-  .select("total")
-  .maybeSingle();
-
-let wwTotal = wwTotalData?.total ?? 0;
-
-let wwShare = 0;
-
-if(wwTotal > 0){
-  wwShare = (d.wwkey_total / wwTotal) * 100;
+/* ═══ LOGOUT ═══ */
+async function doLogout() {
+  if(!confirm('Odhlásit se?')) return;
+  await sb.auth.signOut();
+  window.location.href = '/login/login.html';
 }
 
-yieldPct.innerText = wwShare.toFixed(4) + " %";
-
-/* ===============================
-   SYSTEM ECONOMY
-=============================== */
-
-const { data: sysMembersData } = await sb
-  .from("v_member_count")
-  .select("total")
-  .maybeSingle();
-
-let totalMembers = sysMembersData?.total ?? 0;
-
-const sysMembersEl = document.getElementById("sysMembers");
-const sysWwkeyEl = document.getElementById("sysWwkey");
-const sysCapitalEl = document.getElementById("sysCapital");
-
-if(sysMembersEl){
-  sysMembersEl.innerText = totalMembers.toLocaleString("cs-CZ");
+/* ═══ CERT ═══ */
+function openCert() {
+  if(!certUid) return;
+  window.open(`/certificates/certificate.html?uid=${certUid}`, '_blank');
 }
 
-if(sysWwkeyEl){
-  sysWwkeyEl.innerText = wwTotal.toLocaleString("cs-CZ");
-}
+/* ═══ CHART ═══ */
+function renderChart(data) {
+  const canvas = $('crxChart');
+  if(!canvas) return;
+  const ctx = canvas.getContext('2d');
 
-if(sysCapitalEl){
-  const sysCapital = wwTotal * 25;
-  sysCapitalEl.innerText = sysCapital.toLocaleString("cs-CZ") + " Kč";
-}
+  if(chartInst) { chartInst.destroy(); chartInst = null; }
 
-status.innerText   = d.status ?? "—";
-snapshot.innerText = new Date(d.last_snapshot_at).toLocaleString("cs-CZ");
-document.getElementById("memberNumericId").innerText = memberNumericId;
+  const gradient = ctx.createLinearGradient(0,0,0,200);
+  gradient.addColorStop(0, 'rgba(34,197,94,0.35)');
+  gradient.addColorStop(1, 'rgba(34,197,94,0)');
 
- /* ===============================
-   CERTIFICATE
-================================ */
-
-let certUid = null;
-
-const { data: cert } = await sb
-  .from("v_member_certificate")
-  .select("certificate_uid")
-  .eq("member_uuid", d.member_uuid)
-  .maybeSingle();
-
-certUid = cert?.certificate_uid ?? null;
-
-console.log("CERT DEBUG", certUid);
-
-const certLink = document.getElementById("certLink");
-
-if(certLink && certUid){
-  certLink.href = "certificate.html?uid=" + certUid;
-  certLink.style.opacity = "1";
-  certLink.style.pointerEvents = "auto";
-}else{
-  certLink.removeAttribute("href");
-  certLink.style.opacity = "0.35";
-  certLink.style.pointerEvents = "none";
-}
-
-  /* ===============================
-     5) CRX HISTORY
-  =============================== */
-
-  const { data: history, error: histErr } = await sb
-  .from("v_member_crx_history")
-  .select("crx_amount, created_at")
-  .eq("member_id", acc.id)
-  .order("created_at");
-
-  console.log("CRX HISTORY:", history, histErr);
-
-  let cumulative = 0;
-
-  const chartData = (history || []).map(r=>{
-    cumulative += Number(r.crx_amount);
-    return cumulative;
-  });
-
-  renderChart(chartData.length ? chartData : [crx*0.6, crx*0.8, crx]);
-}
-
-/* ================= LOAD MANUAL ================= */
-
-window.loadManual = async function(){
-
-  console.log("LOAD MANUAL START");
-
-  const val = manualInput.value.trim();
-  if(!val){
-    alert("Zadej e-mail nebo UUID");
-    return;
-  }
-
-  let query = sb.from("v_member_account").select("*");
-
-  if(val.includes("@")){
-    query = query.ilike("email", val);
-  }else{
-    query = query.eq("member_uuid", val);
-  }
-
-  const { data, error } = await query.limit(1);
-
-  console.log("SUPABASE RESULT:", data, error);
-
-  if(error){
-    alert("Chyba DB: " + error.message);
-    return;
-  }
-
-  if(!data || !data.length){
-    alert("Člen nenalezen.");
-    return;
-  }
-
-  renderMember(data[0]);
-}
-
-</script>
-
-<script>
-
-let chartInstance = null;
-
-function renderChart(history){
-
-const canvas = document.getElementById("chart");
-if(!canvas){
-  console.log("Canvas not found");
-  return;
-}
-
-const ctx = canvas.getContext("2d");
-
-  if(!history || !history.length){
-    history = Array.from({length: 30}, (_, i) => 100 + i * 0.2);
-  }
-
-  if(chartInstance){
-    chartInstance.destroy();
-  }
-
-  chartInstance = new Chart(ctx, {
-    type: "line",
+  chartInst = new Chart(ctx, {
+    type: 'line',
     data: {
-      labels: history.map((_, i) => i),
+      labels: data.map((_,i) => i),
       datasets: [{
-        data: history,
-        tension: 0.4,
-        borderWidth: 2,
+        data,
+        tension: 0.45,
+        borderWidth: 2.5,
         pointRadius: 0,
         fill: true,
-        borderColor: "#22c55e",
-        backgroundColor: "rgba(34,197,94,0.15)"
+        borderColor: '#22c55e',
+        backgroundColor: gradient,
       }]
     },
     options: {
       responsive: true,
       maintainAspectRatio: false,
-      plugins: {
-        legend: { display: false }
-      },
+      animation: { duration: 800, easing: 'easeOutQuart' },
+      plugins: { legend: { display: false }, tooltip: { enabled: false } },
       scales: {
         x: { display: false },
         y: {
-          ticks: { color: "#94a3b8" },
-          grid: { color: "rgba(148,163,184,0.1)" }
+          grid: { color: 'rgba(148,163,184,0.06)' },
+          ticks: { color: '#475569', font: { family: 'DM Sans', size: 11 }, callback: v => fmt(v) }
         }
       }
     }
   });
-
 }
 
-</script>
+/* ═══ RENDER MEMBER ═══ */
+async function renderMember(userId, isAdmin) {
+  $('loadingState').style.display = 'block';
+  $('mainContent').style.display  = 'none';
 
+  try {
+    /* 1. members_data */
+    const { data: md } = await sb
+      .from('members_data')
+      .select('id, name, full_name, email, status, deposit, approved_at')
+      .eq('user_id', userId)
+      .maybeSingle();
+
+    if(!md) {
+      $('loadingState').innerHTML = '<span style="font-size:24px">⚠️</span><br>Účet nenalezen nebo nemáte přístup.';
+      return;
+    }
+
+    /* 2. member_accounts */
+    const { data: acc } = await sb
+      .from('member_accounts')
+      .select('ww_key_balance, status, total_paid, activated_at')
+      .eq('user_id', userId)
+      .maybeSingle();
+
+    /* 3. CRX balance */
+    const { data: crx } = await sb
+      .from('member_crx_balances_internal')
+      .select('*')
+      .eq('member_id', md.id)
+      .maybeSingle();
+
+    /* 4. Career */
+    const { data: career } = await sb
+      .from('member_career_roles')
+      .select('role_name, role_code')
+      .eq('member_id', md.id)
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
+    /* 5. CRX history */
+    const { data: history } = await sb
+      .from('crx_history')
+      .select('crx_amount, created_at')
+      .eq('member_id', md.id)
+      .order('created_at', { ascending: true })
+      .limit(60);
+
+    /* 6. System stats */
+    const { data: wwTotalData } = await sb
+      .from('member_wwkey_balances')
+      .select('ww_key_balance');
+
+    const { count: totalMembers } = await sb
+      .from('members_data')
+      .select('*', { count: 'exact', head: true });
+
+    /* 7. Certificate */
+    const { data: certData } = await sb
+      .from('member_certificates')
+      .select('certificate_id')
+      .eq('member_id', md.id)
+      .limit(1)
+      .maybeSingle();
+
+    certUid = certData?.certificate_id || null;
+
+    /* ═══ RENDER UI ═══ */
+
+    // Jméno + email
+    const name = md.full_name || md.name || md.email;
+    $('memberName').textContent  = name;
+    $('memberEmail').textContent = md.email || '';
+
+    // User chip
+    $('userName').textContent = name.split(' ')[0] || name.split('@')[0];
+    $('userAv').textContent   = (name[0] || '?').toUpperCase();
+
+    // Status
+    const statusMap = { active:'Aktivní', pending:'Čekající', inactive:'Neaktivní' };
+    const st = acc?.status || md.status || 'pending';
+    $('memberStatus').textContent = statusMap[st] || st;
+    $('memberStatusPill').className = 'status-pill ' + (st === 'active' ? 'active' : 'pending');
+
+    // CRX
+    const crxBal = Number(crx?.available || crx?.balance || 0);
+    $('crxBalance').textContent = fmt(crxBal.toFixed(0));
+
+    // Stats
+    const wwkey   = acc?.ww_key_balance || 0;
+    const capital = wwkey * 25;
+
+    const totalWwkey = (wwTotalData || []).reduce((s,r) => s + Number(r.ww_key_balance||0), 0);
+    const share = totalWwkey > 0 ? ((wwkey / totalWwkey) * 100).toFixed(4) : '0.0000';
+
+    $('wwkeyVal').textContent  = fmt(wwkey);
+    $('capitalVal').textContent = fmt(capital) + ' Kč';
+    $('shareVal').textContent   = share + ' %';
+    $('memberIdVal').textContent = md.id;
+
+    // Account info
+    $('accStatus').textContent     = statusMap[st] || st;
+    $('accCareer').textContent     = career ? (career.role_name || career.role_code) : '—';
+    $('accEngagement').textContent = wwkey >= 40000 ? 'Diamond' : wwkey >= 20000 ? 'Platinum' : wwkey >= 12000 ? 'Gold' : wwkey >= 6000 ? 'Silver' : wwkey >= 2000 ? 'Bronze' : wwkey >= 1000 ? 'Metal' : 'Member';
+    $('accSince').textContent      = fmtDate(acc?.activated_at || md.approved_at);
+    $('accLastAlloc').textContent  = history?.length ? fmtDate(history[history.length-1]?.created_at) : '—';
+
+    // System
+    const sysWwkey   = totalWwkey;
+    const sysCapital = sysWwkey * 25;
+    $('sysWwkey').textContent   = fmt(sysWwkey);
+    $('sysCapital').textContent = fmt(sysCapital) + ' Kč';
+    $('sysMembers').textContent = fmt(totalMembers || 0);
+    $('sysShare').textContent   = share + ' %';
+
+    // Cert button
+    const certBtn = $('certBtn');
+    if(certUid) {
+      certBtn.classList.remove('disabled');
+      certBtn.innerHTML = '<span class="btn-led"></span>Stáhnout certifikát';
+    } else {
+      certBtn.classList.add('disabled');
+      certBtn.innerHTML = '⏳ Certifikát se zpracovává';
+    }
+
+    // Chart
+    let cumulative = 0;
+    const chartData = (history || []).map(r => {
+      cumulative += Number(r.crx_amount || 0);
+      return cumulative;
+    });
+    if(chartData.length < 3) {
+      // placeholder pokud nejsou data
+      chartData.push(0, crxBal * 0.4, crxBal * 0.7, crxBal);
+    }
+    renderChart(chartData);
+
+    // Zobraz
+    $('loadingState').style.display = 'none';
+    $('mainContent').style.display  = 'block';
+
+  } catch(e) {
+    console.error(e);
+    $('loadingState').innerHTML = `<span style="color:#fca5a5">Chyba: ${e.message}</span>`;
+  }
+}
+
+/* ═══ ADMIN LOAD ═══ */
+async function loadByAdmin() {
+  const val = $('adminInput').value.trim();
+  if(!val) return;
+
+  $('loadingState').style.display = 'block';
+  $('mainContent').style.display  = 'none';
+  $('loadingState').innerHTML     = '<span class="loading-icon">⟳</span>Hledám člena…';
+
+  try {
+    // Najdi user_id podle emailu
+    const { data: md } = await sb
+      .from('members_data')
+      .select('user_id')
+      .ilike('email', val)
+      .maybeSingle();
+
+    if(!md?.user_id) {
+      $('loadingState').innerHTML = '<span style="color:#fca5a5">Člen nenalezen.</span>';
+      return;
+    }
+
+    await renderMember(md.user_id, true);
+  } catch(e) {
+    $('loadingState').innerHTML = `<span style="color:#fca5a5">Chyba: ${e.message}</span>`;
+  }
+}
+
+/* ═══ INIT ═══ */
+async function init() {
+  const { data:{ session } } = await sb.auth.getSession();
+  if(!session) {
+    window.location.href = '/login/login.html';
+    return;
+  }
+
+  currentSession = session;
+
+  // Admin check — jednoduchý: pokud má roli admin v metadata
+  const isAdmin = session.user.user_metadata?.role === 'admin' ||
+                  session.user.email?.endsWith('@ayas7.com');
+
+  if(isAdmin) {
+    $('adminSection').style.display = 'block';
+  }
+
+  // Načti vlastní účet
+  await renderMember(session.user.id, isAdmin);
+}
+
+init();
+</script>
 </body>
 </html>
