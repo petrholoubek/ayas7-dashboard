@@ -955,18 +955,17 @@ async function init() {
   // CRX - pouzij member_id z member_accounts
   const memberId = acc?.member_id;
   console.log('member_id:', memberId, 'acc:', acc);
-  const { data: crx } = memberId ? await sb.from('member_crx_balances_internal').select('*').eq('member_id', memberId).maybeSingle() : {data:null};
-  console.log('CRX data:', crx);
-  if(crx) {
-    const bal  = Number(crx.crx_balance||crx.balance||crx.available||0);
-    const used = Number(crx.used||0);
-    const tot  = bal+used;
-    const pct  = tot>0 ? Math.round((used/tot)*100) : 0;
-    $('hCrx').textContent    = fmt(bal.toFixed(0));
-    $('crxVal').textContent   = fmt(bal.toFixed(0));
-    $('crxPct').textContent   = pct+'%';
-    setTimeout(()=>{ $('crxBar').style.width = pct+'%'; }, 500);
-  }
+  // CRX - cti z member_crx_total (UUID member_id)
+  const { data: crxTotal } = await sb.from('member_crx_total').select('total_crx').eq('member_id', user.id).maybeSingle();
+  const crx = crxTotal;
+  const bal  = crx ? Number(crx.total_crx||0) : 0;
+  const used = crx ? Number(crx.used||0) : 0;
+  const tot  = bal+used;
+  const pct  = tot>0 ? Math.round((used/tot)*100) : 0;
+  $('hCrx').textContent    = fmt(bal.toFixed(0));
+  $('crxVal').textContent   = fmt(bal.toFixed(0));
+  $('crxPct').textContent   = pct+'%';
+  setTimeout(()=>{ $('crxBar').style.width = pct+'%'; }, 500);
 
   const { data: career } = await sb.from('member_career_roles').select('role_code,role_name').eq('member_id',acc?.member_id).order('created_at',{ascending:false}).limit(1).maybeSingle();
   if(career) {
