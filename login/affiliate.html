@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8"/>
+<title>WIN.WIN · Kariérní program</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<link rel="icon" type="image/png" sizes="192x192" href="/ayas7-192.png">
+<link rel="apple-touch-icon" href="/ayas7-192.png">
+<meta name="theme-color" content="#020917">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --bg:    #020917;
+  --card:  rgba(6,14,31,0.92);
+  --b1:    rgba(56,189,248,0.1);
+  --b2:    rgba(56,189,248,0.22);
+  --blue:  #38bdf8;
+  --blue2: #0ea5e9;
+  --blue3: #7dd3fc;
+  --green: #22c55e;
+  --green2:#16a34a;
+  --green3:#4ade80;
+  --white: #f8fafc;
+  --text:  #e2e8f0;
+  --muted: #475569;
+  --m2:    #94a3b8;
+  --purple:#818cf8;
+  --font:  'Space Grotesk', sans-serif;
+  --fontb: 'DM Sans', sans-serif;
+}
+
+*,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+html,body { min-height:100%; font-family:var(--fontb); background:var(--bg); color:var(--text); overflow-x:hidden; -webkit-font-smoothing:antialiased; }
+a { text-decoration:none; color:inherit; }
+
+/* ═══ TOPBAR ═══ */
+.topbar {
+  position:sticky; top:0; z-index:200; height:54px;
+  display:flex; align-items:center; justify-content:space-between; padding:0 28px;
+  background:rgba(2,9,23,0.85); backdrop-filter:blur(24px);
+  border-bottom:1px solid var(--b1);
+}
+.brand { display:flex; align-items:center; gap:10px; }
+.brand-logo {
+  width:30px; height:30px; border-radius:7px; flex-shrink:0;
+  background:linear-gradient(135deg,rgba(56,189,248,0.15),rgba(56,189,248,0.04));
+  border:1px solid var(--b2); display:flex; align-items:center; justify-content:center;
+}
+.brand-logo svg { width:16px; height:16px; }
+.brand-name { font-family:var(--font); font-size:14px; font-weight:700; letter-spacing:-0.01em; color:var(--white); }
+.brand-sub  { font-size:8px; letter-spacing:0.2em; text-transform:uppercase; color:var(--m2); display:block; }
+nav { display:flex; gap:2px; }
+nav a { padding:5px 13px; border-radius:8px; font-family:var(--fontb); font-size:13px; font-weight:500; color:var(--m2); transition:all .15s; }
+nav a:hover { color:var(--text); background:rgba(255,255,255,.06); }
+nav a.active { color:var(--blue3); background:rgba(56,189,248,0.08); border:1px solid var(--b1); }
+.user-chip { display:flex; align-items:center; gap:8px; padding:4px 12px 4px 6px; border-radius:999px; border:1px solid var(--b1); background:rgba(255,255,255,.04); cursor:pointer; transition:all .15s; flex-shrink:0; }
+.user-chip:hover { border-color:var(--b2); }
+.user-av { width:26px; height:26px; border-radius:50%; background:linear-gradient(135deg,#0ea5e9,#0369a1); display:flex; align-items:center; justify-content:center; font-family:var(--font); font-size:11px; font-weight:700; color:#fff; }
+.user-name { font-family:var(--fontb); font-size:12px; font-weight:500; max-width:110px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+
+/* ═══ LED ═══ */
+.led { display:inline-block; border-radius:50%; flex-shrink:0; animation:lp 2.4s ease-in-out infinite; }
+.led-g  { width:7px;  height:7px;  background:var(--green);  box-shadow:0 0 0 2px rgba(34,197,94,.2),0 0 10px rgba(34,197,94,.8); }
+.led-b  { width:7px;  height:7px;  background:var(--blue);   box-shadow:0 0 0 2px rgba(56,189,248,.2),0 0 10px rgba(56,189,248,.8); }
+.led-sg { width:5px;  height:5px;  background:var(--green);  box-shadow:0 0 0 1px rgba(34,197,94,.2),0 0 7px rgba(34,197,94,.8); }
+.led-sb { width:5px;  height:5px;  background:var(--blue);   box-shadow:0 0 0 1px rgba(56,189,248,.2),0 0 7px rgba(56,189,248,.8); }
+@keyframes lp { 0%,100%{opacity:1} 50%{opacity:.5} }
+
+/* ═══ PAGE ═══ */
+.page { max-width:1080px; margin:0 auto; padding:36px 22px 80px; }
+
+.sec { display:flex; align-items:center; gap:14px; margin-bottom:18px; }
+.sec-title { font-family:var(--font); font-size:12px; font-weight:600; letter-spacing:.14em; text-transform:uppercase; color:var(--m2); white-space:nowrap; }
+.sec-line  { flex:1; height:1px; background:linear-gradient(90deg,var(--b2),transparent); }
+.sec-dot   { display:flex; align-items:center; gap:6px; font-family:var(--fontb); font-size:11px; color:var(--muted); flex-shrink:0; }
+
+/* ═══ PAGE HEADER ═══ */
+.page-header {
+  margin-bottom:32px;
+}
+.page-kicker {
+  display:inline-flex; align-items:center; gap:7px;
+  font-family:var(--fontb); font-size:10px; font-weight:600;
+  letter-spacing:.14em; text-transform:uppercase; color:var(--m2);
+  margin-bottom:12px;
+}
+.page-title {
+  font-family:var(--font); font-size:clamp(26px,4vw,38px);
+  font-weight:700; letter-spacing:-.02em; color:var(--white);
+  margin-bottom:8px; line-height:1.1;
+}
+.page-title span { color:var(--blue3); }
+.page-sub {
+  font-family:var(--fontb); font-size:14px; color:var(--m2);
+  line-height:1.65; max-width:580px;
+}
+.page-sub strong { color:var(--green); font-weight:500; }
+
+/* ═══ STATS ROW ═══ */
+.stats-row {
+  display:grid; grid-template-columns:repeat(4,1fr); gap:14px;
+  margin-bottom:28px;
+}
+.stat-card {
+  background:var(--card); border:1px solid var(--b1); border-radius:14px;
+  padding:18px 16px; position:relative; overflow:hidden;
+  transition:border-color .2s;
+}
+.stat-card::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:1px;
+  background:var(--sc-line, linear-gradient(90deg,var(--blue),transparent));
+  opacity:.6;
+}
+.stat-card:hover { border-color:var(--b2); }
+.stat-card.green { --sc-line:linear-gradient(90deg,var(--green),transparent); }
+.stat-card.blue  { --sc-line:linear-gradient(90deg,var(--blue),transparent);  }
+.stat-card.purple{ --sc-line:linear-gradient(90deg,var(--purple),transparent); }
+
+.sc-label { font-family:var(--fontb); font-size:10px; font-weight:600; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); margin-bottom:8px; }
+.sc-val   { font-family:var(--font); font-size:26px; font-weight:700; line-height:1; letter-spacing:-.01em; }
+.sc-val.g { color:var(--green); }
+.sc-val.b { color:var(--blue3); }
+.sc-val.p { color:var(--purple); }
+.sc-val.w { color:var(--white); }
+.sc-sub   { font-family:var(--fontb); font-size:11px; color:var(--muted); margin-top:4px; }
+
+/* ═══ KARRIÉRNÍ STUPNĚ ═══ */
+.tiers-grid {
+  display:grid; grid-template-columns:repeat(5,1fr); gap:10px;
+  margin-bottom:28px;
+}
+.tier-card {
+  background:var(--card); border:1px solid var(--b1); border-radius:14px;
+  padding:16px 12px; text-align:center; position:relative; overflow:hidden;
+  transition:transform .2s, border-color .2s;
+  cursor:default;
+}
+.tier-card::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:2px;
+  background:var(--t-color, rgba(56,189,248,0.3));
+  transition:opacity .2s;
+}
+.tier-card.current {
+  border-color:var(--t-color, rgba(56,189,248,.4));
+  background:rgba(56,189,248,.04);
+}
+.tier-card.current::after {
+  content:''; position:absolute; inset:0; pointer-events:none;
+  background:radial-gradient(ellipse 80% 60% at 50% 0%, rgba(56,189,248,.06), transparent 70%);
+}
+.tier-card:hover { transform:translateY(-3px); border-color:var(--t-color, var(--b2)); }
+
+.tier-icon { font-size:20px; margin-bottom:8px; }
+.tier-code { font-family:var(--fontb); font-size:9px; font-weight:600; letter-spacing:.16em; text-transform:uppercase; color:var(--muted); margin-bottom:4px; }
+.tier-name { font-family:var(--font); font-size:12px; font-weight:600; color:var(--m2); margin-bottom:8px; }
+.tier-pct  { font-family:var(--font); font-size:24px; font-weight:700; line-height:1; }
+.tier-lbl  { font-family:var(--fontb); font-size:10px; color:var(--muted); margin-top:3px; }
+.tier-badge {
+  display:inline-block; margin-top:8px; padding:2px 8px; border-radius:999px;
+  font-family:var(--fontb); font-size:9px; font-weight:600; letter-spacing:.06em;
+  background:rgba(56,189,248,.1); color:var(--blue3);
+  border:1px solid rgba(56,189,248,.2);
+}
+
+/* ═══ REF LINK ═══ */
+.ref-card {
+  background:var(--card); border:1px solid var(--b1); border-radius:16px;
+  padding:22px 20px; margin-bottom:28px; position:relative; overflow:hidden;
+}
+.ref-card::before {
+  content:''; position:absolute; top:0; left:8%; right:8%; height:1px;
+  background:linear-gradient(90deg,transparent,var(--blue2),transparent); opacity:.5;
+}
+.ref-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; flex-wrap:wrap; gap:10px; }
+.ref-title { font-family:var(--font); font-size:15px; font-weight:600; color:var(--white); }
+.ref-type  { font-family:var(--fontb); font-size:10px; font-weight:600; letter-spacing:.12em; text-transform:uppercase; padding:3px 10px; border-radius:999px; border:1px solid var(--b1); color:var(--m2); }
+
+.ref-input-row { display:flex; gap:10px; margin-bottom:14px; }
+.ref-input {
+  flex:1; padding:11px 14px; background:rgba(255,255,255,.03);
+  border:1px solid var(--b2); border-radius:10px;
+  color:var(--blue3); font-family:var(--font); font-size:13px;
+  letter-spacing:.06em; outline:none; cursor:text; min-width:0;
+  overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+}
+.btn-copy {
+  padding:10px 18px; border-radius:10px; flex-shrink:0;
+  background:rgba(56,189,248,.1); border:1px solid var(--b2);
+  color:var(--blue3); font-family:var(--font); font-size:12px; font-weight:600;
+  cursor:pointer; transition:all .15s; white-space:nowrap;
+  display:flex; align-items:center; gap:6px;
+}
+.btn-copy:hover { background:rgba(56,189,248,.18); }
+.btn-copy.done  { background:rgba(34,197,94,.1); border-color:rgba(34,197,94,.25); color:var(--green); }
+
+.share-row { display:flex; gap:8px; flex-wrap:wrap; }
+.btn-share {
+  flex:1; min-width:100px; padding:9px 14px; border-radius:10px;
+  border:1px solid var(--b1); background:rgba(255,255,255,.03);
+  color:var(--m2); font-family:var(--fontb); font-size:12px; font-weight:500;
+  cursor:pointer; transition:all .15s; display:flex; align-items:center; justify-content:center; gap:6px;
+}
+.btn-share:hover { background:rgba(255,255,255,.07); border-color:var(--b2); color:var(--text); }
+.btn-share.wa:hover { border-color:rgba(37,211,102,.3); color:#25d366; }
+.btn-share.tg:hover { border-color:rgba(0,136,204,.3);  color:#08c; }
+.btn-share.em:hover { border-color:rgba(56,189,248,.3);  color:var(--blue3); }
+
+/* ═══ TABS ═══ */
+.tab-bar { display:flex; gap:3px; padding:3px; background:rgba(255,255,255,.03); border:1px solid var(--b1); border-radius:12px; margin-bottom:20px; width:fit-content; }
+.tab-btn {
+  padding:7px 18px; border-radius:9px;
+  font-family:var(--fontb); font-size:12px; font-weight:600; letter-spacing:.04em;
+  color:var(--m2); cursor:pointer; border:none; background:none;
+  transition:all .15s; display:flex; align-items:center; gap:6px;
+}
+.tab-btn:hover { color:var(--text); }
+.tab-btn.on { background:rgba(56,189,248,.1); color:var(--blue3); border:1px solid var(--b1); box-shadow:0 0 12px rgba(56,189,248,.1); }
+
+.tab-content { display:none; }
+.tab-content.on { display:block; }
+
+/* ═══ HOW IT WORKS ═══ */
+.how-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:28px; }
+.how-card {
+  background:var(--card); border:1px solid var(--b1); border-radius:14px;
+  padding:18px 16px; text-align:center;
+}
+.how-num  { font-family:var(--font); font-size:28px; font-weight:700; color:rgba(148,163,184,.12); margin-bottom:8px; }
+.how-icon { font-size:22px; margin-bottom:10px; }
+.how-title{ font-family:var(--font); font-size:13px; font-weight:600; color:var(--white); margin-bottom:6px; }
+.how-text { font-family:var(--fontb); font-size:12px; color:var(--m2); line-height:1.55; }
+
+/* ═══ CAREER PROGRESS ═══ */
+.career-card {
+  background:var(--card); border:1px solid var(--b1); border-radius:16px;
+  padding:22px 20px; margin-bottom:20px;
+}
+.career-head { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:20px; flex-wrap:wrap; gap:12px; }
+.career-pos {}
+.career-pos-label { font-family:var(--fontb); font-size:10px; font-weight:600; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); margin-bottom:4px; }
+.career-pos-name  { font-family:var(--font); font-size:20px; font-weight:700; color:var(--white); }
+.career-pos-code  { font-family:var(--fontb); font-size:12px; color:var(--m2); margin-top:2px; }
+.career-mb-val    { font-family:var(--font); font-size:32px; font-weight:700; color:var(--green); text-align:right; }
+.career-mb-label  { font-family:var(--fontb); font-size:10px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); text-align:right; }
+
+.prog-label { display:flex; justify-content:space-between; font-family:var(--fontb); font-size:12px; color:var(--m2); margin-bottom:8px; }
+.prog-label strong { color:var(--white); font-weight:600; }
+.prog-bg   { height:6px; background:rgba(255,255,255,.06); border-radius:999px; overflow:hidden; }
+.prog-fill { height:100%; border-radius:999px; width:0%; background:linear-gradient(90deg,var(--green),var(--green3)); box-shadow:0 0 10px rgba(34,197,94,.4); transition:width 1.2s ease; }
+.prog-hint { font-family:var(--fontb); font-size:11px; color:var(--muted); margin-top:6px; }
+
+/* ═══ TABLE ═══ */
+.table-wrap { border:1px solid var(--b1); border-radius:14px; overflow:hidden; margin-bottom:20px; }
+table { width:100%; border-collapse:collapse; }
+thead tr { background:rgba(255,255,255,.03); }
+th { padding:11px 14px; text-align:left; font-family:var(--fontb); font-size:9px; font-weight:600; letter-spacing:.16em; text-transform:uppercase; color:var(--muted); border-bottom:1px solid var(--b1); }
+td { padding:12px 14px; font-family:var(--fontb); font-size:13px; border-bottom:1px solid rgba(255,255,255,.04); vertical-align:middle; }
+tbody tr:last-child td { border-bottom:none; }
+tbody tr:hover td { background:rgba(255,255,255,.02); }
+
+.member-name  { font-family:var(--font); font-weight:600; color:var(--white); font-size:13px; }
+.member-email { font-size:11px; color:var(--m2); margin-top:2px; }
+
+.badge-status { display:inline-flex; align-items:center; gap:5px; padding:3px 9px; border-radius:999px; font-family:var(--fontb); font-size:11px; font-weight:600; }
+.badge-status.active  { background:rgba(34,197,94,.1);  color:var(--green);  border:1px solid rgba(34,197,94,.2);  }
+.badge-status.pending { background:rgba(251,191,36,.1); color:#fbbf24;       border:1px solid rgba(251,191,36,.2); }
+.badge-status.inactive{ background:rgba(71,85,105,.1);  color:var(--m2);     border:1px solid rgba(71,85,105,.2);  }
+
+.tier-pill { display:inline-block; padding:2px 8px; border-radius:6px; font-family:var(--font); font-size:11px; font-weight:700; letter-spacing:.06em; background:rgba(129,140,248,.12); color:var(--purple); border:1px solid rgba(129,140,248,.2); }
+.crx-val   { font-family:var(--font); font-weight:700; color:var(--green); }
+
+/* ═══ EMPTY STATE ═══ */
+.empty { text-align:center; padding:48px 20px; color:var(--m2); }
+.empty-icon  { font-size:32px; margin-bottom:12px; display:block; }
+.empty-title { font-family:var(--font); font-size:15px; color:var(--m2); margin-bottom:6px; }
+.empty-sub   { font-family:var(--fontb); font-size:13px; color:var(--muted); }
+
+/* ═══ BONUS STATS ═══ */
+.bonus-stats { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-bottom:20px; }
+.bonus-stat  { background:var(--card); border:1px solid var(--b1); border-radius:14px; padding:18px 16px; }
+.bs-label    { font-family:var(--fontb); font-size:10px; font-weight:600; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); margin-bottom:8px; }
+.bs-val      { font-family:var(--font); font-size:22px; font-weight:700; color:var(--green); }
+.bs-sub      { font-family:var(--fontb); font-size:11px; color:var(--muted); margin-top:3px; }
+
+/* ═══ TIP BOX ═══ */
+.tip-box { background:rgba(56,189,248,.04); border:1px solid var(--b1); border-radius:12px; padding:14px 16px; font-family:var(--fontb); font-size:12px; color:var(--m2); line-height:1.65; margin-top:20px; }
+.tip-box strong { color:var(--blue3); font-weight:500; }
+
+/* ═══ FOOTER ═══ */
+.foot { border-top:1px solid var(--b1); margin-top:40px; padding:18px; text-align:center; font-family:var(--fontb); font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); }
+
+/* ═══ RESPONSIVE ═══ */
+@media(max-width:900px) {
+  .tiers-grid  { grid-template-columns:repeat(3,1fr); }
+  .how-grid    { grid-template-columns:repeat(2,1fr); }
+  .stats-row   { grid-template-columns:repeat(2,1fr); }
+  .bonus-stats { grid-template-columns:1fr; }
+}
+
+@media(max-width:640px) {
+  .topbar  { padding:0 14px; height:50px; }
+  nav      { display:none; }
+  .user-name { display:none; }
+  .brand-sub { display:none; }
+
+  .page { padding:24px 14px 60px; }
+
+  .page-title { font-size:24px; }
+  .page-sub   { font-size:13px; }
+
+  .stats-row  { grid-template-columns:1fr 1fr; gap:10px; margin-bottom:20px; }
+  .sc-val     { font-size:20px; }
+
+  .tiers-grid { grid-template-columns:repeat(2,1fr); gap:8px; }
+  .tier-pct   { font-size:20px; }
+  .tier-name  { font-size:11px; }
+
+  .ref-input-row { flex-direction:column; }
+  .btn-copy    { width:100%; justify-content:center; }
+  .share-row   { gap:6px; }
+  .btn-share   { min-width:80px; font-size:11px; padding:8px 10px; }
+
+  .how-grid    { grid-template-columns:1fr 1fr; gap:10px; }
+
+  .career-head { flex-direction:column; gap:8px; }
+  .career-mb-val { font-size:24px; text-align:left; }
+  .career-mb-label { text-align:left; }
+
+  .tab-bar { width:100%; }
+  .tab-btn { flex:1; justify-content:center; padding:7px 10px; font-size:11px; }
+
+  table { font-size:12px; }
+  th    { padding:9px 10px; font-size:8px; }
+  td    { padding:10px 10px; }
+
+  .bonus-stats { grid-template-columns:1fr; }
+  .foot { font-size:9px; }
+}
+
+@media(max-width:380px) {
+  .tiers-grid { grid-template-columns:1fr 1fr; }
+  .stats-row  { grid-template-columns:1fr 1fr; }
+  .how-grid   { grid-template-columns:1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <a href="/login/member.html" class="brand">
+    <div class="brand-logo">
+      <svg viewBox="0 0 24 24" fill="none">
+        <path d="M12 2L20 7V12L12 17L4 12V7L12 2Z" stroke="#38bdf8" stroke-width="1.5" stroke-linejoin="round"/>
+        <path d="M12 7L16 10V14L12 17L8 14V10L12 7Z" fill="rgba(56,189,248,0.2)" stroke="#38bdf8" stroke-width="1"/>
+      </svg>
+    </div>
+    <div>
+      <span class="brand-name">WIN.WIN</span>
+      <span class="brand-sub">Cooperative</span>
+    </div>
+  </a>
+  <nav>
+    <a href="/login/member.html">Dashboard</a>
+    <a href="/crx.html">CRX Účet</a>
+    <a href="/login/benefits.html">Benefity</a>
+    <a href="/login/affiliate.html" class="active">Síť</a>
+    <a href="/login/support.html">Podpora</a>
+  </nav>
+  <div class="user-chip" id="userChip" onclick="doLogout()">
+    <div class="user-av" id="userAv">?</div>
+    <span class="user-name" id="userName">…</span>
+    <span class="led led-g"></span>
+  </div>
+</div>
+
+<!-- PAGE -->
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="page-header">
+    <div class="page-kicker"><span class="led led-sb"></span>Kariérní program · WIN.WIN Cooperative</div>
+    <div class="page-title">Vaše <span>síť</span> a bonusy</div>
+    <p class="page-sub">
+      Doporučujte nové členy a získávejte <strong>Matching Bonus z jejich CRX alokace</strong> — doživotně, transparentně, napojeno na blockchain.
+    </p>
+  </div>
+
+  <!-- STATS -->
+  <div class="sec">
+    <div class="sec-title">Váš přehled</div>
+    <div class="sec-line"></div>
+    <div class="sec-dot"><span class="led led-sg"></span>Live</div>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat-card green">
+      <div class="sc-label">CRX z bonusů</div>
+      <div class="sc-val g" id="statCrx">—</div>
+      <div class="sc-sub">celkem od začátku</div>
+    </div>
+    <div class="stat-card blue">
+      <div class="sc-label">Členů v síti</div>
+      <div class="sc-val b" id="statNet">—</div>
+      <div class="sc-sub">přímí + nepřímí</div>
+    </div>
+    <div class="stat-card purple">
+      <div class="sc-label">Matching Bonus</div>
+      <div class="sc-val p" id="statMb">—</div>
+      <div class="sc-sub" id="statCareer">aktuální stupeň</div>
+    </div>
+    <div class="stat-card">
+      <div class="sc-label">Tento měsíc</div>
+      <div class="sc-val w" id="statMonth">—</div>
+      <div class="sc-sub">CRX bonus</div>
+    </div>
+  </div>
+
+  <!-- KARIÉRNÍ STUPNĚ -->
+  <div class="sec">
+    <div class="sec-title">Kariérní stupně</div>
+    <div class="sec-line"></div>
+  </div>
+
+  <div class="tiers-grid">
+    <div class="tier-card" id="tier-T" style="--t-color:rgba(148,163,184,0.4)">
+      <div class="tier-icon">🌱</div>
+      <div class="tier-code">T</div>
+      <div class="tier-name">Trader</div>
+      <div class="tier-pct" style="color:#94a3b8">16%</div>
+      <div class="tier-lbl">matching bonus</div>
+    </div>
+    <div class="tier-card" id="tier-T1" style="--t-color:rgba(56,189,248,0.4)">
+      <div class="tier-icon">📈</div>
+      <div class="tier-code">T1</div>
+      <div class="tier-name">Trader I</div>
+      <div class="tier-pct" style="color:var(--blue3)">21%</div>
+      <div class="tier-lbl">matching bonus</div>
+    </div>
+    <div class="tier-card" id="tier-T2" style="--t-color:rgba(34,197,94,0.4)">
+      <div class="tier-icon">🏆</div>
+      <div class="tier-code">T2</div>
+      <div class="tier-name">Trader II</div>
+      <div class="tier-pct" style="color:var(--green)">26%</div>
+      <div class="tier-lbl">matching bonus</div>
+    </div>
+    <div class="tier-card" id="tier-M1" style="--t-color:rgba(129,140,248,0.4)">
+      <div class="tier-icon">⭐</div>
+      <div class="tier-code">M1</div>
+      <div class="tier-name">Manager</div>
+      <div class="tier-pct" style="color:var(--purple)">36%</div>
+      <div class="tier-lbl">matching bonus</div>
+    </div>
+    <div class="tier-card" id="tier-D1" style="--t-color:rgba(56,189,248,0.6)">
+      <div class="tier-icon">👑</div>
+      <div class="tier-code">D1</div>
+      <div class="tier-name">Director</div>
+      <div class="tier-pct" style="color:var(--blue)">30%</div>
+      <div class="tier-lbl">matching bonus</div>
+      <div class="tier-badge">Strategické vedení</div>
+    </div>
+  </div>
+
+  <!-- REF ODKAZ -->
+  <div class="sec">
+    <div class="sec-title">Váš referral odkaz</div>
+    <div class="sec-line"></div>
+  </div>
+
+  <div class="ref-card">
+    <div class="ref-head">
+      <div class="ref-title">🔗 Sdílejte svůj odkaz</div>
+      <div class="ref-type">Váš osobní kód</div>
+    </div>
+    <div class="ref-input-row">
+      <input class="ref-input" id="refLink" readonly value="Načítám…"/>
+      <button class="btn-copy" id="copyBtn" onclick="copyLink()">
+        <span>⎘</span> Kopírovat
+      </button>
+    </div>
+    <div class="share-row">
+      <button class="btn-share wa" onclick="shareWA()">📱 WhatsApp</button>
+      <button class="btn-share tg" onclick="shareTG()">✈️ Telegram</button>
+      <button class="btn-share em" onclick="shareEmail()">✉️ E-mail</button>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tab-bar">
+    <button class="tab-btn on" onclick="switchTab('overview')"><span class="led led-sg" style="width:5px;height:5px;animation:none"></span>Přehled</button>
+    <button class="tab-btn"   onclick="switchTab('members')">👥 Členové</button>
+    <button class="tab-btn"   onclick="switchTab('bonuses')">💰 Bonusy</button>
+  </div>
+
+  <!-- TAB: PŘEHLED -->
+  <div class="tab-content on" id="tab-overview">
+
+    <div class="sec" style="margin-top:4px">
+      <div class="sec-title">Jak to funguje</div>
+      <div class="sec-line"></div>
+    </div>
+
+    <div class="how-grid">
+      <div class="how-card">
+        <div class="how-num">01</div>
+        <div class="how-icon">🔑</div>
+        <div class="how-title">Získejte kód</div>
+        <div class="how-text">Váš unikátní referral kód se vygeneruje automaticky po aktivaci členství.</div>
+      </div>
+      <div class="how-card">
+        <div class="how-num">02</div>
+        <div class="how-icon">🔗</div>
+        <div class="how-title">Sdílejte odkaz</div>
+        <div class="how-text">Sdílejte odkaz přes WhatsApp, Telegram nebo e-mail svým kontaktům.</div>
+      </div>
+      <div class="how-card">
+        <div class="how-num">03</div>
+        <div class="how-icon">👤</div>
+        <div class="how-title">Člen se přihlásí</div>
+        <div class="how-text">Každý člen který se registruje přes váš kód je trvale přiřazen do vaší sítě.</div>
+      </div>
+      <div class="how-card">
+        <div class="how-num">04</div>
+        <div class="how-icon">💎</div>
+        <div class="how-title">Získáváte CRX</div>
+        <div class="how-text">Z každé měsíční CRX alokace vašich členů obdržíte Matching Bonus dle kariérního stupně.</div>
+      </div>
+    </div>
+
+    <!-- KARIÉRNÍ POSTUP -->
+    <div class="sec">
+      <div class="sec-title">Váš kariérní postup</div>
+      <div class="sec-line"></div>
+    </div>
+
+    <div class="career-card">
+      <div class="career-head">
+        <div class="career-pos">
+          <div class="career-pos-label">Aktuální pozice</div>
+          <div class="career-pos-name" id="careerName">—</div>
+          <div class="career-pos-code" id="careerCode">—</div>
+        </div>
+        <div>
+          <div class="career-mb-label">Matching Bonus</div>
+          <div class="career-mb-val" id="careerMb">—</div>
+        </div>
+      </div>
+
+      <div class="prog-label">
+        <span>Postup na další stupeň</span>
+        <strong id="progLabel">—</strong>
+      </div>
+      <div class="prog-bg">
+        <div class="prog-fill" id="progBar"></div>
+      </div>
+      <div class="prog-hint" id="progHint">—</div>
+    </div>
+
+    <div class="tip-box">
+      <strong>Pro-tip:</strong> Sdílejte svůj odkaz v komunitách zaměřených na DeFi, spolupráci a alternativní finance. Čím aktivnější vaši členové, tím vyšší váš Matching Bonus.
+    </div>
+
+  </div>
+
+  <!-- TAB: ČLENOVÉ -->
+  <div class="tab-content" id="tab-members">
+    <div class="sec" style="margin-top:4px">
+      <div class="sec-title">Členové ve vaší síti</div>
+      <div class="sec-line"></div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Člen</th>
+            <th>Kariéra</th>
+            <th>WW-Key</th>
+            <th>Status</th>
+            <th>CRX tento měsíc</th>
+            <th>Připojen</th>
+          </tr>
+        </thead>
+        <tbody id="membersTable">
+          <tr><td colspan="6"><div class="empty"><span class="empty-icon">⏳</span><div class="empty-title">Načítám…</div></div></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- TAB: BONUSY -->
+  <div class="tab-content" id="tab-bonuses">
+    <div class="bonus-stats">
+      <div class="bonus-stat">
+        <div class="bs-label">Tento měsíc</div>
+        <div class="bs-val" id="bonusMonth">—</div>
+        <div class="bs-sub">CRX z matching bonusů</div>
+      </div>
+      <div class="bonus-stat">
+        <div class="bs-label">Celkem vyplaceno</div>
+        <div class="bs-val" id="bonusTotal">—</div>
+        <div class="bs-sub">CRX od začátku</div>
+      </div>
+      <div class="bonus-stat">
+        <div class="bs-label">Průměr měsíčně</div>
+        <div class="bs-val" id="bonusAvg">—</div>
+        <div class="bs-sub">CRX průměrně</div>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-title">Historie bonusů</div>
+      <div class="sec-line"></div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Období</th>
+            <th>Od člena</th>
+            <th>Kariérní stupeň</th>
+            <th>% bonus</th>
+            <th>CRX obdrženo</th>
+          </tr>
+        </thead>
+        <tbody id="bonusTable">
+          <tr><td colspan="5"><div class="empty"><span class="empty-icon">⏳</span><div class="empty-title">Načítám…</div></div></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div><!-- /page -->
+
+<footer class="foot">© 2025 WIN-WIN Družstvo · AYAS-7 Engine · Kariérní program</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+const SB_URL  = 'https://azfrniqqtetoqploxwgq.supabase.co';
+const SB_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF6ZnJuaXFxdGV0b3FwbG94d2dxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3MzQ1OTYsImV4cCI6MjA4MzMxMDU5Nn0.QchmzNhs8owd6pkjZCk04u6PJoJ2Bhzz7oGV0KFyqdU';
+const sb  = supabase.createClient(SB_URL, SB_ANON);
+const $   = id => document.getElementById(id);
+const fmt = n => n != null ? Number(n).toLocaleString('cs-CZ') : '—';
+const fmtDate = s => s ? new Date(s).toLocaleDateString('cs-CZ') : '—';
+
+const TIERS = [
+  {code:'T', name:'Trader',    pct:16, next:'T1', needed:3  },
+  {code:'T1',name:'Trader I',  pct:21, next:'T2', needed:10 },
+  {code:'T2',name:'Trader II', pct:26, next:'M1', needed:25 },
+  {code:'M1',name:'Manager',   pct:36, next:'D1', needed:50 },
+  {code:'D1',name:'Director',  pct:30, next:null, needed:null},
+];
+
+let currentUser = null;
+let memberData  = null;
+let refCode     = null;
+
+/* ═══ LOGOUT ═══ */
+async function doLogout() {
+  if(!confirm('Odhlásit se?')) return;
+  await sb.auth.signOut();
+  window.location.href = '/login/login.html';
+}
+
+/* ═══ TAB SWITCH ═══ */
+function switchTab(name) {
+  document.querySelectorAll('.tab-btn').forEach((b,i) => {
+    const names = ['overview','members','bonuses'];
+    b.classList.toggle('on', names[i] === name);
+  });
+  document.querySelectorAll('.tab-content').forEach(c => {
+    c.classList.toggle('on', c.id === 'tab-'+name);
+  });
+  if(name === 'members') loadMembers();
+  if(name === 'bonuses') loadBonuses();
+}
+
+/* ═══ COPY / SHARE ═══ */
+function copyLink() {
+  const val = $('refLink').value;
+  navigator.clipboard.writeText(val).then(() => {
+    const btn = $('copyBtn');
+    btn.classList.add('done');
+    btn.innerHTML = '<span>✓</span> Zkopírováno';
+    setTimeout(() => {
+      btn.classList.remove('done');
+      btn.innerHTML = '<span>⎘</span> Kopírovat';
+    }, 2000);
+  });
+}
+function shareWA()    { window.open('https://wa.me/?text='+encodeURIComponent('Připoj se do WIN.WIN Cooperative přes můj odkaz: '+$('refLink').value)); }
+function shareTG()    { window.open('https://t.me/share/url?url='+encodeURIComponent($('refLink').value)+'&text='+encodeURIComponent('Připoj se do WIN.WIN Cooperative!')); }
+function shareEmail() { window.open('mailto:?subject=WIN.WIN Cooperative – pozvánka&body=Připoj se přes můj odkaz: '+encodeURIComponent($('refLink').value)); }
+
+/* ═══ HIGHLIGHT TIER ═══ */
+function highlightTier(code) {
+  TIERS.forEach(t => {
+    const el = $('tier-'+t.code);
+    if(!el) return;
+    el.classList.toggle('current', t.code === code);
+  });
+}
+
+/* ═══ CAREER UI ═══ */
+function setCareerUI(roleCode, memberCount) {
+  const tier     = TIERS.find(t => t.code === roleCode) || TIERS[0];
+  const nextTier = TIERS.find(t => t.code === tier.next);
+
+  $('statMb').textContent   = tier.pct + '%';
+  $('statCareer').textContent = tier.name;
+  $('careerName').textContent = tier.name;
+  $('careerCode').textContent = 'Kód: ' + tier.code;
+  $('careerMb').textContent   = tier.pct + '%';
+
+  highlightTier(tier.code);
+
+  if(nextTier && nextTier.needed) {
+    const pct = Math.min(100, Math.round((memberCount / nextTier.needed) * 100));
+    $('progLabel').textContent = memberCount + ' / ' + nextTier.needed + ' členů';
+    $('progBar').style.width   = pct + '%';
+    $('progHint').textContent  = 'Pro postup na ' + nextTier.name + ' potřebujete ' + nextTier.needed + ' členů v síti.';
+  } else {
+    $('progLabel').textContent = 'Nejvyšší stupeň';
+    $('progBar').style.width   = '100%';
+    $('progHint').textContent  = 'Dosáhli jste nejvyššího kariérního stupně.';
+  }
+}
+
+/* ═══ LOAD MEMBERS ═══ */
+async function loadMembers() {
+  if(!memberData) return;
+  const tbody = $('membersTable');
+  tbody.innerHTML = '<tr><td colspan="6"><div class="empty"><span class="empty-icon">⏳</span></div></td></tr>';
+
+  try {
+    const { data: relations } = await sb
+      .from('network_relations')
+      .select('downline_member_id, created_at')
+      .eq('upline_member_id', currentUser.id);
+
+    if(!relations || relations.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="6"><div class="empty">
+        <span class="empty-icon">👥</span>
+        <div class="empty-title">Zatím žádní členové ve vaší síti</div>
+        <div class="empty-sub">Sdílejte referral odkaz a začněte budovat síť</div>
+      </div></td></tr>`;
+      return;
+    }
+
+    const ids = relations.map(r => r.downline_member_id);
+
+    const { data: members } = await sb
+      .from('members').select('id, full_name, email, created_at').in('id', ids);
+
+    const { data: accounts } = await sb
+      .from('member_accounts').select('user_id, ww_key_balance, status').in('user_id', ids);
+
+    const { data: careers } = await sb
+      .from('member_career_roles').select('member_id, role_code, role_name').in('member_id', ids);
+
+    tbody.innerHTML = '';
+    (members || []).forEach(m => {
+      const acc = accounts?.find(a => a.user_id === m.id);
+      const car = careers?.find(c => c.member_id === m.id);
+      const rel = relations?.find(r => r.downline_member_id === m.id);
+      const st  = acc?.status || 'pending';
+      const stMap = { active:'Aktivní', pending:'Čekající', inactive:'Neaktivní' };
+
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>
+          <div class="member-name">${m.full_name || '—'}</div>
+          <div class="member-email">${m.email || ''}</div>
+        </td>
+        <td>${car ? `<span class="tier-pill">${car.role_code}</span>` : '<span style="color:var(--muted)">—</span>'}</td>
+        <td style="font-family:var(--font);font-weight:600">${fmt(acc?.ww_key_balance)}</td>
+        <td><span class="badge-status ${st}">${stMap[st]||st}</span></td>
+        <td class="crx-val">—</td>
+        <td style="color:var(--m2);font-size:11px">${fmtDate(rel?.created_at)}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+  } catch(e) {
+    tbody.innerHTML = `<tr><td colspan="6"><div class="empty"><div class="empty-title" style="color:#fca5a5">Chyba: ${e.message}</div></div></td></tr>`;
+  }
+}
+
+/* ═══ LOAD BONUSES ═══ */
+async function loadBonuses() {
+  if(!memberData) return;
+  const tbody = $('bonusTable');
+  tbody.innerHTML = '<tr><td colspan="5"><div class="empty"><span class="empty-icon">⏳</span></div></td></tr>';
+
+  try {
+    const { data: bonuses } = await sb
+      .from('matching_bonus_records')
+      .select('*')
+      .eq('upline_id', memberData.member_id)
+      .order('created_at', { ascending: false })
+      .limit(50);
+
+    if(!bonuses || bonuses.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="5"><div class="empty">
+        <span class="empty-icon">💰</span>
+        <div class="empty-title">Zatím žádné bonusy</div>
+        <div class="empty-sub">Bonusy se zobrazí po první CRX alokaci vašich členů</div>
+      </div></td></tr>`;
+      $('bonusMonth').textContent = '0';
+      $('bonusTotal').textContent = '0';
+      $('bonusAvg').textContent   = '0';
+      return;
+    }
+
+    const total    = bonuses.reduce((s,b) => s + Number(b.amount_crx||0), 0);
+    const thisMon  = new Date().toISOString().slice(0,7);
+    const monthSum = bonuses.filter(b=>(b.period||'').startsWith(thisMon)).reduce((s,b)=>s+Number(b.amount_crx||0),0);
+    const periods  = [...new Set(bonuses.map(b=>b.period))].length || 1;
+
+    $('bonusMonth').textContent = fmt(monthSum.toFixed(2));
+    $('bonusTotal').textContent = fmt(total.toFixed(2));
+    $('bonusAvg').textContent   = fmt((total/periods).toFixed(2));
+    $('statMonth').textContent  = fmt(monthSum.toFixed(0));
+
+    tbody.innerHTML = '';
+    bonuses.forEach(b => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td style="font-size:12px;color:var(--m2)">${b.period||'—'}</td>
+        <td style="font-size:12px;color:var(--m2)">#${b.source_member_id||'—'}</td>
+        <td>${b.career_level ? `<span class="tier-pill">${b.career_level}</span>` : '—'}</td>
+        <td style="color:var(--blue3);font-weight:600">${b.percent_applied||'—'}%</td>
+        <td class="crx-val">${fmt(Number(b.amount_crx).toFixed(2))}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+
+    $('statCrx').textContent = fmt(total.toFixed(0));
+  } catch(e) {
+    tbody.innerHTML = `<tr><td colspan="5"><div class="empty"><div class="empty-title" style="color:#fca5a5">Chyba: ${e.message}</div></div></td></tr>`;
+  }
+}
+
+/* ═══ INIT ═══ */
+async function init() {
+  const { data:{ session } } = await sb.auth.getSession();
+  if(!session) { window.location.href = '/login/login.html'; return; }
+
+  currentUser = session.user;
+
+  const name = currentUser.user_metadata?.full_name || currentUser.email || '';
+  const first = name.includes('@') ? name.split('@')[0] : name.split(' ')[0];
+  $('userName').textContent = first;
+  $('userAv').textContent   = (first[0]||'?').toUpperCase();
+
+  // Ref kód + URL
+  refCode = currentUser.id.slice(0,8).toUpperCase();
+
+  // Zkus najit existujici ref kod v DB
+  const { data: refRow } = await sb
+    .from('referral_codes')
+    .select('code, label')
+    .eq('user_id', currentUser.id)
+    .eq('is_active', true)
+    .maybeSingle();
+
+  if(refRow?.code) refCode = refRow.code;
+
+  const refUrl = `${window.location.origin}/login/login.html?ref=${refCode}`;
+  $('refLink').value = refUrl;
+
+  // Member account
+  const { data: acc } = await sb
+    .from('member_accounts')
+    .select('*')
+    .eq('user_id', currentUser.id)
+    .single();
+
+  memberData = acc;
+
+  // Síť - počet členů
+  const { count: nc } = await sb
+    .from('network_relations')
+    .select('*', { count:'exact', head:true })
+    .eq('upline_member_id', currentUser.id);
+
+  $('statNet').textContent = nc || 0;
+
+  // Kariéra
+  const { data: career } = await sb
+    .from('member_career_roles')
+    .select('role_code, role_name')
+    .eq('member_id', acc?.member_id)
+    .order('created_at', { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  setCareerUI(career?.role_code || 'T', nc || 0);
+
+  // Bonusy - total
+  const { data: bonusStat } = await sb
+    .from('matching_bonus_records')
+    .select('amount_crx, period')
+    .eq('upline_id', acc?.member_id);
+
+  const total = (bonusStat||[]).reduce((s,b)=>s+Number(b.amount_crx||0),0);
+  $('statCrx').textContent = fmt(total.toFixed(0));
+
+  const thisMon = new Date().toISOString().slice(0,7);
+  const monthSum = (bonusStat||[]).filter(b=>(b.period||'').startsWith(thisMon)).reduce((s,b)=>s+Number(b.amount_crx||0),0);
+  $('statMonth').textContent = fmt(monthSum.toFixed(0));
+}
+
+init();
+</script>
+</body>
+</html>
