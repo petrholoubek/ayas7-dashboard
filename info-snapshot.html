@@ -106,7 +106,7 @@ footer{margin-top:72px;padding-top:14px;border-top:1px solid var(--border);font-
   padding-bottom: 80px;
 }
 .hero-bg { position: absolute; inset: 0; z-index: 0; }
-.hero-bg img { width: 100%; height: 100%; object-fit: cover; object-position: center top; display: block; }
+.hero-bg img { width: 100%; height: 100%; object-fit: cover; object-position: center 15%; display: block; }
 .hero-bg::after {
   content: ''; position: absolute; inset: 0;
   background: linear-gradient(to bottom,rgba(2,9,23,0) 0%,rgba(2,9,23,0) 50%,rgba(2,9,23,.75) 75%,rgba(2,9,23,1) 100%);
@@ -153,28 +153,73 @@ footer{margin-top:72px;padding-top:14px;border-top:1px solid var(--border);font-
 /* STRIP */
 .hero-strip {
   position: relative; z-index: 2; width: 100%;
-  background: rgba(2,9,23,.75); backdrop-filter: blur(20px);
-  border-top: 1px solid rgba(56,189,248,.1);
+  background: linear-gradient(180deg, rgba(2,6,23,0.0) 0%, rgba(2,6,23,0.82) 100%);
+  backdrop-filter: blur(24px);
+  padding: 0 20px 0;
 }
 .strip-inner {
-  max-width: 1200px; margin: 0 auto; padding: 0 20px;
+  max-width: 1200px; margin: 0 auto;
   display: grid; grid-template-columns: repeat(4,1fr);
+  gap: 12px; padding: 20px 0 28px;
 }
-.sstat { padding: 16px 20px; border-right: 1px solid rgba(56,189,248,.08); text-align: center; }
-.sstat:last-child { border-right: none; }
-.sstat-val { font-family: var(--font); font-size: 18px; font-weight: 700; margin-bottom: 3px; }
-.sstat-lbl { font-family: var(--fontb); font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: #475569; }
-.sstat-val.g { color: #22c55e; }
-.sstat-val.b { color: #38bdf8; }
-.sstat-val.w { color: #f8fafc; }
+.sstat {
+  position: relative;
+  padding: 18px 16px 16px;
+  border-radius: 14px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.07);
+  text-align: center;
+  transition: border-color .2s, background .2s;
+  overflow: hidden;
+}
+.sstat::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 15%; right: 15%;
+  height: 1px;
+  border-radius: 999px;
+  opacity: 0;
+  transition: opacity .3s;
+}
+.sstat:hover { background: rgba(255,255,255,0.07); border-color: rgba(255,255,255,0.14); }
+.sstat:hover::before { opacity: 1; }
+.sstat-icon {
+  font-size: 11px; letter-spacing: .18em; text-transform: uppercase;
+  margin-bottom: 10px; opacity: .45; font-family: var(--fontb);
+  display: flex; align-items: center; justify-content: center; gap: 5px;
+}
+.sstat-icon::before {
+  content: ''; display: inline-block;
+  width: 5px; height: 5px; border-radius: 50%;
+  flex-shrink: 0;
+}
+.sstat-val {
+  font-family: var(--font); font-size: 22px; font-weight: 700;
+  letter-spacing: -.01em; margin-bottom: 4px; line-height: 1;
+}
+.sstat-lbl {
+  font-family: var(--fontb); font-size: 10px; letter-spacing: .14em;
+  text-transform: uppercase; color: rgba(148,163,184,.5);
+}
+/* Barvy s glow */
+.sstat-val.b { color: #38bdf8; text-shadow: 0 0 20px rgba(56,189,248,.45); }
+.sstat-val.g { color: #22c55e; text-shadow: 0 0 20px rgba(34,197,94,.45); }
+.sstat-val.y { color: #facc15; text-shadow: 0 0 20px rgba(250,204,21,.45); }
+.sstat-val.p { color: #a855f7; text-shadow: 0 0 20px rgba(168,85,247,.45); }
+/* Top glow cary podle barvy */
+.sstat.s-b::before { background: linear-gradient(90deg, transparent, #38bdf8, transparent); }
+.sstat.s-g::before { background: linear-gradient(90deg, transparent, #22c55e, transparent); }
+.sstat.s-y::before { background: linear-gradient(90deg, transparent, #facc15, transparent); }
+.sstat.s-p::before { background: linear-gradient(90deg, transparent, #a855f7, transparent); }
+.sstat.s-b .sstat-icon::before { background: #38bdf8; box-shadow: 0 0 6px rgba(56,189,248,.8); }
+.sstat.s-g .sstat-icon::before { background: #22c55e; box-shadow: 0 0 6px rgba(34,197,94,.8); }
+.sstat.s-y .sstat-icon::before { background: #facc15; box-shadow: 0 0 6px rgba(250,204,21,.8); }
+.sstat.s-p .sstat-icon::before { background: #a855f7; box-shadow: 0 0 6px rgba(168,85,247,.8); }
 .led-dot { width: 7px; height: 7px; border-radius: 50%; background: #ef4444; box-shadow: 0 0 8px rgba(239,68,68,.8); flex-shrink: 0; animation: lp 2.4s ease-in-out infinite; }
 .led-dot.live { background: #22c55e; box-shadow: 0 0 8px rgba(34,197,94,.8); }
 @keyframes lp { 0%,100%{opacity:1}50%{opacity:.5} }
 @media(max-width:640px) {
-  .strip-inner { grid-template-columns: 1fr 1fr; }
-  .sstat:nth-child(2) { border-right: none; }
-  .sstat:nth-child(3) { border-top: 1px solid rgba(56,189,248,.08); }
-  .sstat:nth-child(4) { border-top: 1px solid rgba(56,189,248,.08); }
+  .strip-inner { grid-template-columns: 1fr 1fr; gap: 8px; padding: 14px 0 20px; }
 }
 </style>
 </head>
@@ -200,21 +245,25 @@ footer{margin-top:72px;padding-top:14px;border-top:1px solid var(--border);font-
   <!-- STAT STRIP - system stats -->
   <div class="hero-strip">
     <div class="strip-inner">
-      <div class="sstat">
+      <div class="sstat s-b">
+        <div class="sstat-icon">WW-UNIT</div>
         <div class="sstat-val b" id="stripUnit">—</div>
-        <div class="sstat-lbl">WW-UNIT</div>
+        <div class="sstat-lbl">DEX · PancakeSwap</div>
       </div>
-      <div class="sstat">
-        <div class="sstat-val" style="color:#facc15" id="stripReserve">—</div>
-        <div class="sstat-lbl">WW-RESERVE</div>
+      <div class="sstat s-y">
+        <div class="sstat-icon">WW-RESERVE</div>
+        <div class="sstat-val y" id="stripReserve">—</div>
+        <div class="sstat-lbl">Stability · Backed</div>
       </div>
-      <div class="sstat">
+      <div class="sstat s-g">
+        <div class="sstat-icon">System Health</div>
         <div class="sstat-val g" id="stripHealth">—</div>
-        <div class="sstat-lbl">System Health</div>
+        <div class="sstat-lbl">ACTIVE · LIVE</div>
       </div>
-      <div class="sstat">
-        <div class="sstat-val" style="color:#a855f7" id="stripTvl">—</div>
-        <div class="sstat-lbl">TVL</div>
+      <div class="sstat s-p">
+        <div class="sstat-icon">TVL</div>
+        <div class="sstat-val p" id="stripTvl">—</div>
+        <div class="sstat-lbl">Total Value Locked</div>
       </div>
     </div>
   </div>
