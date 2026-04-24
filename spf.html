@@ -1,613 +1,498 @@
 <!DOCTYPE html>
 <html lang="cs">
 <head>
-<meta charset="UTF-8">
-<title>SPF – Provizní fond družstva WIN.WIN</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<script type="module" src="./assets/js/gate.js"></script>
-<!-- FAVICON / PWA -->
-  <link rel="icon" type="image/png" sizes="192x192" href="/ayas7-192.png">
-  <link rel="icon" type="image/png" sizes="512x512" href="/ayas7-512.png">
-  <link rel="apple-touch-icon" href="/ayas7-192.png">
-  <meta name="theme-color" content="#020617">
+<meta charset="UTF-8"/>
+<title>AYAS-7 · SPF – Provizní fond</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<link rel="icon" type="image/png" sizes="192x192" href="/ayas7-192.png">
+<meta name="theme-color" content="#020917">
+<script type="module" src="/assets/js/gate.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#020617;
-  --card:#0b1120;
-  --border:rgba(148,163,184,.25);
-  --text:#e5e7eb;
-  --muted:#9ca3af;
-  --gold:#facc15;
-  --green:#22c55e;
-  --red:#ef4444;
+  --bg:#020917;--s1:rgba(8,18,40,0.95);--s2:rgba(4,11,28,0.98);
+  --b1:rgba(255,255,255,0.06);--b2:rgba(255,255,255,0.12);--b3:rgba(255,255,255,0.04);
+  --amber:#f59e0b;--amber2:#fbbf24;
+  --blue:#38bdf8;--blue2:#0ea5e9;--blue3:#7dd3fc;
+  --green:#22c55e;--green2:#4ade80;
+  --red:#ef4444;--red2:#f87171;
+  --yellow:#facc15;--yellow2:#fde047;
+  --white:#f8fafc;--text:#e2e8f0;--m2:#94a3b8;--muted:#475569;
+  --font:'Space Grotesk',sans-serif;--fontb:'DM Sans',sans-serif;--mono:'DM Mono',monospace;
 }
-body{
-  margin:0;
-  font-family:"Segoe UI",Tahoma,Verdana,sans-serif;
-  background:radial-gradient(circle at 40% 0%, #0f172a 0%, #020617 65%, #000 100%);
-  color:var(--text);
-}
-.page{max-width:1400px;margin:auto;padding:42px 18px 80px}
-.card{
-  background:radial-gradient(circle at top left,#0b1120,#020617 70%);
-  border:1px solid var(--border);
-  border-radius:20px;
-  padding:24px;
-  margin-bottom:26px;
-}
-h1{font-size:30px;margin-bottom:10px}
-h2{font-size:18px;margin-bottom:10px}
-p{font-size:13px;line-height:1.6;color:var(--muted)}
-table{width:100%;border-collapse:collapse;font-size:12px}
-th,td{padding:10px;border-bottom:1px solid var(--border)}
-th{color:var(--muted);text-align:left}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{min-height:100%;font-family:var(--fontb);background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{text-decoration:none;color:inherit}
 
-.kicker{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  font-size:12px;
-  letter-spacing:.14em;
-  text-transform:uppercase;
-  color:#9ca3af;
-  margin-bottom:10px;
+body::before{
+  content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:linear-gradient(rgba(245,158,11,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(245,158,11,.025) 1px,transparent 1px);
+  background-size:48px 48px;
+}
+body::after{
+  content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse 70% 50% at 5% 0%,rgba(245,158,11,.1),transparent),
+    radial-gradient(ellipse 50% 40% at 95% 100%,rgba(56,189,248,.07),transparent);
 }
 
-.led{
-  width:9px;
-  height:9px;
-  border-radius:999px;
-}
+/* TOPBAR */
+.topbar{position:sticky;top:0;z-index:100;height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 28px;background:rgba(2,9,23,0.88);backdrop-filter:blur(20px);border-bottom:1px solid var(--b1)}
+.brand{display:flex;align-items:center;gap:12px}
+.brand-hex{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,rgba(245,158,11,.15),rgba(245,158,11,.04));border:1px solid rgba(245,158,11,.25);display:flex;align-items:center;justify-content:center}
+.brand-hex svg{width:16px;height:16px}
+.brand-text{font-family:var(--font);font-size:15px;font-weight:700;color:var(--white)}
+.brand-badge{padding:2px 8px;border-radius:999px;background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.25);font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--amber)}
+.tb-back{display:inline-flex;align-items:center;gap:7px;padding:6px 14px;border-radius:8px;background:var(--b3);border:1px solid var(--b1);font-size:12px;color:var(--m2);transition:all .15s}
+.tb-back:hover{color:var(--text);border-color:var(--b2)}
 
-/* BARVY PODLE TÉMAT */
-.led-yellow{
-  background:#facc15;
-  box-shadow:0 0 8px rgba(250,204,21,.9);
-}
+/* PAGE */
+.page{position:relative;z-index:1;max-width:1280px;margin:0 auto;padding:32px 28px 80px}
 
-.led-blue{
-  background:#38bdf8;
-  box-shadow:0 0 8px rgba(56,189,248,.9);
-}
+/* PAGE HEADER */
+.page-header{margin-bottom:32px}
+.page-title{font-family:var(--font);font-size:30px;font-weight:700;color:var(--white);letter-spacing:-.02em}
+.page-sub{font-size:13px;color:var(--muted);margin-top:6px;letter-spacing:.04em;text-transform:uppercase}
+.page-desc{font-size:13px;color:var(--m2);margin-top:10px;max-width:700px;line-height:1.65;padding:14px 16px;background:rgba(245,158,11,.05);border:1px solid rgba(245,158,11,.15);border-radius:10px}
+.page-desc strong{color:var(--white)}
 
-.led-red{
-  background:#ef4444;
-  box-shadow:0 0 8px rgba(239,68,68,.9);
-}
+/* SECTION */
+.section{margin-bottom:24px;animation:fadeUp .45s ease both}
+.sec-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px}
+.sec-title{font-family:var(--font);font-size:15px;font-weight:600;color:var(--white);display:flex;align-items:center;gap:8px}
+.sec-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;animation:lp 2s ease-in-out infinite}
+.sec-dot.amber{background:var(--amber);box-shadow:0 0 8px rgba(245,158,11,.8)}
+.sec-dot.blue{background:var(--blue);box-shadow:0 0 8px rgba(56,189,248,.8)}
+.sec-dot.green{background:var(--green);box-shadow:0 0 8px rgba(34,197,94,.8)}
+.sec-dot.red{background:var(--red);box-shadow:0 0 8px rgba(239,68,68,.8)}
+@keyframes lp{0%,100%{opacity:1}50%{opacity:.4}}
+.sec-sub{font-size:12px;color:var(--muted)}
+.sec-note{font-size:11px;color:var(--muted);margin-top:10px;padding:10px 14px;background:var(--b3);border-radius:8px;line-height:1.6}
 
-.led-green{
-  background:#22c55e;
-  box-shadow:0 0 8px rgba(34,197,94,.9);
-}
-.table-wrapper {
-  max-height: 420px;   /* cca 10 řádků */
-  overflow-y: auto;
-  border-radius: 12px;
-}
+/* CARD */
+.card{background:var(--s1);border:1px solid var(--b1);border-radius:14px;overflow:hidden}
 
+/* STAT ROW */
+.spf-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:24px}
+.spf-stat{position:relative;padding:20px;border-radius:14px;background:var(--s1);border:1px solid var(--b1);overflow:hidden;animation:fadeUp .45s ease both}
+.spf-stat::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
+.spf-stat.y::before{background:linear-gradient(90deg,transparent,var(--yellow),transparent)}
+.spf-stat.b::before{background:linear-gradient(90deg,transparent,var(--blue),transparent)}
+.spf-stat.g::before{background:linear-gradient(90deg,transparent,var(--green),transparent)}
+.spf-lbl{font-size:10px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.spf-val{font-family:var(--font);font-size:26px;font-weight:700;letter-spacing:-.01em}
+.y .spf-val{color:var(--yellow2)}
+.b .spf-val{color:var(--blue3)}
+.g .spf-val{color:var(--green2)}
 
+/* TABLE */
+.tbl-wrap{background:var(--s1);border:1px solid var(--b1);border-radius:14px;overflow:hidden}
+.tbl-scroll{max-height:400px;overflow-y:auto}
+.tbl-scroll::-webkit-scrollbar{width:4px}
+.tbl-scroll::-webkit-scrollbar-thumb{background:var(--b2);border-radius:99px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead th{padding:12px 16px;text-align:left;font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);background:rgba(255,255,255,.02);border-bottom:1px solid var(--b1);position:sticky;top:0;z-index:1}
+tbody td{padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.03);vertical-align:middle}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover td{background:rgba(255,255,255,.02)}
+.td-status{padding:3px 10px;border-radius:6px;font-size:11px;font-family:var(--mono)}
+.td-status.active{background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.2);color:var(--green2)}
+.td-status.closed{background:rgba(148,163,184,.06);border:1px solid rgba(148,163,184,.15);color:var(--m2)}
+.td-status.draft{background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.2);color:var(--yellow2)}
+.td-status.approved{background:rgba(56,189,248,.08);border:1px solid rgba(56,189,248,.2);color:var(--blue3)}
+.td-num{font-family:var(--mono);font-size:12px;color:var(--blue3)}
+.td-crx{font-family:var(--mono);font-size:12px;color:var(--green2)}
+.empty-row td,.loading-row td{text-align:center;padding:28px;color:var(--muted);font-size:12px}
+
+/* TOTAL CRX BOX */
+.total-box{display:flex;justify-content:space-between;align-items:center;padding:16px 20px;background:rgba(34,197,94,.05);border:1px solid rgba(34,197,94,.2);border-radius:10px;margin-top:14px}
+.total-lbl{font-size:13px;color:var(--m2)}
+.total-val{font-family:var(--font);font-size:22px;font-weight:700;color:var(--green2)}
+
+/* AUDIT + PERIOD */
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.info-card{background:var(--s1);border:1px solid var(--b1);border-radius:14px;padding:22px;display:flex;flex-direction:column;gap:12px}
+.info-card.danger{border-color:rgba(239,68,68,.2);background:rgba(239,68,68,.02)}
+.info-row{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.info-lbl{font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.info-val{font-family:var(--mono);font-size:12px;color:var(--text);word-break:break-all;line-height:1.5}
+.warning-tag{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--red2);margin-bottom:8px}
+
+/* BENEFIT STATUS */
+.benefit-badge{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:6px;font-size:11px}
+.benefit-badge.active{background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.2);color:var(--green2)}
+.benefit-badge.inactive{background:rgba(250,204,21,.07);border:1px solid rgba(250,204,21,.2);color:var(--yellow2)}
+select{background:var(--s1);border:1px solid var(--b1);color:var(--text);padding:5px 10px;border-radius:7px;font-size:12px;font-family:var(--fontb);outline:none;cursor:pointer;transition:border-color .15s}
+select:hover{border-color:var(--b2)}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:7px;padding:9px 18px;border-radius:9px;font-family:var(--fontb);font-size:13px;font-weight:500;cursor:pointer;transition:all .15s;border:none}
+.btn-danger{background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.2);color:var(--red2)}
+.btn-danger:hover{background:rgba(239,68,68,.14);box-shadow:0 0 20px rgba(239,68,68,.2)}
+.btn-danger:disabled{opacity:.35;cursor:not-allowed;box-shadow:none}
+.btn-link{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:8px;background:rgba(34,197,94,.07);border:1px solid rgba(34,197,94,.18);color:var(--green2);font-size:13px;font-weight:500;cursor:pointer;transition:all .15s}
+.btn-link:hover{background:rgba(34,197,94,.13)}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.section:nth-child(1){animation-delay:.05s}
+.section:nth-child(2){animation-delay:.1s}
+.section:nth-child(3){animation-delay:.15s}
+.section:nth-child(4){animation-delay:.2s}
+.section:nth-child(5){animation-delay:.25s}
+
+@media(max-width:900px){
+  .spf-stats{grid-template-columns:1fr 1fr}
+  .info-grid{grid-template-columns:1fr}
+  .page{padding:20px 16px 60px}
+  .topbar{padding:0 16px}
+}
+@media(max-width:640px){
+  .spf-stats{grid-template-columns:1fr}
+}
 </style>
 </head>
 <body>
 
-<div id="user-bar" style="
-  position:fixed;
-  top:12px;
-  right:16px;
-  z-index:9999;
-  font-size:12px;
-  color:#e5e7eb;
-  background:rgba(2,6,23,0.85);
-  border:1px solid rgba(148,163,184,0.3);
-  padding:6px 12px;
-  border-radius:999px;
-  display:none;
-">
-  Přihlášen: <span id="user-email"></span>
-  · <a href="#" id="logout" style="color:#4fa3ff;text-decoration:none;">Odhlásit</a>
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="brand">
+    <div class="brand-hex">
+      <svg viewBox="0 0 24 24" fill="none">
+        <path d="M12 2L20 7V12L12 17L4 12V7L12 2Z" stroke="#f59e0b" stroke-width="1.5" stroke-linejoin="round"/>
+        <path d="M12 7L16 10V14L12 17L8 14V10L12 7Z" fill="rgba(245,158,11,0.2)" stroke="#f59e0b" stroke-width="1"/>
+      </svg>
+    </div>
+    <span class="brand-text">AYAS-7</span>
+    <span class="brand-badge">SPF</span>
+  </div>
+  <a href="/admin.html" class="tb-back">← Admin</a>
 </div>
 
+<!-- PAGE -->
 <div class="page">
 
-<div class="card">
-  <div class="kicker">
-    <span class="led led-yellow"></span>
-    Interní rozhodovací vrstva SPF
+  <!-- HEADER -->
+  <div class="page-header section">
+    <div class="page-title">SPF · Síťový provizní fond</div>
+    <div class="page-sub">WIN.WIN Cooperative · Interní rozhodovací vrstva</div>
+    <div class="page-desc">
+      Tato stránka slouží k <strong>internímu rozhodování, evidenci a auditu</strong> rozdělení prostředků SPF a matching bonusů.
+      <strong>Nejedná se o nárokový systém</strong> — žádná zde zobrazená hodnota nezakládá automatické právo na výplatu či plnění.
+    </div>
+    <div style="margin-top:12px">
+      <a href="/crx.html" class="btn-link">💎 Osobní CRX účet člena ↗</a>
+    </div>
   </div>
 
-  <h1>SPF – Síťový provizní fond družstva WIN-WIN</h1>
-  <p>
-    Tato stránka slouží k <b>internímu rozhodování, evidenci a auditu</b>
-    rozdělení prostředků SPF a matching bonusů.
-    <br><br>
-    <b>Nejedná se o nárokový systém</b> a žádná zde zobrazená hodnota
-    nezakládá automatické právo na výplatu či plnění.
-  </p>
-<a href="https://www.ayas7.com/crx.html"
-   target="_blank"
-   style="
-     display:inline-block;
-     margin-top:12px;
-     padding:8px 14px;
-     border:1px solid #22c55e;
-     color:#22c55e;
-     text-decoration:none;
-     border-radius:6px;
-     font-size:13px;
-   ">
-   Osobní CRX účet člena ↗
-</a>
-
-</div>
-
-<div class="card">
-  <div class="kicker">
-    <span class="led led-blue"></span>
-    Kariérní klasifikace a výkonnost
+  <!-- STATS -->
+  <div class="spf-stats">
+    <div class="spf-stat y">
+      <div class="spf-lbl">Celková simulace CRX</div>
+      <div class="spf-val" id="spfTotalCRX">—</div>
+    </div>
+    <div class="spf-stat b">
+      <div class="spf-lbl">Aktivní kariérní statusy</div>
+      <div class="spf-val" id="spfCareerCount">—</div>
+    </div>
+    <div class="spf-stat g">
+      <div class="spf-lbl">Aktivní benefity</div>
+      <div class="spf-val" id="spfBenefitCount">—</div>
+    </div>
   </div>
 
-  <h2>Kariérní statusy a koeficienty CRX</h2>
-  <p>
-    Přehled kariérních úrovní dle <b>Přílohy č. 1 k Proviznímu řádu</b>.
-    Koeficient CRX je aplikován automaticky dle splnění podmínek.
-  </p>
-
-  <table>
-    <thead>
-      <tr>
-        <th>Status</th>
-        <th>Rozsah WW-KEY</th>
-        <th>Koeficient CRX / měsíc</th>
-        <th>Počet členů</th>
-        <th>Simulace CRX</th>
-      </tr>
-    </thead>
-    <tbody id="career-status-table">
-      <tr><td colspan="5">Načítám data…</td></tr>
-    </tbody>
-</table>
-
-<div style="
-margin-top:14px;
-padding:12px 16px;
-border:1px solid rgba(34,197,94,.4);
-border-radius:10px;
-display:flex;
-justify-content:space-between;
-align-items:center;
-background:rgba(34,197,94,.05);
-">
-
-<div style="font-size:13px;color:#9ca3af">
-Celková simulovaná potřeba CRX
-</div>
-
-<div id="spfTotalCRX"
-style="font-size:20px;font-weight:700;color:#22c55e">
-—
-</div>
-
-</div>
-
-<p style="margin-top:10px;font-size:12px;color:#9ca3af">
-Simulace CRX vychází z aktuálního WW-KEY snapshotu a koeficientů dle Přílohy č. 1 k Proviznímu řádu.
-Nejedná se o připsané ani distribuované CRX.
-CRX vzniká výhradně z čistého zisku poolu po uzavření období a rozhodnutí orgánu družstva.
-</p>
-</div>
-
-<div class="card">
-  <div class="kicker">
-  <span class="led led-blue"></span>
-  Kariérní klasifikace a výkonnost
-  <span style="margin-left:8px;font-size:11px;color:#60a5fa">SIMULACE</span>
-</div>
-
-  <h2>Rozhodnutí SPF za období</h2>
-  <p>
-    Tato část slouží k formálnímu schválení nebo zamítnutí
-    návrhu rozdělení prostředků SPF.
-  </p>
-
-  <!-- ⬇️ JEDINÁ ZMĚNA: obal tabulky -->
-  <div class="table-wrapper">
-    <table>
-      <thead>
-        <tr>
-          <th>Období</th>
-          <th>Návrh CRX</th>
-          <th>Stav</th>
-          <th>Akce</th>
-        </tr>
-      </thead>
-      <tbody id="spf-periods">
-        <tr>
-          <td colspan="4">Načítám období…</td>
-        </tr>
-      </tbody>
-    </table>
+  <!-- KARIÉRNÍ STATUSY -->
+  <div class="section">
+    <div class="sec-head">
+      <div class="sec-title">
+        <span class="sec-dot blue"></span>
+        Kariérní klasifikace a koeficienty CRX
+        <span style="font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;padding:2px 8px;border-radius:999px;background:rgba(56,189,248,.08);border:1px solid rgba(56,189,248,.2);color:var(--blue3)">SIMULACE</span>
+      </div>
+      <div class="sec-sub">Dle Přílohy č. 1 k Proviznímu řádu</div>
+    </div>
+    <div class="tbl-wrap">
+      <div class="tbl-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>Status</th>
+              <th>Rozsah WW-Key</th>
+              <th>Koeficient CRX / měsíc</th>
+              <th>Počet členů</th>
+              <th>Simulace CRX</th>
+            </tr>
+          </thead>
+          <tbody id="careerTable">
+            <tr class="loading-row"><td colspan="5">Načítám data…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="total-box">
+      <div class="total-lbl">Celková simulovaná potřeba CRX</div>
+      <div class="total-val" id="totalCrxBox">—</div>
+    </div>
+    <div class="sec-note">
+      Simulace CRX vychází z aktuálního WW-Key snapshotu a koeficientů dle Přílohy č. 1 k Proviznímu řádu.
+      Nejedná se o připsané ani distribuované CRX. CRX vzniká výhradně z čistého zisku poolu po uzavření období a rozhodnutí orgánu družstva.
+    </div>
   </div>
 
-<p style="margin-top:10px;font-size:12px;color:#9ca3af">
-Návrh CRX představuje účetní návrh rozdělení za dané období.
-Distribuce probíhá pouze po schválení orgánem družstva a vytvoření auditního záznamu.
-</p>
-</div>
-
-<div class="card">
-  <div class="kicker">
-    <span class="led led-red"></span>
-    Auditní uzávěrka období
+  <!-- SPF OBDOBÍ -->
+  <div class="section">
+    <div class="sec-head">
+      <div class="sec-title">
+        <span class="sec-dot amber"></span>
+        Rozhodnutí SPF za období
+      </div>
+    </div>
+    <div class="tbl-wrap">
+      <div class="tbl-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>Období</th>
+              <th>CRX v poolu</th>
+              <th>Stav</th>
+              <th>Akce</th>
+            </tr>
+          </thead>
+          <tbody id="periodsTable">
+            <tr class="loading-row"><td colspan="4">Načítám období…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="sec-note">
+      Návrh CRX představuje účetní návrh rozdělení za dané období.
+      Distribuce probíhá pouze po schválení orgánem družstva a vytvoření auditního záznamu.
+    </div>
   </div>
 
-  <h2>Uzávěrka období</h2>
-  <p>
-  Formální uzavření období.
-  Samotné uzavření neznamená automatickou distribuci CRX.
-  Tento krok je <b>auditní a nevratný</b>.
-</p>
-
-  <div id="audit-info">
-    Uzavřeno: — <br>
-    Audit hash: — zatím nevygenerován
+  <!-- AUDIT + PERIOD -->
+  <div class="section">
+    <div class="sec-head">
+      <div class="sec-title">
+        <span class="sec-dot red"></span>
+        Auditní uzávěrka období
+      </div>
+    </div>
+    <div class="info-grid">
+      <div class="info-card">
+        <div>
+          <div class="info-lbl">Poslední uzávěrka</div>
+          <div class="info-val" id="auditDate">—</div>
+        </div>
+        <div>
+          <div class="info-lbl">Audit hash</div>
+          <div class="info-val" id="auditHash" style="color:var(--m2)">— zatím nevygenerován</div>
+        </div>
+      </div>
+      <div class="info-card danger">
+        <div class="warning-tag">⚠️ Nevratná akce</div>
+        <div>
+          <div class="info-lbl">Aktivní období</div>
+          <div class="info-val" id="activePeriodLabel">—</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:4px" id="activePeriodStatus">Stav: —</div>
+        </div>
+        <button class="btn btn-danger" id="closePeriodBtn" onclick="closePeriod()" disabled>
+          Uzavřít aktivní období
+        </button>
+      </div>
+    </div>
   </div>
 
-  <button
-  title="Uzavře aktuálně aktivní SPF období"
-  style="margin-top:12px;color:#ef4444;border:1px solid #ef4444;background:none"
-  onclick="closePeriod()">
-  Uzavřít aktivní období
-</button>
-
-</div>
-
-<div class="card" style="border-color:#22c55e">
-  <div class="kicker">
-    <span class="led led-green"></span>
-    Provozní řízení benefitů
+  <!-- BENEFITY -->
+  <div class="section">
+    <div class="sec-head">
+      <div class="sec-title">
+        <span class="sec-dot green"></span>
+        Řízení dostupnosti členských benefitů
+      </div>
+    </div>
+    <div class="tbl-wrap">
+      <div class="tbl-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>Název</th>
+              <th>Kód</th>
+              <th>CRX</th>
+              <th>Stav</th>
+              <th>Změnit</th>
+            </tr>
+          </thead>
+          <tbody id="benefitsTable">
+            <tr class="loading-row"><td colspan="5">Načítám benefity…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="sec-note">
+      Nejde o výpočet, přidělování ani nárokový systém. Změny jsou auditně dohledatelné.
+    </div>
   </div>
-
-  <h2>Řízení dostupnosti členských benefitů</h2>
-  <p>
-    Tato část slouží k <b>provoznímu řízení dostupnosti benefitů</b>.
-    <br>
-    <b>Nejde o výpočet, přidělování ani nárokový systém.</b>
-    Změny jsou auditně dohledatelné.
-  </p>
-
-  <table>
-    <thead>
-      <tr>
-        <th>Název</th>
-        <th>Kód</th>
-        <th>CRX</th>
-        <th>Stav</th>
-        <th>Akce</th>
-      </tr>
-    </thead>
-    <tbody id="benefitStatusTable">
-      <tr><td colspan="5">Načítám benefity…</td></tr>
-    </tbody>
-  </table>
-</div>
 
 </div>
 
 <script type="module">
-import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
-/* =========================================================
-   SUPABASE – JEDINÁ INSTANCE PRO SPF
-   ========================================================= */
-const supabase = createClient(
-  "https://azfrniqqtetoqploxwgq.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF6ZnJuaXFxdGV0b3FwbG94d2dxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3MzQ1OTYsImV4cCI6MjA4MzMxMDU5Nn0.QchmzNhs8owd6pkjZCk04u6PJoJ2Bhzz7oGV0KFyqdU"
+const sb = createClient(
+  'https://azfrniqqtetoqploxwgq.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF6ZnJuaXFxdGV0b3FwbG94d2dxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3MzQ1OTYsImV4cCI6MjA4MzMxMDU5Nn0.QchmzNhs8owd6pkjZCk04u6PJoJ2Bhzz7oGV0KFyqdU'
 );
-
-window.supabase = supabase;
+window.supabase = sb;
 window.selectedPeriod = null;
 
-/* =========================================================
-   KARIÉRNÍ STATUSY – READ ONLY
-   ========================================================= */
-async function loadCareerStatuses() {
-  const tbody = document.getElementById("career-status-table");
-  if (!tbody) return;
+const $ = id => document.getElementById(id);
 
-  tbody.innerHTML = `
-    <tr>
-      <td colspan="5" style="color:#9ca3af">Načítám data…</td>
-    </tr>
-  `;
+/* ═══ KARIÉRNÍ STATUSY ═══ */
+async function loadCareer() {
+  const tbody = $('careerTable');
+  try {
+    const { data } = await sb.from('v_spf_career_summary')
+      .select('status,wwkey_min,wwkey_max,crx_coef_min,crx_coef_max,member_count,crx_total_min')
+      .order('wwkey_min');
 
-  const { data, error } = await supabase
-    .from("v_spf_career_summary")
-    .select(`
-      status,
-      wwkey_min,
-      wwkey_max,
-      crx_coef_min,
-      crx_coef_max,
-      member_count,
-      crx_total_min
-    `)
-    .order("wwkey_min");
+    if (!data?.length) { tbody.innerHTML = '<tr class="empty-row"><td colspan="5">Žádná data</td></tr>'; return; }
 
-  if (error) {
-    console.error("❌ Chyba kariér:", error);
-    tbody.innerHTML = `
-      <tr>
-        <td colspan="5" style="color:#ef4444">Chyba načtení dat</td>
-      </tr>
-    `;
-    return;
-  }
+    let total = 0;
+    tbody.innerHTML = data.map(r => {
+      total += Number(r.crx_total_min || 0);
+      const ww = r.wwkey_max
+        ? `${Number(r.wwkey_min).toLocaleString('cs-CZ')} – ${Number(r.wwkey_max).toLocaleString('cs-CZ')}`
+        : `${Number(r.wwkey_min).toLocaleString('cs-CZ')}+`;
+      return `<tr>
+        <td><strong>${r.status}</strong></td>
+        <td class="td-num">${ww}</td>
+        <td class="td-num">${r.crx_coef_min} – ${r.crx_coef_max}</td>
+        <td>${r.member_count}</td>
+        <td class="td-crx">${Number(r.crx_total_min).toLocaleString('cs-CZ')}</td>
+      </tr>`;
+    }).join('');
 
-  if (!data || !data.length) {
-    tbody.innerHTML = `
-      <tr>
-        <td colspan="5" style="color:#9ca3af">Žádná data</td>
-      </tr>
-    `;
-    return;
-  }
-tbody.innerHTML = "";
-
-let totalCRX = 0;
-
-data.forEach(r => {
-
-  totalCRX += Number(r.crx_total_min || 0);
-
-  const ww = r.wwkey_max
-    ? `${r.wwkey_min.toLocaleString("cs-CZ")} – ${r.wwkey_max.toLocaleString("cs-CZ")}`
-    : `${r.wwkey_min.toLocaleString("cs-CZ")}+`;
-
-  tbody.insertAdjacentHTML("beforeend", `
-    <tr>
-      <td><strong>${r.status}</strong></td>
-      <td>${ww}</td>
-      <td>${r.crx_coef_min} – ${r.crx_coef_max}</td>
-      <td>${r.member_count}</td>
-      <td>${Number(r.crx_total_min).toLocaleString("cs-CZ")}</td>
-    </tr>
-  `);
-
-});
-
-const totalEl = document.getElementById("spfTotalCRX");
-
-if(totalEl){
-  totalEl.innerText =
-    totalCRX.toLocaleString("cs-CZ",{minimumFractionDigits:2}) + " CRX";
-}
-
-}
-
-/* =========================================================
-   SPF OBDOBÍ – NAČTENÍ (VOLITELNÉ)
-   ========================================================= */
-async function loadSPFPeriods() {
-  const tbody = document.getElementById("spf-periods");
-  if (!tbody) return;
-
-  tbody.innerHTML = `
-    <tr>
-      <td colspan="4" style="color:#9ca3af">Načítám období…</td>
-    </tr>
-  `;
-
-  /* 1️⃣ Načteme období */
-  const { data: periods, error: periodError } = await supabase
-    .from("spf_periods_ui")
-    .select("id, period, status")
-    .order("period", { ascending: false });
-
-  if (periodError || !periods) {
-    tbody.innerHTML = `
-      <tr>
-        <td colspan="4" style="color:#ef4444">Chyba načtení období</td>
-      </tr>
-    `;
-    return;
-  }
-
-  /* 2️⃣ Načteme CRX z poolu */
-  const { data: crxTotals } = await supabase
-    .from("crx_period_totals")
-    .select("period, total_crx");
-
-  const crxMap = {};
-  if (crxTotals) {
-    crxTotals.forEach(r => {
-      crxMap[r.period] = Number(r.total_crx || 0);
-    });
-  }
-
-  tbody.innerHTML = "";
-
-  periods.forEach(r => {
-    const crxValue = crxMap[r.period] ?? 0;
-
-    tbody.insertAdjacentHTML("beforeend", `
-      <tr>
-        <td>${r.period}</td>
-        <td style="text-align:right">
-          ${crxValue.toLocaleString("cs-CZ", { minimumFractionDigits: 2 })}
-        </td>
-        <td>${r.status}</td>
-        <td>—</td>
-      </tr>
-    `);
-  });
-
-  /* 3️⃣ Aktivní období */
-  const active = periods.find(p =>
-    p.status === "draft" || p.status === "approved"
-  );
-
-  if (active) {
-    window.selectedPeriod = active.period;
+    const fmt = total.toLocaleString('cs-CZ', {minimumFractionDigits:2}) + ' CRX';
+    $('spfTotalCRX').textContent = fmt;
+    $('totalCrxBox').textContent = fmt;
+    $('spfCareerCount').textContent = data.length;
+  } catch(e) {
+    tbody.innerHTML = `<tr class="empty-row"><td colspan="5">Chyba: ${e.message}</td></tr>`;
   }
 }
 
-/* =========================================================
-   AUDITNÍ UZÁVĚRKA
-   ========================================================= */
-window.closePeriod = async () => {
-  if (!window.selectedPeriod) {
-    alert("Žádné aktivní období (draft) není k dispozici.");
-    return;
-  }
+/* ═══ OBDOBÍ ═══ */
+async function loadPeriods() {
+  const tbody = $('periodsTable');
+  try {
+    const [{ data: periods }, { data: crxTotals }] = await Promise.all([
+      sb.from('spf_periods_ui').select('id,period,status').order('period',{ascending:false}),
+      sb.from('crx_period_totals').select('period,total_crx')
+    ]);
 
-  if (!confirm("Uzávěrka je auditní a nevratná.\nPokračovat?")) return;
+    const crxMap = {};
+    crxTotals?.forEach(r => { crxMap[r.period] = Number(r.total_crx||0); });
 
-  const res = await fetch(
-    "https://azfrniqqtetoqploxwgq.supabase.co/functions/v1/close-period",
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "apikey": supabase?.supabaseKey ?? "",
-        "Authorization": `Bearer ${supabase?.supabaseKey ?? ""}`
-      },
-      body: JSON.stringify({ period: window.selectedPeriod })
+    if (!periods?.length) { tbody.innerHTML = '<tr class="empty-row"><td colspan="4">Žádná období</td></tr>'; return; }
+
+    tbody.innerHTML = periods.map(r => {
+      const crx = crxMap[r.period] ?? 0;
+      const st = r.status;
+      const cls = st === 'draft' ? 'draft' : st === 'approved' ? 'approved' : st === 'closed' ? 'closed' : 'active';
+      return `<tr>
+        <td><strong>${r.period}</strong></td>
+        <td class="td-crx">${crx.toLocaleString('cs-CZ',{minimumFractionDigits:2})}</td>
+        <td><span class="td-status ${cls}">${st}</span></td>
+        <td style="color:var(--muted);font-size:12px">—</td>
+      </tr>`;
+    }).join('');
+
+    const active = periods.find(p => p.status === 'draft' || p.status === 'approved');
+    if (active) {
+      window.selectedPeriod = active.period;
+      $('activePeriodLabel').textContent = active.period;
+      $('activePeriodStatus').textContent = 'Stav: ' + active.status;
+      const btn = $('closePeriodBtn');
+      if (active.status === 'draft') { btn.disabled = false; }
+      else { btn.disabled = true; btn.textContent = 'Období uzavřeno'; }
+      window.__PERIOD_ID__ = active.id;
     }
-  );
-
-  if (!res.ok) {
-    alert("Uzávěrka selhala.");
-    return;
+  } catch(e) {
+    tbody.innerHTML = `<tr class="empty-row"><td colspan="4">Chyba: ${e.message}</td></tr>`;
   }
-
-  alert("Období bylo auditně uzavřeno.");
-  await loadSPFPeriods();
-};
-
-/* =========================================================
-   INIT – STABILNÍ
-   ========================================================= */
-document.addEventListener("DOMContentLoaded", () => {
-  loadCareerStatuses();      // ✅ vždy
-  loadSPFPeriods();          // ✅ jen když existuje tabulka
-});
-</script>
-
-
-<script type="module">
-/* =========================================================
-   BENEFITY – PROVOZNÍ MODUL (NE SPF)
-   ========================================================= */
-
-const supabase = window.supabase;
-if (!supabase) {
-  console.error("❌ Supabase není dostupná pro benefit modul");
 }
 
-/* =========================
-   NAČTENÍ BENEFITŮ
-========================= */
-async function loadBenefitStates() {
-  const tbody = document.getElementById("benefitStatusTable");
-  if (!tbody) return;
+/* ═══ AUDIT ═══ */
+async function loadAudit() {
+  try {
+    const { data } = await sb.from('v_admin_last_audit').select('*').single();
+    if (data) {
+      $('auditDate').textContent = data.closed_at ? new Date(data.closed_at).toLocaleString('cs-CZ') : '—';
+      $('auditHash').textContent = data.audit_hash || '— zatím nevygenerován';
+    }
+  } catch(e) {}
+}
 
-  tbody.innerHTML = `
-    <tr>
-      <td colspan="5" style="color:#9ca3af">
-        Načítám benefity…
+/* ═══ BENEFITY ═══ */
+async function loadBenefits() {
+  const tbody = $('benefitsTable');
+  try {
+    const { data } = await sb.from('benefits').select('id,name,code,crx_cost,is_active').order('name');
+    if (!data?.length) { tbody.innerHTML = '<tr class="empty-row"><td colspan="5">Žádné benefity</td></tr>'; return; }
+
+    $('spfBenefitCount').textContent = data.filter(b => b.is_active).length;
+
+    tbody.innerHTML = data.map(b => `<tr>
+      <td><strong>${b.name}</strong></td>
+      <td><span style="font-family:var(--mono);font-size:11px;color:var(--m2)">${b.code}</span></td>
+      <td class="td-num">${b.crx_cost ?? '—'}</td>
+      <td><span class="benefit-badge ${b.is_active ? 'active' : 'inactive'}">${b.is_active ? '● aktivní' : '○ připravuje se'}</span></td>
+      <td>
+        <select onchange="updateBenefit('${b.id}', this.value)">
+          <option value="">— změnit —</option>
+          <option value="true">Aktivní</option>
+          <option value="false">Připravuje se</option>
+        </select>
       </td>
-    </tr>
-  `;
-
-  const { data, error } = await supabase
-    .from("benefits")
-    .select("id, name, code, crx_cost, is_active")
-    .order("name");
-
-  if (error) {
-    console.error("❌ Chyba načtení benefitů:", error);
-    tbody.innerHTML = `
-      <tr>
-        <td colspan="5" style="color:#ef4444">
-          Chyba načtení benefitů
-        </td>
-      </tr>
-    `;
-    return;
+    </tr>`).join('');
+  } catch(e) {
+    tbody.innerHTML = `<tr class="empty-row"><td colspan="5">Chyba: ${e.message}</td></tr>`;
   }
-
-  if (!data || !data.length) {
-    tbody.innerHTML = `
-      <tr>
-        <td colspan="5" style="color:#9ca3af">
-          Žádné benefity
-        </td>
-      </tr>
-    `;
-    return;
-  }
-
-  tbody.innerHTML = "";
-
-  data.forEach(b => {
-    const statusLabel = b.is_active
-      ? `<span style="color:#22c55e">🟢 aktivní</span>`
-      : `<span style="color:#facc15">🟡 připravuje se</span>`;
-
-    tbody.insertAdjacentHTML("beforeend", `
-      <tr>
-        <td>${b.name}</td>
-        <td><code>${b.code}</code></td>
-        <td>${b.crx_cost ?? "—"}</td>
-        <td>${statusLabel}</td>
-        <td>
-          <select onchange="updateBenefitStatus('${b.id}', this.value)">
-            <option value="">— změnit —</option>
-            <option value="true">Aktivní</option>
-            <option value="false">Připravuje se</option>
-          </select>
-        </td>
-      </tr>
-    `);
-  });
 }
 
-/* =========================
-   ZMĚNA STAVU BENEFITU
-========================= */
-window.updateBenefitStatus = async (id, value) => {
-  if (!value) return;
-
-  const isActive = value === "true";
-
-  if (!confirm("Změnit dostupnost benefitu?")) return;
-
-  const { error } = await supabase
-    .from("benefits")
-    .update({ is_active: isActive })
-    .eq("id", id);
-
-  if (error) {
-    alert("Chyba při změně benefitu");
-    console.error(error);
-    return;
-  }
-
-  loadBenefitStates();
+/* ═══ AKCE ═══ */
+window.closePeriod = async () => {
+  if (!window.selectedPeriod) { alert('Žádné aktivní období (draft) není k dispozici.'); return; }
+  if (!confirm('Uzávěrka je auditní a nevratná.\nPokračovat?')) return;
+  try {
+    const res = await fetch('https://azfrniqqtetoqploxwgq.supabase.co/functions/v1/close-period', {
+      method:'POST',
+      headers:{'Content-Type':'application/json','apikey':sb.supabaseKey,'Authorization':'Bearer '+sb.supabaseKey},
+      body:JSON.stringify({period: window.__PERIOD_ID__})
+    });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    alert('Období bylo auditně uzavřeno.');
+    await loadPeriods();
+  } catch(e) { alert('Chyba: ' + e.message); }
 };
 
-/* =========================
-   INIT BENEFIT MODULU
-========================= */
-document.addEventListener("DOMContentLoaded", () => {
-  loadBenefitStates();
+window.updateBenefit = async (id, value) => {
+  if (!value) return;
+  if (!confirm('Změnit dostupnost benefitu?')) return;
+  const { error } = await sb.from('benefits').update({is_active: value === 'true'}).eq('id', id);
+  if (error) { alert('Chyba při změně benefitu'); return; }
+  await loadBenefits();
+};
+
+/* ═══ INIT ═══ */
+document.addEventListener('DOMContentLoaded', () => {
+  loadCareer();
+  loadPeriods();
+  loadAudit();
+  loadBenefits();
 });
-
-
 </script>
-
-
-
 </body>
 </html>
