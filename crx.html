@@ -501,17 +501,17 @@ async function renderMember(userId, isAdmin) {
       .limit(1)
       .maybeSingle();
 
-    /* 5. CRX history */
+    /* 5. CRX history — view v_member_crx_history */
     const { data: history } = await sb
-      .from('crx_history')
+      .from('v_member_crx_history')
       .select('crx_amount, created_at')
       .eq('member_id', md.id)
       .order('created_at', { ascending: true })
       .limit(60);
 
-    /* 6. System stats */
+    /* 6. System stats - celkovy WW-Key ze vsech member_accounts */
     const { data: wwTotalData } = await sb
-      .from('member_wwkey_balances')
+      .from('member_accounts')
       .select('ww_key_balance');
 
     const { count: totalMembers } = await sb
