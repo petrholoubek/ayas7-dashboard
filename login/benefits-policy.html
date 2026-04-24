@@ -1,711 +1,374 @@
 <!DOCTYPE html>
 <html lang="cs">
 <head>
-<meta charset="UTF-8">
-<title>Politika členských benefitů · WIN.WIN</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+<meta charset="UTF-8"/>
+<title>Politika benefitů · WIN.WIN</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<link rel="icon" type="image/png" sizes="192x192" href="/ayas7-192.png">
+<link rel="apple-touch-icon" href="/ayas7-192.png">
+<meta name="theme-color" content="#020917">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-:root{
-  --bg-main:#020617;
-  --bg-card:#0b1120;
-  --border-soft:rgba(148,163,184,0.25);
-  --text-main:#e5e7eb;
-  --text-muted:#9ca3af;
-
-  --green:#22c55e;
-  --blue:#4fa3ff;
-  --purple:#a78bfa;
-  --amber:#facc15;
+:root {
+  --bg:    #020917;
+  --card:  rgba(6,14,31,0.92);
+  --b1:    rgba(56,189,248,0.1);
+  --b2:    rgba(56,189,248,0.22);
+  --blue:  #38bdf8;
+  --blue2: #0ea5e9;
+  --blue3: #7dd3fc;
+  --green: #22c55e;
+  --white: #f8fafc;
+  --text:  #e2e8f0;
+  --muted: #475569;
+  --m2:    #94a3b8;
+  --purple:#818cf8;
+  --amber: #f59e0b;
+  --font:  'Space Grotesk', sans-serif;
+  --fontb: 'DM Sans', sans-serif;
 }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{min-height:100%;font-family:var(--fontb);background:var(--bg);color:var(--text);overflow-x:hidden;-webkit-font-smoothing:antialiased}
+a{text-decoration:none;color:inherit}
 
-*{box-sizing:border-box;margin:0;padding:0}
-
-html,body{
-  background:radial-gradient(circle at 40% 0%, #0f172a 0%, #020617 60%, #000 100%);
-  color:var(--text-main);
-  font-family:"Segoe UI",Tahoma,Geneva,Verdana,sans-serif;
+/* ═══ TOPBAR ═══ */
+.topbar{
+  position:sticky;top:0;z-index:200;height:54px;
+  display:flex;align-items:center;justify-content:space-between;padding:0 28px;
+  background:rgba(2,9,23,0.85);backdrop-filter:blur(24px);
+  border-bottom:1px solid var(--b1);
 }
+.brand{display:flex;align-items:center;gap:10px}
+.brand-logo{width:30px;height:30px;border-radius:7px;flex-shrink:0;background:linear-gradient(135deg,rgba(56,189,248,0.15),rgba(56,189,248,0.04));border:1px solid var(--b2);display:flex;align-items:center;justify-content:center}
+.brand-logo svg{width:16px;height:16px}
+.brand-name{font-family:var(--font);font-size:14px;font-weight:700;letter-spacing:-0.01em;color:var(--white)}
+.brand-sub{font-size:8px;letter-spacing:0.2em;text-transform:uppercase;color:var(--m2);display:block}
+nav{display:flex;gap:2px}
+nav a{padding:5px 13px;border-radius:8px;font-family:var(--fontb);font-size:13px;font-weight:500;color:var(--m2);transition:all .15s}
+nav a:hover{color:var(--text);background:rgba(255,255,255,.06)}
+.back-btn{display:inline-flex;align-items:center;gap:7px;padding:6px 14px;border-radius:8px;background:rgba(255,255,255,.05);border:1px solid var(--b1);color:var(--m2);font-family:var(--fontb);font-size:13px;transition:all .15s;flex-shrink:0}
+.back-btn:hover{color:var(--text);border-color:var(--b2)}
 
-.page{
-  max-width:1200px;
-  margin:0 auto;
-  padding:40px 16px 80px;
+/* LED */
+.led{display:inline-block;border-radius:50%;flex-shrink:0;animation:lp 2.4s ease-in-out infinite}
+.led-g {width:7px;height:7px;background:var(--green); box-shadow:0 0 0 2px rgba(34,197,94,.2),0 0 10px rgba(34,197,94,.8)}
+.led-b {width:7px;height:7px;background:var(--blue);  box-shadow:0 0 0 2px rgba(56,189,248,.2),0 0 10px rgba(56,189,248,.8)}
+.led-p {width:7px;height:7px;background:var(--purple);box-shadow:0 0 0 2px rgba(129,140,248,.2),0 0 10px rgba(129,140,248,.8)}
+.led-a {width:7px;height:7px;background:var(--amber); box-shadow:0 0 0 2px rgba(245,158,11,.2),0 0 10px rgba(245,158,11,.8)}
+.led-sg{width:5px;height:5px;background:var(--green); box-shadow:0 0 0 1px rgba(34,197,94,.2),0 0 7px rgba(34,197,94,.8)}
+.led-sb{width:5px;height:5px;background:var(--blue);  box-shadow:0 0 0 1px rgba(56,189,248,.2),0 0 7px rgba(56,189,248,.8)}
+@keyframes lp{0%,100%{opacity:1}50%{opacity:.5}}
+
+/* ═══ PAGE ═══ */
+.page{max-width:960px;margin:0 auto;padding:40px 22px 80px}
+
+/* NOTICE */
+.notice{display:flex;gap:12px;align-items:flex-start;padding:14px 16px;border-radius:12px;margin-bottom:28px;background:rgba(245,158,11,.07);border:1px solid rgba(245,158,11,.22);font-family:var(--fontb);font-size:13px;color:#fde68a;line-height:1.6}
+
+/* ═══ CARD ═══ */
+.card{background:var(--card);border:1px solid var(--b1);border-radius:16px;padding:24px 22px;margin-bottom:18px;position:relative;overflow:hidden}
+.card::before{content:'';position:absolute;top:0;left:8%;right:8%;height:1px;background:linear-gradient(90deg,transparent,var(--b2),transparent);opacity:.5}
+.card.green::before{background:linear-gradient(90deg,transparent,rgba(34,197,94,.45),transparent)}
+.card.purple::before{background:linear-gradient(90deg,transparent,rgba(129,140,248,.45),transparent)}
+.card.amber::before{background:linear-gradient(90deg,transparent,rgba(245,158,11,.45),transparent)}
+
+.card-kicker{display:inline-flex;align-items:center;gap:7px;font-family:var(--fontb);font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--m2);margin-bottom:10px}
+.card-title{font-family:var(--font);font-size:20px;font-weight:700;color:var(--white);margin-bottom:8px;letter-spacing:-.01em}
+.card-text{font-family:var(--fontb);font-size:14px;color:var(--m2);line-height:1.65;margin-bottom:10px}
+.card-list{padding-left:16px;margin-top:6px}
+.card-list li{font-family:var(--fontb);font-size:13px;color:var(--m2);line-height:1.75}
+.card-list li b{color:var(--text);font-weight:500}
+.card-note{font-family:var(--fontb);font-size:12px;color:var(--muted);margin-top:14px;padding:11px 14px;background:rgba(255,255,255,.02);border:1px solid var(--b1);border-radius:9px;line-height:1.6}
+
+/* PAGE HEADER */
+.page-header{margin-bottom:28px}
+.page-kicker{display:inline-flex;align-items:center;gap:7px;font-family:var(--fontb);font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--m2);margin-bottom:12px}
+.page-title{font-family:var(--font);font-size:clamp(24px,4vw,36px);font-weight:700;letter-spacing:-.02em;color:var(--white);margin-bottom:10px;line-height:1.1}
+.page-title span{color:var(--blue3)}
+.page-sub{font-family:var(--fontb);font-size:14px;color:var(--m2);line-height:1.65;max-width:640px}
+
+/* GRID */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:18px}
+
+/* BENEFIT DISTRIBUTION */
+.distrib-wrap{display:grid;grid-template-columns:1.1fr 0.9fr;gap:24px;margin-top:18px}
+.distrib-label{font-family:var(--font);font-size:14px;font-weight:600;color:var(--white);margin-bottom:12px}
+
+/* BAR CHART */
+.bar-chart{display:flex;align-items:flex-end;gap:12px;height:180px;padding:14px 12px 0;background:rgba(255,255,255,.02);border:1px solid var(--b1);border-radius:12px;margin-bottom:10px;position:relative}
+.bar-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:8px;font-family:var(--fontb);font-size:11px;color:var(--muted);text-align:center}
+.bar{width:100%;border-radius:6px 6px 3px 3px;min-height:6px;height:0;transition:height 1s cubic-bezier(.25,.46,.45,.94);position:relative;cursor:default}
+.bar::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 7px);left:50%;transform:translateX(-50%);background:rgba(2,9,23,.95);color:var(--text);font-family:var(--fontb);font-size:11px;padding:5px 10px;border-radius:7px;border:1px solid var(--b1);white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .2s}
+.bar:hover::after{opacity:1}
+.bar:hover{filter:brightness(1.2)}
+.bar.b{background:linear-gradient(180deg,var(--blue2),rgba(14,165,233,.4));box-shadow:0 0 16px rgba(56,189,248,.3)}
+.bar.g{background:linear-gradient(180deg,var(--green),rgba(34,197,94,.4));box-shadow:0 0 16px rgba(34,197,94,.3)}
+.bar.p{background:linear-gradient(180deg,var(--purple),rgba(129,140,248,.4));box-shadow:0 0 16px rgba(129,140,248,.3)}
+.bar.a{background:linear-gradient(180deg,var(--amber),rgba(245,158,11,.4));box-shadow:0 0 16px rgba(245,158,11,.3)}
+.chart-note{font-family:var(--fontb);font-size:11px;color:var(--muted);line-height:1.6}
+
+/* LOGIC LIST */
+.logic-list{list-style:none;padding:0;margin-top:12px}
+.logic-list li{margin-bottom:10px;padding:10px 14px;border-left:2px solid rgba(34,197,94,.5);background:rgba(34,197,94,.03);border-radius:0 8px 8px 0;font-family:var(--fontb);font-size:13px;line-height:1.55;color:var(--m2)}
+.logic-list li b{color:var(--text);font-weight:500}
+.logic-footer{margin-top:14px;padding:12px 14px;font-family:var(--fontb);font-size:12px;background:rgba(56,189,248,.04);border:1px solid var(--b1);border-radius:9px;color:var(--m2);line-height:1.6}
+
+/* TABLE */
+.table-wrap{border:1px solid var(--b1);border-radius:12px;overflow-x:auto;margin:16px 0}
+table{width:100%;border-collapse:collapse;min-width:360px}
+thead tr{background:rgba(255,255,255,.03)}
+th{padding:10px 14px;text-align:left;font-family:var(--fontb);font-size:9px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--b1);white-space:nowrap}
+td{padding:10px 14px;font-family:var(--fontb);font-size:13px;border-bottom:1px solid rgba(255,255,255,.04)}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover td{background:rgba(255,255,255,.02)}
+td:last-child{font-family:var(--font);font-weight:700;color:var(--amber)}
+
+/* FOOTER */
+.foot{border-top:1px solid var(--b1);margin-top:40px;padding:18px;text-align:center;font-family:var(--fontb);font-size:13px;color:var(--m2);font-style:italic}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+  .grid2{grid-template-columns:1fr}
+  .distrib-wrap{grid-template-columns:1fr}
+  nav{display:none}
 }
-
-/* ===== COMMON ===== */
-.section{
-  margin-bottom:32px;
+@media(max-width:640px){
+  .topbar{padding:0 14px;height:50px}
+  .brand-sub{display:none}
+  .page{padding:24px 14px 60px}
+  .page-title{font-size:22px}
+  .card{padding:18px 14px}
+  .bar-chart{height:140px;gap:8px}
+  th,td{padding:8px 10px;font-size:12px}
 }
-
-.card{
-  background:radial-gradient(circle at top left,#0b1120,#020617 75%);
-  border:1px solid var(--border-soft);
-  border-radius:20px;
-  padding:22px 22px 20px;
-  box-shadow:0 24px 60px rgba(15,23,42,0.9);
-}
-
-.kicker{
-  display:flex;
-  align-items:center;
-  gap:8px;
-  font-size:12px;
-  letter-spacing:.14em;
-  text-transform:uppercase;
-  color:var(--text-muted);
-  margin-bottom:6px;
-}
-
-.dot{
-  width:8px;
-  height:8px;
-  border-radius:999px;
-  background: currentColor;
-
-  /* jasné jádro */
-  box-shadow:
-    0 0 2px rgba(255,255,255,0.9),
-    0 0 6px currentColor,
-    0 0 14px currentColor,
-    0 0 28px rgba(0,0,0,0);
-@keyframes glow {
-  0%   { opacity: .7; }
-  50%  { opacity: 1; }
-  100% { opacity: .7; }
-}
-
-.dot{
-  animation: glow 2.2s ease-in-out infinite;
-}
-
-
-  /* optický kontrast na tmě */
-  filter: brightness(1.25);
-}
-
-h1{
-  font-size:28px;
-  font-weight:700;
-  margin-bottom:10px;
-}
-
-h2{
-  font-size:20px;
-  font-weight:600;
-  margin-bottom:8px;
-}
-
-p{
-  font-size:14px;
-  line-height:1.65;
-  color:var(--text-muted);
-}
-
-ul{
-  margin-top:10px;
-  padding-left:18px;
-  font-size:13px;
-  color:var(--text-muted);
-}
-
-li{margin-bottom:4px}
-
-/* ===== NOTICE ===== */
-.notice{
-  display:flex;
-  gap:10px;
-  padding:14px 16px;
-  border-left:4px solid var(--amber);
-  background:linear-gradient(to right,rgba(250,204,21,0.12),transparent);
-  font-size:13px;
-  margin-bottom:28px;
-}
-
-/* ===== GRID ===== */
-.grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:22px;
-}
-
-@media(max-width:900px){
-  .grid{grid-template-columns:1fr}
-}
-
-/* ===== COLORS ===== */
-.green{color:var(--green)}
-.blue{color:var(--blue)}
-.purple{color:var(--purple)}
-/* ===== BENEFIT GRID ===== */
-.benefit-grid{
-  display:grid;
-  grid-template-columns:1.1fr 0.9fr;
-  gap:24px;
-  margin-top:18px;
-}
-
-@media(max-width:900px){
-  .benefit-grid{
-    grid-template-columns:1fr;
-  }
-}
-
-/* ===== GRAPH ===== */
-.benefit-graph h3,
-.benefit-logic h3{
-  font-size:17px;
-  margin:6px 0 10px;
-}
-
-.bar-chart{
-  display:flex;
-  align-items:flex-end;
-  gap:16px;
-  height:220px;
-  margin:16px 0 10px;
-  padding:12px 10px;
-  border-radius:14px;
-  background:rgba(15,23,42,0.6);
-  border:1px solid rgba(148,163,184,0.15);
- position: relative;
-}
-
-.bar-item{
-  flex:1;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  gap:6px;
-  font-size:12px;
-  color:var(--text-muted);
-}
-
-.bar{
-  width:100%;
-  border-radius:8px 8px 4px 4px;
-  box-shadow:0 0 18px currentColor;
-  transition:height .6s ease;
- min-height: 8px;
-}
-
-.bar.blue{background:#4fa3ff;}
-.bar.green{background:#22c55e;}
-.bar.purple{background:#a78bfa;}
-.bar.amber{background:#facc15;}
-
-.graph-note{
-  font-size:12px;
-  color:var(--text-muted);
-}
-
-.bar{
-  transition:
-    height 1s ease,
-    filter .2s ease,
-    box-shadow .2s ease;
-}
-
-.bar:hover{
-  filter: brightness(1.25);
-  box-shadow:
-    0 0 12px currentColor,
-    0 0 28px currentColor;
-}
-
-/* ===== LOGIC ===== */
-.logic-list{
-  list-style:none;
-  padding:0;
-  margin-top:12px;
-}
-
-.logic-list li{
-  margin-bottom:10px;
-  padding-left:14px;
-  border-left:2px solid rgba(34,197,94,0.6);
-  font-size:13px;
-  line-height:1.55;
-}
-
-.logic-footer{
-  margin-top:14px;
-  padding:10px 12px;
-  font-size:12px;
-  border-radius:12px;
-  background:linear-gradient(
-    to right,
-    rgba(34,197,94,0.12),
-    rgba(79,163,255,0.05)
-  );
-  border:1px solid rgba(148,163,184,0.18);
-}
-.bar[data-tip]{
-  position: relative;
-}
-
-.bar[data-tip]::after{
-  content: attr(data-tip);
-  position: absolute;
-  bottom: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  background: rgba(2,6,23,.95);
-  color:#e5e7eb;
-  font-size:11px;
-  padding:6px 10px;
-  border-radius:8px;
-  border:1px solid rgba(148,163,184,.3);
-  white-space:nowrap;
-  opacity:0;
-  pointer-events:none;
-  transition:opacity .2s ease;
-  margin-bottom:8px;
-}
-
-.bar:hover::after{
-  opacity:1;
-}
-
-/* ===== MEMBERS TABLE (UNIFIED STYLE) ===== */
-.members-table-wrap{
-  width:100%;
-  overflow:hidden;
-  border-radius:14px;
-  border:1px solid rgba(148,163,184,0.22);
-  background:rgba(15,23,42,0.65);
-}
-
-.members-table{
-  width:100%;
-  border-collapse:collapse;
-  font-size:14px;
-}
-
-.members-table thead th{
-  text-align:left;
-  padding:14px 16px;
-  background:rgba(30,41,59,0.9);
-  color:#e5e7eb;
-  font-weight:600;
-  border-bottom:1px solid rgba(148,163,184,0.25);
-}
-
-.members-table tbody tr{
-  background:rgba(2,6,23,0.55);
-  transition:background .2s ease;
-}
-
-.members-table tbody tr:nth-child(even){
-  background:rgba(15,23,42,0.65);
-}
-
-.members-table tbody tr:hover{
-  background:rgba(79,163,255,0.12);
-}
-
-.members-table td{
-  padding:13px 16px;
-  border-bottom:1px solid rgba(148,163,184,0.15);
-  color:#e5e7eb;
-  vertical-align:middle;
-}
-
-.members-table td:last-child{
-  font-weight:600;
-  color:#facc15;
-}
-
 </style>
 </head>
-
 <body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <a href="/login/member.html" class="brand">
+    <div class="brand-logo">
+      <svg viewBox="0 0 24 24" fill="none">
+        <path d="M12 2L20 7V12L12 17L4 12V7L12 2Z" stroke="#38bdf8" stroke-width="1.5" stroke-linejoin="round"/>
+        <path d="M12 7L16 10V14L12 17L8 14V10L12 7Z" fill="rgba(56,189,248,0.2)" stroke="#38bdf8" stroke-width="1"/>
+      </svg>
+    </div>
+    <div>
+      <span class="brand-name">WIN.WIN</span>
+      <span class="brand-sub">Cooperative</span>
+    </div>
+  </a>
+  <nav>
+    <a href="/login/member.html">Dashboard</a>
+    <a href="/login/benefits.html">Benefity</a>
+    <a href="/login/affiliate.html">Síť</a>
+    <a href="/login/support.html">Podpora</a>
+  </nav>
+  <a href="/login/benefits.html" class="back-btn">← Zpět na benefity</a>
+</div>
 
 <div class="page">
 
-<!-- ================================================= -->
-<!-- HEADER -->
-<!-- ================================================= -->
-<section class="section">
-  <div class="kicker">
-    <span class="dot green"></span>
-    Politika benefitů · WIN.WIN
+  <!-- HEADER -->
+  <div class="page-header">
+    <div class="page-kicker"><span class="led led-sg"></span>Politika benefitů · WIN.WIN Cooperative</div>
+    <div class="page-title">Jak fungují <span>členské benefity</span></div>
+    <div class="page-sub">Interní systém rozdělování benefitů v rámci družstva WIN.WIN, řízený analytickým systémem <strong style="color:var(--blue3)">AYAS-7</strong>. Uvedené mechanismy mají evidenční, motivační a provozní charakter.</div>
   </div>
-  <h1>Jak fungují členské benefity ve WIN.WIN</h1>
-  <p>
-    Tato stránka popisuje <b>interní systém rozdělování členských benefitů</b>
-    v rámci družstva WIN.WIN, řízený analytickým a kontrolním systémem <b>AYAS-7</b>.
-    Uvedené mechanismy mají <b>evidenční, motivační a provozní charakter</b>.
-  </p>
-</section>
 
-<div class="notice">
-  ⚠️ Tento obsah slouží výhradně jako interní popis fungování družstva.
-  Nejedná se o veřejnou nabídku investic, cenných papírů ani finančních produktů.
-</div>
-
-<!-- ================================================= -->
-<!-- FILOZOFIE -->
-<!-- ================================================= -->
-<section class="section card">
-  <div class="kicker">
-    <span class="dot green"></span>
-    Filozofie družstva
+  <!-- NOTICE -->
+  <div class="notice">
+    <span style="font-size:18px;flex-shrink:0">⚠️</span>
+    <span>Tento obsah slouží výhradně jako interní popis fungování družstva. Nejedná se o veřejnou nabídku investic, cenných papírů ani finančních produktů.</span>
   </div>
-  <h2>Proč WIN.WIN pracuje s benefity</h2>
-  <p>
-    Družstvo WIN.WIN nestaví svůj model na výnosech ani slibech zhodnocení.
-    Základním principem je <b>dlouhodobé, stabilní a transparentní členství</b>.
-  </p>
-  <ul>
-    <li>benefity nejsou finanční nároky</li>
-    <li>benefity nejsou investiční produkty</li>
-    <li>benefity podporují aktivní účast a stabilitu systému</li>
-  </ul>
-</section>
 
-<!-- ================================================= -->
-<!-- WW-KEY -->
-<!-- ================================================= -->
-<section class="section card">
-  <div class="kicker">
-    <span class="dot blue"></span>
-    Základní klíč systému
+  <!-- FILOZOFIE -->
+  <div class="card green">
+    <div class="card-kicker"><span class="led led-sg"></span>Filozofie družstva</div>
+    <div class="card-title">Proč WIN.WIN pracuje s benefity</div>
+    <div class="card-text">Družstvo WIN.WIN nestaví svůj model na výnosech ani slibech zhodnocení. Základním principem je <strong style="color:var(--white)">dlouhodobé, stabilní a transparentní členství</strong>.</div>
+    <ul class="card-list">
+      <li>benefity nejsou finanční nároky</li>
+      <li>benefity nejsou investiční produkty</li>
+      <li>benefity podporují aktivní účast a stabilitu systému</li>
+    </ul>
   </div>
-  <h2>WW-KEY jako přístupový index</h2>
-  <p>
-    WW-KEY nepředstavuje peněžní hodnotu ani investici.
-    Slouží jako <b>váhový klíč</b>, podle kterého systém AYAS-7
-    určuje rozsah přístupu k interním benefitům.
-  </p>
-  <ul>
-    <li>neurčuje cenu ani výnos</li>
-    <li>určuje váhu člena v systému</li>
-    <li>navazuje na dlouhodobé chování člena</li>
-  </ul>
-</section>
 
-<!-- ================================================= -->
-<!-- BENEFITS -->
-<!-- ================================================= -->
-<section class="section grid">
-
-  <!-- CRX -->
+  <!-- WW-KEY -->
   <div class="card">
-    <div class="kicker">
-      <span class="dot green"></span>
-      Věrnostní systém
-    </div>
-    <h2>CREDIX (CRX)</h2>
-    <p>
-      <b>CREDIX (CRX)</b> je interní věrnostní jednotka družstva WIN.WIN,
-  která slouží výhradně k evidenci a uplatnění členských benefitů..
-    </p>
-    <ul class="info-list">
-  <li>není investicí ani finančním nástrojem</li>
-  <li>nemá peněžní hodnotu a nelze jej směnit za peníze</li>
-  <li>není převoditelný mimo interní systémy družstva</li>
-  <li>je přidělován nenárokově na základě pravidel družstva</li>
-</ul>
-    <p><b>CRX nepředstavuje výnos, zhodnocení ani majetkové právo.
-  Slouží výhradně jako interní benefitní evidence.</b></p>
+    <div class="card-kicker"><span class="led led-sb"></span>Základní klíč systému</div>
+    <div class="card-title">WW-Key jako přístupový index</div>
+    <div class="card-text">WW-Key nepředstavuje peněžní hodnotu ani investici. Slouží jako <strong style="color:var(--white)">váhový klíč</strong>, podle kterého systém AYAS-7 určuje rozsah přístupu k interním benefitům.</div>
+    <ul class="card-list">
+      <li>neurčuje cenu ani výnos</li>
+      <li>určuje váhu člena v systému</li>
+      <li>navazuje na dlouhodobé chování člena</li>
+    </ul>
   </div>
 
-  <!-- PLX -->
-  <div class="card">
-    <div class="kicker">
-      <span class="dot blue"></span>
-      Benefitní poukázky
-    </div>
-    <h2>PLUX (PLX)</h2>
-    <p>
-      <b>PLUX (PLX)</b> představuje interní provozní benefitní poukázku,
-  která může být členu zpřístupněna na základě jeho statusu
-  a rozhodnutí družstva.
-    </p>
-    <ul class="info-list">
-  <li>nepředstavuje investici ani finanční produkt</li>
-  <li>není směnitelná za peníze</li>
-  <li>slouží výhradně k uplatnění interních benefitů</li>
-  <li>její dostupnost je nenároková a řiditelná družstvem</li>
-</ul>
-<p class="muted">
-  <p><b>PLX je provozní benefitní nástroj družstva a nemá povahu
-  investičního ani majetkového práva.</b></p>
-</p>
-  </div>
-
-</section>
-
-<!-- ================================================= -->
-<!-- AURIX -->
-<!-- ================================================= -->
-<section class="section card">
-  <div class="kicker">
-    <span class="dot purple"></span>
-    Koncepční model
-  </div>
-  <h2>AURIX – modelová evidence hodnot</h2>
-  <p>
-    AURIX je koncepční model interní evidence dlouhodobých hodnot.
-    Nejedná se o cenné papíry, komodity ani investiční produkty.
-  </p>
-  <ul>
-    <li>AUX – model 1 g zlata</li>
-    <li>AGX – model 1 g stříbra</li>
-    <li>PTX – model 1 g platiny</li>
-    <li>PDX – model 1 g palladia</li>
-  </ul>
-</section>
-
-
-<!-- ================================================= -->
-<!-- AYAS-7 -->
-<!-- ================================================= -->
-<section class="section card">
-  <div class="kicker">
-    <span class="dot blue"></span>
-    Řídicí vrstva
-  </div>
-  <h2>Role systému AYAS-7</h2>
-  <ul>
-    <li>zajišťuje neměnnost pravidel</li>
-    <li>odděluje členství, benefity a finance</li>
-    <li>umožňuje auditovatelnost a transparentnost</li>
-    <li>řídí přístup k benefitům podle WW-KEY a CRX</li>
-  </ul>
-</section>
-<!-- ================================================= -->
-<!-- BENEFIT DISTRIBUTION MODEL -->
-<!-- ================================================= -->
-<section class="section card">
-
-  <div class="kicker">
-    <span class="dot green"></span>
-    Model rozdělování benefitů
-  </div>
-
-  <h2>Jak družstvo rozděluje benefity spravedlivě</h2>
-  <p>
-    Systém WIN.WIN pracuje s <b>váhovým klíčem WW-KEY</b>, který nevyjadřuje
-    hodnotu ani nárok, ale <b>relativní pozici člena</b> v rámci družstva.
-    AYAS-7 zajišťuje, že rozdělování benefitů je <b>transparentní,
-    auditovatelné a jednotné pro všechny</b>.
-  </p>
-
-  <div class="benefit-grid">
-
-    <!-- ===== LEFT: GRAPH ===== -->
-    <div class="benefit-graph">
-
-      <div class="kicker">
-        <span class="dot blue"></span>
-        Ilustrační přehled
-      </div>
-<p class="muted" style="margin-top:14px;">
-  Kariérní pozice a uvedené procentní rozsahy představují maximální
-  rámec pro výpočet matching bonusů ze Síťového provizního fondu (SPF).
-  Nejedná se o nárok, příslib výnosu ani podíl na hospodářském výsledku
-  družstva. Výplata matching bonusů je vždy podmíněna rozhodnutím
-  družstva a disponibilní výší SPF.
-</p>
-
-      <h3>Rozložení benefitní kapacity</h3>
-
-      <div class="bar-chart">
-        <div class="bar-item">
-  <div class="bar blue" style="height:35%" data-tip="Základní přístup k benefitům"></div>
-  <span>WW-KEY 1–10</span>
-</div>
-
-        <div class="bar-item">
-          <div class="bar green" style="height:55%"></div>
-          <span>WW-KEY 11–50</span>
-        </div>
-        <div class="bar-item">
-          <div class="bar purple" style="height:75%"></div>
-          <span>WW-KEY 51–200</span>
-        </div>
-        <div class="bar-item">
-          <div class="bar amber" style="height:95%"></div>
-          <span>WW-KEY 200+</span>
-        </div>
-      </div>
-
-      <p class="graph-note">
-        Graf znázorňuje <b>relativní rozsah přístupu k benefitům</b>.
-        Nevyjadřuje výnos, hodnotu ani finanční plnění.
-      </p>
-
-    </div>
-
-    <!-- ===== RIGHT: LOGIC ===== -->
-    <div class="benefit-logic">
-
-      <div class="kicker">
-        <span class="dot green"></span>
-        Princip spravedlnosti
-      </div>
-
-      <h3>Logika rozdělování benefitů</h3>
-
-      <ul class="logic-list">
-        <li>
-          <b>WW-KEY neurčuje peníze</b><br>
-          Slouží pouze jako váhový index pro interní přístup.
-        </li>
-        <li>
-          <b>Žádný fixní nárok</b><br>
-          Benefity nejsou garantované, ale přidělované podle pravidel systému.
-        </li>
-        <li>
-          <b>Rovná pravidla pro všechny</b><br>
-          AYAS-7 aplikuje stejnou logiku bez výjimek.
-        </li>
-        <li>
-          <b>Oddělení financí a benefitů</b><br>
-          Finanční toky nejsou podmínkou pro evidenční benefity.
-        </li>
-        <li>
-          <b>Plná auditovatelnost</b><br>
-          Každé přidělení je zpětně dohledatelné v systému.
-        </li>
+  <!-- CRX + PLX -->
+  <div class="grid2">
+    <div class="card green">
+      <div class="card-kicker"><span class="led led-sg"></span>Věrnostní systém</div>
+      <div class="card-title">💎 CREDIX (CRX)</div>
+      <div class="card-text">Interní věrnostní jednotka sloužící výhradně k evidenci a uplatnění členských benefitů.</div>
+      <ul class="card-list">
+        <li>není investicí ani finančním nástrojem</li>
+        <li>nemá peněžní hodnotu, nelze směnit za peníze</li>
+        <li>není převoditelný mimo interní systémy</li>
+        <li>přidělován nenárokově dle pravidel družstva</li>
       </ul>
+      <div class="card-note"><strong>CRX nepředstavuje výnos ani majetkové právo.</strong> Slouží výhradně jako interní benefitní evidence.</div>
+    </div>
+    <div class="card">
+      <div class="card-kicker"><span class="led led-sb"></span>Benefitní poukázky</div>
+      <div class="card-title">🎁 PLUX (PLX)</div>
+      <div class="card-text">Interní provozní benefitní poukázka zpřístupněná na základě statusu a rozhodnutí družstva.</div>
+      <ul class="card-list">
+        <li>nepředstavuje investici ani finanční produkt</li>
+        <li>není směnitelná za peníze</li>
+        <li>slouží výhradně k interním benefitním účelům</li>
+        <li>dostupnost je nenároková a řiditelná družstvem</li>
+      </ul>
+      <div class="card-note"><strong>PLX je provozní benefitní nástroj</strong> bez povahy investičního nebo majetkového práva.</div>
+    </div>
+  </div>
 
-      <div class="logic-footer">
-        Tento model chrání družstvo i člena a umožňuje
-        dlouhodobě udržitelný rozvoj bez regulatorních rizik.
+  <!-- AURIX -->
+  <div class="card purple">
+    <div class="card-kicker"><span class="led led-p"></span>Koncepční model</div>
+    <div class="card-title">✨ AURIX – modelová evidence hodnot</div>
+    <div class="card-text">AURIX je koncepční model interní evidence dlouhodobých hodnot. Nejedná se o cenné papíry, komodity ani investiční produkty.</div>
+    <ul class="card-list">
+      <li><b>AUX</b> – model 1 g investičního zlata</li>
+      <li><b>AGX</b> – model 1 g investičního stříbra</li>
+      <li><b>PTX</b> – model 1 g investiční platiny</li>
+      <li><b>PDX</b> – model 1 g investičního palladia</li>
+    </ul>
+  </div>
+
+  <!-- AYAS-7 -->
+  <div class="card">
+    <div class="card-kicker"><span class="led led-sb"></span>Řídicí vrstva</div>
+    <div class="card-title">⚙️ Role systému AYAS-7</div>
+    <ul class="card-list" style="margin-top:4px">
+      <li>zajišťuje neměnnost pravidel</li>
+      <li>odděluje členství, benefity a finance</li>
+      <li>umožňuje auditovatelnost a transparentnost</li>
+      <li>řídí přístup k benefitům podle WW-Key a CRX</li>
+    </ul>
+  </div>
+
+  <!-- MODEL ROZDĚLOVÁNÍ -->
+  <div class="card green">
+    <div class="card-kicker"><span class="led led-sg"></span>Model rozdělování benefitů</div>
+    <div class="card-title">Jak družstvo rozděluje benefity spravedlivě</div>
+    <div class="card-text">Systém WIN.WIN pracuje s <strong style="color:var(--white)">váhovým klíčem WW-Key</strong>, který nevyjadřuje hodnotu ani nárok, ale relativní pozici člena v rámci družstva. AYAS-7 zajišťuje transparentní a auditovatelné rozdělování.</div>
+
+    <div class="distrib-wrap">
+      <div>
+        <div class="distrib-label">Rozložení benefitní kapacity</div>
+        <div class="bar-chart">
+          <div class="bar-item">
+            <div class="bar b" data-tip="Základní přístup"></div>
+            <span>WW-Key<br>1–10</span>
+          </div>
+          <div class="bar-item">
+            <div class="bar g" data-tip="Rozšířený přístup"></div>
+            <span>WW-Key<br>11–50</span>
+          </div>
+          <div class="bar-item">
+            <div class="bar p" data-tip="Prémiový přístup"></div>
+            <span>WW-Key<br>51–200</span>
+          </div>
+          <div class="bar-item">
+            <div class="bar a" data-tip="Plný přístup"></div>
+            <span>WW-Key<br>200+</span>
+          </div>
+        </div>
+        <div class="chart-note">Graf znázorňuje relativní rozsah přístupu k benefitům. Nevyjadřuje výnos ani finanční plnění.</div>
       </div>
 
+      <div>
+        <div class="distrib-label">Logika rozdělování</div>
+        <ul class="logic-list">
+          <li><b>WW-Key neurčuje peníze</b><br>Slouží jako váhový index pro interní přístup.</li>
+          <li><b>Žádný fixní nárok</b><br>Benefity jsou přidělované, ne garantované.</li>
+          <li><b>Rovná pravidla pro všechny</b><br>AYAS-7 aplikuje stejnou logiku bez výjimek.</li>
+          <li><b>Oddělení financí a benefitů</b><br>Finanční toky nejsou podmínkou pro benefity.</li>
+          <li><b>Plná auditovatelnost</b><br>Každé přidělení je zpětně dohledatelné.</li>
+        </ul>
+        <div class="logic-footer">Tento model chrání družstvo i člena a umožňuje dlouhodobě udržitelný rozvoj bez regulatorních rizik.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- KARIÉRNÍ STUPNĚ -->
+  <div class="card amber">
+    <div class="card-kicker"><span class="led led-a"></span>Kariérní struktura obchodní sítě</div>
+    <div class="card-title">Kariérní stupně a Matching Bonus</div>
+    <div class="card-text">Níže uvedená tabulka popisuje interní kariérní strukturu obchodní sítě a maximální rozsah matching bonusu. Hodnoty mají výhradně výkladový a informativní charakter.</div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Pozice</th><th>Název pozice</th><th>Max. MB z vlastní sítě</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>T</td>  <td>Trader</td>          <td>16 %</td></tr>
+          <tr><td>T1</td> <td>Trader 1</td>         <td>21 %</td></tr>
+          <tr><td>T2</td> <td>Trader 2</td>         <td>26 %</td></tr>
+          <tr><td>T3</td> <td>Trader 3</td>         <td>31 %</td></tr>
+          <tr><td>M</td>  <td>Manager</td>          <td>36 %</td></tr>
+          <tr><td>M1</td> <td>Manager 1</td>        <td>41 %</td></tr>
+          <tr><td>M2</td> <td>Manager 2</td>        <td>46 %</td></tr>
+          <tr><td>M3</td> <td>Manager 3</td>        <td>51 %</td></tr>
+          <tr><td>TM</td> <td>Team Manager</td>     <td>56 %</td></tr>
+          <tr><td>TM1</td><td>Team Manager 1</td>   <td>60 %</td></tr>
+          <tr><td>TM2</td><td>Team Manager 2</td>   <td>64 %</td></tr>
+          <tr><td>TM3</td><td>Team Manager 3</td>   <td>68 %</td></tr>
+          <tr><td>TM4</td><td>Team Manager 4</td>   <td>72 %</td></tr>
+          <tr><td>TL</td> <td>Team Leader</td>      <td>76 %</td></tr>
+          <tr><td>TL1</td><td>Team Leader 1</td>    <td>80 %</td></tr>
+          <tr><td>TL2</td><td>Team Leader 2</td>    <td>84 %</td></tr>
+          <tr><td>VP</td> <td>Vice Prezident</td>   <td>96 %</td></tr>
+          <tr><td>P</td>  <td>Prezident</td>        <td>100 %</td></tr>
+        </tbody>
+      </table>
     </div>
 
+    <div class="card-note">
+      Uvedené procentní hodnoty představují <strong>maximální teoretický rozsah matching bonusu</strong> dle kariérní pozice.
+      <strong>Nepředstavují nárok, garantovaný příjem ani podíl na zisku.</strong>
+      Skutečný rozsah je podmíněn výší SPF, strukturou sítě, splněním podmínek a rozhodnutím představenstva.
+    </div>
   </div>
 
-</section>
-<!-- ================================================= -->
-<!-- CAREER & MATCHING TABLE -->
-<!-- ================================================= -->
-<section class="section card">
-
-  <div class="kicker">
-    <span class="dot amber"></span>
-    Kariérní struktura obchodní sítě
+  <!-- SCÉNÁŘE -->
+  <div class="card">
+    <div class="card-kicker"><span class="led led-sg"></span>Modelové scénáře</div>
+    <div class="card-title">Příklady členských situací</div>
+    <ul class="card-list" style="margin-top:4px">
+      <li><b>Nový člen</b> — základní přehled, žádné benefity, orientace v systému</li>
+      <li><b>Aktivní člen</b> — růst CRX, přístup k PLX, rozšiřování sítě</li>
+      <li><b>Dlouhodobý člen</b> — rozšířený přístup a priorita v benefitech</li>
+    </ul>
   </div>
 
-  <h2>Kariérní stupně a matching bonus</h2>
+</div>
 
-  <p class="muted">
-    Níže uvedená tabulka popisuje <b>interní kariérní strukturu obchodní sítě</b>
-    a maximální rozsah <b>matching bonusu</b> připadajícího na jednotlivé kariérní pozice.
-    Uvedené hodnoty mají <b>výhradně výkladový a informativní charakter</b>.
-  </p>
+<footer class="foot">WIN.WIN nestaví na slibech. Staví na systému. AYAS-7 zajišťuje, že pravidla platí pro každého stejně.</footer>
 
-  <div class="members-table-wrap" style="margin-top:16px;">
-    <table class="members-table">
-      <thead>
-        <tr>
-          <th>Pozice</th>
-          <th>Název pozice</th>
-          <th>Max. MB z vlastní sítě</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr><td>T</td><td>Trader</td><td>16 %</td></tr>
-        <tr><td>T1</td><td>Trader 1</td><td>21 %</td></tr>
-        <tr><td>T2</td><td>Trader 2</td><td>26 %</td></tr>
-        <tr><td>T3</td><td>Trader 3</td><td>31 %</td></tr>
-        <tr><td>M</td><td>Manager</td><td>36 %</td></tr>
-        <tr><td>M1</td><td>Manager 1</td><td>41 %</td></tr>
-        <tr><td>M2</td><td>Manager 2</td><td>46 %</td></tr>
-        <tr><td>M3</td><td>Manager 3</td><td>51 %</td></tr>
-        <tr><td>TM</td><td>Team Manager</td><td>56 %</td></tr>
-        <tr><td>TM1</td><td>Team Manager 1</td><td>60 %</td></tr>
-        <tr><td>TM2</td><td>Team Manager 2</td><td>64 %</td></tr>
-        <tr><td>TM3</td><td>Team Manager 3</td><td>68 %</td></tr>
-        <tr><td>TM4</td><td>Team Manager 4</td><td>72 %</td></tr>
-        <tr><td>TL</td><td>Team Leader</td><td>76 %</td></tr>
-        <tr><td>TL1</td><td>Team Leader 1</td><td>80 %</td></tr>
-        <tr><td>TL2</td><td>Team Leader 2</td><td>84 %</td></tr>
-        <tr><td>VP</td><td>Vice President</td><td>96 %</td></tr>
-        <tr><td>P</td><td>President</td><td>100 %</td></tr>
-      </tbody>
-    </table>
-  </div>
-<p class="muted" style="margin-top:14px;">
-  Uvedené rozsahy a koeficienty slouží výhradně jako interní metodika
-  pro výpočet přídělu CRX. Nezakládají právní nárok, nejsou garantované
-  a mohou být upraveny rozhodnutím družstva v souladu s jeho
-  ekonomickou stabilitou a interními předpisy.
-</p>
-
-  <p class="muted" style="margin-top:12px;">
-    Uvedené procentní hodnoty představují <b>maximální teoretický rozsah matching bonusu</b>
-    dle kariérní pozice. <br>
-    <b>Nepředstavují nárok, garantovaný příjem ani podíl na zisku.</b>
-    Skutečný rozsah matching bonusu je vždy podmíněn:
-  </p>
-
-  <ul>
-    <li>výší a režimem Síťového provizního fondu (SPF)</li>
-    <li>strukturou obchodní sítě</li>
-    <li>splněním kvalitativních a regulatorních podmínek</li>
-    <li>rozhodnutím představenstva družstva</li>
-  </ul>
-
-</section>
-
-
-<!-- ================================================= -->
-<!-- SCENARIOS -->
-<!-- ================================================= -->
-<section class="section card">
-  <div class="kicker">
-    <span class="dot green"></span>
-    Modelové scénáře
-  </div>
-  <ul>
-    <li>nový člen – základní přehled, žádné benefity</li>
-    <li>aktivní člen – růst CRX, přístup k PLX</li>
-    <li>dlouhodobý člen – rozšířený přístup a priorita</li>
-  </ul>
-</section>
-
-
-<!-- ================================================= -->
-<!-- FOOTER -->
-<!-- ================================================= -->
-<section class="section">
-  <p style="font-size:13px;color:var(--text-muted)">
-    WIN.WIN nestaví na slibech. Staví na systému.
-    AYAS-7 zajišťuje, že pravidla platí pro každého stejně.
-  </p>
-</section>
 <script>
-document.addEventListener("DOMContentLoaded", () => {
-  document.querySelectorAll(".bar").forEach(bar => {
-    const h = bar.style.height;
-    bar.style.height = "0";
-    setTimeout(() => {
-      bar.style.height = h;
-    }, 200);
+document.addEventListener('DOMContentLoaded', () => {
+  const targets = [35, 55, 75, 95];
+  document.querySelectorAll('.bar').forEach((bar, i) => {
+    setTimeout(() => { bar.style.height = targets[i] + '%'; }, 200 + i * 100);
   });
 });
 </script>
-
-<script>
-function setScenario(level){
-  const values = {
-    1:[20,10,5],
-    2:[50,40,25],
-    3:[80,70,60]
-  };
-
-  document.querySelectorAll(".bar").forEach((bar,i)=>{
-    bar.style.height = values[level][i] + "%";
-  });
-}
-</script>
-
-</div>
 </body>
 </html>
