@@ -106,24 +106,32 @@ nav a.active {
 
 /* LED tečka — přesně jako ayas7 */
 .led-dot {
-  width: 7px; height: 7px; border-radius: 50%;
+  width: 10px; height: 10px; border-radius: 50%;
   background: var(--green);
-  box-shadow: 0 0 0 2px rgba(34,197,94,0.2), 0 0 10px rgba(34,197,94,0.6);
+  box-shadow: 
+    0 0 12px rgba(34,197,94,1),
+    0 0 24px rgba(34,197,94,0.6),
+    0 0 36px rgba(34,197,94,0.3);
   flex-shrink: 0;
   animation: ledpulse 2.4s ease-in-out infinite;
 }
 .led-dot.blue {
   background: var(--blue);
-  box-shadow: 0 0 0 2px rgba(56,189,248,0.2), 0 0 10px rgba(56,189,248,0.6);
+  box-shadow: 
+    0 0 12px rgba(56,189,248,1),
+    0 0 24px rgba(56,189,248,0.6),
+    0 0 36px rgba(56,189,248,0.3);
 }
 .led-dot.off {
   background: #ef4444;
-  box-shadow: 0 0 0 2px rgba(239,68,68,0.2), 0 0 8px rgba(239,68,68,0.5);
+  box-shadow: 
+    0 0 12px rgba(239,68,68,1),
+    0 0 24px rgba(239,68,68,0.6);
   animation: none;
 }
 @keyframes ledpulse {
-  0%,100% { box-shadow: 0 0 0 2px rgba(34,197,94,0.2), 0 0 8px rgba(34,197,94,0.4); }
-  50%      { box-shadow: 0 0 0 3px rgba(34,197,94,0.3), 0 0 16px rgba(34,197,94,0.8); }
+  0%,100% { opacity:1; transform: scale(1) }
+  50% { opacity:.7; transform: scale(0.95) }
 }
 
 /* ══════════════════════════════
@@ -144,28 +152,20 @@ nav a.active {
 }
 .hero-bg img {
   width: 100%; height: 100%;
-  object-fit: cover; object-position: center top;
+  object-fit: cover; object-position: center 35%;
   display: block;
-  /* bez filtru - obrazek je krasny jak je */
 }
 .hero-bg::after {
   content: ''; position: absolute; inset: 0;
-  background: linear-gradient(
-    to bottom,
-    rgba(2,9,23,0.0)   0%,
-    rgba(2,9,23,0.0)  55%,
-    rgba(2,9,23,0.65) 72%,
-    rgba(2,9,23,0.92) 85%,
-    rgba(2,9,23,1.00) 100%
-  );
-}
-
-/* Vignette sides - jen krajove ztmaveni */
-.hero-bg::before {
-  content: ''; position: absolute; inset: 0; z-index: 1;
-  background:
-    radial-gradient(ellipse 35% 100% at 0% 50%, rgba(2,9,23,0.5), transparent),
-    radial-gradient(ellipse 35% 100% at 100% 50%, rgba(2,9,23,0.5), transparent);
+  background: linear-gradient(to bottom,
+    rgba(2,9,23,0) 0%,
+    rgba(2,9,23,0) 30%,
+    rgba(2,9,23,0.1) 50%,
+    rgba(2,9,23,0.3) 65%,
+    rgba(2,9,23,0.55) 78%,
+    rgba(2,9,23,0.8) 88%,
+    rgba(2,9,23,0.95) 96%,
+    rgba(2,9,23,1) 100%);
 }
 
 /* Bloom - jemne zesiluje svetlo loga */
@@ -195,7 +195,7 @@ nav a.active {
 
 /* Live indicator row */
 .hero-live {
-  display: inline-flex; align-items: center; gap: 8px;
+  display: inline-flex; align-items: center; gap: 10px;
   padding: 6px 18px; border-radius: 999px;
   background: rgba(2,9,23,0.75); backdrop-filter: blur(16px);
   border: 1px solid rgba(56,189,248,0.3);
@@ -472,102 +472,111 @@ nav a.active {
   .brand-name { font-size: 13px; }
   .brand-sub { display: none; }
 
-  /* Hero — kompaktní na mobilu, ne full screen */
+  /* Hero — VĚTŠÍ, dramatičtější */
   .hero {
-    height: 65vh;
-    min-height: 420px;
-    max-height: 600px;
-    padding-bottom: 72px;
+    height: 75vh;
+    min-height: 520px;
+    max-height: 720px;
+    padding-bottom: 90px;
   }
+  
   .hero-label {
-    font-size: 10px;
-    margin-top: 0;
-    margin-bottom: 6px;
-    letter-spacing: .08em;
+    font-size: 11px;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    letter-spacing: .12em;
   }
+  
   .hero-name {
-    font-size: clamp(28px, 8vw, 44px);
-    letter-spacing: -0.02em;
-    margin-bottom: 8px;
+    font-size: clamp(36px, 10vw, 56px);
+    letter-spacing: -0.03em;
+    margin-bottom: 12px;
   }
+  
   .hero-sub {
-    font-size: 10px;
-    letter-spacing: .07em;
-    margin-bottom: 16px;
-    display: none; /* skryjeme na mobilu — šetří místo */
+    font-size: 11px;
+    letter-spacing: .08em;
+    margin-bottom: 22px;
+    display: block; /* ZOBRAZÍME zpět */
+    max-width: 90%;
   }
+  
   .hero-live {
-    font-size: 9px;
-    padding: 4px 11px;
-    margin-bottom: 8px;
-    letter-spacing: .1em;
+    font-size: 10px;
+    padding: 6px 14px;
+    margin-bottom: 10px;
+    letter-spacing: .12em;
   }
 
-  /* Hero CTA buttons — vedle sebe ne pod sebou */
+  /* Hero CTA buttons */
   .hero-cta {
-    gap: 8px;
+    gap: 10px;
     flex-direction: row;
     align-items: center;
     justify-content: center;
     width: 100%;
-    padding: 0 16px;
+    padding: 0 20px;
     flex-wrap: nowrap;
   }
   .btn-primary {
     flex: 1;
     justify-content: center;
-    padding: 11px 14px;
-    font-size: 13px;
+    padding: 13px 18px;
+    font-size: 14px;
   }
   .btn-secondary {
     flex: 1;
     justify-content: center;
-    padding: 11px 14px;
-    font-size: 13px;
+    padding: 13px 18px;
+    font-size: 14px;
   }
 
-  /* Stat strip — kompaktnější */
-  .strip-inner { border-radius: 12px 12px 0 0; }
-  .sstat { padding: 10px 6px; }
-  .sstat-val { font-size: 13px; letter-spacing: -0.01em; }
-  .sstat-lbl { font-size: 7px; letter-spacing: .08em; }
+  /* Stat strip */
+  .strip-inner { border-radius: 14px 14px 0 0; }
+  .sstat { padding: 14px 8px; }
+  .sstat-val { font-size: 16px; letter-spacing: -0.01em; }
+  .sstat-lbl { font-size: 8px; letter-spacing: .1em; }
 
   /* Main content */
-  .main { padding: 24px 14px 60px; }
+  .main { padding: 32px 16px 80px; }
   .sec-title { font-size: 11px; }
   .grid3 { grid-template-columns: 1fr; gap: 12px; }
   .grid2 { grid-template-columns: 1fr; gap: 12px; }
 
   /* Cards */
-  .fcard { padding: 18px 16px 16px; border-radius: 14px; }
-  .fc-title { font-size: 15px; }
-  .fc-val { font-size: 24px; }
-  .fc-desc { font-size: 12px; }
+  .fcard { padding: 20px 18px 18px; border-radius: 14px; }
+  .fc-title { font-size: 16px; }
+  .fc-val { font-size: 26px; }
+  .fc-desc { font-size: 13px; line-height: 1.6; }
   .fc-arrow { display: none; }
 
   /* Benefits */
   .ben-wrap { flex-direction: column; gap: 14px; }
   .ben-list { flex-direction: column; }
-  .ben-row { padding: 9px 12px; }
+  .ben-row { padding: 10px 13px; }
 
   /* Snapshot */
-  .snap { padding: 18px 14px; }
+  .snap { padding: 20px 16px; }
   .snap-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
-  .snap-val { font-size: 16px; }
-  .snap-title { font-size: 13px; }
+  .snap-val { font-size: 17px; }
+  .snap-title { font-size: 14px; }
 
   /* Actions */
-  .actions { flex-direction: column; gap: 8px; }
-  .act-btn { width: 100%; justify-content: center; padding: 12px; }
+  .actions { flex-direction: column; gap: 10px; }
+  .act-btn { width: 100%; justify-content: center; padding: 13px; }
 
-  .foot { font-size: 9px; padding: 14px 10px; }
+  .foot { font-size: 9px; padding: 16px 12px; }
 }
 
 /* ═══ MALY MOBIL ═══ */
 @media(max-width:380px) {
-  .hero-name { font-size: 28px; }
-  .sstat { padding: 10px 6px; }
-  .sstat-val { font-size: 13px; }
+  .hero {
+    height: 70vh;
+    min-height: 480px;
+  }
+  .hero-name { font-size: clamp(32px, 9vw, 48px); }
+  .sstat { padding: 12px 6px; }
+  .sstat-val { font-size: 14px; }
   .sstat-lbl { font-size: 7px; }
   .strip-inner { flex-wrap: nowrap; }
   .grid3 { grid-template-columns: 1fr; }
@@ -919,7 +928,7 @@ async function loadSnap() {
     const led = $('snapLed');
     led.classList.remove('off');
     led.style.background  = 'var(--green)';
-    led.style.boxShadow   = '0 0 0 2px rgba(34,197,94,0.2), 0 0 10px rgba(34,197,94,0.6)';
+    led.style.boxShadow   = '0 0 12px rgba(34,197,94,1), 0 0 24px rgba(34,197,94,0.6)';
     led.style.animation   = 'ledpulse 2.4s ease-in-out infinite';
     $('snapTxt').textContent = 'Live · ' + new Date().toLocaleTimeString('cs-CZ');
   } catch(e) {
