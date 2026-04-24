@@ -1,15 +1,26 @@
 {
-  "name": "AYAS-7",
-  "short_name": "AYAS-7",
-  "start_url": "/",
+  "name": "WIN.WIN Cooperative",
+  "short_name": "WIN.WIN",
+  "description": "AYAS-7 · Členský dashboard · WIN.WIN Cooperative",
+  "start_url": "/login/member.html",
   "display": "standalone",
-  "background_color": "#000000",
-  "theme_color": "#000000",
+  "background_color": "#020917",
+  "theme_color": "#020917",
+  "orientation": "portrait-primary",
   "icons": [
+    {
+      "src": "/ayas7-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
     {
       "src": "/ayas7-512.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     }
-  ]
+  ],
+  "categories": ["finance", "business"],
+  "lang": "cs"
 }
