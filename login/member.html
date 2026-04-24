@@ -789,8 +789,21 @@ async function init() {
   const { count: nc } = await sb.from('network_relations').select('*',{count:'exact',head:true}).eq('upline_member_id',user.id);
   $('netVal').textContent = nc||0;
 
-  const { count: bc } = await sb.from('member_benefits').select('*',{count:'exact',head:true}).eq('member_id',acc?.member_id).eq('status','active');
-  $('benVal').textContent = bc||0;
+  // member_benefits — jen pokud máme platný member_id
+  if (acc?.member_id && acc.member_id !== 1) {
+    try {
+      const { count: bc } = await sb
+        .from('member_benefits')
+        .select('*',{count:'exact',head:true})
+        .eq('member_id', acc.member_id)
+        .eq('status','active');
+      $('benVal').textContent = bc || 0;
+    } catch(e) {
+      $('benVal').textContent = '0';
+    }
+  } else {
+    $('benVal').textContent = '0';
+  }
 
   loadSnap();
   setInterval(loadSnap, 30000);
