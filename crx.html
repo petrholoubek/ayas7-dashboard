@@ -410,7 +410,11 @@ async function doLogout() {
 
 /* ═══ CERT ═══ */
 function openCert() {
-  if(!certUid) return;
+  if(!certUid) {
+    alert('Certifikát zatím nebyl vydán.');
+    return;
+  }
+  // Otevri certifikat - zkus ruzne cesty
   window.open(`/certificates/certificate.html?uid=${certUid}`, '_blank');
 }
 
@@ -514,15 +518,34 @@ async function renderMember(userId, isAdmin) {
       .from('members_data')
       .select('*', { count: 'exact', head: true });
 
-    /* 7. Certificate */
-    const { data: certData } = await sb
+    /* 7. Certificate — hledame podle emailu nebo member_id */
+    let certData = null;
+
+    // Zkus podle member_id
+    const { data: certByMember } = await sb
       .from('member_certificates')
-      .select('certificate_id')
+      .select('certificate_uid')
       .eq('member_id', md.id)
+      .order('issued_at', { ascending: false })
       .limit(1)
       .maybeSingle();
 
-    certUid = certData?.certificate_id || null;
+    if(certByMember?.certificate_uid) {
+      certData = certByMember;
+    } else {
+      // Zkus podle emailu
+      const { data: certByEmail } = await sb
+        .from('member_certificates')
+        .select('certificate_uid')
+        .eq('member_email', md.email)
+        .order('issued_at', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      certData = certByEmail;
+    }
+
+    certUid = certData?.certificate_uid || null;
+    console.log('CERT UID:', certUid);
 
     /* ═══ RENDER UI ═══ */
 
