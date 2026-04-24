@@ -710,7 +710,7 @@ const TIERS = [
 async function doLogout() {
   if(!confirm('Odhlásit se ze systému WIN.WIN?')) return;
   await sb.auth.signOut();
-  window.location.href = '/login/signin.html';
+  window.location.href = '/login/login.html';
 }
 
 async function loadSnap() {
@@ -745,7 +745,7 @@ async function loadSnap() {
 
 async function init() {
   const { data:{ session } } = await sb.auth.getSession();
-  if(!session) { window.location.href = '/login/signin.html'; return; }
+  if(!session) { window.location.href = '/login/login.html'; return; }
 
   const user = session.user;
   const raw  = user.user_metadata?.full_name || user.email || '';
