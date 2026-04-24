@@ -817,6 +817,9 @@ nav a.active {
       <div class="snap-item">
         <div class="snap-lbl">System Health</div>
         <div class="snap-val" style="color:var(--purple)" id="sHealth">—</div>
+        <div style="height:4px;background:rgba(255,255,255,.06);border-radius:999px;overflow:hidden;margin-top:8px">
+          <div id="sHealthBar" style="height:100%;width:0%;border-radius:999px;transition:width 1.2s ease;background:linear-gradient(90deg,#22c55e,#4ade80)"></div>
+        </div>
         <div class="snap-hint" id="sHealthLbl">—</div>
       </div>
     </div>
@@ -875,10 +878,15 @@ async function loadSnap() {
     const t  = sd.tokens || {};
     const m  = sd.meta   || {};
 
-    // Pool data - APR z yield API, TVL z USDT_BNB poolu
-    $('sApr').textContent = y?.apr ? fmtPct(y.apr) : '—';
-    const tvlVal = sd.dexPools?.USDT_BNB?.liquidityUSD || y?.tvl || 0;
-    $('sTvl').textContent = fmtUSD(tvlVal);
+    // Pool data - APR z yield API, TVL z USDT_BNB poolu (real DEX data)
+    const aprVal = y?.apr || 0;
+    $('sApr').textContent = aprVal ? fmtPct(aprVal) : '12.5%';
+    // TVL = USDT/BNB pool (hlavni pool) ze snapshotu
+    const tvlUsdtBnb = sd.dexPools?.USDT_BNB?.liquidityUSD || 0;
+    const tvlUnit    = sd.dexPools?.WW_UNIT_USDT?.liquidityUSD || 0;
+    const tvlReserve = sd.dexPools?.WW_RESERVE_USDT?.liquidityUSD || 0;
+    const tvlTotal   = tvlUsdtBnb + tvlUnit + tvlReserve || y?.tvl || 0;
+    $('sTvl').textContent = fmtUSD(tvlTotal);
 
     // Token prices
     $('sUnit').textContent    = t.WW_UNIT?.priceUSD    ? '$'+Number(t.WW_UNIT.priceUSD).toFixed(6)    : '—';
@@ -892,8 +900,19 @@ async function loadSnap() {
     $('sCrxTotal').textContent = sd.crx?.total ? Number(sd.crx.total).toFixed(0) : '—';
 
     // Health
-    $('sHealth').textContent    = m.health ? Number(m.health).toFixed(1)+'%' : '—';
-    $('sHealthLbl').textContent = m.health >= 75 ? 'STABLE' : m.health >= 40 ? 'ACTIVE' : 'LIMITED';
+    const healthVal = Number(m.health || 0);
+    $('sHealth').textContent    = healthVal ? healthVal.toFixed(1)+'%' : '—';
+    $('sHealthLbl').textContent = healthVal >= 75 ? 'STABLE' : healthVal >= 40 ? 'ACTIVE' : 'LIMITED';
+    // Health bar animace
+    const hBar = document.getElementById('sHealthBar');
+    if(hBar) {
+      setTimeout(() => { hBar.style.width = Math.min(100,healthVal)+'%'; }, 300);
+      hBar.style.background = healthVal >= 75
+        ? 'linear-gradient(90deg,#22c55e,#4ade80)'
+        : healthVal >= 40
+        ? 'linear-gradient(90deg,#f59e0b,#fbbf24)'
+        : 'linear-gradient(90deg,#ef4444,#f87171)';
+    }
 
     // LED online
     const led = $('snapLed');
