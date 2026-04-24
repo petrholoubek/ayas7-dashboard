@@ -98,17 +98,37 @@ footer{margin-top:72px;padding-top:14px;border-top:1px solid var(--border);font-
 </style>
 </head>
 <body>
-<main>
 
-<!-- HERO -->
-<section class="hero">
-  <div class="hero-kicker">
-    <span class="hero-dot"></span>
-    Truth Snapshot · Read Only
+<!-- HERO s hero.jpg -->
+<div style="
+  position:relative;
+  width:100%;
+  min-height:340px;
+  background:url('/icons/hero.jpg') center center/cover no-repeat;
+  display:flex;align-items:flex-end;
+  overflow:hidden;
+">
+  <!-- tmave prekryti -->
+  <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(2,6,23,.35) 0%,rgba(2,6,23,.85) 70%,rgba(2,6,23,1) 100%)"></div>
+  <!-- obsah hero -->
+  <div style="position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:0 18px 48px;width:100%">
+    <div style="display:inline-flex;align-items:center;gap:8px;font-family:var(--fontb);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:rgba(226,232,240,.7);margin-bottom:16px">
+      <span id="heroLed" style="width:8px;height:8px;border-radius:50%;background:#ef4444;box-shadow:0 0 8px rgba(239,68,68,.8);transition:all .3s"></span>
+      Truth Snapshot · Read Only
+    </div>
+    <h1 style="font-family:'Space Grotesk',sans-serif;font-size:42px;font-weight:700;color:#f8fafc;margin:0 0 12px;letter-spacing:-.01em">
+      AYAS-7 · Stav systému
+    </h1>
+    <p style="font-family:var(--fontb);font-size:15px;color:rgba(226,232,240,.75);max-width:600px;line-height:1.6;margin:0 0 24px">
+      Klidný, neměnný pohled na skutečný stav architektury AYAS-7. Tato obrazovka nic neřídí — pouze zobrazuje pravdu systému.
+    </p>
+    <a href="/login/member.html" style="display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:10px;background:rgba(56,189,248,.1);border:1px solid rgba(56,189,248,.25);color:#7dd3fc;font-family:var(--fontb);font-size:13px;font-weight:500;text-decoration:none;transition:all .15s">
+      ← Zpět na dashboard
+    </a>
   </div>
-  <div class="hero-title">AYAS-7 · Stav systému</div>
-  <div class="hero-sub">Klidný, neměnný pohled na skutečný stav architektury AYAS-7. Tato obrazovka nic neřídí – pouze zobrazuje pravdu systému.</div>
-</section>
+</div>
+
+<main>
 
 <!-- TOKEN COCKPIT -->
 <section class="section">
@@ -262,10 +282,13 @@ function updateHealthBar(v){
 
 /* ═══ LED ═══ */
 function setOnline(online){
-  const heroDot = document.querySelector('.hero-dot');
+  const heroLed = $('heroLed');
   const secLed  = $('sectionLed');
   const statLed = $('statusLed');
-  if(heroDot) heroDot.style.background = online?'#22c55e':'#ef4444';
+  if(heroLed){
+    heroLed.style.background  = online ? '#22c55e' : '#ef4444';
+    heroLed.style.boxShadow   = online ? '0 0 8px rgba(34,197,94,.8)' : '0 0 8px rgba(239,68,68,.8)';
+  }
   if(secLed)  secLed.classList.toggle('live',online);
   if(statLed) statLed.classList.toggle('live',online);
   document.body.classList.toggle('offline',!online);
@@ -319,30 +342,19 @@ async function loadSnapshot(){
 /* ═══ YIELD ═══ */
 async function loadYield(){
   try{
-    // Nacti snapshot pro spravne TVL (USDT/BNB pool)
-    const snapRes = await fetch(SNAP+'?v='+VER+'b',{cache:'no-store'});
-    const snap    = snapRes.ok ? await snapRes.json() : null;
-
     const res = await fetch(YIELD+'?v='+VER,{cache:'no-store'});
     const d   = await res.json();
-    const y   = d.yield || d;
+    // yield API vraci { ok, apr, monthlyYield, tvl, volume24h }
+    const apr        = d?.apr || 0;
+    const tvl        = d?.tvl || 0;
+    const volume24h  = d?.volume24h || 0;
+    const monthly    = d?.monthlyYield || (apr/12);
 
-    set('yieldApr', fmtPct(y?.apr));
-
-    // TVL = USDT/BNB pool ze snapshotu (hlavni pool)
-    const tvlUsdtBnb = snap?.dexPools?.USDT_BNB?.liquidityUSD || 0;
-    const tvlUnit    = snap?.dexPools?.WW_UNIT_USDT?.liquidityUSD || 0;
-    const tvlReserve = snap?.dexPools?.WW_RESERVE_USDT?.liquidityUSD || 0;
-    const tvlTotal   = tvlUsdtBnb + tvlUnit + tvlReserve || y?.tvl || 0;
-    set('yieldTvl', fmtUSD(tvlTotal));
-    set('yieldVol', fmtUSD(y?.volume24h));
-
-    // Mesicni vynos — rizeny model AYAS-7: 4% mesicne (cil 4-6%)
-    // Pokud mame realne volume, pocitame z nej, jinak pouzijeme ridici model
-    const dailyFees  = (Number(y?.volume24h)||0) * 0.25;
-    const calcPct    = tvlTotal>0 ? (dailyFees/tvlTotal)*100*30 : 0;
-    const monthlyPct = calcPct > 0.1 ? calcPct : 4.0; // fallback na rizeny model 4%
-    set('yieldDaily', fmtPct(monthlyPct));
+    set('yieldApr',   fmtPct(apr));
+    set('yieldDaily', fmtPct(monthly));
+    set('yieldTvl',   fmtUSD(tvl));
+    set('yieldVol',   fmtUSD(volume24h));
+    console.log('YIELD:', {apr, tvl, volume24h, monthly});
   } catch(e){
     console.warn('Yield offline:', e.message);
   }
