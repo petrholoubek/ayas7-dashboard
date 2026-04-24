@@ -1,395 +1,193 @@
 <!DOCTYPE html>
 <html lang="cs">
 <head>
-<meta charset="utf-8">
-<title>AYAS-7 · Certifikát WW-KEY</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<!-- FAVICON / PWA -->
-  <link rel="icon" type="image/png" sizes="192x192" href="/ayas7-192.png">
-  <link rel="icon" type="image/png" sizes="512x512" href="/ayas7-512.png">
-  <link rel="apple-touch-icon" href="/ayas7-192.png">
-  <meta name="theme-color" content="#020617">
+<meta charset="UTF-8"/>
+<title>AYAS-7 · WW-Key Certifikát</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<link rel="icon" type="image/png" sizes="192x192" href="/ayas7-192.png">
+<link rel="apple-touch-icon" href="/ayas7-192.png">
+<meta name="theme-color" content="#020917">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-html,body{
-  width:100%;
-  height:100%;
-  background:#020617;
-  font-family:"Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  color:#e5e7eb;
-}
-
-/* STRÁNKA */
-.page{
-  width:210mm;
-  height:297mm;
-  margin:20px auto;
-  position:relative;
-  background:linear-gradient(180deg,#0b1120,#020617 70%,#000);
-}
-
-/* RÁMEČEK = HRANICE AUTORITY */
-.frame{
-  position:absolute;
-  top:28mm;
-  left:22mm;
-  right:22mm;
-  bottom:22mm;
-  border:1px solid rgba(148,163,184,.28);
-  border-radius:8px;
-  pointer-events:none;
-}
-
-/* VEŠKERÝ OBSAH MUSÍ BÝT UVNITŘ RÁMEČKU */
-.content-wrap{
-  position:absolute;
-  top:28mm;
-  left:22mm;
-  right:22mm;
-  bottom:22mm;
-  padding:22mm 6mm;
-  display:flex;
-  flex-direction:column;
-}
-
-/* PODPIS SYSTÉMU – VLEVO */
-.system{
-  font-size:10px;
-  letter-spacing:.36em;
-  color:#94a3b8;
-  text-transform:uppercase;
-  margin-bottom:18mm;
-  margin-top:-16mm;   /* ⬅⬅ TADY */
-}
-
-/* HLAVIČKA – STŘED */
-.header{
-  text-align:center;
-  margin-bottom:18mm;
-}
-.logo{
-  font-size:30px;
-  font-weight:700;
-  letter-spacing:.28em;
-}
-.title{
-  margin-top:14px;
-  font-size:24px;
-  letter-spacing:.18em;
-}
-.subtitle{
-  margin-top:10px;
-  font-size:12px;
-  color:#9ca3af;
-  max-width:520px;
-  margin-left:auto;
-  margin-right:auto;
-}
-
-/* DATA – LEVO / PRAVO */
-.grid{
-  display:grid;
-  grid-template-columns: 1fr 1fr;
-  column-gap: 140px;              /* 🔥 velká osa – ROZTAŽENÍ */
-  row-gap: 18px;
-  margin: 14mm 0 0;              /* ❗ žádné centrování */
-  padding: 0 8mm;                /* ❗ respektuje rámeček */
-  font-size:13.5px;
-}
-
-/* LEVÁ STRANA – POPISKY */
-.label{
-  color:#9ca3af;
-  text-align:left;
-  letter-spacing:0.04em;
-}
-
-/* PRAVÁ STRANA – HODNOTY */
-.value{
-  font-weight:600;
-  text-align:right;
-  letter-spacing:0.02em;
-}
-
-/* RAZÍTKO */
-.seal{
-  margin:26mm auto 0;
-  width:220px;
-  height:220px;
-  border-radius:50%;
-  position:relative;
-
-  background:
-    radial-gradient(
-      circle at 50% 22%,
-      rgba(147,197,253,.22),
-      rgba(147,197,253,.10) 55%,
-      rgba(147,197,253,.04) 72%,
-      transparent 78%
-    ),
-    radial-gradient(circle at 50% 50%, rgba(255,255,255,.05), transparent 60%);
-
-  border:1px solid rgba(147,197,253,.55);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-.seal-inner{
-  width:190px;
-  height:190px;
-  border-radius:50%;
-  border:1px dashed rgba(147,197,253,.45);
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  text-align:center;
-}
-.seal-count{
-  font-size:40px;
-  font-weight:700;
-  color:#4fa3ff;
-}
-.seal-text{
-  margin-top:6px;
-  font-size:11px;
-  letter-spacing:.28em;
-  text-transform:uppercase;
-  color:#bfdbfe;
-}
-
-/* FOOTER */
-.footer{
-  margin-top:auto;
-  margin-bottom:0;
-  font-size:10px;
-  color:#9ca3af;
-}
-
-.footer hr{
-  border:none;
-  border-top:1px solid rgba(148,163,184,.25);
-  margin-bottom:8px;
-}
-.hash{
-  font-family:monospace;
-  font-size:10px;
-  color:#64748b;
-  word-break:break-all;
-}
-.legal{
-  margin-top:8px;
-  color:#94a3b8;
-}
-
-@media print{
-  body{background:#000}
-  .page{margin:0}
-}
-
-@page {
-  size: A4;
-  margin: 0;
-}
-
-@media print {
-  html, body {
-    width:210mm;
-    height:297mm;
-    overflow:hidden;
-  }
-
-  .page {
-    width:210mm;
-    height:297mm;
-    margin:0;
-  }
-
-  .content-wrap {
-    padding:18mm 6mm;   /* o trochu méně než předtím */
-  }
-
-  .seal {
-    margin:18mm auto 0; /* posun razítka výš */
-  }
-
-  .qr-wrap {
-    margin-top:18px;
-  }
-}
-#qr canvas,
-#qr img{
-  display:block;
-  margin:0 auto;
-}
-
-@media print{
-  #qr canvas,
-  #qr img{
-    filter: none;
-  }
-}
-@media print{
-  .page{
-    page-break-inside: avoid;
-  }
-}
-
-
+:root{--bg:#020917;--card:rgba(6,14,31,0.95);--b1:rgba(56,189,248,0.12);--b2:rgba(56,189,248,0.25);--blue:#38bdf8;--blue2:#0ea5e9;--blue3:#7dd3fc;--green:#22c55e;--white:#f8fafc;--text:#e2e8f0;--muted:#475569;--m2:#94a3b8;--font:'Space Grotesk',sans-serif;--fontb:'DM Sans',sans-serif;--mono:'DM Mono',monospace}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{min-height:100%;font-family:var(--fontb);background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{text-decoration:none;color:inherit}
+.topbar{height:54px;display:flex;align-items:center;justify-content:space-between;padding:0 28px;background:rgba(2,9,23,0.9);backdrop-filter:blur(24px);border-bottom:1px solid var(--b1)}
+.brand{display:flex;align-items:center;gap:10px}
+.brand-logo{width:30px;height:30px;border-radius:7px;flex-shrink:0;background:linear-gradient(135deg,rgba(56,189,248,0.15),rgba(56,189,248,0.04));border:1px solid var(--b2);display:flex;align-items:center;justify-content:center}
+.brand-logo svg{width:16px;height:16px}
+.brand-name{font-family:var(--font);font-size:14px;font-weight:700;letter-spacing:-0.01em;color:var(--white)}
+.brand-sub{font-size:8px;letter-spacing:0.2em;text-transform:uppercase;color:var(--m2);display:block}
+.back-btn{display:inline-flex;align-items:center;gap:7px;padding:6px 14px;border-radius:8px;background:rgba(255,255,255,.05);border:1px solid var(--b1);color:var(--m2);font-family:var(--fontb);font-size:13px;transition:all .15s}
+.back-btn:hover{color:var(--text);border-color:var(--b2)}
+.led{display:inline-block;border-radius:50%;flex-shrink:0;animation:lp 2.4s ease-in-out infinite}
+.led-g{width:7px;height:7px;background:var(--green);box-shadow:0 0 0 2px rgba(34,197,94,.2),0 0 10px rgba(34,197,94,.8)}
+.led-b{width:7px;height:7px;background:var(--blue);box-shadow:0 0 0 2px rgba(56,189,248,.2),0 0 10px rgba(56,189,248,.8)}
+.led-sg{width:5px;height:5px;background:var(--green);box-shadow:0 0 0 1px rgba(34,197,94,.2),0 0 7px rgba(34,197,94,.8)}
+.led-sb{width:5px;height:5px;background:var(--blue);box-shadow:0 0 0 1px rgba(56,189,248,.2),0 0 7px rgba(56,189,248,.8)}
+@keyframes lp{0%,100%{opacity:1}50%{opacity:.5}}
+.page{max-width:860px;margin:0 auto;padding:40px 22px 80px}
+.loading{text-align:center;padding:80px 20px;color:var(--m2)}
+.loading-spin{font-size:28px;display:block;margin-bottom:12px;animation:spin 2s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.error-box{text-align:center;padding:60px 20px}
+.error-icon{font-size:40px;margin-bottom:14px}
+.error-title{font-family:var(--font);font-size:18px;color:var(--white);margin-bottom:8px}
+.error-sub{font-family:var(--fontb);font-size:13px;color:var(--m2)}
+.cert-wrap{display:none}
+.cert-card{position:relative;overflow:hidden;background:var(--card);border:1px solid var(--b2);border-radius:20px;padding:0;margin-bottom:20px;box-shadow:0 0 0 1px rgba(56,189,248,0.06) inset,0 40px 100px rgba(0,0,0,.7),0 0 60px rgba(14,165,233,0.08);animation:certIn .6s ease both}
+@keyframes certIn{from{opacity:0;transform:translateY(24px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+.cert-topline{height:2px;background:linear-gradient(90deg,transparent,var(--blue2),var(--green),var(--blue),transparent);background-size:200% 100%;animation:lineshift 4s linear infinite}
+@keyframes lineshift{0%{background-position:0%}100%{background-position:200%}}
+.cert-header{display:flex;align-items:flex-start;justify-content:space-between;padding:28px 28px 0;flex-wrap:wrap;gap:16px}
+.cert-kicker{display:inline-flex;align-items:center;gap:7px;font-family:var(--fontb);font-size:10px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--m2);margin-bottom:10px}
+.cert-org{font-family:var(--font);font-size:14px;font-weight:700;color:var(--white);letter-spacing:0.06em;text-transform:uppercase}
+.cert-org-sub{font-family:var(--fontb);font-size:11px;color:var(--m2);margin-top:2px;letter-spacing:0.08em;text-transform:uppercase}
+.cert-verified{display:inline-flex;align-items:center;gap:7px;padding:6px 14px;border-radius:999px;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.25);font-family:var(--fontb);font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--green);flex-shrink:0}
+.cert-divider{height:1px;background:linear-gradient(90deg,transparent,var(--b2),transparent);margin:22px 28px}
+.cert-hero{padding:0 28px 28px;display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:24px}
+.cert-name-label{font-family:var(--fontb);font-size:10px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.cert-name{font-family:var(--font);font-size:28px;font-weight:700;color:var(--white);letter-spacing:-.01em;margin-bottom:4px}
+.cert-email{font-family:var(--fontb);font-size:13px;color:var(--m2)}
+.cert-right{text-align:right}
+.cert-wwkey-label{font-family:var(--fontb);font-size:10px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.cert-wwkey-val{font-family:var(--font);font-size:52px;font-weight:700;line-height:1;color:var(--blue3);text-shadow:0 0 30px rgba(56,189,248,.5),0 0 60px rgba(56,189,248,.2);letter-spacing:-.02em}
+.cert-wwkey-unit{font-family:var(--fontb);font-size:13px;color:var(--m2);text-align:right;margin-top:4px}
+.cert-stats{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--b1)}
+.cert-stat{padding:18px 20px;border-right:1px solid var(--b1)}
+.cert-stat:last-child{border-right:none}
+.cs-label{font-family:var(--fontb);font-size:9px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.cs-val{font-family:var(--font);font-size:16px;font-weight:700;color:var(--white)}
+.cs-val.g{color:var(--green)}.cs-val.b{color:var(--blue3)}
+.cert-hash-wrap{padding:20px 28px;background:rgba(0,0,0,.2);border-top:1px solid var(--b1)}
+.cert-hash-label{font-family:var(--fontb);font-size:9px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.cert-hash-val{font-family:var(--mono);font-size:12px;color:var(--blue3);background:rgba(56,189,248,.04);border:1px solid var(--b1);border-radius:8px;padding:10px 14px;word-break:break-all;letter-spacing:.06em;line-height:1.6}
+.cert-uid-row{display:flex;align-items:center;gap:10px;margin-top:10px}
+.cert-uid-label{font-family:var(--fontb);font-size:9px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.cert-uid-val{font-family:var(--mono);font-size:12px;color:var(--m2);letter-spacing:.04em}
+.cert-watermark{position:absolute;bottom:-10px;right:20px;font-family:var(--font);font-size:80px;font-weight:700;color:rgba(56,189,248,.04);letter-spacing:.1em;pointer-events:none;user-select:none;line-height:1}
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px}
+.info-card{background:var(--card);border:1px solid var(--b1);border-radius:14px;padding:20px 18px;position:relative;overflow:hidden}
+.info-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--b2),transparent);opacity:.5}
+.ic-label{font-family:var(--fontb);font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.ic-title{font-family:var(--font);font-size:15px;font-weight:600;color:var(--white);margin-bottom:10px}
+.ic-text{font-family:var(--fontb);font-size:13px;color:var(--m2);line-height:1.65}
+.ic-list{padding-left:14px;margin-top:6px}
+.ic-list li{font-family:var(--fontb);font-size:12px;color:var(--m2);line-height:1.7}
+.actions{display:flex;gap:10px;flex-wrap:wrap}
+.btn-print{display:inline-flex;align-items:center;gap:8px;padding:11px 22px;border-radius:10px;background:linear-gradient(135deg,rgba(56,189,248,.15),rgba(56,189,248,.08));border:1px solid var(--b2);color:var(--blue3);font-family:var(--font);font-size:13px;font-weight:600;cursor:pointer;transition:all .15s}
+.btn-print:hover{background:rgba(56,189,248,.2);transform:translateY(-1px)}
+.btn-verify{display:inline-flex;align-items:center;gap:8px;padding:11px 22px;border-radius:10px;background:rgba(255,255,255,.05);border:1px solid var(--b1);color:var(--m2);font-family:var(--font);font-size:13px;font-weight:600;cursor:pointer;transition:all .15s}
+.btn-verify:hover{background:rgba(255,255,255,.09);border-color:var(--b2);color:var(--text);transform:translateY(-1px)}
+.foot{border-top:1px solid var(--b1);margin-top:40px;padding:18px;text-align:center;font-family:var(--fontb);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+@media print{body{background:#fff!important;color:#000!important}.topbar,.back-btn,.actions,.info-grid,.foot{display:none!important}.cert-card{border:1px solid #ddd!important;box-shadow:none!important}}
+@media(max-width:640px){.topbar{padding:0 14px}.page{padding:24px 14px 60px}.cert-header{padding:20px 18px 0}.cert-hero{padding:0 18px 20px}.cert-divider{margin:16px 18px}.cert-hash-wrap{padding:16px 18px}.cert-name{font-size:20px}.cert-wwkey-val{font-size:36px}.cert-stats{grid-template-columns:1fr 1fr}.info-grid{grid-template-columns:1fr}.actions{flex-direction:column}.btn-print,.btn-verify{width:100%;justify-content:center}}
 </style>
 </head>
-
 <body>
+<div class="topbar">
+  <a href="/login/member.html" class="brand">
+    <div class="brand-logo"><svg viewBox="0 0 24 24" fill="none"><path d="M12 2L20 7V12L12 17L4 12V7L12 2Z" stroke="#38bdf8" stroke-width="1.5" stroke-linejoin="round"/><path d="M12 7L16 10V14L12 17L8 14V10L12 7Z" fill="rgba(56,189,248,0.2)" stroke="#38bdf8" stroke-width="1"/></svg></div>
+    <div><span class="brand-name">WIN.WIN</span><span class="brand-sub">Cooperative</span></div>
+  </a>
+  <a href="/crx.html" class="back-btn">← Zpět na účet</a>
+</div>
 <div class="page">
-
-  <div class="frame"></div>
-
-  <div class="content-wrap">
-
-    <div class="system">Next Generation · AYAS-7 Engine</div>
-
-    <div class="header">
-      <div class="logo">AYAS-7</div>
-      <div class="title">CERTIFIKÁT WW-KEY</div>
-      <div class="subtitle">
-        Tento certifikát potvrzuje přidělení členských jednotek WW-KEY
-        v rámci systému AYAS-7.
+  <div id="loadingState" class="loading"><span class="loading-spin">⟳</span>Načítám certifikát…</div>
+  <div id="errorState" class="error-box" style="display:none"><div class="error-icon">⚠️</div><div class="error-title" id="errorTitle">Certifikát nenalezen</div><div class="error-sub" id="errorSub"></div></div>
+  <div class="cert-wrap" id="certWrap">
+    <div class="cert-card" id="certCard">
+      <div class="cert-topline"></div>
+      <div class="cert-watermark">A7</div>
+      <div class="cert-header">
+        <div>
+          <div class="cert-kicker"><span class="led led-sg"></span>Ověřený certifikát · WIN.WIN</div>
+          <div class="cert-org">Podílové Družstvo WIN-WIN</div>
+          <div class="cert-org-sub">AYAS-7 · Digital Cooperative System</div>
+        </div>
+        <div class="cert-verified"><span class="led led-sg" style="width:5px;height:5px"></span>Ověřeno systémem AYAS-7</div>
+      </div>
+      <div class="cert-divider"></div>
+      <div class="cert-hero">
+        <div class="cert-left">
+          <div class="cert-name-label">Držitel certifikátu</div>
+          <div class="cert-name" id="certName">—</div>
+          <div class="cert-email" id="certEmail">—</div>
+        </div>
+        <div class="cert-right">
+          <div class="cert-wwkey-label">WW-Key přiděleno</div>
+          <div class="cert-wwkey-val" id="certWwkey">—</div>
+          <div class="cert-wwkey-unit">Členské jednotky</div>
+        </div>
+      </div>
+      <div class="cert-stats">
+        <div class="cert-stat"><div class="cs-label">Vklad</div><div class="cs-val g" id="certDeposit">—</div></div>
+        <div class="cert-stat"><div class="cs-label">Datum vydání</div><div class="cs-val" id="certDate">—</div></div>
+        <div class="cert-stat"><div class="cs-label">Kurz WW-Key</div><div class="cs-val b">25 Kč / ks</div></div>
+        <div class="cert-stat"><div class="cs-label">Certifikát č.</div><div class="cs-val" id="certNum">—</div></div>
+      </div>
+      <div class="cert-hash-wrap">
+        <div class="cert-hash-label"><span class="led led-sb" style="animation:none;opacity:.6"></span>Unikátní identifikátor certifikátu</div>
+        <div class="cert-hash-val" id="certUid">—</div>
+        <div class="cert-uid-row"><div class="cert-uid-label">Vydáno:</div><div class="cert-uid-val">AYAS-7 Engine · WIN.WIN Cooperative</div></div>
       </div>
     </div>
-
-    <div class="grid">
-      <div class="label">Jméno člena</div><div class="value" data-name></div>
-      <div class="label">Datum vydání</div><div class="value" data-date></div>
-      <div class="label">Výše vkladu</div><div class="value" data-amount></div>
-      <div class="label">Kurz WW-KEY</div><div class="value">1 WW-KEY = 25 CZK</div>
+    <div class="info-grid">
+      <div class="info-card"><div class="ic-label">Co je WW-Key Certifikát</div><div class="ic-title">📄 Auditovatelný doklad</div><div class="ic-text">Certifikát WW-Key je officiální potvrzení přidělení členských jednotek. Generován systémem AYAS-7 na základě potvrzené platby.</div><ul class="ic-list"><li>unikátní ID pro každý certifikát</li><li>propojen s databází členů</li><li>auditovatelný a ověřitelný</li></ul></div>
+      <div class="info-card"><div class="ic-label">Právní informace</div><div class="ic-title">⚖️ Charakter certifikátu</div><div class="ic-text">WW-Key certifikát není cenným papírem ani investičním nástrojem. Slouží výhradně jako interní evidenční doklad v systému WIN.WIN.</div><ul class="ic-list"><li>není přenositelný ani obchodovatelný</li><li>evidenční a informační charakter</li><li>vázán na konkrétního člena</li></ul></div>
     </div>
-
-    <div class="seal">
-      <div class="seal-inner">
-        <div class="seal-count" data-keys></div>
-        <div class="seal-text">WW-KEY přiděleno</div>
-      </div>
+    <div class="actions">
+      <button class="btn-print" onclick="openPrint()">🖨️ Vytisknout certifikát</button>
+      <button class="btn-verify" onclick="copyUid()">📋 Kopírovat UID</button>
     </div>
-
-
-    <div class="footer">
-      <hr>
-      <div class="hash">
-        Certificate ID: <span data-id></span><br>
-        SHA-256 Integrity Hash: <span data-hash></span>
-      </div>
-      <div class="legal">
-        Tento dokument slouží výhradně jako potvrzení evidence členských jednotek
-        v systému Win-Win Cooperative a nepředstavuje investiční nástroj ani příslib výnosu.
-      </div>
-    </div>
-
   </div>
 </div>
-
+<footer class="foot">© 2025 WIN-WIN Družstvo · AYAS-7 Engine · Certifikační vrstva</footer>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
-console.log("CERT SCRIPT START");
-
-/* ===============================
-   KONFIGURACE
-=============================== */
-
-const SUPABASE_ANON_KEY =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF6ZnJuaXFxdGV0b3FwbG94d2dxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3MzQ1OTYsImV4cCI6MjA4MzMxMDU5Nn0.QchmzNhs8owd6pkjZCk04u6PJoJ2Bhzz7oGV0KFyqdU";
-
-const SUPABASE_URL =
-  "https://azfrniqqtetoqploxwgq.supabase.co";
-
-/* ===============================
-   UID Z URL
-=============================== */
-
-const params = new URLSearchParams(location.search);
-const uid = params.get("uid");
-
-if (!uid) {
-  alert("Chybí ID certifikátu");
+const SB_URL='https://azfrniqqtetoqploxwgq.supabase.co';
+const SB_ANON='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF6ZnJuaXFxdGV0b3FwbG94d2dxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3MzQ1OTYsImV4cCI6MjA4MzMxMDU5Nn0.QchmzNhs8owd6pkjZCk04u6PJoJ2Bhzz7oGV0KFyqdU';
+const sb=supabase.createClient(SB_URL,SB_ANON);
+const $=id=>document.getElementById(id);
+const params=new URLSearchParams(window.location.search);
+const uid=params.get('uid');
+function showError(t,s){$('loadingState').style.display='none';$('certWrap').style.display='none';$('errorState').style.display='block';$('errorTitle').textContent=t;$('errorSub').textContent=s||''}
+function fmt(n){return n!=null?Number(n).toLocaleString('cs-CZ'):'—'}
+function fmtDate(s){return s?new Date(s).toLocaleDateString('cs-CZ',{day:'2-digit',month:'long',year:'numeric'}):'—'}
+async function copyUid(){const val=$('certUid').textContent;if(!val||val==='—')return;await navigator.clipboard.writeText(val);const btn=document.querySelectorAll('.btn-verify')[0];btn.innerHTML='✓ Zkopírováno';setTimeout(()=>{btn.innerHTML='📋 Kopírovat UID'},2000)}
+function animateNumber(el,from,to,duration){const start=Date.now();const step=()=>{const p=Math.min((Date.now()-start)/duration,1);const ease=1-Math.pow(1-p,3);el.textContent=Math.round(from+(to-from)*ease).toLocaleString('cs-CZ');if(p<1)requestAnimationFrame(step)};requestAnimationFrame(step)}
+function openPrint(){
+  const u=new URLSearchParams(window.location.search).get('uid');
+  if(u) window.open('/certificates/certificate-print.html?uid='+u,'_blank');
 }
-
-/* ===============================
-   HLAVNÍ FUNKCE
-=============================== */
-
-async function loadCertificate() {
-  try {
-
-    /* 1) NAČTENÍ CERTIFIKÁTU */
-    const certRes = await fetch(
-      `${SUPABASE_URL}/rest/v1/member_certificates?certificate_uid=eq.${uid}&select=*`,
-      {
-        headers: {
-          "apikey": SUPABASE_ANON_KEY,
-          "Authorization": "Bearer " + SUPABASE_ANON_KEY
-        }
-      }
-    );
-
-    if (!certRes.ok) {
-      throw new Error("HTTP chyba při načtení certifikátu");
-    }
-
-    const json = await certRes.json();
-
-    if (!Array.isArray(json) || json.length === 0) {
-      throw new Error("Certifikát nebyl nalezen");
-    }
-
-    const c = json[0];
-
-    /* 2) DOSAZENÍ DAT DO DOKUMENTU */
-    const wwkey   = c.ww_key_amount   || 0;
-    const deposit = c.deposit_amount  || 0;
-
-    document.querySelector("[data-name]").textContent =
-      c.full_name || c.member_name || "—";
-
-    document.querySelector("[data-date]").textContent =
-      new Date(c.issued_at).toLocaleDateString("cs-CZ");
-
-    document.querySelector("[data-amount]").textContent =
-      `${deposit.toLocaleString("cs-CZ")} CZK`;
-
-    document.querySelector("[data-keys]").textContent =
-      wwkey.toLocaleString("cs-CZ");
-
-    document.querySelector("[data-id]").textContent =
-      c.certificate_uid;
-
-    /* 3) SHA-256 HASH */
-    const raw =
-      `${c.member_name}|${deposit}|${wwkey}|${c.issued_at}|${c.certificate_uid}|AYAS7`;
-
-    const buf = await crypto.subtle.digest(
-      "SHA-256",
-      new TextEncoder().encode(raw)
-    );
-
-    document.querySelector("[data-hash]").textContent =
-      [...new Uint8Array(buf)]
-        .map(b => b.toString(16).padStart(2, "0"))
-        .join("");
-
-    console.log("CERT OK");
-
-  } catch (e) {
-    console.error("CERT ERROR:", e);
-    alert("Chyba načtení certifikátu.");
-  }
+async function loadCert(){
+  if(!uid){showError('Chybí ID certifikátu','URL musí obsahovat parametr ?uid=...');return}
+  try{
+    const{data:cert,error}=await sb.from('member_certificates').select('*').eq('certificate_uid',uid).maybeSingle();
+    if(error)throw error;
+    if(!cert){showError('Certifikát nenalezen','UID: '+uid+' — zkontrolujte odkaz nebo kontaktujte podporu.');return}
+    const name=cert.full_name||cert.member_name||'—';
+    const email=cert.member_email||'—';
+    const wwkey=cert.ww_key_amount||0;
+    const deposit=cert.deposit_amount||0;
+    const issued=cert.issued_at||cert.created_at;
+    const num=cert.id||'—';
+    $('certName').textContent=name;
+    $('certEmail').textContent=email;
+    $('certWwkey').textContent='0';
+    $('certDeposit').textContent=fmt(deposit)+' Kč';
+    $('certDate').textContent=fmtDate(issued);
+    $('certNum').textContent='#'+num;
+    $('certUid').textContent=cert.certificate_uid;
+    $('loadingState').style.display='none';
+    $('certWrap').style.display='block';
+    animateNumber($('certWwkey'),0,wwkey,1200);
+  }catch(e){console.error(e);showError('Chyba načítání',e.message)}
 }
-
-/* ===============================
-   START PO NAČTENÍ STRÁNKY
-=============================== */
-
-window.addEventListener("load", loadCertificate);
+loadCert();
 </script>
-
-
-
 </body>
 </html>
