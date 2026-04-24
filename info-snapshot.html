@@ -4,441 +4,100 @@
 <meta charset="utf-8"/>
 <title>AYAS-7 · Truth Snapshot</title>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-
-
-
-<!-- PWA -->
 <link rel="manifest" href="/manifest.json">
-
 <link rel="icon" sizes="192x192" href="/ayas7-192.png">
-<link rel="icon" sizes="512x512" href="/ayas7-512.png">
 <link rel="apple-touch-icon" href="/ayas7-192.png">
-
-
 <meta name="theme-color" content="#020617">
-
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-/* =========================================================
-   AYAS-7 • TRUTH SNAPSHOT
-   READ ONLY • FINTECH • CALM
-========================================================= */
-
 :root{
-  --bg:#020617;
-  --panel:#0f172acc;
-  --border:#94a3b833;
-
-  --blue:#38bdf8;
-  --green:#22c55e;
-  --yellow:#facc15;
-  --purple:#a855f7;
-
-  --text:#e5e7eb;
-  --muted:#9ca3af;
+  --bg:#020617;--panel:#0f172acc;--border:#94a3b833;
+  --blue:#38bdf8;--green:#22c55e;--yellow:#facc15;--purple:#a855f7;
+  --text:#e5e7eb;--muted:#9ca3af;
+  --font:'Space Grotesk',sans-serif;--fontb:'DM Sans',sans-serif;
 }
-
 html,body{
-  margin:0;
-  padding:0;
-  min-height:100%;
-  background:
-    radial-gradient(circle at 30% -10%, #0f172a 0%, transparent 45%),
-    radial-gradient(circle at 80% 20%, #02081a 0%, transparent 50%),
-    radial-gradient(circle at 50% 120%, #020617 0%, #000 65%);
+  margin:0;padding:0;min-height:100%;
+  background:radial-gradient(circle at 30% -10%,#0f172a 0%,transparent 45%),
+    radial-gradient(circle at 80% 20%,#02081a 0%,transparent 50%),
+    radial-gradient(circle at 50% 120%,#020617 0%,#000 65%);
   background-attachment:fixed;
-  font-family:"Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  color:var(--text);
+  font-family:var(--fontb);color:var(--text);
 }
-
-main{
-  max-width:1200px;
-  margin:48px auto 140px;
-  padding:0 18px;
-}
+main{max-width:1200px;margin:48px auto 140px;padding:0 18px}
 
 /* HERO */
 .hero{margin-bottom:42px}
-.hero-kicker{
-  display:flex;align-items:center;gap:8px;
-  font-size:11px;letter-spacing:.18em;
-  text-transform:uppercase;color:var(--muted)
-}
-.hero-dot{
-  width:8px;height:8px;border-radius:50%;
-  background:var(--blue);box-shadow:0 0 10px var(--blue)
-}
-.hero-title{margin-top:12px;font-size:32px;font-weight:800}
-.hero-sub{
-  margin-top:8px;max-width:880px;
-  font-size:14px;line-height:1.6;color:#9ca3b5
-}
+.hero-kicker{display:flex;align-items:center;gap:8px;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
+.hero-dot{width:8px;height:8px;border-radius:50%;background:var(--blue);box-shadow:0 0 10px var(--blue)}
+.hero-title{margin-top:12px;font-size:32px;font-weight:700;font-family:var(--font)}
+.hero-sub{margin-top:8px;max-width:880px;font-size:14px;line-height:1.6;color:#9ca3b5}
 
 /* LAYOUT */
 .section{margin-top:40px}
-.section-label{
-  font-size:11px;letter-spacing:.18em;
-  text-transform:uppercase;color:var(--muted);
-  margin-bottom:12px
-}
-.card{
-  background:linear-gradient(180deg,rgba(15,23,42,.9),rgba(2,6,23,.96));
-  border:1px solid var(--border);
-  border-radius:18px;
-  padding:18px 20px 22px
-}
-.grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:22px
-}
+.section-label{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:12px}
+.card{background:linear-gradient(180deg,rgba(15,23,42,.9),rgba(2,6,23,.96));border:1px solid var(--border);border-radius:18px;padding:18px 20px 22px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:22px}
 @media(max-width:900px){.grid{grid-template-columns:1fr}}
-
-.metric{
-  display:flex;justify-content:space-between;
-  font-size:13px;margin-bottom:6px
-}
+.metric{display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px}
 .metric span:first-child{color:#9ca3af}
-.value{font-weight:800;font-variant-numeric:tabular-nums}
+.value{font-weight:700;font-family:var(--font);font-variant-numeric:tabular-nums}
 
-/* GRAPH */
-.graph{
-  height:300px;border-radius:14px;
-  background:#020617;
-  border:1px solid rgba(255,255,255,.06);
-  overflow:hidden
-}
-canvas{width:100%;height:100%;display:block}
+/* TOKEN ROW */
+.token-row{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+@media(max-width:760px){.token-row{grid-template-columns:1fr}}
+.token-box{position:relative;padding:22px 22px 26px;border-radius:20px;background:linear-gradient(180deg,rgba(15,23,42,.95),rgba(2,6,23,.98));border:1px solid var(--border);overflow:hidden}
+.token-box::before{content:"";position:absolute;inset:0;opacity:.12;pointer-events:none}
+.token-head h3{margin:0;font-size:15px;letter-spacing:.1em;font-family:var(--font)}
+.token-head span{display:block;margin-top:4px;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.token-value{margin:18px 0 16px;font-size:32px;font-weight:700;font-family:var(--font);font-variant-numeric:tabular-nums}
+.token-value.internal{font-size:20px;letter-spacing:.2em;color:#c084fc}
+.token-meta{display:flex;justify-content:space-between;font-size:13px;margin-top:6px}
+.token-meta.strong{font-weight:700;color:#e5e7eb}
+.token-foot{margin-top:14px;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.token-foot.prestige{color:#d8b4fe;font-weight:600}
+.token-box.unit{border-top:3px solid var(--blue)}
+.token-box.unit::before{background:radial-gradient(circle at 20% 0%,var(--blue),transparent 60%)}
+.token-box.reserve{border-top:3px solid var(--yellow)}
+.token-box.reserve::before{background:radial-gradient(circle at 20% 0%,var(--yellow),transparent 60%)}
+.token-box.key{border-top:3px solid var(--purple)}
+.token-box.key::before{background:radial-gradient(circle at 20% 0%,var(--purple),transparent 60%)}
 
-/* FOOTER */
-footer{
-  margin-top:72px;padding-top:14px;
-  border-top:1px solid var(--border);
-  font-size:11px;letter-spacing:.16em;
-  text-transform:uppercase;color:#64748b
-}
-/* =========================
-   SYSTEM HEALTH BAR
-========================= */
+/* HEALTH BAR */
+.health-bar-wrap{padding:28px 24px 30px}
+.health-bar-label{display:flex;justify-content:space-between;margin-bottom:12px;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:#9ca3af}
+.health-bar-label span:last-child{font-weight:700;color:#e5e7eb;letter-spacing:normal;font-family:var(--font)}
+.health-bar-bg{width:100%;height:14px;background:rgba(255,255,255,.06);border-radius:10px;overflow:hidden}
+.health-bar-fill{height:100%;width:0%;border-radius:10px;transition:width 1.2s ease;background:linear-gradient(90deg,#22c55e,#38bdf8);box-shadow:0 0 12px rgba(56,189,248,.45)}
 
-.health-bar-wrap{
-  padding:28px 24px 30px;
-}
+/* LED */
+.section-live{display:flex;align-items:center;gap:8px}
+.led-dot{width:8px;height:8px;border-radius:50%;background:#ef4444;box-shadow:0 0 6px rgba(239,68,68,.6);display:inline-block;margin-right:4px;transition:all .3s ease}
+.led-dot.live{background:#22c55e;box-shadow:0 0 10px #22c55e}
 
-.health-bar-label{
-  display:flex;
-  justify-content:space-between;
-  margin-bottom:12px;
-  font-size:13px;
-  letter-spacing:.12em;
-  text-transform:uppercase;
-  color:#9ca3af;
-}
+/* TRUST PANEL */
+.trust-panel{display:flex;flex-direction:column;gap:10px}
+.trust-row{display:flex;justify-content:space-between;font-size:13px;padding:6px 0;border-bottom:1px dashed rgba(255,255,255,.06)}
+.trust{font-weight:700;letter-spacing:.08em;font-family:var(--font)}
+.trust.ok{color:#22c55e}
 
-.health-bar-label span:last-child{
-  font-weight:800;
-  color:#e5e7eb;
-  letter-spacing:normal;
-}
+/* POOL GRID */
+.pool-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-top:18px}
+@media(max-width:900px){.pool-grid{grid-template-columns:1fr 1fr}}
+.pool-box{padding:22px;border-radius:18px;background:linear-gradient(145deg,#020617,#020617 60%,#0f172a);border:1px solid rgba(148,163,184,.15);box-shadow:0 0 0 1px rgba(255,255,255,.02) inset,0 10px 30px rgba(0,0,0,.6)}
+.pool-title{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#94a3b8;margin-bottom:8px}
+.pool-value{font-size:28px;font-weight:700;font-family:var(--font)}
+.pool-box.apr{border-top:3px solid #38bdf8}
+.pool-box.daily{border-top:3px solid #22c55e}
+.pool-box.tvl{border-top:3px solid #facc15}
+.pool-box.vol{border-top:3px solid #a855f7}
 
-.health-bar-bg{
-  width:100%;
-  height:14px;
-  background:rgba(255,255,255,.06);
-  border-radius:10px;
-  overflow:hidden;
-}
-
-.health-bar-fill{
-  height:100%;
-  width:0%;
-  border-radius:10px;
-  transition:width 1.2s ease;
-  background:linear-gradient(
-    90deg,
-    #22c55e,
-    #38bdf8
-  );
-  box-shadow:0 0 12px rgba(56,189,248,.45);
-}
-.section-live{
-  display:flex;
-  align-items:center;
-  gap:8px;
-}
-
-.led-dot{
-  width:6px;
-  height:6px;
-  border-radius:50%;
-  background:#ef4444; /* offline default */
-  box-shadow:0 0 6px rgba(239,68,68,.6);
-  transition:background .3s ease, box-shadow .3s ease;
-}
-
-.led-dot.live{
-  background:#22c55e;
-  box-shadow:0 0 6px rgba(34,197,94,.8);
-}
-/* =========================
-   TOKEN ROW – SIDE BY SIDE
-========================= */
-
-.token-row{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:22px;
-}
-
-/* Na menších mobilech se to zlomí – přirozeně */
-@media(max-width:760px){
-  .token-row{
-    grid-template-columns:1fr;
-  }
-}
-
-.token-box{
-  position:relative;
-  padding:22px 22px 26px;
-  border-radius:20px;
-  background:linear-gradient(180deg,rgba(15,23,42,.95),rgba(2,6,23,.98));
-  border:1px solid var(--border);
-  overflow:hidden;
-}
-
-.token-box::before{
-  content:"";
-  position:absolute;
-  inset:0;
-  opacity:.12;
-  pointer-events:none;
-}
-
-/* HEAD */
-.token-head h3{
-  margin:0;
-  font-size:15px;
-  letter-spacing:.1em;
-}
-.token-head span{
-  display:block;
-  margin-top:4px;
-  font-size:11px;
-  letter-spacing:.14em;
-  text-transform:uppercase;
-  color:var(--muted);
-}
-
-/* VALUE */
-.token-value{
-  margin:18px 0 16px;
-  font-size:32px;
-  font-weight:900;
-  font-variant-numeric:tabular-nums;
-}
-.token-value.internal{
-  font-size:20px;
-  letter-spacing:.2em;
-  color:#c084fc;
-}
-
-/* META */
-.token-meta{
-  display:flex;
-  justify-content:space-between;
-  font-size:13px;
-  margin-top:6px;
-}
-
-/* FOOT */
-.token-foot{
-  margin-top:14px;
-  font-size:11px;
-  letter-spacing:.16em;
-  text-transform:uppercase;
-  color:var(--muted);
-}
-.token-foot.prestige{
-  color:#d8b4fe;
-  font-weight:600;
-}
-
-/* COLOR IDENTITY */
-.token-box.unit{
-  border-top:3px solid var(--blue);
-}
-.token-box.unit::before{
-  background:radial-gradient(circle at 20% 0%, var(--blue), transparent 60%);
-}
-
-.token-box.reserve{
-  border-top:3px solid var(--yellow);
-}
-.token-box.reserve::before{
-  background:radial-gradient(circle at 20% 0%, var(--yellow), transparent 60%);
-}
-
-.token-box.key{
-  border-top:3px solid var(--purple);
-}
-.token-box.key::before{
-  background:radial-gradient(circle at 20% 0%, var(--purple), transparent 60%);
-}
-.trust-panel{
-  display:flex;
-  flex-direction:column;
-  gap:10px;
-}
-
-.trust-row{
-  display:flex;
-  justify-content:space-between;
-  font-size:13px;
-  padding:6px 0;
-  border-bottom:1px dashed rgba(255,255,255,.06);
-}
-
-.trust{
-  font-weight:700;
-  letter-spacing:.08em;
-}
-
-.trust.ok{
-  color:#22c55e;
-}
-/* =========================
-   SYSTEM TRACE PANEL
-========================= */
-
-.trace-panel{
-  display:flex;
-  flex-direction:column;
-  gap:14px;
-}
-
-/* FLOW */
-.trace-flow{
-  height:90px;
-  border-radius:12px;
-  background:linear-gradient(
-    180deg,
-    rgba(56,189,248,.08),
-    rgba(2,6,23,.95)
-  );
-  position:relative;
-  overflow:hidden;
-}
-
-.trace-line{
-  position:absolute;
-  inset:0;
-  background:linear-gradient(
-    120deg,
-    transparent 30%,
-    rgba(56,189,248,.35),
-    transparent 70%
-  );
-  animation:traceFlow 6s linear infinite;
-}
-
-@keyframes traceFlow{
-  from{transform:translateX(-100%)}
-  to{transform:translateX(100%)}
-}
-
-/* TIMELINE */
-.trace-log{
-  font-size:12px;
-  line-height:1.7;
-  color:#9ca3af;
-}
-
-.trace-note{
-  font-size:11px;
-  letter-spacing:.14em;
-  text-transform:uppercase;
-  color:#64748b;
-}
-/* OFFLINE MODE – TRACE */
-body.offline .trace-line{
-  animation:none;
-  opacity:.3;
-}
-
-body.offline .trace-note::after{
-  content:" · waiting for snapshot";
-  color:#64748b;
-}
-
-.token-meta.strong{
-  font-weight:800;
-  color:#e5e7eb;
-}
-
-.pool-grid{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:18px;
-  margin-top:18px;
-}
-
-.pool-box{
-  padding:22px;
-  border-radius:18px;
-  background:linear-gradient(145deg,#020617,#020617 60%,#0f172a);
-  border:1px solid rgba(148,163,184,.15);
-  box-shadow:0 0 0 1px rgba(255,255,255,.02) inset,
-             0 10px 30px rgba(0,0,0,.6);
-}
-
-.pool-title{
-  font-size:12px;
-  letter-spacing:.12em;
-  text-transform:uppercase;
-  color:#94a3b8;
-  margin-bottom:8px;
-}
-
-.pool-value{
-  font-size:28px;
-  font-weight:700;
-}
-
-/* barevné odlišení */
-.pool-box.apr   { border-top:3px solid #38bdf8; }
-.pool-box.daily { border-top:3px solid #22c55e; }
-.pool-box.tvl   { border-top:3px solid #facc15; }
-.pool-box.vol   { border-top:3px solid #a855f7; }
-
-/* mobil */
-@media(max-width:900px){
-  .pool-grid{
-    grid-template-columns:1fr;
-  }
-}
-
-/* ================= LED STATUS ================= */
-
-.led-dot{
-  width:10px;
-  height:10px;
-  border-radius:50%;
-  background:#ef4444;              /* OFFLINE = červená */
-  box-shadow:0 0 6px #ef4444;
-  display:inline-block;
-  margin-right:8px;
-  transition:all .3s ease;
-}
-
-.led-dot.live{
-  background:#22c55e;              /* ONLINE = zelená */
-  box-shadow:0 0 10px #22c55e;
-}
-
+footer{margin-top:72px;padding-top:14px;border-top:1px solid var(--border);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#64748b}
 </style>
 </head>
-
 <body>
-
 <main>
 
 <!-- HERO -->
@@ -448,82 +107,36 @@ body.offline .trace-note::after{
     Truth Snapshot · Read Only
   </div>
   <div class="hero-title">AYAS-7 · Stav systému</div>
-  <div class="hero-sub">
-    Klidný, neměnný pohled na skutečný stav architektury AYAS-7.
-    Tato obrazovka nic neřídí – pouze zobrazuje pravdu systému.
-  </div>
+  <div class="hero-sub">Klidný, neměnný pohled na skutečný stav architektury AYAS-7. Tato obrazovka nic neřídí – pouze zobrazuje pravdu systému.</div>
 </section>
 
 <!-- TOKEN COCKPIT -->
 <section class="section">
   <div class="section-label">Tokens · Core Layers</div>
-
   <div class="token-row">
-
-    <!-- WW-UNIT -->
     <div class="token-box unit">
-      <div class="token-head">
-        <h3>WW-UNIT</h3>
-        <span>Operational</span>
-      </div>
-
-      <div class="token-value" id="unitPrice">$1.14</div>
-
-      <div class="token-meta">
-        <span>Deploy</span>
-        <span id="unitSupply" class="value">—</span>
-      </div>
-<div class="token-meta strong">
-  <span>Total Value</span>
-  <span class="value">$11,400,000</span>
-</div>
-
-
-      <div class="token-foot">DEX · Pool Active</div>
+      <div class="token-head"><h3>WW-UNIT</h3><span>Operational</span></div>
+      <div class="token-value" id="unitPrice">—</div>
+      <div class="token-meta"><span>Supply</span><span id="unitSupply" class="value">—</span></div>
+      <div class="token-meta strong"><span>Market Cap</span><span id="unitMcap" class="value">—</span></div>
+      <div class="token-foot">DEX · PancakeSwap (BSC)</div>
     </div>
-
-    <!-- WW-RESERVE -->
     <div class="token-box reserve">
-      <div class="token-head">
-        <h3>WW-RESERVE</h3>
-        <span>Stability</span>
-      </div>
-
-      <div class="token-value" id="reservePrice">$0.99</div>
-
-      <div class="token-meta">
-        <span>Backing</span>
-        <span id="reserveBacking" class="value">—</span>
-      </div>
-
+      <div class="token-head"><h3>WW-RESERVE</h3><span>Stability</span></div>
+      <div class="token-value" id="reservePrice">—</div>
+      <div class="token-meta"><span>Backing</span><span id="reserveBacking" class="value">—</span></div>
+      <div class="token-meta strong"><span>Market Cap</span><span id="reserveMcap" class="value">—</span></div>
       <div class="token-foot">DEX · Backed</div>
     </div>
-
-    <!-- WW-KEY -->
     <div class="token-box key">
-      <div class="token-head">
-        <h3>WW-KEY</h3>
-        <span>Internal</span>
-      </div>
-
+      <div class="token-head"><h3>WW-KEY</h3><span>Internal</span></div>
       <div class="token-value internal">INTERNAL</div>
-
-      <div class="token-meta">
-        <span>Issued</span>
-        <span id="keyIssued" class="value">—</span>
-      </div>
-
-      <div class="token-meta">
-        <span>Holders</span>
-        <span id="keyHolders" class="value">—</span>
-      </div>
-
+      <div class="token-meta"><span>Issued</span><span id="keyIssued" class="value">—</span></div>
+      <div class="token-meta"><span>Holders</span><span id="keyHolders" class="value">—</span></div>
       <div class="token-foot prestige">FOUNDING CIRCLE</div>
     </div>
-
   </div>
 </section>
-
 
 <!-- SYSTEM -->
 <section class="section">
@@ -539,563 +152,194 @@ body.offline .trace-note::after{
 <!-- CRX DISTRIBUTION -->
 <section class="section">
   <div class="section-label">CRX · Rozdělení</div>
-
   <div class="card">
-    <div class="metric">
-      <span>CRX družstva</span>
-      <span id="crxCoop" class="value">—</span>
-    </div>
-
-    <div class="metric">
-      <span>CRX členů</span>
-      <span id="crxMembers" class="value">—</span>
-    </div>
-
-    <div class="metric" style="opacity:.7">
-      <span>Stav</span>
-      <span id="crxState" class="value">—</span>
-    </div>
+    <div class="metric"><span>CRX celkem</span><span id="crxTotal" class="value">—</span></div>
+    <div class="metric"><span>CRX alokováno</span><span id="crxMembers" class="value">—</span></div>
+    <div class="metric"><span>CRX rezerva (coop)</span><span id="crxCoop" class="value">—</span></div>
+    <div class="metric" style="opacity:.7"><span>Stav</span><span id="crxState" class="value">—</span></div>
   </div>
 </section>
 
-
 <section class="section grid">
-
-  <!-- LEFT COLUMN -->
   <div>
     <div class="card">
       <div class="section-label">Pools & DEX</div>
-
-      <div class="metric">
-        <span>WW-RESERVE / USDT</span>
-        <span class="value">ACTIVE</span>
-      </div>
-
-      <div class="metric">
-        <span>Liquidity</span>
-        <span class="value" id="poolReserveLiquidity">—</span>
-      </div>
-
-      <div class="metric">
-        <span>DEX</span>
-        <span class="value">PancakeSwap (BSC)</span>
-      </div>
-
-      <div class="metric">
-        <span>LP Custody</span>
-        <span class="value">MULTISIG</span>
-      </div>
-
+      <div class="metric"><span>WW-RESERVE / USDT</span><span class="value">ACTIVE</span></div>
+      <div class="metric"><span>Liquidity</span><span class="value" id="poolReserveLiquidity">—</span></div>
+      <div class="metric"><span>DEX</span><span class="value">PancakeSwap (BSC)</span></div>
+      <div class="metric"><span>LP Custody</span><span class="value">MULTISIG</span></div>
       <hr style="opacity:.15;margin:14px 0"/>
-
-      <div class="metric">
-        <span>WW-UNIT / USDT</span>
-        <span class="value">ACTIVE</span>
-      </div>
-
-      <div class="metric">
-        <span>Total Value</span>
-        <span class="value" id="poolUnitLiquidity">—</span>
-      </div>
-
-      <div class="metric">
-        <span>DEX</span>
-        <span class="value">PancakeSwap (BSC)</span>
-      </div>
-
+      <div class="metric"><span>WW-UNIT / USDT</span><span class="value">ACTIVE</span></div>
+      <div class="metric"><span>Total Value</span><span class="value" id="poolUnitLiquidity">—</span></div>
+      <div class="metric"><span>DEX</span><span class="value">PancakeSwap (BSC)</span></div>
       <hr style="opacity:.15;margin:14px 0"/>
-
-      <div class="metric">
-        <span>USDT / BNB</span>
-        <span class="value">ACTIVE</span>
-      </div>
-
-      <div class="metric">
-        <span>Total Value</span>
-        <span class="value" id="poolUsdtBnbLiquidity">—</span>
-      </div>
-
-      <div class="metric">
-        <span>DEX</span>
-        <span class="value">PancakeSwap (BSC)</span>
-      </div>
-
-      <div class="metric">
-        <span>LP Custody</span>
-        <span class="value">MULTISIG</span>
-      </div>
+      <div class="metric"><span>USDT / BNB</span><span class="value">ACTIVE</span></div>
+      <div class="metric"><span>Total Value</span><span class="value" id="poolUsdtBnbLiquidity">—</span></div>
+      <div class="metric"><span>DEX</span><span class="value">PancakeSwap (BSC)</span></div>
+      <div class="metric"><span>LP Custody</span><span class="value">MULTISIG</span></div>
     </div>
   </div>
-
-  <!-- RIGHT COLUMN -->
   <div>
     <div class="card trust-panel">
       <div class="section-label">System Links</div>
-
-      <div class="trust-row">
-        <span>Snapshot Writer</span>
-        <span class="trust ok">RUNNING</span>
-      </div>
-
-      <div class="trust-row">
-        <span>Snapshot API</span>
-        <span class="trust ok">LIVE</span>
-      </div>
-
-      <div class="trust-row">
-        <span>Cloud Tunnel</span>
-        <span class="trust ok">CONNECTED</span>
-      </div>
-
-      <div class="trust-row">
-        <span>DEX</span>
-        <span class="trust ok">AVAILABLE</span>
-      </div>
-
-      <div class="trust-row">
-        <span>Liquidity Pool</span>
-        <span class="trust ok">ACTIVE</span>
-      </div>
-
-      <div class="trust-row">
-        <span>Governance</span>
-        <span class="trust ok">MULTISIG</span>
-      </div>
-
-      <div class="trust-row">
-        <span>Decision Logic</span>
-        <span class="trust ok">AI + FSM</span>
-      </div>
+      <div class="trust-row"><span>Snapshot Writer</span><span class="trust ok">RUNNING</span></div>
+      <div class="trust-row"><span>Snapshot API</span><span class="trust ok">LIVE</span></div>
+      <div class="trust-row"><span>Cloud Tunnel</span><span class="trust ok">CONNECTED</span></div>
+      <div class="trust-row"><span>DEX</span><span class="trust ok">AVAILABLE</span></div>
+      <div class="trust-row"><span>Liquidity Pool</span><span class="trust ok">ACTIVE</span></div>
+      <div class="trust-row"><span>Governance</span><span class="trust ok">MULTISIG</span></div>
+      <div class="trust-row"><span>Decision Logic</span><span class="trust ok">AI + FSM</span></div>
     </div>
   </div>
-
 </section>
 
-<!-- USDT/BNB POOL – LIVE -->
+<!-- POOL LIVE -->
 <section class="section">
-
   <div class="section-label section-live">
     <span class="led-dot" id="sectionLed"></span>
     USDT / BNB Liquidity Pool · Live Market
   </div>
-
   <div class="pool-grid">
-
-    <div class="pool-box apr">
-      <div class="pool-title">APR</div>
-      <div id="yieldApr" class="pool-value">—</div>
-    </div>
-
-    <div class="pool-box daily">
-      <div class="pool-title">Měsíční výnos</div>
-      <div id="yieldDaily" class="pool-value">—</div>
-    </div>
-
-    <div class="pool-box tvl">
-      <div class="pool-title">TVL</div>
-      <div id="yieldTvl" class="pool-value">—</div>
-    </div>
-
-    <div class="pool-box vol">
-      <div class="pool-title">24h volume</div>
-      <div id="yieldVol" class="pool-value">—</div>
-    </div>
-
+    <div class="pool-box apr"><div class="pool-title">APR</div><div id="yieldApr" class="pool-value">—</div></div>
+    <div class="pool-box daily"><div class="pool-title">Měsíční výnos</div><div id="yieldDaily" class="pool-value">—</div></div>
+    <div class="pool-box tvl"><div class="pool-title">TVL</div><div id="yieldTvl" class="pool-value">—</div></div>
+    <div class="pool-box vol"><div class="pool-title">24h volume</div><div id="yieldVol" class="pool-value">—</div></div>
   </div>
 </section>
-
 
 <!-- OPERATIONAL STATUS -->
 <section class="section">
   <div class="section-label section-live">
-    <span class="led-dot" id="sectionLed"></span>
+    <span class="led-dot" id="statusLed"></span>
     Operational Status · Snapshot
   </div>
-
   <div class="card">
     <div class="health-bar-wrap">
       <div class="health-bar-label">
         <span>Operational Status</span>
-        <span>
-  <span id="healthValue">—</span>
-  <span id="healthState" style="margin-left:8px;color:#9ca3af;font-weight:600"></span>
-</span>
-
+        <span><span id="healthValue">—</span><span id="healthState" style="margin-left:8px;color:#9ca3af;font-weight:600"></span></span>
       </div>
-
-      <div class="health-bar-bg">
-        <div class="health-bar-fill" id="healthBar"></div>
-      </div>
+      <div class="health-bar-bg"><div class="health-bar-fill" id="healthBar"></div></div>
     </div>
   </div>
 </section>
-<p style="
-  margin-top:32px;
-  font-size:11px;
-  letter-spacing:.14em;
-  text-transform:uppercase;
-  color:#64748b
-">
+
+<p style="margin-top:32px;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#64748b">
 Read-only operational view · No execution · No custody
 </p>
 
-
-<footer>
-  AYAS-7 · Truth Snapshot · Read Only
-</footer>
-
+<footer>AYAS-7 · Truth Snapshot · Read Only</footer>
 </main>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-(async function () {
-
 const $ = id => document.getElementById(id);
-const VERSION = "v2_" + Date.now();   // ← TADY TO PŘIDEJ
 
- const SNAPSHOT_URL = "https://snapshot.ayas7.com/api/snapshot";
+/* ═══ URL — opraveno na ayas7.com ═══ */
+const SNAP  = 'https://ayas7.com/api/snapshot';
+const YIELD = 'https://ayas7.com/api/yield';
+const VER   = 'v3_' + Date.now();
 
-/* ⚠️ pokud běžíš lokálně v mobilu, změň na IP PC */
- const YIELD_URL = "https://api.ayas7.com/api/yield";
+/* ═══ HELPERS ═══ */
+function set(id, val){ const e=$(id); if(e) e.textContent = val ?? '—'; }
+function fmtUSD(v){ return v==null?'—':'$'+Number(v).toLocaleString('en-US',{maximumFractionDigits:2}); }
+function fmtNum(v){ return v==null?'—':Number(v).toLocaleString('en-US'); }
+function fmtPct(v){ return v==null?'—':Number(v).toFixed(2)+' %'; }
+function fmtTime(t){ return t?new Date(t).toLocaleString('cs-CZ'):'—'; }
 
-
-
-/* =========================
-   HEALTH BAR
-========================= */
+/* ═══ HEALTH BAR ═══ */
 function updateHealthBar(v){
-  if(v == null || isNaN(v)) return;
+  if(v==null||isNaN(v)) return;
+  const val = Math.max(0,Math.min(100,Number(v)));
+  const bar = $('healthBar');
+  const txt = $('healthValue');
+  if(!bar||!txt) return;
+  bar.style.width = val+'%';
+  txt.textContent = val.toFixed(1)+' %';
+  if(val>=75) bar.style.background='linear-gradient(90deg,#22c55e,#4ade80)';
+  else if(val>=40) bar.style.background='linear-gradient(90deg,#facc15,#fde047)';
+  else bar.style.background='linear-gradient(90deg,#ef4444,#f87171)';
+}
 
-  const val = Math.max(0, Math.min(100, Number(v)));
-  const bar = document.getElementById("healthBar");
-  const txt = document.getElementById("healthValue");
+/* ═══ LED ═══ */
+function setOnline(online){
+  const heroDot = document.querySelector('.hero-dot');
+  const secLed  = $('sectionLed');
+  const statLed = $('statusLed');
+  if(heroDot) heroDot.style.background = online?'#22c55e':'#ef4444';
+  if(secLed)  secLed.classList.toggle('live',online);
+  if(statLed) statLed.classList.toggle('live',online);
+  document.body.classList.toggle('offline',!online);
+}
 
-  if(!bar || !txt) return;
+/* ═══ SNAPSHOT ═══ */
+async function loadSnapshot(){
+  try{
+    const res = await fetch(SNAP+'?v='+VER,{cache:'no-store'});
+    if(!res.ok) throw new Error('API error');
+    const s = await res.json();
 
-  bar.style.width = val + "%";
-  txt.textContent = val.toFixed(1) + " %";
+    /* TOKENS */
+    set('unitPrice',   s.tokens?.WW_UNIT?.priceUSD    ? '$'+Number(s.tokens.WW_UNIT.priceUSD).toFixed(6)    : '—');
+    set('unitSupply',  fmtNum(s.tokens?.WW_UNIT?.supply));
+    set('unitMcap',    fmtUSD(s.tokens?.WW_UNIT?.marketCapUSD));
+    set('reservePrice',s.tokens?.WW_RESERVE?.priceUSD ? '$'+Number(s.tokens.WW_RESERVE.priceUSD).toFixed(6) : '—');
+    set('reserveBacking', fmtUSD(s.tokens?.WW_RESERVE?.marketCapUSD));
+    set('reserveMcap', fmtUSD(s.tokens?.WW_RESERVE?.marketCapUSD));
+    set('keyIssued',   fmtNum(s.tokens?.WW_KEY?.issued));
+    set('keyHolders',  fmtNum(s.tokens?.WW_KEY?.holders));
 
-  if(val >= 70){
-    bar.style.background = "linear-gradient(90deg,#22c55e,#4ade80)";
-  }else if(val >= 40){
-    bar.style.background = "linear-gradient(90deg,#facc15,#fde047)";
-  }else{
-    bar.style.background = "linear-gradient(90deg,#ef4444,#f87171)";
+    /* SYSTEM */
+    set('sysMode',   s.meta?.mode ?? '—');
+    set('sysHealth', fmtPct(s.meta?.health));
+    set('sysUptime', s.meta?.uptime ?? '—');
+    set('snapTime',  fmtTime(s.meta?.generatedAt));
+    updateHealthBar(s.meta?.health);
+    set('healthState', s.meta?.health>=75?'STABLE':s.meta?.health>=40?'ACTIVE':'LIMITED');
+
+    /* POOLS */
+    set('poolReserveLiquidity', fmtUSD(s.dexPools?.WW_RESERVE_USDT?.liquidityUSD));
+    set('poolUnitLiquidity',    fmtUSD(s.dexPools?.WW_UNIT_USDT?.liquidityUSD));
+    set('poolUsdtBnbLiquidity', fmtUSD(s.dexPools?.USDT_BNB?.liquidityUSD));
+
+    /* CRX */
+    set('crxTotal',   s.crx?.total   != null ? Number(s.crx.total).toFixed(2)   : '—');
+    set('crxMembers', s.crx?.allocated != null ? Number(s.crx.allocated).toFixed(2) : '—');
+    set('crxCoop',    s.crx?.coop   != null ? Number(s.crx.coop).toFixed(2)   : '—');
+    set('crxState',   (s.crx?.allocated??0)>0 ? 'ROZDĚLOVÁNO' : 'BOOTSTRAP');
+
+    setOnline(true);
+  } catch(e){
+    console.warn('Snapshot offline:', e.message);
+    set('sysMode','offline');
+    set('healthState','OFFLINE');
+    setOnline(false);
   }
 }
 
-
-/* =========================
-   SNAPSHOT LOAD
-========================= */
-async function loadSnapshot() {
-  try {
-    const res = await fetch(SNAPSHOT_URL + "?v=" + VERSION, { cache: "no-store" });
-    if (!res.ok) throw new Error("API error");
-
-    const data = await res.json();
-
-    render(data);
-    updateNet(true);
-
-  } catch {
-    renderError();
-    updateNet(false);
+/* ═══ YIELD ═══ */
+async function loadYield(){
+  try{
+    const res = await fetch(YIELD+'?v='+VER,{cache:'no-store'});
+    const d   = await res.json();
+    const y   = d.yield || d;
+    set('yieldApr', fmtPct(y?.apr));
+    // TVL - z USDT/BNB snapshot nebo yield
+    const tvlTotal = y?.tvl || 0;
+    set('yieldTvl', fmtUSD(tvlTotal));
+    set('yieldVol', fmtUSD(y?.volume24h));
+    // Měsíční výnos
+    const dailyFees = (Number(y?.volume24h)||0)*0.25;
+    const monthly   = tvlTotal>0 ? (dailyFees/tvlTotal)*100*30 : 0;
+    set('yieldDaily', fmtPct(monthly));
+  } catch(e){
+    console.warn('Yield offline:', e.message);
   }
 }
 
-
-function render(s) {
-
-  /* SYSTEM */
-  set("sysMode", s.meta?.mode ?? "—");
-  set("sysHealth", formatPct(s.meta?.health));
-  updateHealthBar(s.meta?.health);
-  set("healthState", healthStateLabel(s.meta?.health, true));
-  set("sysUptime", s.meta?.uptime ?? "—");
-  set("snapTime", formatTime(s.meta?.generatedAt));
-
-  /* POOLS */
-  set("poolReserveLiquidity",
-    s.dexPools?.WW_RESERVE_USDT?.liquidityUSD != null
-      ? formatUSD(s.dexPools.WW_RESERVE_USDT.liquidityUSD)
-      : "—"
-  );
-
-  set("poolUnitLiquidity",
-    s.dexPools?.WW_UNIT_USDT?.liquidityUSD != null
-      ? formatUSD(s.dexPools.WW_UNIT_USDT.liquidityUSD)
-      : "—"
-  );
-
-  set("poolUsdtBnbLiquidity",
-    s.dexPools?.USDT_BNB?.liquidityUSD != null
-      ? formatUSD(s.dexPools.USDT_BNB.liquidityUSD)
-      : "—"
-  );
-
-  /* TOKENS */
-  set("unitPrice",
-    s.tokens?.WW_UNIT?.priceUSD != null
-      ? "$" + Number(s.tokens.WW_UNIT.priceUSD).toFixed(6)
-      : "—"
-  );
-
-  set("unitSupply", formatNum(s.tokens?.WW_UNIT?.supply));
-
-  set("reservePrice",
-    s.tokens?.WW_RESERVE?.priceUSD != null
-      ? "$" + Number(s.tokens.WW_RESERVE.priceUSD).toFixed(6)
-      : "—"
-  );
-
-  set("reserveBacking",
-    s.tokens?.WW_RESERVE?.marketCapUSD != null
-      ? formatUSD(s.tokens.WW_RESERVE.marketCapUSD)
-      : "—"
-  );
-
-  set("keyIssued", formatNum(s.tokens?.WW_KEY?.issued));
-  set("keyHolders", formatNum(s.tokens?.WW_KEY?.holders));
-
-  /* CRX */
-  set("crxCoop", s.crx?.total != null ? Number(s.crx.total).toFixed(2) : "—");
-  set("crxMembers", s.crx?.allocated != null ? Number(s.crx.allocated).toFixed(2) : "0.00");
-  set("crxState", (s.crx?.allocated ?? 0) > 0 ? "ROZDĚLOVÁNO" : "BOOTSTRAP – bez rozdělení");
-}
-
-
-function renderError() {
-  set("healthState", "OFFLINE");
-  set("sysMode", "offline");
-  set("sysHealth", "—");
-  set("snapTime", "—");
-}
-
-
-/* =========================
-   YIELD LOAD + GRAF
-========================= */
-async function loadYield() {
-  try {
-    const res = await fetch(YIELD_URL + "?v=" + VERSION, { cache: "no-store" });
-    
-
-    const data = await res.json();
-    const y = data.yield;
-
-
-
-    if (!y) {
-      updateNet(false);
-      return;
-    }
-
-    updateNet(true);
-
-    // ✅ APR
-    set("yieldApr", formatPct(y.apr));
-
-// ===============================
-// REÁLNÝ DENNÍ VÝNOS Z POOLU
-// ===============================
-
-// fee PancakeSwap V2 = 3.25 %
-const feeRate = 0.25;
-
-// denní fee v USD
-const dailyFees = (Number(y.volume24h) || 0) * feeRate;
-
-// denní výnos v %
-const daily = y.tvl > 0 ? (dailyFees / y.tvl) * 100 : 0;
-
-set("yieldDaily", formatPct(daily));
-
-
-
-
-
-    // ✅ TVL + VOLUME
-    set("yieldTvl", formatUSD(y.tvl));
-    set("yieldVol", formatUSD(y.volume24h));
-
-    // ✅ GRAF
-    if (typeof updateYieldChart === "function") {
-      updateYieldChart(y.monthly);
-    }
-
- } catch (err) {
-  console.warn("Yield fallback:", err);
-}
-
-}
-
-/* =========================
-   HELPERS
-========================= */
-function set(id, val) {
-  const el = document.getElementById(id);
-  if (el) el.textContent = val ?? "—";
-}
-
-function formatUSD(v) {
-  if (v == null) return "—";
-  return "$" + Number(v).toLocaleString("en-US", { maximumFractionDigits: 2 });
-}
-
-function formatNum(v) {
-  if (v == null) return "—";
-  return Number(v).toLocaleString("en-US");
-}
-
-function formatPct(v) {
-  if (v == null) return "—";
-  return Number(v).toFixed(2) + " %";
-}
-
-function formatTime(t) {
-  if (!t) return "—";
-  return new Date(t).toLocaleString("cs-CZ");
-}
-
-function healthStateLabel(v, online){
-  if(!online) return "OFFLINE";
-  if(v >= 75) return "STABLE";
-  if(v >= 40) return "ACTIVE";
-  return "LIMITED";
-}
-
-function updateNet(online) {
-  const heroDot = document.querySelector(".hero-dot");
-  const sectionDot = document.getElementById("sectionLed");
-  const poolDot = document.getElementById("poolLed");   // ← NOVÉ
-
-  if (heroDot) {
-    heroDot.style.background = online ? "#22c55e" : "#ef4444";
-  }
-
-  if (sectionDot) {
-    sectionDot.classList.toggle("live", online);
-  }
-
-  if (poolDot) {                    // ← NOVÉ
-    poolDot.classList.toggle("live", online);
-  }
-
-  document.body.classList.toggle("offline", !online);
-}
-
-
-
-/* =========================
-   INIT
-========================= */
+/* ═══ INIT ═══ */
 loadSnapshot();
 loadYield();
-
-setInterval(() => {
-  loadSnapshot();
-  loadYield();
-}, 30000);
-
-})();
+setInterval(()=>{ loadSnapshot(); loadYield(); }, 30000);
 </script>
-
-
-<script>
-let yieldChart;
-let history = [];
-let lastValue = 100;
-
-/* =====================================================
-   LIVE UPDATE FUNKCE
-===================================================== */
-function updateYieldChart(monthlyYield) {
-  const canvas = document.getElementById("yieldChartCanvas");
-  if (!canvas) return;
-
-  /* měsíční → denní procento */
-  const daily = Number(monthlyYield || 0) / 30;
-
-  /* jemné přirozené kolísání */
-  const drift = daily / 100;
-  const noise = (Math.random() - 0.5) * 0.0015;
-
-  /* nový bod */
-  lastValue = lastValue * (1 + drift + noise);
-
-  /* ulož do historie */
-  history.push(lastValue);
-  if (history.length > 160) history.shift();
-
-  /* =====================
-     PRVNÍ VYKRESLENÍ
-  ===================== */
-  if (!yieldChart) {
-    const ctx = canvas.getContext("2d");
-
-    const gradient = ctx.createLinearGradient(0, 0, 0, 260);
-    gradient.addColorStop(0, "rgba(56,189,248,0.35)");
-    gradient.addColorStop(1, "rgba(56,189,248,0)");
-
-    yieldChart = new Chart(ctx, {
-      type: "line",
-      data: {
-        labels: history.map((_, i) => i),
-        datasets: [{
-          data: history,
-          borderWidth: 2,
-          tension: 0.45,
-          fill: true,
-          backgroundColor: gradient,
-          pointRadius: 0
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-
-        animation: {
-          duration: 600,
-          easing: "easeOutQuart"
-        },
-
-        plugins: {
-          legend: { display: false },
-          tooltip: { enabled: false }
-        },
-
-        scales: {
-          x: {
-            display: false,
-            grid: { display: false }
-          },
-          y: {
-            grid: {
-              color: "rgba(148,163,184,0.08)"
-            },
-            ticks: {
-              color: "#94a3b8",
-              callback: v => v.toFixed(2)
-            }
-          }
-        }
-      }
-    });
-
-    return;
-  }
-
-  /* =====================
-     DALŠÍ UPDATE
-  ===================== */
-  yieldChart.data.labels = history.map((_, i) => i);
-  yieldChart.data.datasets[0].data = history;
-  yieldChart.update("none"); // plynulé bez trhání
-}
-</script>
-
-
-
 </body>
 </html>
