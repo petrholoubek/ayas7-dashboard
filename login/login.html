@@ -250,12 +250,54 @@ main{position:relative;z-index:10;min-height:100vh;display:flex;align-items:cent
 }
 .si{display:flex;align-items:center;gap:6px;font-family:var(--fontb);font-size:10px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
 
-@media(max-width:600px){
-  nav{display:none}
-  header{padding:0 14px}
-  .card{padding:22px 18px 20px;border-radius:18px}
-  .status-bar{gap:14px;flex-wrap:wrap}
-  .ctitle{font-size:22px}
+/* ═══ TABLET ═══ */
+@media(max-width:768px) {
+  nav { display: none; }
+  .card { max-width: 100%; }
+}
+
+/* ═══ MOBIL ═══ */
+@media(max-width:600px) {
+  header { padding: 0 14px; height: 50px; }
+  nav { display: none; }
+  .brand-sub { display: none; }
+  .lang { display: none; }
+
+  main { padding: 64px 12px 70px; }
+
+  .card {
+    padding: 20px 16px 18px;
+    border-radius: 18px;
+  }
+
+  .ctitle { font-size: 20px; }
+  .csub { font-size: 12px; }
+  .kicker { font-size: 9px; }
+
+  .tabs { margin-bottom: 18px; }
+  .tab { font-size: 11px; padding: 8px 4px; }
+
+  .finput { padding: 11px 12px; font-size: 13px; }
+  .flabel { font-size: 9px; }
+
+  .btn-green { padding: 13px; font-size: 14px; }
+
+  .frow { flex-direction: column; align-items: flex-start; gap: 8px; margin-bottom: 14px; }
+
+  .status-bar { gap: 10px; flex-wrap: wrap; padding: 8px 10px; justify-content: center; }
+  .si { font-size: 9px; gap: 4px; }
+
+  .corner-leds { display: none; }
+  .ref-banner { padding: 9px 11px; font-size: 11px; }
+}
+
+/* ═══ MALY MOBIL ═══ */
+@media(max-width:380px) {
+  .ctitle { font-size: 18px; }
+  .card { padding: 16px 13px 14px; }
+  .tab { font-size: 10px; }
+  .si span:last-child { display: none; }
+  .status-bar { gap: 6px; }
 }
 </style>
 </head>
