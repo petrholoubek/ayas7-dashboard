@@ -1,847 +1,608 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="cs">
 <head>
-<meta charset="utf-8">
+<meta charset="UTF-8"/>
 <title>AYAS-7 · Admin</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<script type="module" src="./assets/js/gate.js"></script>
-  
-<!-- FAVICON / PWA -->
-  <link rel="icon" type="image/png" sizes="192x192" href="/ayas7-192.png">
-  <link rel="icon" type="image/png" sizes="512x512" href="/ayas7-512.png">
-  <link rel="apple-touch-icon" href="/ayas7-192.png">
-  <meta name="theme-color" content="#020617">
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<link rel="icon" type="image/png" sizes="192x192" href="/ayas7-192.png">
+<meta name="theme-color" content="#020917">
+<script type="module" src="/assets/js/gate.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#020617;
-  --panel:#0b1222;
-  --panel-soft:#0f172acc;
-  --border:#1e293b;
-  --text:#e5e7eb;
-  --muted:#94a3b8;
-
-  --green:#22c55e;
-  --blue:#38bdf8;
-  --yellow:#facc15;
+  --bg:#020917;
+  --s1:rgba(8,18,40,0.95);
+  --s2:rgba(4,11,28,0.98);
+  --b1:rgba(255,255,255,0.06);
+  --b2:rgba(255,255,255,0.12);
+  --b3:rgba(255,255,255,0.04);
+  --amber:#f59e0b;--amber2:#fbbf24;
+  --blue:#38bdf8;--blue2:#0ea5e9;--blue3:#7dd3fc;
+  --green:#22c55e;--green2:#4ade80;
+  --red:#ef4444;--red2:#f87171;
+  --purple:#a855f7;--purple2:#c084fc;
+  --white:#f8fafc;--text:#e2e8f0;--m2:#94a3b8;--muted:#475569;
+  --font:'Space Grotesk',sans-serif;
+  --fontb:'DM Sans',sans-serif;
+  --mono:'DM Mono',monospace;
 }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{min-height:100%;font-family:var(--fontb);background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{text-decoration:none;color:inherit}
 
-*{box-sizing:border-box}
-
-html,body{
-  margin:0;
-  padding:0;
-  background:radial-gradient(1200px 600px at top,#020617,#000);
-  color:var(--text);
-  font-family:"Segoe UI",Tahoma,Verdana,sans-serif;
+/* ═══ GRID BACKGROUND ═══ */
+body::before{
+  content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:
+    linear-gradient(rgba(56,189,248,.03) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(56,189,248,.03) 1px,transparent 1px);
+  background-size:48px 48px;
 }
-
-a{color:inherit;text-decoration:none}
-
-/* === WRAPPER === */
-.admin-wrap{
-  max-width:1200px;
-  margin:0 auto;
-  padding:28px 20px 40px;
-  display:flex;
-  flex-direction:column;
-  gap:26px;
-}
-
-/* === HEADER === */
-.admin-header{
-  display:flex;
-  flex-direction:column;
-  gap:6px;
-}
-
-.admin-title{
-  font-size:26px;
-  font-weight:600;
-  letter-spacing:.04em;
-}
-
-.admin-sub{
-  font-size:13px;
-  color:var(--muted);
-}
-
-/* === QUICK ACTIONS === */
-.quick-actions{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:18px;
-}
-
-.qa-box{
-  position:relative;
-  background:linear-gradient(180deg,#0b1222,#020617);
-  border:1px solid var(--border);
-  border-radius:20px;
-  padding:22px;
-  transition:transform .25s ease, box-shadow .25s ease;
-}
-
-.qa-box:hover{
-  transform:translateY(-3px);
-  box-shadow:0 18px 40px rgba(0,0,0,.45);
-}
-
-.qa-led{
-  position:absolute;
-  top:16px;
-  right:16px;
-  width:10px;
-  height:10px;
-  border-radius:50%;
-}
-
-.qa-title{
-  font-size:15px;
-  font-weight:600;
-  margin-bottom:6px;
-}
-
-.qa-desc{
-  font-size:12px;
-  color:var(--muted);
-  margin-bottom:14px;
-}
-
-.qa-cta{
-  font-size:12px;
-  font-weight:600;
-  letter-spacing:.02em;
-}
-
-/* COLORS */
-.qa-spf{border-color:var(--yellow)}
-.qa-spf .qa-led{background:var(--yellow);box-shadow:0 0 14px var(--yellow)}
-
-.qa-member{border-color:var(--blue)}
-.qa-member .qa-led{background:var(--blue);box-shadow:0 0 14px var(--blue)}
-
-.qa-audit{border-color:var(--green)}
-.qa-audit .qa-led{background:var(--green);box-shadow:0 0 14px var(--green)}
-
-/* === STATUS PANELS === */
-.stats{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:16px;
-}
-
-.stat{
-  position:relative;
-  background:var(--panel);
-  border:1px solid var(--border);
-  border-radius:18px;
-  padding:18px 20px;
-}
-
-.stat::after{
-  content:"";
-  position:absolute;
-  top:14px;
-  right:14px;
-  width:8px;
-  height:8px;
-  border-radius:50%;
-  background:var(--green);
-  box-shadow:0 0 12px var(--green);
-}
-
-.stat-title{
-  font-size:12px;
-  color:var(--muted);
-  margin-bottom:6px;
-}
-
-.stat-value{
-  font-size:22px;
-  font-weight:600;
-}
-
-/* === SECTIONS === */
-.section{
-  background:var(--panel-soft);
-  border:1px solid var(--border);
-  border-radius:22px;
-  padding:22px;
-}
-
-.section h2{
-  margin:0 0 6px;
-  font-size:16px;
-}
-
-.section p{
-  margin:0 0 14px;
-  font-size:12px;
-  color:var(--muted);
-}
-
-/* === TABLE === */
-table{
-  width:100%;
-  border-collapse:collapse;
-  font-size:12px;
-}
-
-th,td{
-  padding:10px;
-  border-bottom:1px solid var(--border);
-  text-align:left;
-}
-
-th{
-  font-size:11px;
-  color:var(--muted);
-}
-
-/* === CERTIFICATION BUTTON === */
-.btn{
-  display:inline-block;
-  padding:8px 14px;
-  font-size:12px;
-  border-radius:999px;
-  border:1px solid var(--border);
-}
-
-.btn-green{
-  border-color:var(--green);
-  color:var(--green);
-}
-
-/* === AUDIT PANEL === */
-.audit-box{
-  border:1px dashed var(--blue);
-  border-radius:16px;
-  padding:18px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-}
-
-/* === FOOTER === */
-.footer{
-  text-align:center;
-  font-size:11px;
-  color:var(--muted);
-  margin-top:30px;
-}
-
-/* =========================================================
-   AYAS-7 ADMIN – JEDNOTNÉ POZADÍ (FINÁL)
-   ========================================================= */
-
-/* 1️⃣ CELÁ STRÁNKA – JEDNO POZADÍ */
-html, body {
-  margin: 0;
-  padding: 0;
-  min-height: 100%;
+body::after{
+  content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
   background:
-    radial-gradient(
-      1200px 600px at 20% -10%,
-      #0b1220 0%,
-      #020617 60%
-    );
-  color: #e5e7eb;
-  font-family: "Segoe UI", Tahoma, Verdana, sans-serif;
+    radial-gradient(ellipse 80% 50% at 10% -10%,rgba(14,165,233,.12),transparent),
+    radial-gradient(ellipse 60% 40% at 90% 100%,rgba(245,158,11,.08),transparent);
 }
 
-/* 2️⃣ HLAVNÍ KONTEJNER ADMINU */
-.admin-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 48px 24px 64px;
+/* ═══ TOPBAR ═══ */
+.topbar{
+  position:sticky;top:0;z-index:100;
+  height:56px;display:flex;align-items:center;justify-content:space-between;
+  padding:0 28px;
+  background:rgba(2,9,23,0.85);backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--b1);
+}
+.brand{display:flex;align-items:center;gap:12px}
+.brand-hex{
+  width:32px;height:32px;border-radius:8px;
+  background:linear-gradient(135deg,rgba(56,189,248,.15),rgba(56,189,248,.04));
+  border:1px solid rgba(56,189,248,.25);
+  display:flex;align-items:center;justify-content:center;
+}
+.brand-hex svg{width:16px;height:16px}
+.brand-text{font-family:var(--font);font-size:15px;font-weight:700;color:var(--white);letter-spacing:-.01em}
+.brand-badge{
+  padding:2px 8px;border-radius:999px;
+  background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.25);
+  font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--amber);
+}
+.topbar-right{display:flex;align-items:center;gap:10px}
+.tb-user{
+  display:flex;align-items:center;gap:8px;
+  padding:6px 12px;border-radius:8px;
+  background:var(--b3);border:1px solid var(--b1);
+  font-size:12px;color:var(--m2);
+}
+.tb-user span{color:var(--text);font-weight:500}
+.tb-logout{
+  padding:6px 14px;border-radius:8px;
+  background:var(--b3);border:1px solid var(--b1);
+  font-size:12px;color:var(--m2);cursor:pointer;
+  transition:all .15s;
+}
+.tb-logout:hover{color:var(--red2);border-color:rgba(239,68,68,.25)}
+
+/* ═══ PAGE ═══ */
+.page{position:relative;z-index:1;max-width:1280px;margin:0 auto;padding:32px 28px 80px}
+
+/* ═══ PAGE HEADER ═══ */
+.page-header{margin-bottom:36px;display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:16px}
+.page-title{font-family:var(--font);font-size:32px;font-weight:700;color:var(--white);letter-spacing:-.02em;line-height:1}
+.page-sub{font-size:13px;color:var(--muted);margin-top:6px;letter-spacing:.04em;text-transform:uppercase}
+.page-time{font-family:var(--mono);font-size:11px;color:var(--muted);display:flex;align-items:center;gap:6px;margin-top:8px}
+.live-pill{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:4px 10px;border-radius:999px;
+  background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.2);
+  font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--green);
+}
+.live-dot{width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 8px rgba(34,197,94,.8);animation:lp 2s ease-in-out infinite}
+@keyframes lp{0%,100%{opacity:1}50%{opacity:.4}}
+
+/* ═══ STAT CARDS ═══ */
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:28px}
+.stat-card{
+  position:relative;padding:22px 20px;border-radius:16px;overflow:hidden;
+  background:var(--s1);border:1px solid var(--b1);
+  transition:border-color .2s,transform .2s;
+  animation:fadeUp .5s ease both;
+}
+.stat-card:hover{border-color:var(--b2);transform:translateY(-2px)}
+.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;border-radius:999px}
+.stat-card.c-blue::before{background:linear-gradient(90deg,transparent,var(--blue),transparent)}
+.stat-card.c-green::before{background:linear-gradient(90deg,transparent,var(--green),transparent)}
+.stat-card.c-amber::before{background:linear-gradient(90deg,transparent,var(--amber),transparent)}
+.stat-card.c-purple::before{background:linear-gradient(90deg,transparent,var(--purple),transparent)}
+.stat-lbl{font-size:10px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.stat-lbl::before{content:'';width:5px;height:5px;border-radius:50%;flex-shrink:0}
+.c-blue .stat-lbl::before{background:var(--blue);box-shadow:0 0 6px rgba(56,189,248,.8)}
+.c-green .stat-lbl::before{background:var(--green);box-shadow:0 0 6px rgba(34,197,94,.8)}
+.c-amber .stat-lbl::before{background:var(--amber);box-shadow:0 0 6px rgba(245,158,11,.8)}
+.c-purple .stat-lbl::before{background:var(--purple);box-shadow:0 0 6px rgba(168,85,247,.8)}
+.stat-val{font-family:var(--font);font-size:28px;font-weight:700;color:var(--white);letter-spacing:-.02em;line-height:1}
+.c-blue .stat-val{color:var(--blue3)}
+.c-green .stat-val{color:var(--green2)}
+.c-amber .stat-val{color:var(--amber2)}
+.c-purple .stat-val{color:var(--purple2)}
+.stat-sub{font-size:11px;color:var(--muted);margin-top:6px}
+.stat-icon{position:absolute;top:20px;right:20px;opacity:.08;font-size:40px}
+
+/* ═══ QUICK ACTIONS ═══ */
+.qa-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:28px}
+.qa-card{
+  position:relative;padding:20px;border-radius:14px;overflow:hidden;
+  background:var(--s1);border:1px solid var(--b1);cursor:pointer;
+  transition:all .2s;display:flex;flex-direction:column;gap:8px;
+  animation:fadeUp .5s ease both;
+}
+.qa-card:hover{border-color:var(--b2);transform:translateY(-2px);box-shadow:0 12px 40px rgba(0,0,0,.4)}
+.qa-card::after{content:'→';position:absolute;top:50%;right:20px;transform:translateY(-50%);font-family:var(--font);font-size:18px;opacity:.2;transition:opacity .2s,right .2s}
+.qa-card:hover::after{opacity:.6;right:16px}
+.qa-icon{font-size:24px;margin-bottom:4px}
+.qa-title{font-family:var(--font);font-size:14px;font-weight:600;color:var(--white)}
+.qa-desc{font-size:12px;color:var(--muted);line-height:1.5}
+.qa-spf{border-left:3px solid var(--amber)}
+.qa-member{border-left:3px solid var(--blue)}
+.qa-audit{border-left:3px solid var(--green)}
+
+/* ═══ SEKCE ═══ */
+.section{margin-bottom:24px;animation:fadeUp .5s ease both}
+.sec-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px}
+.sec-title{font-family:var(--font);font-size:15px;font-weight:600;color:var(--white);display:flex;align-items:center;gap:8px}
+.sec-title::before{content:'';width:4px;height:16px;border-radius:999px;background:var(--blue);flex-shrink:0}
+.sec-sub{font-size:12px;color:var(--muted)}
+.sec-badge{padding:3px 10px;border-radius:999px;background:var(--b3);border:1px solid var(--b1);font-size:11px;color:var(--m2);font-family:var(--mono)}
+
+/* ═══ TABLE ═══ */
+.tbl-wrap{
+  background:var(--s1);border:1px solid var(--b1);border-radius:14px;overflow:hidden;
+}
+.tbl-scroll{max-height:380px;overflow-y:auto}
+.tbl-scroll::-webkit-scrollbar{width:4px}
+.tbl-scroll::-webkit-scrollbar-thumb{background:var(--b2);border-radius:99px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead th{
+  padding:12px 16px;text-align:left;
+  font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);
+  background:rgba(255,255,255,.02);border-bottom:1px solid var(--b1);
+  position:sticky;top:0;z-index:1;
+}
+tbody td{padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.03);vertical-align:middle}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover td{background:rgba(255,255,255,.02)}
+.td-email{color:var(--text);font-weight:500}
+.td-num{font-family:var(--mono);font-size:12px;color:var(--blue3)}
+.td-crx{font-family:var(--mono);font-size:12px;color:var(--green2)}
+.td-role{padding:2px 8px;border-radius:6px;background:rgba(56,189,248,.08);border:1px solid rgba(56,189,248,.15);font-size:11px;color:var(--blue3);font-family:var(--mono)}
+.td-cert-yes{color:var(--green);font-size:14px}
+.td-cert-no{color:var(--muted)}
+.link-detail{
+  padding:4px 10px;border-radius:6px;
+  background:rgba(56,189,248,.07);border:1px solid rgba(56,189,248,.15);
+  font-size:11px;color:var(--blue3);transition:all .15s;
+}
+.link-detail:hover{background:rgba(56,189,248,.15)}
+
+/* ═══ AUDIT BOX ═══ */
+.audit-card{
+  background:var(--s1);border:1px solid var(--b1);border-radius:14px;padding:24px;
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;
+}
+.audit-info{}
+.audit-label{font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.audit-val{font-family:var(--mono);font-size:13px;color:var(--text);margin-bottom:4px}
+
+/* ═══ PERIOD BOX ═══ */
+.period-card{
+  background:var(--s1);border:1px solid rgba(239,68,68,.15);border-radius:14px;padding:24px;
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;
+}
+.period-info{}
+.period-tag{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:3px 10px;border-radius:999px;margin-bottom:8px;
+  background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.2);
+  font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--amber);
 }
 
-/* 3️⃣ SEKCE JSOU PRŮHLEDNÉ (NELEPÍ SE) */
-.section {
-  background: transparent;
-  margin-bottom: 32px;
+/* ═══ BUTTONS ═══ */
+.btn{
+  display:inline-flex;align-items:center;gap:7px;
+  padding:9px 18px;border-radius:9px;font-family:var(--fontb);font-size:13px;font-weight:500;
+  cursor:pointer;transition:all .15s;border:none;
 }
-
-/* 4️⃣ KARTY / BOXY – JEDINÉ MÍSTO S POZADÍM */
-.card {
-  background: linear-gradient(
-    180deg,
-    rgba(15, 23, 42, 0.95),
-    rgba(2, 6, 23, 0.95)
-  );
-  border: 1px solid rgba(148, 163, 184, 0.18);
-  border-radius: 18px;
-  padding: 22px 24px;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.55);
+.btn-primary{
+  background:linear-gradient(135deg,rgba(56,189,248,.2),rgba(56,189,248,.1));
+  border:1px solid rgba(56,189,248,.3);color:var(--blue3);
 }
-
-/* 5️⃣ NADPISY KARET – LED MIMO TEXT */
-.card-header {
-  position: relative;
-  padding-left: 18px;
-}
-
-.card-header::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #22c55e;
-  box-shadow: 0 0 10px rgba(34, 197, 94, 0.9);
-}
-/* =========================
-   DANGEROUS ACTION BUTTON
-========================= */
+.btn-primary:hover{background:rgba(56,189,248,.25);transform:translateY(-1px)}
 .btn-danger{
-  background: transparent;
-  color: #ef4444;               /* red-500 */
-  border: 1px solid #ef4444;
-  border-radius: 999px;
-  padding: 10px 18px;
-  font-size: 13px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all .2s ease;
+  background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.2);color:var(--red2);
 }
-
-.btn-danger:hover{
-  background: rgba(239,68,68,0.12);
-  box-shadow:
-    0 0 0 1px rgba(239,68,68,0.4),
-    0 0 18px rgba(239,68,68,0.35);
+.btn-danger:hover{background:rgba(239,68,68,.14);box-shadow:0 0 20px rgba(239,68,68,.2)}
+.btn-danger:disabled{opacity:.35;cursor:not-allowed;box-shadow:none;transform:none}
+.btn-success{
+  background:rgba(34,197,94,.07);border:1px solid rgba(34,197,94,.2);color:var(--green2);
 }
+.btn-success:hover{background:rgba(34,197,94,.14)}
 
-.btn-danger:disabled{
-  opacity: 0.4;
-  cursor: not-allowed;
-  box-shadow: none;
+/* ═══ EMPTY STATE ═══ */
+.empty-row td{text-align:center;padding:32px;color:var(--muted);font-size:13px}
+
+/* ═══ LOADING ═══ */
+.loading-row td{text-align:center;padding:24px;color:var(--muted);font-size:12px;letter-spacing:.08em;text-transform:uppercase}
+
+/* ═══ ANIMATIONS ═══ */
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(16px)}
+  to{opacity:1;transform:translateY(0)}
 }
+.stat-card:nth-child(1){animation-delay:.05s}
+.stat-card:nth-child(2){animation-delay:.1s}
+.stat-card:nth-child(3){animation-delay:.15s}
+.stat-card:nth-child(4){animation-delay:.2s}
+.qa-card:nth-child(1){animation-delay:.1s}
+.qa-card:nth-child(2){animation-delay:.15s}
+.qa-card:nth-child(3){animation-delay:.2s}
 
-.table-wrapper {
-  max-height: 420px;       /* cca 10 řádků */
-  overflow-y: auto;
-  border-radius: 12px;
+/* ═══ RESPONSIVE ═══ */
+@media(max-width:900px){
+  .stat-grid{grid-template-columns:1fr 1fr}
+  .qa-grid{grid-template-columns:1fr}
+  .page{padding:20px 16px 60px}
+  .topbar{padding:0 16px}
+  .page-title{font-size:24px}
 }
-
-/* jemný scrollbar – volitelné */
-.table-wrapper::-webkit-scrollbar {
-  width: 8px;
+@media(max-width:640px){
+  .stat-grid{grid-template-columns:1fr 1fr}
+  .stat-val{font-size:22px}
 }
-.table-wrapper::-webkit-scrollbar-thumb {
-  background: rgba(255,255,255,0.2);
-  border-radius: 4px;
-}
-
-
 </style>
 </head>
-
 <body>
 
-<div id="user-bar" style="
-  position:fixed;
-  top:12px;
-  right:16px;
-  z-index:9999;
-  font-size:12px;
-  color:#e5e7eb;
-  background:rgba(2,6,23,0.85);
-  border:1px solid rgba(148,163,184,0.3);
-  padding:6px 12px;
-  border-radius:999px;
-  display:none;
-">
-  Přihlášen: <span id="user-email"></span>
-  · <a href="#" id="logout" style="color:#4fa3ff;text-decoration:none;">Odhlásit</a>
-</div>
-  
-<div class="admin-wrap">
-
-<!-- HEADER -->
-<div class="admin-header">
-  <div class="admin-title">AYAS-7 · Admin</div>
-  <div class="admin-sub">
-    Úřední deska řízení družstva · dohled · audit · přehled
-  </div>
-</div>
-
-<!-- QUICK ACTIONS -->
-<div class="quick-actions">
-  <a href="spf.html" class="qa-box qa-spf">
-    <div class="qa-led"></div>
-    <div class="qa-title">SPF – síťový provizní fond</div>
-    <div class="qa-desc">Řízení období, výpočty a rozdělení CRX</div>
-    <div class="qa-cta">→ Přejít na SPF řízení</div>
-  </a>
-
-  <a href="member-intelligence.html" class="qa-box qa-member">
-    <div class="qa-led"></div>
-    <div class="qa-title">Členská karta – interní výjezd</div>
-    <div class="qa-desc">Detail člena, role, historie</div>
-    <div class="qa-cta">→ Otevřít přehled</div>
-  </a>
-
-  <a href="audit-print.html" target="_blank" class="qa-box qa-audit">
-    <div class="qa-led"></div>
-    <div class="qa-title">Audit uzavřeného období</div>
-    <div class="qa-desc">Oficiální výstup dle stanov</div>
-    <div class="qa-cta">→ Otevřít audit (PDF)</div>
-  </a>
-</div>
-
-<!-- STATS -->
-<div class="stats">
-  <div class="stat">
-    <div class="stat-title">Členové</div>
-    <div class="stat-value" id="stat-members">—</div>
-  </div>
-  <div class="stat">
-    <div class="stat-title">WW-KEY (celkem)</div>
-    <div class="stat-value" id="stat-wwkey">—</div>
-  </div>
-  <div class="stat">
-    <div class="stat-title">CRX družstva</div>
-    <div class="stat-value" id="stat-crx">—</div>
-  </div>
-</div>
-
-<div class="stat">
-  <div class="stat-title">CRX v poolu</div>
-  <div class="stat-value" id="stat-crx-pool">—</div>
-</div>
-
-
-<!-- MEMBERS -->
-<div class="section">
-  <h2>Členové družstva</h2>
-  <p>Oficiální přehled WW-KEY, CRX, rolí a certifikace.</p>
-
-  <div class="table-wrapper">
-    <table>
-      <thead>
-        <tr>
-          <th>Člen</th>
-          <th>WW-KEY</th>
-          <th>CRX</th>
-          <th>Role</th>
-          <th>Certifikát</th>
-          <th>Detail</th>
-        </tr>
-      </thead>
-      <tbody id="members-table-body">
-        <tr>
-          <td colspan="6" style="color:#64748b">Načítám data…</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-</div>
-
-
-<!-- CERTIFICATION -->
-<div class="section">
-  <h2>Certifikace členství</h2>
-  <p>Potvrzení přijetí vkladu a vydání certifikátu WW-KEY.</p>
-
-  <div class="table-wrapper">
-    <table>
-      <thead>
-        <tr>
-          <th>Člen</th>
-          <th>Vklad (CZK)</th>
-          <th>CZK</th>
-          <th>WW-KEY</th>
-          <th>Akce</th>
-        </tr>
-      </thead>
-      <tbody id="certification-table-body">
-        <tr>
-          <td colspan="5" style="color:#64748b">Žádné čekající certifikace</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-</div>
-
-<!-- AUDIT -->
-<div class="section">
-  <h2>Audit uzavřeného období</h2>
-  <p>Auditní stopa dle stanov a příloh družstva.</p>
-  <div class="audit-box">
-    <div>
-      <div id="audit-closed-at">Datum uzávěrky: —</div>
-      <div id="audit-hash">Audit hash: —</div>
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="brand">
+    <div class="brand-hex">
+      <svg viewBox="0 0 24 24" fill="none">
+        <path d="M12 2L20 7V12L12 17L4 12V7L12 2Z" stroke="#38bdf8" stroke-width="1.5" stroke-linejoin="round"/>
+        <path d="M12 7L16 10V14L12 17L8 14V10L12 7Z" fill="rgba(56,189,248,0.2)" stroke="#38bdf8" stroke-width="1"/>
+      </svg>
     </div>
-<!-- OBDOBÍ – UZÁVĚRKA -->
-<div class="section">
-  <h2>Uzávěrka období</h2>
-  <p>
-    Formální uzavření období bez rozdělení prostředků.
-    Tento krok je auditní a nevratný.
-  </p>
+    <span class="brand-text">AYAS-7</span>
+    <span class="brand-badge">Admin</span>
+  </div>
+  <div class="topbar-right">
+    <div class="tb-user" id="userBar" style="display:none">
+      <span id="userEmail"></span>
+    </div>
+    <button class="tb-logout" id="logoutBtn">Odhlásit</button>
+  </div>
+</div>
 
-  <div class="audit-box">
+<!-- PAGE -->
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="page-header">
     <div>
-      <div id="period-label">Období: —</div>
-      <div id="period-status">Stav: —</div>
+      <div class="page-title">Řídící centrum</div>
+      <div class="page-sub">AYAS-7 · Admin · Dohled · Audit · SPF</div>
+      <div class="page-time">
+        <div class="live-pill"><span class="live-dot"></span>Live</div>
+        <span id="clockEl"></span>
+      </div>
+    </div>
+    <a href="/login/member.html" class="btn btn-primary">← Dashboard</a>
+  </div>
+
+  <!-- STAT CARDS -->
+  <div class="stat-grid">
+    <div class="stat-card c-blue">
+      <div class="stat-lbl">Členové celkem</div>
+      <div class="stat-val" id="statMembers">—</div>
+      <div class="stat-sub">aktivní účty</div>
+      <div class="stat-icon">👥</div>
+    </div>
+    <div class="stat-card c-purple">
+      <div class="stat-lbl">WW-Key (celkem)</div>
+      <div class="stat-val" id="statWwkey">—</div>
+      <div class="stat-sub">členských jednotek</div>
+      <div class="stat-icon">🔑</div>
+    </div>
+    <div class="stat-card c-green">
+      <div class="stat-lbl">CRX treasury</div>
+      <div class="stat-val" id="statCrx">—</div>
+      <div class="stat-sub">věrnostní poukázky</div>
+      <div class="stat-icon">💎</div>
+    </div>
+    <div class="stat-card c-amber">
+      <div class="stat-lbl">CRX v poolu</div>
+      <div class="stat-val" id="statCrxPool">—</div>
+      <div class="stat-sub">aktuální období</div>
+      <div class="stat-icon">📊</div>
+    </div>
+  </div>
+
+  <!-- QUICK ACTIONS -->
+  <div class="section">
+    <div class="sec-head">
+      <div class="sec-title">Rychlé akce</div>
+    </div>
+    <div class="qa-grid">
+      <a href="spf.html" class="qa-card qa-spf">
+        <div class="qa-icon">💰</div>
+        <div class="qa-title">SPF – Síťový provizní fond</div>
+        <div class="qa-desc">Řízení období, výpočty CRX, rozdělení mezi členy a schválení distribuce</div>
+      </a>
+      <a href="member-intelligence.html" class="qa-card qa-member">
+        <div class="qa-icon">🧑‍💼</div>
+        <div class="qa-title">Členská karta</div>
+        <div class="qa-desc">Detail člena, role, kariérní stav, CRX a WW-Key historie</div>
+      </a>
+      <a href="audit-print.html" target="_blank" class="qa-card qa-audit">
+        <div class="qa-icon">📋</div>
+        <div class="qa-title">Audit uzavřeného období</div>
+        <div class="qa-desc">Oficiální auditní výstup dle stanov — certifikáty, CRX, hash</div>
+      </a>
+    </div>
+  </div>
+
+  <!-- MEMBERS TABLE -->
+  <div class="section">
+    <div class="sec-head">
+      <div>
+        <div class="sec-title">Členové družstva</div>
+        <div class="sec-sub">Přehled WW-Key, CRX, rolí a certifikace</div>
+      </div>
+      <span class="sec-badge" id="memberCount">načítám…</span>
+    </div>
+    <div class="tbl-wrap">
+      <div class="tbl-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>E-mail</th>
+              <th>WW-Key</th>
+              <th>CRX</th>
+              <th>Role</th>
+              <th>Certifikát</th>
+              <th>Detail</th>
+            </tr>
+          </thead>
+          <tbody id="membersBody">
+            <tr class="loading-row"><td colspan="6">Načítám členy…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- CERTIFICATIONS TABLE -->
+  <div class="section">
+    <div class="sec-head">
+      <div>
+        <div class="sec-title">Certifikáty WW-Key</div>
+        <div class="sec-sub">Vydané certifikáty a auditní záznamy</div>
+      </div>
+    </div>
+    <div class="tbl-wrap">
+      <div class="tbl-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>E-mail</th>
+              <th>Jméno</th>
+              <th>Vklad (CZK)</th>
+              <th>WW-Key</th>
+              <th>Vydáno</th>
+              <th>Stav</th>
+            </tr>
+          </thead>
+          <tbody id="certsBody">
+            <tr class="loading-row"><td colspan="6">Načítám certifikáty…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- AUDIT + PERIOD -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px" class="section">
+
+    <!-- AUDIT -->
+    <div>
+      <div class="sec-head">
+        <div class="sec-title">Poslední audit</div>
+      </div>
+      <div class="audit-card">
+        <div class="audit-info">
+          <div class="audit-label">Uzavřeno</div>
+          <div class="audit-val" id="auditDate">—</div>
+          <div class="audit-label" style="margin-top:10px">SHA-256 Hash</div>
+          <div class="audit-val" id="auditHash" style="font-size:11px;word-break:break-all;color:var(--m2)">—</div>
+        </div>
+        <a href="audit-print.html" target="_blank" class="btn btn-success">📋 Audit PDF</a>
+      </div>
     </div>
 
-    <button
-  id="close-period-btn"
-  class="btn btn-danger"
-  onclick="closePeriod()"
->
-  Uzavřít období
-</button>
+    <!-- PERIOD -->
+    <div>
+      <div class="sec-head">
+        <div class="sec-title">Uzávěrka období</div>
+      </div>
+      <div class="period-card">
+        <div class="period-info">
+          <div class="period-tag">⚠️ Nevratná akce</div>
+          <div class="audit-val" id="periodLabel">Období: —</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:4px" id="periodStatus">Stav: —</div>
+        </div>
+        <button class="btn btn-danger" id="closePeriodBtn" onclick="closePeriod()" disabled>
+          Uzavřít období
+        </button>
+      </div>
+    </div>
 
   </div>
-</div>
-
-    <a href="audit-print.html" target="_blank" class="btn btn-green">
-      Otevřít audit (PDF)
-    </a>
-  </div>
-</div>
-
-<div class="footer">
-  AYAS-7 · Admin = dohled · SPF = samostatný modul · audit-ready
-</div>
 
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
-const SUPABASE_URL = "https://azfrniqqtetoqploxwgq.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF6ZnJuaXFxdGV0b3FwbG94d2dxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3MzQ1OTYsImV4cCI6MjA4MzMxMDU5Nn0.QchmzNhs8owd6pkjZCk04u6PJoJ2Bhzz7oGV0KFyqdU";
+const SB_URL  = 'https://azfrniqqtetoqploxwgq.supabase.co';
+const SB_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF6ZnJuaXFxdGV0b3FwbG94d2dxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3MzQ1OTYsImV4cCI6MjA4MzMxMDU5Nn0.QchmzNhs8owd6pkjZCk04u6PJoJ2Bhzz7oGV0KFyqdU';
+const sb = supabase.createClient(SB_URL, SB_ANON);
 
-const sb = supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_ANON_KEY
-);
+const $ = id => document.getElementById(id);
 
-async function loadStats(){
+/* ═══ CLOCK ═══ */
+function updateClock() {
+  $('clockEl').textContent = new Date().toLocaleString('cs-CZ');
+}
+setInterval(updateClock, 1000);
+updateClock();
 
-  const { data, error } = await sb
-    .from("v_admin_stats")
-    .select("*")
-    .single();
-
-  if(error){
-    console.error("Stats error", error);
-    return;
+/* ═══ AUTH ═══ */
+async function initAuth() {
+  const { data: { user } } = await sb.auth.getUser();
+  if (user) {
+    $('userBar').style.display = 'flex';
+    $('userEmail').textContent = user.email;
   }
-
-  document.getElementById("stat-members").innerText =
-    data?.total_members ?? 0;
-
-  document.getElementById("stat-wwkey").innerText =
-    Number(data?.total_wwkey || 0).toFixed(2);
-
-document.getElementById("stat-crx").innerText =
-  Number(data?.crx_treasury || 0).toFixed(2);
-
-  console.log("STATS:", data);
+  $('logoutBtn').onclick = async () => {
+    await sb.auth.signOut();
+    window.location.href = '/login/login.html';
+  };
 }
 
-/* =========================
-   STATISTIKY
-========================= */
-async function loadCrxPool(){
-
-  const { data, error } = await sb
-    .from("crx_period_totals")
-    .select("period, total_crx")
-    .not("period", "ilike", "%TEST%")
-    .not("period", "ilike", "%LIVE%")
-    .order("period", { ascending: false })
-    .limit(1);
-
-  if(error){
-    console.error("CRX error", error);
-    return;
-  }
-
-  if(!data?.length){
-    console.warn("NO CRX DATA");
-    return;
-  }
-
-  const row = data[0];
-
-  const el = document.getElementById("stat-crx-pool");
-  if(el){
-    el.innerText = Number(row.total_crx || 0).toFixed(2);
-  }
-
-  console.log("CRX FINAL:", row);
-}
-
-
-/* =========================
-   CRX TREASURY
-========================= */
-
-async function loadTreasury(){
-
-  const { data, error } = await sb
-    .from("v_crx_treasury")
-    .select("*")
-    .single();
-
-  if(error){
-    console.error("Treasury error", error);
-    return;
-  }
-
-  const el = document.getElementById("stat-crx");
-
-  if(el){
-    el.innerText = Number(data.crx_treasury || 0).toFixed(2);
-  }
-
-  console.log("CRX TREASURY:", data);
-}
-
-/* =========================
-   ČLENOVÉ
-========================= */
-async function loadMembers(){
-  const { data, error } = await sb
-    .from("v_admin_members")
-    .select("*")
-    .order("email");
-
-  if(error){
-    console.error("Members error", error);
-    return;
-  }
-
-  const tbody = document.getElementById("members-table-body");
-  if(!tbody) return;
-
-  tbody.innerHTML = "";
-
-  data.forEach(m => {
-    tbody.innerHTML += `
-      <tr>
-        <td>${m.email}</td>
-        <td>${m.wwkey_total ?? 0}</td>
-        <td>${m.crx_total ?? 0}</td>
-        <td>${m.role ?? "—"}</td>
-        <td>${m.has_certificate ? "✔" : "—"}</td>
-        <td>
-          <a href="member-intelligence.html?member=${m.member_uuid}">
-            detail →
-          </a>
-        </td>
-      </tr>
-    `;
-  });
-}
-
-/* =========================
-   CERTIFIKÁTY – POUZE INFO
-========================= */
-async function loadCertificates(){
-  const { data, error } = await sb
-    .from("v_admin_certificates")
-    .select("*")
-    .order("issued_at", { ascending: false });
-
-  if(error){
-    console.error("Certificates error", error);
-    return;
-  }
-
-  const tbody = document.getElementById("certification-table-body");
-  if(!tbody) return;
-
-  tbody.innerHTML = "";
-
-  if(!data.length){
-    tbody.innerHTML = `
-      <tr>
-        <td colspan="6" style="color:#64748b">
-          Žádné certifikáty
-        </td>
-      </tr>`;
-    return;
-  }
-
-  data.forEach(c => {
-    tbody.innerHTML += `
-      <tr>
-        <td>${c.member_email}</td>
-        <td>${c.full_name ?? "—"}</td>
-        <td>${Number(c.deposit_amount).toLocaleString("cs-CZ")}</td>
-        <td>${c.ww_key_amount}</td>
-        <td>${new Date(c.issued_at).toLocaleString("cs-CZ")}</td>
-        <td>potvrzeno (platba)</td>
-      </tr>
-    `;
-  });
-}
-
-/* =========================
-   AUDIT
-========================= */
-async function loadAudit(){
-  const { data, error } = await sb
-    .from("v_admin_last_audit")
-    .select("*")
-    .single();
-
-  if(error){
-    console.warn("Audit not found");
-    return;
-  }
-
-  const closedEl = document.getElementById("audit-closed-at");
-  const hashEl   = document.getElementById("audit-hash");
-
-  if(closedEl){
-    closedEl.innerText =
-      "Uzavřeno: " + new Date(data.closed_at).toLocaleString("cs-CZ");
-  }
-
-  if(hashEl){
-    hashEl.innerText =
-      "Audit hash: " + (data.audit_hash ?? "— zatím nevygenerován");
-  }
-}
-
-/* =========================
-   CERTIFIKACE – AKCE
-========================= */
-async function confirmCertification(memberId){
-  if(!confirm("Potvrdit certifikaci?")) return;
-
-  const res = await fetch(
-    "/functions/v1/issue-certificate",
-    {
-      method:"POST",
-      headers:{ "Content-Type":"application/json" },
-      body:JSON.stringify({ member_id: memberId })
+/* ═══ STATS ═══ */
+async function loadStats() {
+  try {
+    const { data } = await sb.from('v_admin_stats').select('*').single();
+    if (data) {
+      $('statMembers').textContent = data.total_members ?? 0;
+      $('statWwkey').textContent   = Number(data.total_wwkey || 0).toLocaleString('cs-CZ');
     }
-  );
+  } catch(e) { console.warn('Stats:', e.message); }
 
-  if(!res.ok){
-    alert("Chyba při certifikaci");
-    return;
-  }
+  try {
+    const { data } = await sb.from('v_crx_treasury').select('*').single();
+    if (data) $('statCrx').textContent = Number(data.crx_treasury || 0).toFixed(2);
+  } catch(e) {}
 
-  await loadMembers();
-  await loadCertificationQueue();
+  try {
+    const { data } = await sb.from('crx_period_totals').select('period,total_crx')
+      .not('period','ilike','%TEST%').not('period','ilike','%LIVE%')
+      .order('period',{ascending:false}).limit(1);
+    if (data?.length) $('statCrxPool').textContent = Number(data[0].total_crx || 0).toFixed(2);
+  } catch(e) {}
 }
-/* =========================
-   OBDOBÍ – NAČTENÍ STAVU
-========================= */
-async function loadCurrentPeriod(){
 
-  const { data, error } = await sb
-    .from("spf_periods_ui")
-    .select("id, period, status")
-    .eq("status", "draft")
-    .not("period", "ilike", "%TEST%")
-    .order("period", { ascending: false })
-    .limit(1)
-    .maybeSingle();
-
-  if(error){
-    console.warn("Period error", error);
-    return;
+/* ═══ MEMBERS ═══ */
+async function loadMembers() {
+  try {
+    const { data } = await sb.from('v_admin_members').select('*').order('email');
+    const tbody = $('membersBody');
+    if (!data?.length) {
+      tbody.innerHTML = '<tr class="empty-row"><td colspan="6">Žádní členové</td></tr>';
+      return;
+    }
+    $('memberCount').textContent = data.length + ' členů';
+    tbody.innerHTML = data.map(m => `
+      <tr>
+        <td class="td-email">${m.email || '—'}</td>
+        <td class="td-num">${Number(m.wwkey_total||0).toLocaleString('cs-CZ')}</td>
+        <td class="td-crx">${Number(m.crx_total||0).toFixed(2)}</td>
+        <td><span class="td-role">${m.role || '—'}</span></td>
+        <td>${m.has_certificate ? '<span class="td-cert-yes">✓</span>' : '<span class="td-cert-no">—</span>'}</td>
+        <td><a href="member-intelligence.html?member=${m.member_uuid || ''}" class="link-detail">Detail →</a></td>
+      </tr>`).join('');
+  } catch(e) {
+    $('membersBody').innerHTML = '<tr class="empty-row"><td colspan="6">Chyba načítání: ' + e.message + '</td></tr>';
   }
+}
 
-  if(!data){
-    console.warn("No active period");
-    return;
+/* ═══ CERTIFIKÁTY ═══ */
+async function loadCerts() {
+  try {
+    const { data } = await sb.from('v_admin_certificates').select('*').order('issued_at',{ascending:false});
+    const tbody = $('certsBody');
+    if (!data?.length) {
+      tbody.innerHTML = '<tr class="empty-row"><td colspan="6">Žádné certifikáty</td></tr>';
+      return;
+    }
+    tbody.innerHTML = data.map(c => `
+      <tr>
+        <td class="td-email">${c.member_email || '—'}</td>
+        <td>${c.full_name || '—'}</td>
+        <td class="td-num">${Number(c.deposit_amount||0).toLocaleString('cs-CZ')} Kč</td>
+        <td class="td-num">${c.ww_key_amount || 0}</td>
+        <td style="font-size:11px;color:var(--m2)">${c.issued_at ? new Date(c.issued_at).toLocaleString('cs-CZ') : '—'}</td>
+        <td><span class="td-role" style="background:rgba(34,197,94,.08);border-color:rgba(34,197,94,.2);color:var(--green2)">potvrzeno</span></td>
+      </tr>`).join('');
+  } catch(e) {
+    $('certsBody').innerHTML = '<tr class="empty-row"><td colspan="6">Chyba: ' + e.message + '</td></tr>';
   }
+}
 
-  // UI text
-  document.getElementById("period-label").innerText =
-    "Období: " + data.period;
+/* ═══ AUDIT ═══ */
+async function loadAudit() {
+  try {
+    const { data } = await sb.from('v_admin_last_audit').select('*').single();
+    if (data) {
+      $('auditDate').textContent = data.closed_at ? new Date(data.closed_at).toLocaleString('cs-CZ') : '—';
+      $('auditHash').textContent = data.audit_hash || '— zatím nevygenerován';
+    }
+  } catch(e) {}
+}
 
-  document.getElementById("period-status").innerText =
-    "Stav: " + data.status;
-
-  // 🔥 tlačítko MUSÍ být uvnitř funkce
-  const btn = document.getElementById("close-period-btn");
-
-  if(btn){
-    if(data.status !== "draft"){
-      btn.disabled = true;
-      btn.innerText = "Období je uzavřeno";
-    } else {
+/* ═══ PERIOD ═══ */
+async function loadPeriod() {
+  try {
+    const { data } = await sb.from('spf_periods_ui').select('id,period,status')
+      .eq('status','draft').not('period','ilike','%TEST%')
+      .order('period',{ascending:false}).limit(1).maybeSingle();
+    if (!data) return;
+    $('periodLabel').textContent = 'Období: ' + data.period;
+    $('periodStatus').textContent = 'Stav: ' + data.status;
+    const btn = $('closePeriodBtn');
+    if (data.status === 'draft') {
       btn.disabled = false;
-      btn.innerText = "Uzavřít období";
+      window.__PERIOD_ID__ = data.id;
+    } else {
+      btn.disabled = true;
+      btn.textContent = 'Období uzavřeno';
     }
-  }
-
-  // uložíme ID pro API
-  window.__CURRENT_PERIOD_ID__ = data.id;
-
-  console.log("ACTIVE PERIOD:", data.period);
+  } catch(e) {}
 }
 
-/* =========================
-   OBDOBÍ – UZAVŘENÍ
-========================= */
-async function closePeriod(){
-  if(!confirm(
-    "Opravdu uzavřít období?\n\n" +
-    "Neproběhne žádné rozdělení.\n" +
-    "Krok je auditní a nevratný."
-  )) return;
-
-  const periodId = window.__CURRENT_PERIOD_ID__;
-  if(!periodId){
-    alert("Nelze určit aktivní období.");
-    return;
+async function closePeriod() {
+  if (!confirm('Opravdu uzavřít období?\n\nNeproběhne žádné rozdělení.\nKrok je auditní a nevratný.')) return;
+  const id = window.__PERIOD_ID__;
+  if (!id) { alert('Nelze určit aktivní období'); return; }
+  try {
+    const res = await fetch(`${SB_URL}/functions/v1/close-period`, {
+      method: 'POST',
+      headers: { 'Content-Type':'application/json', 'apikey':SB_ANON, 'Authorization':'Bearer '+SB_ANON },
+      body: JSON.stringify({ period: id })
+    });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    alert('Období bylo auditně uzavřeno.');
+    await loadPeriod();
+  } catch(e) {
+    alert('Chyba: ' + e.message);
   }
-
-  const res = await fetch(
-    "https://azfrniqqtetoqploxwgq.supabase.co/functions/v1/close-period",
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "apikey": SUPABASE_ANON_KEY,
-        "Authorization": `Bearer ${SUPABASE_ANON_KEY}`
-      },
-      body: JSON.stringify({ period: periodId })
-    }
-  );
-
-  if(!res.ok){
-    alert("Chyba při uzavření období");
-    return;
-  }
-
-  alert("Období bylo auditně uzavřeno.");
-  await loadCurrentPeriod();
 }
 
-/* =========================
-   INIT
-========================= */
-document.addEventListener("DOMContentLoaded", async () => {
-
-  await loadStats();
-  await loadCrxPool();
-  await loadTreasury();   // ← přidat
-  await loadMembers();
-  await loadCertificates();
-  await loadAudit();
-  await loadCurrentPeriod();
-
-});
-
+/* ═══ INIT ═══ */
+(async () => {
+  await initAuth();
+  await Promise.all([loadStats(), loadMembers(), loadCerts(), loadAudit(), loadPeriod()]);
+})();
 </script>
-
-
 </body>
 </html>
