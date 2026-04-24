@@ -842,8 +842,8 @@ nav a.active {
 <script>
 const SB_URL  = 'https://azfrniqqtetoqploxwgq.supabase.co';
 const SB_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF6ZnJuaXFxdGV0b3FwbG94d2dxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3MzQ1OTYsImV4cCI6MjA4MzMxMDU5Nn0.QchmzNhs8owd6pkjZCk04u6PJoJ2Bhzz7oGV0KFyqdU';
-const SNAP    = 'https://ayas7.com/api/snapshot';
-const YIELD   = 'https://ayas7.com/api/yield';
+const SNAP    = 'https://snapshot.ayas7.com/api/snapshot';
+const YIELD   = 'https://api.ayas7.com/api/yield';
 
 const sb  = supabase.createClient(SB_URL, SB_ANON);
 const $   = id => document.getElementById(id);
@@ -875,9 +875,10 @@ async function loadSnap() {
     const t  = sd.tokens || {};
     const m  = sd.meta   || {};
 
-    // Pool data
-    $('sApr').textContent = fmtPct(y?.apr);
-    $('sTvl').textContent = fmtUSD(y?.tvl);
+    // Pool data - APR z yield API, TVL z USDT_BNB poolu
+    $('sApr').textContent = y?.apr ? fmtPct(y.apr) : '—';
+    const tvlVal = sd.dexPools?.USDT_BNB?.liquidityUSD || y?.tvl || 0;
+    $('sTvl').textContent = fmtUSD(tvlVal);
 
     // Token prices
     $('sUnit').textContent    = t.WW_UNIT?.priceUSD    ? '$'+Number(t.WW_UNIT.priceUSD).toFixed(6)    : '—';
