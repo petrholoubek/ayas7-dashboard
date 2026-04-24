@@ -155,9 +155,9 @@ const $=id=>document.getElementById(id);
 const params=new URLSearchParams(window.location.search);
 const uid=params.get('uid');
 function showError(t,s){$('loadingState').style.display='none';$('certWrap').style.display='none';$('errorState').style.display='block';$('errorTitle').textContent=t;$('errorSub').textContent=s||''}
-function fmt(n){return n!=null?Number(n).toLocaleString('cs-CZ'):'—'}
-function fmtDate(s){return s?new Date(s).toLocaleDateString('cs-CZ',{day:'2-digit',month:'long',year:'numeric'}):'—'}
-async function copyUid(){const val=$('certUid').textContent;if(!val||val==='—')return;await navigator.clipboard.writeText(val);const btn=document.querySelectorAll('.btn-verify')[0];btn.innerHTML='✓ Zkopírováno';setTimeout(()=>{btn.innerHTML='📋 Kopírovat UID'},2000)}
+function fmt(n){return n!=null?Number(n).toLocaleString('cs-CZ'):'-'}
+function fmtDate(s){return s?new Date(s).toLocaleDateString('cs-CZ',{day:'2-digit',month:'long',year:'numeric'}):'-'}
+async function copyUid(){const val=$('certUid').textContent;if(!val||val==='-')return;await navigator.clipboard.writeText(val);const btn=document.querySelectorAll('.btn-verify')[0];btn.innerHTML='✓ Zkopírováno';setTimeout(()=>{btn.innerHTML='📋 Kopírovat UID'},2000)}
 function animateNumber(el,from,to,duration){const start=Date.now();const step=()=>{const p=Math.min((Date.now()-start)/duration,1);const ease=1-Math.pow(1-p,3);el.textContent=Math.round(from+(to-from)*ease).toLocaleString('cs-CZ');if(p<1)requestAnimationFrame(step)};requestAnimationFrame(step)}
 function openPrint(){
   const u=new URLSearchParams(window.location.search).get('uid');
@@ -168,13 +168,13 @@ async function loadCert(){
   try{
     const{data:cert,error}=await sb.from('member_certificates').select('*').eq('certificate_uid',uid).maybeSingle();
     if(error)throw error;
-    if(!cert){showError('Certifikát nenalezen','UID: '+uid+' — zkontrolujte odkaz nebo kontaktujte podporu.');return}
-    const name=cert.full_name||cert.member_name||'—';
-    const email=cert.member_email||'—';
+    if(!cert){showError('Certifikát nenalezen','UID: '+uid+' - zkontrolujte odkaz nebo kontaktujte podporu.');return}
+    const name=cert.full_name||cert.member_name||'-';
+    const email=cert.member_email||'-';
     const wwkey=cert.ww_key_amount||0;
     const deposit=cert.deposit_amount||0;
     const issued=cert.issued_at||cert.created_at;
-    const num=cert.id||'—';
+    const num=cert.id||'-';
     $('certName').textContent=name;
     $('certEmail').textContent=email;
     $('certWwkey').textContent='0';
