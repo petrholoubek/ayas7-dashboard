@@ -467,25 +467,68 @@ nav a.active {
   .brand-name { font-size: 13px; }
   .brand-sub { display: none; }
 
-  /* Hero */
-  .hero { padding-bottom: 80px; min-height: 100svh; }
-  .hero-label { font-size: 11px; margin-top: 28px; }
-  .hero-name { font-size: clamp(32px, 9vw, 52px); letter-spacing: -0.02em; }
-  .hero-sub { font-size: 10px; letter-spacing: .08em; margin-bottom: 20px; }
-  .hero-live { font-size: 10px; padding: 5px 13px; margin-bottom: 4px; }
+  /* Hero — kompaktní na mobilu, ne full screen */
+  .hero {
+    height: 65vh;
+    min-height: 420px;
+    max-height: 600px;
+    padding-bottom: 72px;
+  }
+  .hero-label {
+    font-size: 10px;
+    margin-top: 0;
+    margin-bottom: 6px;
+    letter-spacing: .08em;
+  }
+  .hero-name {
+    font-size: clamp(28px, 8vw, 44px);
+    letter-spacing: -0.02em;
+    margin-bottom: 8px;
+  }
+  .hero-sub {
+    font-size: 10px;
+    letter-spacing: .07em;
+    margin-bottom: 16px;
+    display: none; /* skryjeme na mobilu — šetří místo */
+  }
+  .hero-live {
+    font-size: 9px;
+    padding: 4px 11px;
+    margin-bottom: 8px;
+    letter-spacing: .1em;
+  }
 
-  /* Hero CTA buttons */
-  .hero-cta { gap: 10px; flex-direction: column; align-items: center; width: 100%; padding: 0 24px; }
-  .btn-primary, .btn-secondary { width: 100%; justify-content: center; padding: 13px 20px; font-size: 14px; }
+  /* Hero CTA buttons — vedle sebe ne pod sebou */
+  .hero-cta {
+    gap: 8px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 0 16px;
+    flex-wrap: nowrap;
+  }
+  .btn-primary {
+    flex: 1;
+    justify-content: center;
+    padding: 11px 14px;
+    font-size: 13px;
+  }
+  .btn-secondary {
+    flex: 1;
+    justify-content: center;
+    padding: 11px 14px;
+    font-size: 13px;
+  }
 
-  /* Stat strip */
+  /* Stat strip — kompaktnější */
   .strip-inner { border-radius: 12px 12px 0 0; }
-  .sstat { padding: 11px 8px; }
-  .sstat-val { font-size: 14px; letter-spacing: -0.01em; }
-  .sstat-lbl { font-size: 8px; letter-spacing: .1em; }
+  .sstat { padding: 10px 6px; }
+  .sstat-val { font-size: 13px; letter-spacing: -0.01em; }
+  .sstat-lbl { font-size: 7px; letter-spacing: .08em; }
 
   /* Main content */
-  .main { padding: 28px 14px 60px; }
+  .main { padding: 24px 14px 60px; }
   .sec-title { font-size: 11px; }
   .grid3 { grid-template-columns: 1fr; gap: 12px; }
   .grid2 { grid-template-columns: 1fr; gap: 12px; }
@@ -512,7 +555,6 @@ nav a.active {
   .actions { flex-direction: column; gap: 8px; }
   .act-btn { width: 100%; justify-content: center; padding: 12px; }
 
-  /* Status bar dole */
   .foot { font-size: 9px; padding: 14px 10px; }
 }
 
@@ -848,6 +890,7 @@ async function init() {
     $('wwkeyVal').textContent   = fmt(acc.ww_key_balance);
     $('depositVal').textContent = acc.total_paid ? fmt(acc.total_paid)+' Kč' : '—';
   }
+
   const { data: crx } = await sb.from('member_crx_balances_internal').select('*').eq('member_id',acc?.member_id).maybeSingle();
   if(crx) {
     const bal  = Number(crx.available||crx.balance||0);
