@@ -10,628 +10,584 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
-
 <style>
 :root {
-  --bg:     #020917;
-  --card:   rgba(4,12,28,0.94);
-  --border: rgba(56,189,248,0.1);
-  --border2:rgba(56,189,248,0.22);
-  --blue:   #38bdf8;
-  --blue2:  #0ea5e9;
-  --blue3:  #7dd3fc;
-  --green:  #22c55e;
-  --white:  #f8fafc;
-  --text:   #e2e8f0;
-  --muted:  #475569;
-  --muted2: #94a3b8;
-  --font:   'Space Grotesk', sans-serif;
-  --fontb:  'DM Sans', sans-serif;
+  --bg:    #020917;
+  --card:  rgba(4,12,30,0.92);
+  --b1:    rgba(56,189,248,0.12);
+  --b2:    rgba(56,189,248,0.25);
+  --blue:  #38bdf8;
+  --blue2: #0ea5e9;
+  --blue3: #7dd3fc;
+  --green: #22c55e;
+  --green2:#16a34a;
+  --green3:#4ade80;
+  --white: #f8fafc;
+  --text:  #e2e8f0;
+  --muted: #475569;
+  --m2:    #94a3b8;
+  --font:  'Space Grotesk', sans-serif;
+  --fontb: 'DM Sans', sans-serif;
 }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;font-family:var(--fontb);color:var(--text);background:var(--bg);overflow-x:hidden;-webkit-font-smoothing:antialiased}
+a{text-decoration:none;color:inherit}
 
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html, body { height: 100%; font-family: var(--fontb); color: var(--text); background: var(--bg); overflow-x: hidden; -webkit-font-smoothing: antialiased; }
-a { text-decoration: none; color: inherit; }
+/* ═══ CANVAS BACKGROUND ═══ */
+#bg-canvas{position:fixed;inset:0;z-index:0;pointer-events:none}
 
-/* ── HERO BG ── */
-.hero-bg {
-  position: fixed; inset: 0; z-index: 0; pointer-events: none;
-}
-.hero-bg img {
-  width: 100%; height: 100%;
-  object-fit: cover; object-position: center 25%;
-  display: block; opacity: 0.22;
-}
-.hero-bg::after {
-  content: ''; position: absolute; inset: 0;
+/* ═══ HERO IMAGE ═══ */
+.hero-bg{position:fixed;inset:0;z-index:1;pointer-events:none}
+.hero-bg img{width:100%;height:100%;object-fit:cover;object-position:center 25%;display:block;opacity:0.15}
+.hero-bg::after{
+  content:'';position:absolute;inset:0;
   background:
-    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(14,165,233,0.08) 0%, transparent 60%),
-    linear-gradient(180deg, rgba(2,9,23,0.4) 0%, rgba(2,9,23,0.9) 60%, rgba(2,9,23,1) 100%);
+    radial-gradient(ellipse 70% 50% at 50% 0%,rgba(14,165,233,0.1),transparent 60%),
+    linear-gradient(180deg,rgba(2,9,23,0.3) 0%,rgba(2,9,23,0.85) 60%,rgba(2,9,23,1) 100%);
 }
 
-/* ── GRID PATTERN ── */
-.grid-pattern {
-  position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: 0.025;
-  background-image:
-    linear-gradient(rgba(56,189,248,1) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(56,189,248,1) 1px, transparent 1px);
-  background-size: 48px 48px;
-  mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 20%, transparent 100%);
+/* ═══ GRID ═══ */
+.grid-bg{
+  position:fixed;inset:0;z-index:1;pointer-events:none;
+  background-image:linear-gradient(rgba(56,189,248,1) 1px,transparent 1px),linear-gradient(90deg,rgba(56,189,248,1) 1px,transparent 1px);
+  background-size:52px 52px;opacity:0.03;
+  mask-image:radial-gradient(ellipse 90% 90% at 50% 50%,black 10%,transparent 100%);
 }
 
-/* ── FLOATING ORBS ── */
-.orb {
-  position: fixed; border-radius: 50%; pointer-events: none; z-index: 0;
-  filter: blur(80px); opacity: 0.12; animation: orbFloat linear infinite;
+/* ═══ TOPBAR ═══ */
+header{
+  position:fixed;top:0;left:0;right:0;z-index:200;height:54px;
+  display:flex;align-items:center;justify-content:space-between;padding:0 28px;
+  background:rgba(2,9,23,0.75);backdrop-filter:blur(24px);
+  border-bottom:1px solid var(--b1);
 }
-.orb1 { width: 400px; height: 400px; background: var(--blue2); top: -100px; left: -100px; animation-duration: 20s; }
-.orb2 { width: 300px; height: 300px; background: var(--green); bottom: -80px; right: -80px; animation-duration: 25s; animation-delay: -8s; }
-.orb3 { width: 200px; height: 200px; background: #818cf8; top: 40%; left: 60%; animation-duration: 18s; animation-delay: -4s; }
-@keyframes orbFloat {
-  0%,100% { transform: translate(0,0) scale(1); }
-  33%     { transform: translate(30px,-20px) scale(1.05); }
-  66%     { transform: translate(-20px,30px) scale(0.95); }
+.brand{display:flex;align-items:center;gap:10px}
+.brand-logo{
+  width:32px;height:32px;border-radius:8px;flex-shrink:0;
+  background:linear-gradient(135deg,rgba(56,189,248,0.15),rgba(56,189,248,0.04));
+  border:1px solid var(--b2);
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 0 16px rgba(56,189,248,0.12);
 }
+.brand-logo svg{width:18px;height:18px}
+.brand-name{font-family:var(--font);font-size:15px;font-weight:700;letter-spacing:-0.01em;color:var(--white)}
+.brand-sub{font-size:8px;letter-spacing:0.2em;text-transform:uppercase;color:var(--m2);display:block}
+nav{display:flex;gap:2px}
+nav a{padding:5px 13px;border-radius:8px;font-family:var(--fontb);font-size:13px;font-weight:500;color:var(--m2);transition:all .15s}
+nav a:hover{color:var(--text);background:rgba(255,255,255,.06)}
+.lang{display:flex;align-items:center;gap:6px;font-family:var(--fontb);font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted)}
+.lang span{cursor:pointer;transition:color .15s}.lang span:hover,.lang span.on{color:var(--text)}
+.lang-sep{opacity:.25}
 
-/* ── TOPBAR ── */
-header {
-  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-  height: 54px; display: flex; align-items: center;
-  justify-content: space-between; padding: 0 28px;
-  background: rgba(2,9,23,0.7);
-  backdrop-filter: blur(24px);
-  border-bottom: 1px solid var(--border);
+/* ═══ LED ═══ */
+.led{display:inline-block;border-radius:50%;flex-shrink:0}
+.led-g{width:7px;height:7px;background:var(--green);box-shadow:0 0 0 2px rgba(34,197,94,.2),0 0 12px rgba(34,197,94,.8);animation:lp 2.4s ease-in-out infinite}
+.led-b{width:7px;height:7px;background:var(--blue);box-shadow:0 0 0 2px rgba(56,189,248,.2),0 0 12px rgba(56,189,248,.8);animation:lp 2.4s ease-in-out infinite}
+.led-sg{width:5px;height:5px;background:var(--green);box-shadow:0 0 0 1px rgba(34,197,94,.2),0 0 8px rgba(34,197,94,.8);animation:lp 2.4s ease-in-out infinite}
+.led-sb{width:5px;height:5px;background:var(--blue);box-shadow:0 0 0 1px rgba(56,189,248,.2),0 0 8px rgba(56,189,248,.8);animation:lp 2.4s ease-in-out infinite}
+@keyframes lp{0%,100%{opacity:1}50%{opacity:.5}}
+
+/* ═══ MAIN ═══ */
+main{position:relative;z-index:10;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:74px 16px 60px}
+
+/* ═══ CARD ═══ */
+.card{
+  width:100%;max-width:428px;
+  background:var(--card);
+  border:1px solid var(--b1);
+  border-radius:22px;padding:28px 26px 24px;
+  backdrop-filter:blur(40px) saturate(1.5);
+  box-shadow:0 0 0 1px rgba(56,189,248,0.06) inset,0 40px 100px rgba(0,0,0,.75),0 0 60px rgba(14,165,233,0.06);
+  animation:cardIn .55s cubic-bezier(.25,.46,.45,.94) both;
+  position:relative;overflow:hidden;
 }
+.card::before{content:'';position:absolute;top:0;left:8%;right:8%;height:1px;background:linear-gradient(90deg,transparent,var(--blue2),transparent);opacity:.5}
+.card::after{content:'';position:absolute;top:0;right:0;width:100px;height:100px;background:radial-gradient(circle at 100% 0%,rgba(56,189,248,0.07),transparent 70%);pointer-events:none}
+@keyframes cardIn{from{opacity:0;transform:translateY(28px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
 
-.brand { display: flex; align-items: center; gap: 10px; }
-.brand-logo {
-  width: 30px; height: 30px; border-radius: 7px;
-  background: linear-gradient(135deg, rgba(56,189,248,0.15), rgba(56,189,248,0.05));
-  border: 1px solid var(--border2);
-  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+/* Corner LEDs */
+.corner-leds{position:absolute;top:16px;right:18px;display:flex;gap:6px;align-items:center}
+
+/* Animated border glow */
+.card-glow{
+  position:absolute;inset:-1px;border-radius:23px;pointer-events:none;z-index:-1;
+  background:linear-gradient(135deg,rgba(56,189,248,0.15),rgba(34,197,94,0.1),rgba(56,189,248,0.08));
+  opacity:0;transition:opacity .4s;
 }
-.brand-logo svg { width: 16px; height: 16px; }
-.brand-texts { display: flex; flex-direction: column; gap: 1px; }
-.brand-name { font-family: var(--font); font-size: 14px; font-weight: 700; letter-spacing: -0.01em; color: var(--white); }
-.brand-sub  { font-size: 8px; font-weight: 400; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted2); }
+.card:hover .card-glow{opacity:1}
 
-nav { display: flex; gap: 2px; }
-nav a { padding: 5px 13px; border-radius: 8px; font-family: var(--fontb); font-size: 13px; font-weight: 500; color: var(--muted2); transition: all .15s; }
-nav a:hover { color: var(--text); background: rgba(255,255,255,.06); }
-
-.lang { display: flex; align-items: center; gap: 6px; font-family: var(--fontb); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
-.lang span { cursor: pointer; transition: color .15s; }
-.lang span:hover, .lang span.on { color: var(--text); }
-.lang-sep { opacity: 0.25; }
-
-/* ── LED TEČKY ── */
-.led {
-  display: inline-block; border-radius: 50%; flex-shrink: 0;
-  animation: ledpulse 2.4s ease-in-out infinite;
+/* ═══ REF BANNER ═══ */
+.ref-banner{
+  display:none;align-items:center;gap:10px;
+  padding:11px 14px;border-radius:12px;
+  background:rgba(56,189,248,0.06);border:1px solid var(--b2);
+  margin-bottom:18px;animation:cardIn .3s ease both;
 }
-.led-g { width:7px;height:7px; background:var(--green); box-shadow: 0 0 0 2px rgba(34,197,94,0.2), 0 0 10px rgba(34,197,94,0.7); }
-.led-b { width:7px;height:7px; background:var(--blue);  box-shadow: 0 0 0 2px rgba(56,189,248,0.2), 0 0 10px rgba(56,189,248,0.7); }
-.led-sm-g { width:5px;height:5px; background:var(--green); box-shadow: 0 0 0 1px rgba(34,197,94,0.2), 0 0 7px rgba(34,197,94,0.7); }
-.led-sm-b { width:5px;height:5px; background:var(--blue);  box-shadow: 0 0 0 1px rgba(56,189,248,0.2), 0 0 7px rgba(56,189,248,0.7); }
-.led-lg-b { width:10px;height:10px; background:var(--blue); box-shadow: 0 0 0 3px rgba(56,189,248,0.15), 0 0 20px rgba(56,189,248,0.6); }
-@keyframes ledpulse {
-  0%,100% { opacity:1; }
-  50%      { opacity:0.6; }
-}
+.ref-banner.show{display:flex}
+.ref-banner-text{font-family:var(--fontb);font-size:12px;color:var(--m2);line-height:1.5}
+.ref-banner-text strong{color:var(--blue3);font-weight:600}
 
-/* ── SCAN LINE efekt ── */
-.scan-line {
-  position: fixed; inset: 0; z-index: 0; pointer-events: none;
-  background: repeating-linear-gradient(
-    0deg, transparent, transparent 3px,
-    rgba(56,189,248,0.008) 3px, rgba(56,189,248,0.008) 4px
-  );
-}
+/* ═══ TABS ═══ */
+.tabs{display:flex;gap:0;background:rgba(255,255,255,.03);border:1px solid var(--b1);border-radius:13px;padding:3px;margin-bottom:24px}
+.tab{flex:1;padding:9px;border-radius:10px;font-family:var(--font);font-size:12px;font-weight:600;letter-spacing:.02em;text-align:center;cursor:pointer;color:var(--m2);transition:all .2s;border:none;background:none}
+.tab.on{background:rgba(56,189,248,.1);color:var(--blue3);border:1px solid var(--b1);box-shadow:0 0 16px rgba(56,189,248,.12)}
 
-/* ── MAIN ── */
-main {
-  position: relative; z-index: 1; min-height: 100vh;
-  display: flex; align-items: center; justify-content: center;
-  padding: 80px 16px 40px;
-}
+/* ═══ SECTION ═══ */
+.section{display:none}.section.on{display:block}
 
-/* ── LOGIN CARD ── */
-.card {
-  width: 100%; max-width: 420px;
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 20px;
-  padding: 30px 28px 26px;
-  backdrop-filter: blur(32px) saturate(1.4);
+/* ═══ CARD HEADER ═══ */
+.kicker{display:inline-flex;align-items:center;gap:7px;font-family:var(--fontb);font-size:10px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--m2);margin-bottom:10px}
+.ctitle{font-family:var(--font);font-size:24px;font-weight:700;letter-spacing:-.02em;color:var(--white);margin-bottom:4px}
+.csub{font-family:var(--fontb);font-size:13px;color:var(--m2);line-height:1.55;margin-bottom:20px}
+
+/* ═══ FIELDS ═══ */
+.field{margin-bottom:14px}
+.flabel{display:flex;align-items:center;gap:6px;margin-bottom:6px;font-family:var(--fontb);font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--m2)}
+.flabel-opt{color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0;font-size:10px}
+.finput{
+  width:100%;padding:12px 14px;
+  background:rgba(255,255,255,.03);
+  border:1px solid var(--b1);border-radius:11px;
+  color:var(--text);font-family:var(--fontb);font-size:14px;
+  outline:none;transition:border-color .18s,box-shadow .18s,background .18s;
+}
+.finput::placeholder{color:rgba(148,163,184,.3)}
+.finput:focus{border-color:var(--b2);box-shadow:0 0 0 3px rgba(56,189,248,.1),0 0 20px rgba(56,189,248,.05);background:rgba(56,189,248,.03)}
+
+/* REF input */
+.ref-inp{background:rgba(56,189,248,.04);border-color:var(--b1);color:var(--blue3);font-family:var(--font);font-size:13px;letter-spacing:.08em;text-transform:uppercase}
+.ref-inp:focus{border-color:var(--b2);box-shadow:0 0 0 3px rgba(56,189,248,.12)}
+.ref-inp.ok{border-color:rgba(34,197,94,.45);color:var(--green);background:rgba(34,197,94,.04)}
+.ref-inp.fail{border-color:rgba(239,68,68,.35);color:#fca5a5;background:rgba(239,68,68,.04)}
+
+.ref-hint{font-family:var(--fontb);font-size:11px;margin-top:5px;display:none;align-items:center;gap:5px}
+.ref-hint.show{display:flex}.ref-hint.ok{color:var(--green)}.ref-hint.fail{color:#fca5a5}
+
+/* ═══ FORM ROW ═══ */
+.frow{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;gap:8px}
+.chk{display:flex;align-items:center;gap:7px;font-family:var(--fontb);font-size:12px;color:var(--m2);cursor:pointer}
+.chk input{width:14px;height:14px;accent-color:var(--green);cursor:pointer}
+.forgot{font-family:var(--fontb);font-size:12px;color:var(--blue3);cursor:pointer;transition:opacity .15s}
+.forgot:hover{opacity:.7}
+
+/* ═══ ZELENÉ TLAČÍTKO — HERO PIECE ═══ */
+.btn-green{
+  width:100%;padding:13px;border-radius:12px;border:none;
+  background:linear-gradient(135deg,var(--green2),var(--green),var(--green3));
+  background-size:200% 200%;
+  color:#fff;font-family:var(--font);font-size:15px;font-weight:700;
+  letter-spacing:.02em;cursor:pointer;margin-bottom:14px;
+  position:relative;overflow:hidden;
   box-shadow:
-    0 0 0 1px rgba(56,189,248,0.05) inset,
-    0 40px 100px rgba(0,0,0,0.7),
-    0 0 80px rgba(14,165,233,0.05);
-  animation: cardIn .5s cubic-bezier(.25,.46,.45,.94) both;
-  position: relative; overflow: hidden;
+    0 0 0 1px rgba(34,197,94,.3),
+    0 4px 20px rgba(34,197,94,.4),
+    0 0 40px rgba(34,197,94,.15);
+  transition:transform .15s,box-shadow .15s,filter .15s;
+  animation:btnShift 4s ease-in-out infinite;
+}
+@keyframes btnShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+
+/* Shine sweep */
+.btn-green::before{
+  content:'';position:absolute;top:0;left:-100%;width:60%;height:100%;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.18),transparent);
+  transition:left .5s;
+}
+/* Bottom glow line */
+.btn-green::after{
+  content:'';position:absolute;bottom:0;left:10%;right:10%;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.5),transparent);
 }
 
-/* Top glow line */
-.card::before {
-  content: ''; position: absolute; top: 0; left: 10%; right: 10%; height: 1px;
-  background: linear-gradient(90deg, transparent, var(--blue2), transparent);
-  opacity: 0.6;
+.btn-green:hover{
+  transform:translateY(-3px) scale(1.01);
+  filter:brightness(1.1);
+  box-shadow:
+    0 0 0 1px rgba(34,197,94,.5),
+    0 8px 32px rgba(34,197,94,.6),
+    0 0 80px rgba(34,197,94,.25),
+    0 0 120px rgba(34,197,94,.1);
 }
+.btn-green:hover::before{left:150%}
+.btn-green:active{transform:translateY(-1px) scale(1);filter:brightness(.97)}
+.btn-green:disabled{opacity:.5;cursor:not-allowed;transform:none;filter:none;animation:none}
 
-/* Corner accents */
-.card::after {
-  content: ''; position: absolute; top: 0; right: 0;
-  width: 80px; height: 80px;
-  background: radial-gradient(circle at 100% 0%, rgba(56,189,248,0.06), transparent 70%);
-  pointer-events: none;
+/* LED na tlačítku */
+.btn-led{display:inline-block;width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.9);box-shadow:0 0 10px rgba(255,255,255,.8),0 0 20px rgba(255,255,255,.4);margin-right:8px;vertical-align:middle;animation:lp 1.2s ease-in-out infinite}
+
+/* ═══ MESSAGES ═══ */
+.msg{padding:11px 14px;border-radius:10px;font-family:var(--fontb);font-size:12px;line-height:1.55;display:none;margin-bottom:12px}
+.msg.error{display:block;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.22);color:#fca5a5}
+.msg.success{display:block;background:rgba(34,197,94,.07);border:1px solid rgba(34,197,94,.2);color:#86efac}
+
+/* ═══ INFO BOX ═══ */
+.ibox{margin-top:12px;padding:12px 14px;border-radius:11px;background:rgba(56,189,248,.04);border:1px solid var(--b1);font-family:var(--fontb);font-size:12px;color:var(--m2);line-height:1.65}
+.ibox strong{color:var(--text);font-weight:500}
+
+/* ═══ DIVIDER ═══ */
+.divider{text-align:center;font-family:var(--fontb);font-size:11px;color:var(--muted);letter-spacing:.1em;margin:4px 0 12px;position:relative}
+.divider::before,.divider::after{content:'';position:absolute;top:50%;width:35%;height:1px;background:var(--b1)}
+.divider::before{left:0}.divider::after{right:0}
+
+/* ═══ SWITCH ═══ */
+.switch{text-align:center;font-family:var(--fontb);font-size:12px;color:var(--m2);margin-top:6px}
+.switch a{color:var(--blue3);transition:opacity .15s}.switch a:hover{opacity:.7}
+
+/* ═══ CARD FOOT ═══ */
+.cfoot{text-align:center;font-family:var(--fontb);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-top:14px}
+
+/* ═══ SPINNER ═══ */
+.spin{display:inline-block;width:13px;height:13px;border:2px solid rgba(255,255,255,.25);border-top-color:#fff;border-radius:50%;animation:sp .6s linear infinite;vertical-align:middle;margin-right:7px}
+@keyframes sp{to{transform:rotate(360deg)}}
+
+/* ═══ STATUS BAR ═══ */
+.status-bar{
+  position:fixed;bottom:0;left:0;right:0;z-index:200;
+  display:flex;align-items:center;justify-content:center;gap:28px;
+  padding:9px 24px;
+  background:rgba(2,9,23,.9);backdrop-filter:blur(20px);
+  border-top:1px solid var(--b1);
 }
+.si{display:flex;align-items:center;gap:6px;font-family:var(--fontb);font-size:10px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
 
-@keyframes cardIn { from{opacity:0;transform:translateY(24px);} to{opacity:1;transform:translateY(0);} }
-
-/* Card corner LED */
-.card-corner-leds {
-  position: absolute; top: 14px; right: 16px;
-  display: flex; gap: 5px; align-items: center;
-}
-
-/* ── REF BANNER ── */
-.ref-banner {
-  display: none; align-items: center; gap: 10px;
-  padding: 10px 14px; border-radius: 11px;
-  background: rgba(56,189,248,0.06);
-  border: 1px solid var(--border2);
-  margin-bottom: 18px; font-size: 12px;
-  animation: cardIn .3s ease both;
-}
-.ref-banner.show { display: flex; }
-.ref-banner-text { font-family: var(--fontb); color: var(--muted2); line-height: 1.5; }
-.ref-banner-text strong { color: var(--blue3); font-weight: 600; }
-
-/* ── HEADER BLOCK ── */
-.card-header { margin-bottom: 22px; }
-.card-kicker {
-  display: inline-flex; align-items: center; gap: 7px;
-  font-family: var(--fontb); font-size: 10px; font-weight: 500;
-  letter-spacing: 0.14em; text-transform: uppercase;
-  color: var(--muted2); margin-bottom: 10px;
-}
-.card-title { font-family: var(--font); font-size: 24px; font-weight: 700; letter-spacing: -0.02em; color: var(--white); margin-bottom: 4px; }
-.card-sub   { font-family: var(--fontb); font-size: 13px; color: var(--muted2); line-height: 1.5; }
-
-/* ── TABS ── */
-.tabs {
-  display: flex; gap: 0; background: rgba(255,255,255,0.03);
-  border: 1px solid var(--border); border-radius: 12px; padding: 3px;
-  margin-bottom: 24px;
-}
-.tab {
-  flex: 1; padding: 8px; border-radius: 9px;
-  font-family: var(--font); font-size: 12px; font-weight: 600;
-  letter-spacing: 0.02em; text-align: center; cursor: pointer;
-  color: var(--muted2); transition: all .18s; border: none; background: none;
-}
-.tab.on {
-  background: rgba(56,189,248,0.1);
-  color: var(--blue3);
-  border: 1px solid var(--border);
-  box-shadow: 0 0 12px rgba(56,189,248,0.1);
-}
-
-/* ── FORM SECTIONS ── */
-.section { display: none; }
-.section.on { display: block; }
-
-/* ── FIELDS ── */
-.field { margin-bottom: 14px; }
-.field-label {
-  display: flex; align-items: center; gap: 6px; margin-bottom: 6px;
-  font-family: var(--fontb); font-size: 10px; font-weight: 600;
-  letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted2);
-}
-.field-label-opt { color: var(--muted); font-weight: 400; text-transform: none; letter-spacing: 0; }
-
-.field input {
-  width: 100%; padding: 11px 14px;
-  background: rgba(255,255,255,0.03);
-  border: 1px solid var(--border);
-  border-radius: 10px; color: var(--text);
-  font-family: var(--fontb); font-size: 14px;
-  outline: none; transition: border-color .15s, box-shadow .15s, background .15s;
-}
-.field input::placeholder { color: rgba(148,163,184,0.35); }
-.field input:focus {
-  border-color: var(--border2);
-  box-shadow: 0 0 0 3px rgba(56,189,248,0.08);
-  background: rgba(56,189,248,0.03);
-}
-
-/* REF input speciální */
-.field input.ref-inp {
-  background: rgba(56,189,248,0.04);
-  border-color: var(--border);
-  color: var(--blue3);
-  font-family: var(--font); font-size: 13px;
-  letter-spacing: 0.08em; text-transform: uppercase;
-}
-.field input.ref-inp:focus { border-color: var(--border2); box-shadow: 0 0 0 3px rgba(56,189,248,0.1); }
-.field input.ref-inp.ok     { border-color: rgba(34,197,94,0.4); color: var(--green); background: rgba(34,197,94,0.04); }
-.field input.ref-inp.fail   { border-color: rgba(239,68,68,0.35); color: #fca5a5; background: rgba(239,68,68,0.04); }
-
-.ref-hint { font-family: var(--fontb); font-size: 11px; margin-top: 5px; display: none; align-items: center; gap: 5px; }
-.ref-hint.show { display: flex; }
-.ref-hint.ok   { color: var(--green); }
-.ref-hint.fail { color: #fca5a5; }
-
-/* ── FORM ROW ── */
-.form-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; gap: 8px; }
-.check { display: flex; align-items: center; gap: 7px; font-family: var(--fontb); font-size: 12px; color: var(--muted2); cursor: pointer; }
-.check input { width: 14px; height: 14px; accent-color: var(--blue2); cursor: pointer; border-radius: 4px; }
-.forgot { font-family: var(--fontb); font-size: 12px; color: var(--blue3); cursor: pointer; transition: opacity .15s; }
-.forgot:hover { opacity: 0.7; }
-
-/* ── BUTTON ── */
-.btn {
-  width: 100%; padding: 12px; border-radius: 11px; border: none;
-  background: linear-gradient(135deg, #0369a1, var(--blue2));
-  color: #fff; font-family: var(--font); font-size: 14px; font-weight: 700;
-  letter-spacing: 0.02em; cursor: pointer; margin-bottom: 14px;
-  position: relative; overflow: hidden;
-  box-shadow: 0 4px 24px rgba(14,165,233,0.35), 0 0 0 1px rgba(56,189,248,0.2);
-  transition: transform .12s, box-shadow .12s, filter .12s;
-}
-.btn::after {
-  content: ''; position: absolute; inset: 0;
-  background: linear-gradient(180deg, rgba(255,255,255,0.1) 0%, transparent 100%);
-  pointer-events: none;
-}
-.btn:hover { filter: brightness(1.08); transform: translateY(-1px); box-shadow: 0 8px 32px rgba(14,165,233,0.5), 0 0 0 1px rgba(56,189,248,0.3); }
-.btn:active { transform: translateY(0); }
-.btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
-
-/* LED na buttonu */
-.btn-led {
-  display: inline-block; width: 6px; height: 6px; border-radius: 50%;
-  background: rgba(255,255,255,0.8); margin-right: 6px; vertical-align: middle;
-  box-shadow: 0 0 6px rgba(255,255,255,0.6); animation: ledpulse 1.5s ease-in-out infinite;
-}
-
-/* ── MESSAGES ── */
-.msg { padding: 10px 14px; border-radius: 10px; font-family: var(--fontb); font-size: 12px; line-height: 1.55; display: none; margin-bottom: 12px; }
-.msg.error   { display:block; background:rgba(239,68,68,0.08); border:1px solid rgba(239,68,68,0.2); color:#fca5a5; }
-.msg.success { display:block; background:rgba(34,197,94,0.07); border:1px solid rgba(34,197,94,0.18); color:#86efac; }
-
-/* ── INFO BOX ── */
-.info-box { margin-top: 12px; padding: 12px 14px; border-radius: 10px; background: rgba(56,189,248,0.04); border: 1px solid var(--border); font-family: var(--fontb); font-size: 12px; color: var(--muted2); line-height: 1.65; }
-.info-box strong { color: var(--text); font-weight: 500; }
-
-/* ── DIVIDER ── */
-.divider { text-align: center; font-family: var(--fontb); font-size: 11px; color: var(--muted); letter-spacing: 0.1em; margin: 4px 0 12px; position: relative; }
-.divider::before, .divider::after { content:''; position:absolute; top:50%; width:35%; height:1px; background:var(--border); }
-.divider::before { left:0; } .divider::after { right:0; }
-
-/* ── SWITCH ── */
-.switch { text-align: center; font-family: var(--fontb); font-size: 12px; color: var(--muted2); margin-top: 6px; }
-.switch a { color: var(--blue3); transition: opacity .15s; }
-.switch a:hover { opacity: 0.75; }
-
-/* ── CARD FOOTER ── */
-.card-foot { text-align: center; font-family: var(--fontb); font-size: 10px; font-weight: 400; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-top: 14px; }
-
-/* ── SPINNER ── */
-.spinner { display:inline-block; width:12px; height:12px; border:2px solid rgba(255,255,255,0.3); border-top-color:#fff; border-radius:50%; animation:spin .6s linear infinite; vertical-align:middle; margin-right:6px; }
-@keyframes spin { to { transform:rotate(360deg); } }
-
-/* ── STATUS ROW dole ── */
-.status-row {
-  position: fixed; bottom: 0; left: 0; right: 0; z-index: 100;
-  display: flex; align-items: center; justify-content: center; gap: 24px;
-  padding: 10px 24px;
-  background: rgba(2,9,23,0.85); backdrop-filter: blur(16px);
-  border-top: 1px solid var(--border);
-}
-.status-item { display: flex; align-items: center; gap: 6px; font-family: var(--fontb); font-size: 10px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
-
-/* ── PAGE FOOTER ── */
-.page-foot { position: relative; z-index: 1; text-align: center; padding: 14px; font-family: var(--fontb); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
-
-@media(max-width:600px) {
-  nav { display: none; }
-  header { padding: 0 16px; }
-  .card { padding: 24px 18px 20px; border-radius: 18px; }
-  .status-row { gap: 14px; }
+@media(max-width:600px){
+  nav{display:none}
+  header{padding:0 14px}
+  .card{padding:22px 18px 20px;border-radius:18px}
+  .status-bar{gap:14px;flex-wrap:wrap}
+  .ctitle{font-size:22px}
 }
 </style>
 </head>
 <body>
 
 <!-- BACKGROUNDS -->
+<canvas id="bg-canvas"></canvas>
 <div class="hero-bg"><img src="/icons/hero.jpg" alt="" aria-hidden="true"></div>
-<div class="grid-pattern"></div>
-<div class="scan-line"></div>
-<div class="orb orb1"></div>
-<div class="orb orb2"></div>
-<div class="orb orb3"></div>
+<div class="grid-bg"></div>
 
 <!-- TOPBAR -->
 <header>
   <a href="/" class="brand">
     <div class="brand-logo">
-      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <svg viewBox="0 0 24 24" fill="none">
         <path d="M12 2L20 7V12L12 17L4 12V7L12 2Z" stroke="#38bdf8" stroke-width="1.5" stroke-linejoin="round"/>
         <path d="M12 7L16 10V14L12 17L8 14V10L12 7Z" fill="rgba(56,189,248,0.2)" stroke="#38bdf8" stroke-width="1"/>
       </svg>
     </div>
-    <div class="brand-texts">
+    <div>
       <span class="brand-name">WIN.WIN</span>
       <span class="brand-sub">Cooperative</span>
     </div>
   </a>
-
   <nav>
     <a href="/login/member.html">Dashboard</a>
     <a href="/login/benefits.html">Benefity</a>
     <a href="/login/affiliate.html">Síť</a>
     <a href="/login/support.html">Podpora</a>
   </nav>
-
   <div class="lang">
-    <span class="on">CZ</span>
-    <span class="lang-sep">|</span>
-    <span>EN</span>
+    <span class="on">CZ</span><span class="lang-sep">|</span><span>EN</span>
   </div>
 </header>
 
 <!-- MAIN -->
 <main>
   <div class="card">
+    <div class="card-glow"></div>
 
     <!-- Corner LEDs -->
-    <div class="card-corner-leds">
-      <span class="led led-sm-b"></span>
-      <span class="led led-sm-g"></span>
-      <span class="led led-sm-b" style="animation-delay:.4s"></span>
+    <div class="corner-leds">
+      <span class="led led-sb" style="animation-delay:.2s"></span>
+      <span class="led led-sg" style="animation-delay:.5s"></span>
+      <span class="led led-sb" style="animation-delay:.8s"></span>
     </div>
 
     <!-- REF BANNER -->
     <div class="ref-banner" id="refBanner">
       <span class="led led-b"></span>
       <div class="ref-banner-text">
-        Pozvánka od obchodníka <strong id="refBannerCode"></strong>
+        Pozvánka od <strong id="refBannerCode"></strong>
         <span id="refBannerName"></span>
       </div>
     </div>
 
     <!-- TABS -->
     <div class="tabs">
-      <button class="tab on" id="tab-in"  onclick="switchTab('in')">Přihlásit se</button>
-      <button class="tab"    id="tab-reg" onclick="switchTab('reg')">Žádost o členství</button>
+      <button class="tab on" id="tab-in"  onclick="sw('in')">Přihlásit se</button>
+      <button class="tab"    id="tab-reg" onclick="sw('reg')">Žádost o členství</button>
     </div>
 
     <!-- ══ SIGNIN ══ -->
     <div class="section on" id="sec-in">
-      <div class="card-header">
-        <div class="card-kicker"><span class="led led-sm-g"></span>Zabezpečený vstup · WIN.WIN</div>
-        <div class="card-title">Vítejte zpět</div>
-        <div class="card-sub">Přihlaste se do svého členského účtu</div>
-      </div>
+      <div class="kicker"><span class="led led-sg"></span>Zabezpečený vstup · WIN.WIN</div>
+      <div class="ctitle">Vítejte zpět</div>
+      <div class="csub">Přihlaste se do svého členského účtu</div>
 
       <div class="field">
-        <div class="field-label"><span class="led led-sm-b" style="animation:none;opacity:0.6;"></span>E-mail</div>
-        <input id="si-email" type="email" placeholder="vas@email.cz" autocomplete="email"/>
+        <div class="flabel"><span class="led led-sb" style="animation:none;opacity:.5"></span>E-mail</div>
+        <input id="si-email" type="email" class="finput" placeholder="vas@email.cz" autocomplete="email"/>
       </div>
       <div class="field">
-        <div class="field-label"><span class="led led-sm-b" style="animation:none;opacity:0.6;"></span>Heslo</div>
-        <input id="si-pass" type="password" placeholder="••••••••" autocomplete="current-password"/>
+        <div class="flabel"><span class="led led-sb" style="animation:none;opacity:.5"></span>Heslo</div>
+        <input id="si-pass" type="password" class="finput" placeholder="••••••••" autocomplete="current-password"/>
       </div>
-
-      <div class="form-row">
-        <label class="check"><input type="checkbox" id="si-rem"> Zapamatovat</label>
+      <div class="frow">
+        <label class="chk"><input type="checkbox"> Zapamatovat</label>
         <a href="#" class="forgot" onclick="doForgot(event)">Zapomenuté heslo?</a>
       </div>
 
       <div class="msg" id="msg-in"></div>
 
-      <button class="btn" id="btn-in" onclick="doSignin()">
+      <button class="btn-green" id="btn-in" onclick="doSignin()">
         <span class="btn-led"></span>Přihlásit se
       </button>
-
-      <div class="switch">Nemáte účet? <a href="#" onclick="switchTab('reg')">Požádejte o členství</a></div>
+      <div class="switch">Nemáte účet? <a href="#" onclick="sw('reg')">Požádejte o členství</a></div>
     </div>
 
     <!-- ══ REGISTER ══ -->
     <div class="section" id="sec-reg">
-      <div class="card-header">
-        <div class="card-kicker"><span class="led led-sm-b"></span>Nové členství · WIN.WIN Cooperative</div>
-        <div class="card-title">Žádost o členství</div>
-        <div class="card-sub">Po schválení administrátorem získáte přístup do systému</div>
-      </div>
+      <div class="kicker"><span class="led led-sb" style="animation-delay:.3s"></span>Nové členství · WIN.WIN</div>
+      <div class="ctitle">Žádost o členství</div>
+      <div class="csub">Po schválení administrátorem získáte plný přístup do systému AYAS-7</div>
 
       <div class="field">
-        <div class="field-label">Jméno a příjmení</div>
-        <input id="reg-name" type="text" placeholder="Jan Novák" autocomplete="name"/>
+        <div class="flabel">Jméno a příjmení</div>
+        <input id="reg-name" type="text" class="finput" placeholder="Jan Novák" autocomplete="name"/>
       </div>
       <div class="field">
-        <div class="field-label">E-mail</div>
-        <input id="reg-email" type="email" placeholder="vas@email.cz" autocomplete="email"/>
+        <div class="flabel">E-mail</div>
+        <input id="reg-email" type="email" class="finput" placeholder="vas@email.cz" autocomplete="email"/>
       </div>
       <div class="field">
-        <div class="field-label">Heslo</div>
-        <input id="reg-pass" type="password" placeholder="Minimálně 8 znaků" autocomplete="new-password"/>
+        <div class="flabel">Heslo</div>
+        <input id="reg-pass" type="password" class="finput" placeholder="Minimálně 8 znaků" autocomplete="new-password"/>
       </div>
-
       <div class="field">
-        <div class="field-label">
+        <div class="flabel">
           Kód obchodníka
-          <span class="field-label-opt">(volitelné)</span>
+          <span class="flabel-opt">&nbsp;(volitelné)</span>
         </div>
-        <input id="reg-ref" type="text" class="ref-inp" placeholder="např. REF-HALAJ-006" autocomplete="off" maxlength="30" oninput="onRefInput(this)"/>
+        <input id="reg-ref" type="text" class="finput ref-inp" placeholder="např. REF-HALAJ-006" autocomplete="off" maxlength="30" oninput="onRef(this)"/>
         <div class="ref-hint" id="refHint">
-          <span id="refHintIcon"></span>
-          <span id="refHintText"></span>
+          <span id="refHintIcon"></span><span id="refHintText"></span>
         </div>
       </div>
 
       <div class="msg" id="msg-reg"></div>
 
-      <button class="btn" id="btn-reg" onclick="doRegister()">
-        <span class="btn-led"></span>Odeslat žádost
+      <button class="btn-green" id="btn-reg" onclick="doRegister()">
+        <span class="btn-led"></span>Odeslat žádost o členství
       </button>
 
-      <div class="info-box">
-        <strong>Co se stane?</strong><br>
-        Váš účet bude ve stavu <strong>čekající</strong> do schválení. Pokud máte kód obchodníka, zadejte ho — budete automaticky přiřazeni do jeho sítě.
+      <div class="ibox">
+        <strong>Jak to funguje?</strong><br>
+        Váš účet bude ve stavu <strong>čekající</strong> do schválení administrátorem. Pokud máte kód od obchodníka, zadejte ho — budete automaticky přiřazeni do jeho sítě.
       </div>
-
-      <div class="switch" style="margin-top:14px;">Máte účet? <a href="#" onclick="switchTab('in')">Přihlaste se</a></div>
+      <div class="switch" style="margin-top:14px">Máte účet? <a href="#" onclick="sw('in')">Přihlaste se</a></div>
     </div>
 
-    <div class="card-foot">© 2025 WIN-WIN Družstvo · AYAS-7 Engine</div>
+    <div class="cfoot">© 2025 WIN-WIN Družstvo · AYAS-7 Engine</div>
   </div>
 </main>
 
-<!-- STATUS BAR dole -->
-<div class="status-row">
-  <div class="status-item"><span class="led led-sm-g"></span>Supabase Auth</div>
-  <div class="status-item"><span class="led led-sm-b" style="animation-delay:.3s"></span>AYAS-7 Engine</div>
-  <div class="status-item"><span class="led led-sm-g" style="animation-delay:.6s"></span>Cloudflare</div>
-  <div class="status-item"><span class="led led-sm-b" style="animation-delay:.9s"></span>BNB Chain</div>
+<!-- STATUS BAR -->
+<div class="status-bar">
+  <div class="si"><span class="led led-sg"></span>Supabase Auth</div>
+  <div class="si"><span class="led led-sb" style="animation-delay:.3s"></span>AYAS-7 Engine</div>
+  <div class="si"><span class="led led-sg" style="animation-delay:.6s"></span>Cloudflare</div>
+  <div class="si"><span class="led led-sb" style="animation-delay:.9s"></span>BNB Chain</div>
+  <div class="si"><span class="led led-sg" style="animation-delay:1.2s"></span>Multisig</div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
+/* ═══ ANIMATED PARTICLES CANVAS ═══ */
+(function(){
+  const canvas = document.getElementById('bg-canvas');
+  const ctx = canvas.getContext('2d');
+  let W, H, particles = [];
+
+  function resize(){
+    W = canvas.width  = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  // Create particles
+  for(let i=0;i<70;i++){
+    particles.push({
+      x: Math.random()*1920,
+      y: Math.random()*1080,
+      r: Math.random()*1.8+.4,
+      vx:(Math.random()-.5)*.3,
+      vy:(Math.random()-.5)*.3,
+      o: Math.random()*.6+.1,
+      c: Math.random()>.5 ? '#38bdf8' : '#22c55e'
+    });
+  }
+
+  // Lines between close particles
+  function drawLines(){
+    for(let i=0;i<particles.length;i++){
+      for(let j=i+1;j<particles.length;j++){
+        const dx=particles[i].x-particles[j].x;
+        const dy=particles[i].y-particles[j].y;
+        const d=Math.sqrt(dx*dx+dy*dy);
+        if(d<120){
+          ctx.beginPath();
+          ctx.moveTo(particles[i].x,particles[i].y);
+          ctx.lineTo(particles[j].x,particles[j].y);
+          ctx.strokeStyle=`rgba(56,189,248,${.06*(1-d/120)})`;
+          ctx.lineWidth=.5;
+          ctx.stroke();
+        }
+      }
+    }
+  }
+
+  function animate(){
+    ctx.clearRect(0,0,W,H);
+    particles.forEach(p=>{
+      p.x+=p.vx; p.y+=p.vy;
+      if(p.x<0)p.x=W; if(p.x>W)p.x=0;
+      if(p.y<0)p.y=H; if(p.y>H)p.y=0;
+      ctx.beginPath();
+      ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle=p.c.replace(')',`,${p.o})`).replace('rgb','rgba').replace('#38bdf8',`rgba(56,189,248,${p.o})`).replace('#22c55e',`rgba(34,197,94,${p.o})`);
+      ctx.fill();
+    });
+    drawLines();
+    requestAnimationFrame(animate);
+  }
+  animate();
+})();
+
+/* ═══ SUPABASE ═══ */
 const SB_URL  = 'https://azfrniqqtetoqploxwgq.supabase.co';
 const SB_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF6ZnJuaXFxdGV0b3FwbG94d2dxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3MzQ1OTYsImV4cCI6MjA4MzMxMDU5Nn0.QchmzNhs8owd6pkjZCk04u6PJoJ2Bhzz7oGV0KFyqdU';
 const sb = supabase.createClient(SB_URL, SB_ANON);
 const $  = id => document.getElementById(id);
 
-let validRef = '', refName = '', refTimer = null;
+let validRef='', refName='', refTimer=null;
 
-/* ── AUTO REDIRECT ── */
-(async () => {
-  const { data:{ session } } = await sb.auth.getSession();
-  if(session) window.location.href = '/login/member.html';
+/* Auto redirect */
+(async()=>{
+  const {data:{session}}=await sb.auth.getSession();
+  if(session) window.location.href='/login/member.html';
 })();
 
-/* ── REF Z URL ── */
-const urlRef = new URLSearchParams(window.location.search).get('ref') || '';
-if(urlRef) {
-  switchTab('reg');
-  $('reg-ref').value = urlRef.toUpperCase();
-  verifyRef(urlRef.toUpperCase());
-}
+/* URL ref */
+const urlRef=new URLSearchParams(window.location.search).get('ref')||'';
+if(urlRef){sw('reg');$('reg-ref').value=urlRef.toUpperCase();verifyRef(urlRef.toUpperCase())}
 
-/* ── TAB SWITCH ── */
-function switchTab(t) {
-  ['in','reg'].forEach(x => {
-    $('sec-'+x).classList.toggle('on', x===t);
-    $('tab-'+x).classList.toggle('on', x===t);
+/* Tab switch */
+function sw(t){
+  ['in','reg'].forEach(x=>{
+    $('sec-'+x).classList.toggle('on',x===t);
+    $('tab-'+x).classList.toggle('on',x===t);
   });
   clearMsgs();
 }
 
-/* ── MESSAGES ── */
-function showMsg(id, txt, type) { const el=$(id); el.textContent=txt; el.className='msg '+type; }
-function clearMsgs() { ['msg-in','msg-reg'].forEach(id=>{ const el=$(id); if(el){el.textContent='';el.className='msg';} }); }
+/* Messages */
+function showMsg(id,txt,type){const el=$(id);el.textContent=txt;el.className='msg '+type}
+function clearMsgs(){['msg-in','msg-reg'].forEach(id=>{const el=$(id);if(el){el.textContent='';el.className='msg'}})}
 
-/* ── REF LIVE VALIDATION ── */
-function onRefInput(el) {
-  el.value = el.value.toUpperCase().replace(/[^A-Z0-9\-]/g,'');
+/* Ref validation */
+function onRef(el){
+  el.value=el.value.toUpperCase().replace(/[^A-Z0-9\-]/g,'');
   el.classList.remove('ok','fail');
   $('refHint').classList.remove('show','ok','fail');
-  validRef = ''; refName = '';
+  validRef='';refName='';
   clearTimeout(refTimer);
-  if(el.value.length < 4) return;
-  refTimer = setTimeout(() => verifyRef(el.value), 700);
+  if(el.value.length<4)return;
+  refTimer=setTimeout(()=>verifyRef(el.value),700);
 }
 
-async function verifyRef(code) {
-  try {
-    const { data } = await sb.from('referral_codes').select('code,label,is_active').eq('code',code).eq('is_active',true).maybeSingle();
-    const el = $('reg-ref'), hint = $('refHint');
-    if(data) {
-      validRef = data.code; refName = data.label || '';
-      el.classList.add('ok'); el.classList.remove('fail');
-      hint.className = 'ref-hint show ok';
-      $('refHintIcon').textContent = '✓';
-      $('refHintText').textContent = 'Platný kód · ' + (data.label || code);
+async function verifyRef(code){
+  try{
+    const{data}=await sb.from('referral_codes').select('code,label,is_active').eq('code',code).eq('is_active',true).maybeSingle();
+    const el=$('reg-ref'),hint=$('refHint');
+    if(data){
+      validRef=data.code;refName=data.label||'';
+      el.classList.add('ok');el.classList.remove('fail');
+      hint.className='ref-hint show ok';
+      $('refHintIcon').textContent='✓';
+      $('refHintText').textContent='Platný kód · '+(data.label||code);
       $('refBanner').classList.add('show');
-      $('refBannerCode').textContent = data.code;
-      $('refBannerName').textContent = data.label ? ' · ' + data.label : '';
-    } else {
-      validRef = ''; refName = '';
-      el.classList.add('fail'); el.classList.remove('ok');
-      hint.className = 'ref-hint show fail';
-      $('refHintIcon').textContent = '✗';
-      $('refHintText').textContent = 'Kód nenalezen — zkontrolujte zadání';
+      $('refBannerCode').textContent=data.code;
+      $('refBannerName').textContent=data.label?' · '+data.label:'';
+    }else{
+      validRef='';refName='';
+      el.classList.add('fail');el.classList.remove('ok');
+      hint.className='ref-hint show fail';
+      $('refHintIcon').textContent='✗';
+      $('refHintText').textContent='Kód nenalezen — zkontrolujte zadání';
     }
-  } catch(e) { console.warn('ref:', e); }
+  }catch(e){console.warn(e)}
 }
 
-/* ── SIGNIN ── */
-async function doSignin() {
-  const email = $('si-email').value.trim();
-  const pass  = $('si-pass').value;
-  const btn   = $('btn-in');
-  if(!email || !pass) { showMsg('msg-in','Vyplňte e-mail a heslo.','error'); return; }
-  btn.disabled = true;
-  btn.innerHTML = '<span class="spinner"></span>Přihlašuji…';
-  const { error } = await sb.auth.signInWithPassword({ email, password: pass });
-  if(error) {
-    btn.disabled = false;
-    btn.innerHTML = '<span class="btn-led"></span>Přihlásit se';
-    showMsg('msg-in', error.message.includes('Invalid') ? 'Nesprávný e-mail nebo heslo.' : error.message, 'error');
+/* Signin */
+async function doSignin(){
+  const email=$('si-email').value.trim();
+  const pass=$('si-pass').value;
+  const btn=$('btn-in');
+  if(!email||!pass){showMsg('msg-in','Vyplňte e-mail a heslo.','error');return}
+  btn.disabled=true;btn.innerHTML='<span class="spin"></span>Přihlašuji…';
+  const{error}=await sb.auth.signInWithPassword({email,password:pass});
+  if(error){
+    btn.disabled=false;btn.innerHTML='<span class="btn-led"></span>Přihlásit se';
+    showMsg('msg-in',error.message.includes('Invalid')?'Nesprávný e-mail nebo heslo.':error.message,'error');
     return;
   }
-  btn.innerHTML = '<span class="btn-led"></span>✓ Přihlášeno';
+  btn.innerHTML='<span class="btn-led"></span>✓ Přihlášeno';
   showMsg('msg-in','Přihlášení úspěšné…','success');
-  setTimeout(() => { window.location.href = '/login/member.html'; }, 700);
+  setTimeout(()=>{window.location.href='/login/member.html'},700);
 }
 
-/* ── REGISTER ── */
-async function doRegister() {
-  const name  = $('reg-name').value.trim();
-  const email = $('reg-email').value.trim();
-  const pass  = $('reg-pass').value;
-  const ref   = $('reg-ref').value.trim().toUpperCase();
-  const btn   = $('btn-reg');
-  if(!name || !email || !pass) { showMsg('msg-reg','Vyplňte všechna pole.','error'); return; }
-  if(pass.length < 8)          { showMsg('msg-reg','Heslo musí mít alespoň 8 znaků.','error'); return; }
-  if(ref && !validRef)          { showMsg('msg-reg','Kód obchodníka není platný. Opravte ho nebo nechejte prázdné.','error'); return; }
-  btn.disabled = true;
-  btn.innerHTML = '<span class="spinner"></span>Odesílám…';
-  try {
-    const res = await fetch(`${SB_URL}/functions/v1/register-member`, {
-      method: 'POST',
-      headers: { 'Content-Type':'application/json', 'Authorization':'Bearer '+SB_ANON },
-      body: JSON.stringify({ email, password:pass, name, full_name:name, ref_code: validRef||null })
+/* Register */
+async function doRegister(){
+  const name=$('reg-name').value.trim();
+  const email=$('reg-email').value.trim();
+  const pass=$('reg-pass').value;
+  const ref=$('reg-ref').value.trim().toUpperCase();
+  const btn=$('btn-reg');
+  if(!name||!email||!pass){showMsg('msg-reg','Vyplňte všechna pole.','error');return}
+  if(pass.length<8){showMsg('msg-reg','Heslo musí mít alespoň 8 znaků.','error');return}
+  if(ref&&!validRef){showMsg('msg-reg','Kód obchodníka není platný.','error');return}
+  btn.disabled=true;btn.innerHTML='<span class="spin"></span>Odesílám…';
+  try{
+    const res=await fetch(`${SB_URL}/functions/v1/register-member`,{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+SB_ANON},
+      body:JSON.stringify({email,password:pass,name,full_name:name,ref_code:validRef||null})
     });
-    const json = await res.json();
-    if(!res.ok) throw new Error(json?.detail || json?.error || 'Chyba serveru');
-    btn.innerHTML = '<span class="btn-led"></span>✓ Odesláno';
-    showMsg('msg-reg', validRef
-      ? `Žádost odeslána! Přiřazeni pod: ${refName||validRef}. Čekejte na schválení.`
-      : 'Žádost odeslána. Administrátor vás brzy kontaktuje.', 'success');
-  } catch(e) {
-    btn.disabled = false;
-    btn.innerHTML = '<span class="btn-led"></span>Odeslat žádost';
+    const json=await res.json();
+    if(!res.ok)throw new Error(json?.detail||json?.error||'Chyba serveru');
+    btn.innerHTML='<span class="btn-led"></span>✓ Odesláno';
+    showMsg('msg-reg',validRef?`Žádost odeslána! Přiřazeni pod: ${refName||validRef}. Čekejte na schválení.`:'Žádost odeslána. Administrátor vás brzy kontaktuje.','success');
+  }catch(e){
+    btn.disabled=false;btn.innerHTML='<span class="btn-led"></span>Odeslat žádost o členství';
     showMsg('msg-reg','Chyba: '+e.message,'error');
   }
 }
 
-/* ── FORGOT ── */
-async function doForgot(e) {
+/* Forgot */
+async function doForgot(e){
   e.preventDefault();
-  const email = $('si-email').value.trim();
-  if(!email) { showMsg('msg-in','Zadejte nejprve e-mail výše.','error'); return; }
-  const { error } = await sb.auth.resetPasswordForEmail(email, { redirectTo: window.location.origin+'/reset-password.html' });
-  if(error) showMsg('msg-in','Chyba: '+error.message,'error');
-  else       showMsg('msg-in','Odkaz pro obnovu odeslán na váš e-mail.','success');
+  const email=$('si-email').value.trim();
+  if(!email){showMsg('msg-in','Zadejte nejprve e-mail výše.','error');return}
+  const{error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:window.location.origin+'/reset-password.html'});
+  if(error)showMsg('msg-in','Chyba: '+error.message,'error');
+  else showMsg('msg-in','Odkaz pro obnovu odeslán na váš e-mail.','success');
 }
 
-/* ── ENTER ── */
-document.addEventListener('keydown', e => {
-  if(e.key !== 'Enter') return;
-  if($('sec-in').classList.contains('on')) doSignin(); else doRegister();
+/* Enter */
+document.addEventListener('keydown',e=>{
+  if(e.key!=='Enter')return;
+  if($('sec-in').classList.contains('on'))doSignin();else doRegister();
 });
 </script>
 </body>
