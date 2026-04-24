@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8"/>
+<title>AYAS-7 · WW-Key Certifikát · Tisk</title>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<link rel="icon" type="image/png" sizes="192x192" href="/ayas7-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --blue:#38bdf8;--blue2:#0ea5e9;--blue3:#7dd3fc;
+  --green:#22c55e;--white:#f8fafc;--m2:#94a3b8;--muted:#475569;
+  --font:'Space Grotesk',sans-serif;--fontb:'DM Sans',sans-serif;--mono:'DM Mono',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:#020617;font-family:var(--fontb);color:#e2e8f0}
+
+/* ═══ SCREEN WRAPPER ═══ */
+.screen-bar{
+  background:rgba(2,9,23,0.9);border-bottom:1px solid rgba(56,189,248,0.15);
+  padding:12px 24px;display:flex;align-items:center;justify-content:space-between;
+  font-family:var(--fontb);font-size:13px;color:#94a3b8;
+}
+.screen-bar strong{font-family:var(--font);color:#f8fafc}
+.btn-p{
+  display:inline-flex;align-items:center;gap:7px;padding:8px 18px;border-radius:9px;
+  background:linear-gradient(135deg,rgba(56,189,248,.15),rgba(56,189,248,.08));
+  border:1px solid rgba(56,189,248,.25);color:var(--blue3);
+  font-family:var(--font);font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;
+}
+.btn-p:hover{background:rgba(56,189,248,.22);transform:translateY(-1px)}
+
+/* ═══ A4 PAGE ═══ */
+.page{
+  width:210mm;height:297mm;
+  margin:20px auto;
+  position:relative;
+  background:linear-gradient(180deg,#0b1120 0%,#020b1a 50%,#000b15 100%);
+  overflow:hidden;
+}
+
+/* Corner accents */
+.corner{position:absolute;width:20mm;height:20mm;pointer-events:none}
+.corner.tl{top:14mm;left:14mm;border-top:1px solid rgba(56,189,248,.4);border-left:1px solid rgba(56,189,248,.4)}
+.corner.tr{top:14mm;right:14mm;border-top:1px solid rgba(56,189,248,.4);border-right:1px solid rgba(56,189,248,.4)}
+.corner.bl{bottom:14mm;left:14mm;border-bottom:1px solid rgba(56,189,248,.4);border-left:1px solid rgba(56,189,248,.4)}
+.corner.br{bottom:14mm;right:14mm;border-bottom:1px solid rgba(56,189,248,.4);border-right:1px solid rgba(56,189,248,.4)}
+
+/* Outer frame */
+.frame{
+  position:absolute;top:18mm;left:18mm;right:18mm;bottom:18mm;
+  border:1px solid rgba(56,189,248,.15);border-radius:4px;pointer-events:none;
+}
+
+/* Content */
+.wrap{
+  position:absolute;top:20mm;left:20mm;right:20mm;bottom:20mm;
+  display:flex;flex-direction:column;padding:8mm 8mm 6mm;
+}
+
+/* Top LED line */
+.topline{
+  height:2px;background:linear-gradient(90deg,transparent,var(--blue2),var(--green),var(--blue),transparent);
+  margin-bottom:8mm;
+}
+
+/* System label */
+.sys-label{
+  font-family:var(--fontb);font-size:9px;letter-spacing:.3em;text-transform:uppercase;
+  color:#475569;margin-bottom:6mm;display:flex;align-items:center;gap:8px;
+}
+.sys-dot{width:5px;height:5px;border-radius:50%;background:var(--green);box-shadow:0 0 6px rgba(34,197,94,.8);flex-shrink:0}
+
+/* Header */
+.hdr{text-align:center;margin-bottom:8mm}
+.hdr-logo{
+  font-family:var(--font);font-size:26px;font-weight:700;letter-spacing:.24em;
+  color:var(--white);text-shadow:0 0 20px rgba(56,189,248,.3);
+  margin-bottom:4mm;
+}
+.hdr-title{
+  font-family:var(--font);font-size:20px;font-weight:600;letter-spacing:.12em;
+  color:var(--blue3);margin-bottom:3mm;
+}
+.hdr-sub{font-family:var(--fontb);font-size:11px;color:#64748b;max-width:140mm;margin:0 auto;line-height:1.6}
+
+/* Divider */
+.div{height:1px;background:linear-gradient(90deg,transparent,rgba(56,189,248,.25),transparent);margin:4mm 0}
+
+/* Data grid */
+.data{display:grid;grid-template-columns:auto 1fr;gap:3mm 8mm;padding:0 4mm;margin:4mm 0}
+.dl{font-family:var(--fontb);font-size:11px;color:#64748b;align-self:center}
+.dv{font-family:var(--font);font-size:12px;font-weight:600;color:var(--white);text-align:right}
+.dv.blue{color:var(--blue3)}.dv.green{color:var(--green)}
+
+/* Seal */
+.seal{
+  margin:4mm auto 4mm;width:52mm;height:52mm;border-radius:50%;position:relative;
+  background:radial-gradient(circle at 50% 35%,rgba(56,189,248,.18),rgba(56,189,248,.06) 50%,transparent 72%);
+  border:1px solid rgba(56,189,248,.35);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.seal::before{
+  content:'';position:absolute;inset:3mm;border-radius:50%;
+  border:1px dashed rgba(56,189,248,.25);
+}
+.seal-inner{text-align:center;position:relative;z-index:1}
+.seal-num{font-family:var(--font);font-size:26px;font-weight:700;color:var(--blue3);line-height:1;text-shadow:0 0 16px rgba(56,189,248,.5)}
+.seal-txt{font-family:var(--fontb);font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:var(--m2);margin-top:2mm}
+
+/* Footer */
+.foot{margin-top:auto}
+.foot-line{height:1px;background:rgba(56,189,248,.12);margin-bottom:3mm}
+.hash-row{font-family:var(--mono);font-size:8px;color:#334155;word-break:break-all;line-height:1.6}
+.hash-label{color:#475569;font-size:7px;letter-spacing:.14em;text-transform:uppercase;margin-bottom:1mm}
+.legal{font-family:var(--fontb);font-size:8px;color:#334155;line-height:1.55;margin-top:2mm}
+
+/* ═══ PRINT ═══ */
+@media print{
+  .screen-bar,.btn-p{display:none!important}
+  body{background:#000}
+  .page{margin:0;width:210mm;height:297mm}
+  .topline{background:linear-gradient(90deg,transparent,rgba(56,189,248,.6),transparent)}
+}
+@page{size:A4;margin:0}
+</style>
+</head>
+<body>
+
+<!-- SCREEN BAR — skryje se při tisku -->
+<div class="screen-bar">
+  <span><strong>WW-Key Certifikát</strong> · Preview před tiskem</span>
+  <button class="btn-p" onclick="window.print()">🖨️ Tisk / PDF</button>
+</div>
+
+<!-- A4 PAGE -->
+<div class="page">
+  <div class="corner tl"></div>
+  <div class="corner tr"></div>
+  <div class="corner bl"></div>
+  <div class="corner br"></div>
+  <div class="frame"></div>
+
+  <div class="wrap">
+    <div class="topline"></div>
+
+    <div class="sys-label">
+      <span class="sys-dot"></span>
+      Next Generation · AYAS-7 Engine · WIN.WIN Cooperative
+    </div>
+
+    <div class="hdr">
+      <div class="hdr-logo">AYAS-7</div>
+      <div class="hdr-title">CERTIFIKÁT WW-KEY</div>
+      <div class="hdr-sub">Tento certifikát potvrzuje přidělení členských jednotek WW-KEY v rámci systému AYAS-7 · Win-Win Cooperative</div>
+    </div>
+
+    <div class="div"></div>
+
+    <div class="data">
+      <div class="dl">Jméno člena</div>       <div class="dv" data-name>—</div>
+      <div class="dl">E-mail</div>             <div class="dv" data-email>—</div>
+      <div class="dl">Datum vydání</div>       <div class="dv" data-date>—</div>
+      <div class="dl">Výše vkladu</div>        <div class="dv green" data-amount>—</div>
+      <div class="dl">Kurz WW-Key</div>        <div class="dv blue">1 WW-Key = 25 CZK</div>
+      <div class="dl">Číslo certifikátu</div>  <div class="dv" data-certnum>—</div>
+    </div>
+
+    <div class="div"></div>
+
+    <!-- RAZÍTKO -->
+    <div class="seal">
+      <div class="seal-inner">
+        <div class="seal-num" data-keys>—</div>
+        <div class="seal-txt">WW-Key přiděleno</div>
+      </div>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="foot">
+      <div class="foot-line"></div>
+      <div class="hash-label">Unikátní identifikátor certifikátu</div>
+      <div class="hash-row">UID: <span data-uid>—</span></div>
+      <div class="hash-row" style="margin-top:1mm">SHA-256: <span data-hash>—</span></div>
+      <div class="legal">
+        Tento dokument slouží výhradně jako potvrzení evidence členských jednotek v systému Win-Win Cooperative
+        a nepředstavuje investiční nástroj, cenný papír ani příslib výnosu. AYAS-7 · IČ: 234 16 106 · Praha 1
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const SB_URL  = 'https://azfrniqqtetoqploxwgq.supabase.co';
+const SB_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF6ZnJuaXFxdGV0b3FwbG94d2dxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3MzQ1OTYsImV4cCI6MjA4MzMxMDU5Nn0.QchmzNhs8owd6pkjZCk04u6PJoJ2Bhzz7oGV0KFyqdU';
+const uid = new URLSearchParams(location.search).get('uid');
+
+if(!uid){ document.body.innerHTML='<div style="padding:40px;text-align:center;color:#94a3b8;font-family:sans-serif">Chybí ID certifikátu — přidejte ?uid= do URL</div>'; }
+
+async function sha256(str){
+  const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(str));
+  return [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+
+function fmt(n){return n!=null?Number(n).toLocaleString('cs-CZ'):'—'}
+function fmtDate(s){return s?new Date(s).toLocaleDateString('cs-CZ',{day:'2-digit',month:'long',year:'numeric'}):'—'}
+function qs(s){return document.querySelector(s)}
+
+async function load(){
+  try{
+    const r=await fetch(`${SB_URL}/rest/v1/member_certificates?certificate_uid=eq.${uid}&select=*`,{
+      headers:{'apikey':SB_ANON,'Authorization':'Bearer '+SB_ANON}
+    });
+    const json=await r.json();
+    if(!json||!json.length){document.body.innerHTML='<div style="padding:40px;text-align:center;color:#fca5a5;font-family:sans-serif">Certifikát nenalezen</div>';return}
+    const c=json[0];
+    qs('[data-name]').textContent    = c.full_name||c.member_name||'—';
+    qs('[data-email]').textContent   = c.member_email||'—';
+    qs('[data-date]').textContent    = fmtDate(c.issued_at);
+    qs('[data-amount]').textContent  = fmt(c.deposit_amount)+' CZK';
+    qs('[data-keys]').textContent    = fmt(c.ww_key_amount);
+    qs('[data-certnum]').textContent = '#'+c.id;
+    qs('[data-uid]').textContent     = c.certificate_uid;
+    const raw=`${c.member_name||c.full_name}|${c.deposit_amount}|${c.ww_key_amount}|${c.issued_at}|${c.certificate_uid}|AYAS7`;
+    qs('[data-hash]').textContent    = await sha256(raw);
+  }catch(e){
+    console.error(e);
+    document.body.innerHTML='<div style="padding:40px;text-align:center;color:#fca5a5;font-family:sans-serif">Chyba: '+e.message+'</div>';
+  }
+}
+if(uid) window.addEventListener('load',load);
+</script>
+</body>
+</html>
