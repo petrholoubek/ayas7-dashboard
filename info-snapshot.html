@@ -26,7 +26,7 @@ html,body{
   background-attachment:fixed;
   font-family:var(--fontb);color:var(--text);
 }
-main{max-width:1200px;margin:0 auto 140px;padding:0 18px}
+main{max-width:1200px;margin:0 auto 140px;padding:40px 18px 0}
 
 /* LAYOUT */
 .section{margin-top:40px}
@@ -92,15 +92,10 @@ footer{margin-top:72px;padding-top:14px;border-top:1px solid var(--border);font-
 /* ═══ HERO ═══ */
 .hero {
   position: relative;
-  height: 70vh; 
-  min-height: 500px; 
-  max-height: 720px;
-  display: flex; 
-  flex-direction: column;
-  align-items: center; 
-  justify-content: center;
+  height: 60vh; 
+  min-height: 400px; 
+  max-height: 600px;
   overflow: hidden;
-  padding: 60px 20px 80px;
   margin-bottom: 0;
 }
 .hero-bg { 
@@ -122,72 +117,61 @@ footer{margin-top:72px;padding-top:14px;border-top:1px solid var(--border);font-
   inset: 0;
   background: linear-gradient(to bottom,
     rgba(2,9,23,0) 0%,
-    rgba(2,9,23,0.15) 40%,
-    rgba(2,9,23,0.85) 85%,
+    rgba(2,9,23,0) 60%,
+    rgba(2,9,23,0.95) 92%,
     rgba(2,9,23,1) 100%);
 }
-.hero-bg::before {
-  content: ''; 
-  position: absolute; 
-  inset: 0; 
-  z-index: 1;
-  background: radial-gradient(ellipse 30% 100% at 0% 50%,rgba(2,9,23,.3),transparent),
-    radial-gradient(ellipse 30% 100% at 100% 50%,rgba(2,9,23,.3),transparent);
-}
-.hero-bloom {
-  position: absolute; 
-  z-index: 1; 
-  pointer-events: none;
-  top: 15%; 
-  left: 50%; 
-  transform: translateX(-50%);
-  width: 800px; 
-  height: 500px;
-  background: radial-gradient(ellipse at center,rgba(56,189,248,.08) 0%,transparent 60%);
-}
-.hero-content {
-  position: relative; 
-  z-index: 2;
-  text-align: center; 
-  max-width: 700px;
-  padding: 0 20px;
-  margin-top: -40px;
+
+/* ═══ HERO INFO PANEL (pod hero obrázkem) ═══ */
+.hero-info {
+  background: linear-gradient(180deg, rgba(2,6,23,0.98), rgba(2,6,23,1));
+  padding: 32px 20px 28px;
+  text-align: center;
+  border-bottom: 1px solid rgba(148,163,184,0.1);
 }
 .hero-live {
   display: inline-flex; 
   align-items: center; 
-  gap: 8px;
+  gap: 10px;
   font-family: var(--fontb); 
-  font-size: 10px; 
+  font-size: 11px; 
   letter-spacing: .2em;
   text-transform: uppercase; 
-  color: rgba(226,232,240,.6); 
-  margin-bottom: 10px;
+  color: rgba(226,232,240,.7); 
+  margin-bottom: 14px;
+  padding: 8px 18px;
+  background: rgba(255,255,255,0.03);
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.06);
+}
+.hero-live .led-dot {
+  width: 10px;
+  height: 10px;
+  margin-right: 0;
 }
 .hero-label {
   font-family: var(--font); 
   font-size: 11px; 
   letter-spacing: .3em;
   text-transform: uppercase; 
-  color: rgba(226,232,240,.45); 
-  margin-bottom: 8px;
+  color: rgba(226,232,240,.5); 
+  margin-bottom: 10px;
 }
 .hero-name {
   font-family: var(--font); 
-  font-size: clamp(26px, 6vw, 42px);
+  font-size: clamp(28px, 6vw, 48px);
   font-weight: 700; 
   color: #f8fafc; 
-  margin: 0 0 10px; 
+  margin: 0 0 14px; 
   letter-spacing: -.01em;
-  text-shadow: 0 2px 20px rgba(56,189,248,.25);
 }
 .hero-sub { 
   font-family: var(--fontb); 
-  font-size: 13px; 
+  font-size: 14px; 
   color: rgba(226,232,240,.65); 
-  line-height: 1.6; 
-  margin: 0 0 18px;
-  max-width: 520px;
+  line-height: 1.65; 
+  margin: 0 0 20px;
+  max-width: 600px;
   margin-left: auto;
   margin-right: auto;
 }
@@ -201,34 +185,29 @@ footer{margin-top:72px;padding-top:14px;border-top:1px solid var(--border);font-
   display: inline-flex; 
   align-items: center; 
   gap: 8px;
-  padding: 11px 24px; 
+  padding: 12px 26px; 
   border-radius: 999px;
-  background: linear-gradient(135deg,rgba(56,189,248,.2),rgba(56,189,248,.12));
-  border: 1px solid rgba(56,189,248,.35); 
+  background: linear-gradient(135deg,rgba(56,189,248,.22),rgba(56,189,248,.14));
+  border: 1px solid rgba(56,189,248,.38); 
   color: #7dd3fc;
   font-family: var(--font); 
-  font-size: 13px; 
+  font-size: 14px; 
   font-weight: 600;
   text-decoration: none; 
   transition: all .2s;
-  box-shadow: 0 4px 12px rgba(56,189,248,.12);
+  box-shadow: 0 4px 14px rgba(56,189,248,.14);
 }
 .btn-primary:hover { 
-  background: rgba(56,189,248,.28); 
+  background: rgba(56,189,248,.3); 
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(56,189,248,.22);
+  box-shadow: 0 6px 22px rgba(56,189,248,.28);
 }
-/* STRIP */
+
+/* ═══ STRIP (pod hero info) ═══ */
 .hero-strip {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  z-index: 3; 
-  background: linear-gradient(180deg, rgba(2,6,23,0) 0%, rgba(2,6,23,0.92) 40%, rgba(2,6,23,0.98) 100%);
-  backdrop-filter: blur(24px);
-  padding: 24px 20px 28px;
-  border-top: 1px solid rgba(255,255,255,0.05);
+  background: rgba(2,6,23,0.95);
+  padding: 24px 20px 32px;
+  border-bottom: 1px solid rgba(148,163,184,0.08);
 }
 
 .strip-inner {
@@ -295,32 +274,36 @@ footer{margin-top:72px;padding-top:14px;border-top:1px solid var(--border);font-
 
 @media(max-width: 768px) {
   .hero {
-    height: 60vh;
-    min-height: 450px;
-    max-height: 600px;
-    padding: 50px 16px 60px;
+    height: 50vh;
+    min-height: 340px;
+    max-height: 480px;
+  }
+  .hero-info {
+    padding: 24px 16px 22px;
   }
   .hero-name {
-    font-size: clamp(22px, 7vw, 32px);
+    font-size: clamp(24px, 7vw, 36px);
   }
   .hero-sub {
-    font-size: 12px;
-    line-height: 1.55;
-  }
-  .hero-bloom {
-    width: 500px;
-    height: 350px;
+    font-size: 13px;
+    line-height: 1.6;
   }
   .hero-strip {
-    padding: 16px 12px 20px;
+    padding: 18px 12px 24px;
   }
   .strip-inner { 
     grid-template-columns: 1fr 1fr; 
     gap: 8px; 
     padding: 12px 0 18px; 
   }
-  .hero-content {
-    margin-top: -20px;
+  .sstat {
+    padding: 14px 12px 12px;
+  }
+  .sstat-val {
+    font-size: 18px;
+  }
+  .sstat-lbl {
+    font-size: 9px;
   }
 }
 </style>
@@ -331,42 +314,44 @@ footer{margin-top:72px;padding-top:14px;border-top:1px solid var(--border);font-
   <div class="hero-bg">
     <img src="/icons/hero.jpg" alt="" aria-hidden="true">
   </div>
-  <div class="hero-bloom"></div>
-  <div class="hero-content">
-    <div class="hero-live">
-      <div class="led-dot" id="heroLed"></div>
-      Truth Snapshot · Read Only
-    </div>
-    <div class="hero-label">AYAS-7</div>
-    <h1 class="hero-name">Stav systému</h1>
-    <p class="hero-sub">Klidný, neměnný pohled na skutečný stav architektury AYAS-7.<br>Tato obrazovka nic neřídí — pouze zobrazuje pravdu systému.</p>
-    <div class="hero-cta">
-      <a href="/login/member.html" class="btn-primary">← Zpět na dashboard</a>
-    </div>
+</section>
+
+<!-- Hero Info Panel (pod obrázkem) -->
+<section class="hero-info">
+  <div class="hero-live">
+    <div class="led-dot" id="heroLed"></div>
+    Truth Snapshot · Read Only
   </div>
-  <!-- STAT STRIP - system stats -->
-  <div class="hero-strip">
-    <div class="strip-inner">
-      <div class="sstat s-b">
-        <div class="sstat-icon">WW-UNIT</div>
-        <div class="sstat-val b" id="stripUnit">—</div>
-        <div class="sstat-lbl">DEX · PancakeSwap</div>
-      </div>
-      <div class="sstat s-y">
-        <div class="sstat-icon">WW-RESERVE</div>
-        <div class="sstat-val y" id="stripReserve">—</div>
-        <div class="sstat-lbl">Stability · Backed</div>
-      </div>
-      <div class="sstat s-g">
-        <div class="sstat-icon">System Health</div>
-        <div class="sstat-val g" id="stripHealth">—</div>
-        <div class="sstat-lbl">ACTIVE · LIVE</div>
-      </div>
-      <div class="sstat s-p">
-        <div class="sstat-icon">TVL</div>
-        <div class="sstat-val p" id="stripTvl">—</div>
-        <div class="sstat-lbl">Total Value Locked</div>
-      </div>
+  <div class="hero-label">AYAS-7</div>
+  <h1 class="hero-name">Stav systému</h1>
+  <p class="hero-sub">Klidný, neměnný pohled na skutečný stav architektury AYAS-7.<br>Tato obrazovka nic neřídí — pouze zobrazuje pravdu systému.</p>
+  <div class="hero-cta">
+    <a href="/login/member.html" class="btn-primary">← Zpět na dashboard</a>
+  </div>
+</section>
+
+<!-- Stat Strip -->
+<section class="hero-strip">
+  <div class="strip-inner">
+    <div class="sstat s-b">
+      <div class="sstat-icon">WW-UNIT</div>
+      <div class="sstat-val b" id="stripUnit">—</div>
+      <div class="sstat-lbl">DEX · PancakeSwap</div>
+    </div>
+    <div class="sstat s-y">
+      <div class="sstat-icon">WW-RESERVE</div>
+      <div class="sstat-val y" id="stripReserve">—</div>
+      <div class="sstat-lbl">Stability · Backed</div>
+    </div>
+    <div class="sstat s-g">
+      <div class="sstat-icon">System Health</div>
+      <div class="sstat-val g" id="stripHealth">—</div>
+      <div class="sstat-lbl">ACTIVE · LIVE</div>
+    </div>
+    <div class="sstat s-p">
+      <div class="sstat-icon">TVL</div>
+      <div class="sstat-val p" id="stripTvl">—</div>
+      <div class="sstat-lbl">Total Value Locked</div>
     </div>
   </div>
 </section>
