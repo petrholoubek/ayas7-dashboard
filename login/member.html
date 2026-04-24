@@ -9,388 +9,438 @@
 <meta name="theme-color" content="#020617">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 
 <style>
 :root {
-  --gold:   #f5c842;
-  --gold2:  #e8a800;
-  --green:  #22c55e;
-  --blue:   #38bdf8;
-  --purple: #a78bfa;
-  --bg:     #060a14;
-  --card:   rgba(8,14,30,0.88);
-  --border: rgba(255,255,255,0.08);
-  --text:   #f0f4ff;
-  --muted:  #64748b;
-  --muted2: #94a3b8;
+  --bg:      #020917;
+  --bg2:     #060e1f;
+  --card:    rgba(6,14,31,0.92);
+  --border:  rgba(56,189,248,0.1);
+  --border2: rgba(56,189,248,0.2);
+  --blue:    #38bdf8;
+  --blue2:   #0ea5e9;
+  --blue3:   #7dd3fc;
+  --green:   #22c55e;
+  --white:   #f8fafc;
+  --text:    #e2e8f0;
+  --muted:   #475569;
+  --muted2:  #94a3b8;
+  --purple:  #818cf8;
+  --font:    'Space Grotesk', sans-serif;
+  --fontb:   'DM Sans', sans-serif;
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
 body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  background: var(--bg); color: var(--text);
-  min-height: 100vh; overflow-x: hidden;
+  font-family: var(--fontb);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
 }
 a { text-decoration: none; color: inherit; }
 
-/* ══════════════ TOPBAR ══════════════ */
+/* ══════════════════════════════
+   TOPBAR
+══════════════════════════════ */
 .topbar {
   position: fixed; top: 0; left: 0; right: 0; z-index: 200;
-  height: 54px; display: flex; align-items: center;
-  justify-content: space-between; padding: 0 28px;
-  background: rgba(4,7,18,0.75);
-  backdrop-filter: blur(16px);
-  border-bottom: 1px solid rgba(255,255,255,0.06);
+  height: 54px;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 32px;
+  background: rgba(2,9,23,0.8);
+  backdrop-filter: blur(24px);
+  border-bottom: 1px solid var(--border);
 }
 
-.brand { display: flex; align-items: center; gap: 10px; }
-.brand-icon {
-  width: 30px; height: 30px; border-radius: 7px;
-  background: linear-gradient(135deg,#0f1e3a,#1a3560);
-  border: 1px solid rgba(56,189,248,0.35);
+.brand { display: flex; align-items: center; gap: 12px; }
+.brand-logo {
+  width: 32px; height: 32px; border-radius: 8px;
+  background: linear-gradient(135deg, rgba(56,189,248,0.15), rgba(56,189,248,0.05));
+  border: 1px solid var(--border2);
   display: flex; align-items: center; justify-content: center;
-  font-family: 'Inter', sans-serif; font-weight: 800;
-  font-size: 11px; color: var(--blue); flex-shrink: 0;
+  flex-shrink: 0;
 }
-.brand-name {
-  font-family: 'Inter', sans-serif;
-  font-size: 15px; font-weight: 700;
-  letter-spacing: 0.06em; color: #f0f4ff;
+.brand-logo svg { width: 18px; height: 18px; }
+.brand-name { font-family: var(--font); font-size: 15px; font-weight: 700; color: var(--white); letter-spacing: -0.01em; }
+.brand-sub  { font-size: 9px; font-weight: 400; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted2); display: block; }
+
+nav { display: flex; gap: 2px; }
+nav a {
+  padding: 6px 16px; border-radius: 8px;
+  font-family: var(--fontb); font-size: 13px; font-weight: 500;
+  color: var(--muted2); transition: all .15s;
 }
-.brand-sub {
-  font-size: 8px; font-weight: 400; letter-spacing: 0.2em;
-  text-transform: uppercase; color: var(--muted); display: block;
+nav a:hover { color: var(--text); background: rgba(255,255,255,.05); }
+nav a.active {
+  color: var(--blue3);
+  background: rgba(56,189,248,0.08);
+  border: 1px solid rgba(56,189,248,0.15);
 }
 
-.topbar-nav { display: flex; gap: 4px; }
-.topbar-nav a {
-  padding: 5px 14px; border-radius: 7px;
-  font-size: 13px; font-weight: 500; letter-spacing: 0.02em;
-  color: rgba(255,255,255,0.65); transition: all .15s;
-}
-.topbar-nav a:hover { color: #fff; background: rgba(255,255,255,.07); }
-.topbar-nav a.active { color: #fff; }
-
-.topbar-user {
+.topbar-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+.user-chip {
   display: flex; align-items: center; gap: 8px;
-  padding: 4px 12px 4px 6px; border-radius: 999px;
-  border: 1px solid rgba(255,255,255,0.1);
-  background: rgba(255,255,255,.05); cursor: pointer;
-  transition: all .15s; flex-shrink: 0;
+  padding: 5px 14px 5px 7px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: rgba(56,189,248,0.04);
+  cursor: pointer; transition: all .15s;
 }
-.topbar-user:hover { border-color: rgba(255,255,255,.2); background: rgba(255,255,255,.08); }
+.user-chip:hover { border-color: var(--border2); background: rgba(56,189,248,0.08); }
 .user-av {
   width: 26px; height: 26px; border-radius: 50%;
-  background: linear-gradient(135deg,#1e3a5f,#0f172a);
-  border: 1px solid rgba(56,189,248,.4);
+  background: linear-gradient(135deg, #0ea5e9, #0369a1);
   display: flex; align-items: center; justify-content: center;
-  font-size: 11px; font-weight: 700; color: var(--blue);
+  font-family: var(--font); font-size: 11px; font-weight: 700; color: #fff;
 }
-.user-name { font-size: 12px; font-weight: 500; max-width: 110px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.user-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); box-shadow: 0 0 8px rgba(34,197,94,.8); flex-shrink: 0; }
+.user-name { font-family: var(--fontb); font-size: 12px; font-weight: 500; max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--text); }
 
-/* ══════════════ HERO ══════════════ */
+/* LED tečka — přesně jako ayas7 */
+.led-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 0 2px rgba(34,197,94,0.2), 0 0 10px rgba(34,197,94,0.6);
+  flex-shrink: 0;
+  animation: ledpulse 2.4s ease-in-out infinite;
+}
+.led-dot.blue {
+  background: var(--blue);
+  box-shadow: 0 0 0 2px rgba(56,189,248,0.2), 0 0 10px rgba(56,189,248,0.6);
+}
+.led-dot.off {
+  background: #ef4444;
+  box-shadow: 0 0 0 2px rgba(239,68,68,0.2), 0 0 8px rgba(239,68,68,0.5);
+  animation: none;
+}
+@keyframes ledpulse {
+  0%,100% { box-shadow: 0 0 0 2px rgba(34,197,94,0.2), 0 0 8px rgba(34,197,94,0.4); }
+  50%      { box-shadow: 0 0 0 3px rgba(34,197,94,0.3), 0 0 16px rgba(34,197,94,0.8); }
+}
+
+/* ══════════════════════════════
+   HERO — čistý fintech styl
+══════════════════════════════ */
 .hero {
-  position: relative; height: 100vh;
-  min-height: 580px; max-height: 960px;
+  position: relative;
+  height: 100vh; min-height: 600px; max-height: 960px;
   display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
-  text-align: center; overflow: hidden;
+  align-items: center; justify-content: flex-end;
+  overflow: hidden;
+  padding-bottom: 80px; /* prostor pro stat strip */
 }
 
-.hero-bg-img {
+/* Background image */
+.hero-bg {
   position: absolute; inset: 0; z-index: 0;
 }
-.hero-bg-img img {
+.hero-bg img {
   width: 100%; height: 100%;
-  object-fit: cover; object-position: center 20%;
+  object-fit: cover; object-position: center top;
   display: block;
 }
-/* Gradient overlay — tmavší dole jako kasino */
-.hero-bg-img::after {
+.hero-bg::after {
   content: ''; position: absolute; inset: 0;
-  background:
-    linear-gradient(to bottom,
-      rgba(4,7,18,0.18) 0%,
-      rgba(4,7,18,0.08) 30%,
-      rgba(4,7,18,0.45) 65%,
-      rgba(4,7,18,0.92) 88%,
-      rgba(4,7,18,1.00) 100%
-    );
+  background: linear-gradient(
+    to bottom,
+    rgba(2,9,23,0.05)  0%,
+    rgba(2,9,23,0.02)  30%,
+    rgba(2,9,23,0.50)  58%,
+    rgba(2,9,23,0.88)  75%,
+    rgba(2,9,23,0.98)  90%,
+    rgba(2,9,23,1.00) 100%
+  );
 }
 
+/* Subtle blue vignette on sides */
+.hero-bg::before {
+  content: ''; position: absolute; inset: 0; z-index: 1;
+  background:
+    radial-gradient(ellipse 60% 100% at 0% 50%, rgba(2,9,23,0.5), transparent),
+    radial-gradient(ellipse 60% 100% at 100% 50%, rgba(2,9,23,0.5), transparent);
+}
+
+/* Hero text content */
 .hero-content {
   position: relative; z-index: 2;
-  padding: 0 20px; max-width: 860px;
+  text-align: center; padding: 0 24px;
   display: flex; flex-direction: column; align-items: center;
 }
 
-/* Badge row */
-.hero-badges {
-  display: flex; gap: 10px; margin-bottom: 28px; flex-wrap: wrap; justify-content: center;
-  animation: fadeDown .7s ease both;
-}
-.hbadge {
-  display: inline-flex; align-items: center; gap: 6px;
-  padding: 4px 14px; border-radius: 999px;
-  background: rgba(0,0,0,0.45); backdrop-filter: blur(8px);
-  border: 1px solid rgba(255,255,255,0.15);
-  font-size: 11px; font-weight: 600; letter-spacing: 0.1em;
-  text-transform: uppercase; color: rgba(255,255,255,0.8);
-}
-.hbadge-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--green); box-shadow: 0 0 8px rgba(34,197,94,.9); }
-.hbadge-dot.gold { background: var(--gold); box-shadow: 0 0 8px rgba(245,200,66,.9); }
-.hbadge-dot.blue { background: var(--blue); box-shadow: 0 0 8px rgba(56,189,248,.9); }
-
-/* Main headline — jako kasino "PLAY. WIN." */
-.hero-headline {
-  font-family: 'Playfair Display', Georgia, serif;
-  font-size: clamp(52px, 9vw, 108px);
-  font-weight: 900; line-height: 0.95;
-  letter-spacing: -0.02em;
-  margin-bottom: 0;
-  color: #ffffff;
-  text-shadow: 0 4px 40px rgba(0,0,0,0.8);
-  animation: fadeUp .6s .05s ease both;
-}
-.hero-headline .gold-line {
-  display: block; color: var(--gold);
-  text-shadow: 0 0 60px rgba(245,200,66,0.5), 0 4px 40px rgba(0,0,0,0.8);
+/* Live indicator row */
+.hero-live {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 5px 16px; border-radius: 999px;
+  background: rgba(2,9,23,0.6); backdrop-filter: blur(12px);
+  border: 1px solid rgba(56,189,248,0.15);
+  font-family: var(--fontb); font-size: 11px; font-weight: 500;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: rgba(255,255,255,0.5);
+  margin-bottom: 22px;
+  animation: fadeUp .5s ease both;
 }
 
-/* Sub */
+/* Main greeting — clean, big, white */
+.hero-label {
+  font-family: var(--fontb); font-size: 14px; font-weight: 400;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  color: rgba(255,255,255,0.45); margin-bottom: 10px;
+  animation: fadeUp .5s .05s ease both;
+}
+
+.hero-name {
+  font-family: var(--font); font-size: clamp(44px, 7vw, 88px);
+  font-weight: 700; line-height: 1.0; letter-spacing: -0.03em;
+  color: var(--white);
+  text-shadow: 0 2px 40px rgba(56,189,248,0.3), 0 0 80px rgba(56,189,248,0.1);
+  margin-bottom: 14px;
+  animation: fadeUp .5s .1s ease both;
+}
+
 .hero-sub {
-  margin-top: 18px;
-  font-size: 13px; font-weight: 400; letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: rgba(255,255,255,0.55);
-  animation: fadeUp .6s .15s ease both;
+  font-family: var(--fontb); font-size: 13px; font-weight: 400;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: rgba(255,255,255,0.3);
+  margin-bottom: 28px;
+  animation: fadeUp .5s .15s ease both;
 }
 
-/* CTA row */
+/* CTA buttons */
 .hero-cta {
-  display: flex; gap: 12px; margin-top: 32px; flex-wrap: wrap; justify-content: center;
-  animation: fadeUp .6s .25s ease both;
+  display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;
+  animation: fadeUp .5s .2s ease both;
 }
-.btn-cta-primary {
+
+.btn-primary {
   display: inline-flex; align-items: center; gap: 8px;
-  padding: 13px 30px; border-radius: 10px;
-  background: linear-gradient(135deg,#1a56e8,#38bdf8);
-  color: #fff; font-size: 14px; font-weight: 700;
-  letter-spacing: 0.04em; text-transform: uppercase;
-  box-shadow: 0 0 30px rgba(56,189,248,0.4);
+  padding: 12px 28px; border-radius: 10px;
+  background: var(--blue2);
+  color: #fff; font-family: var(--font); font-size: 14px; font-weight: 600;
+  letter-spacing: 0.02em;
+  box-shadow: 0 0 24px rgba(14,165,233,0.35), 0 4px 12px rgba(0,0,0,0.3);
   transition: all .18s; border: none; cursor: pointer;
-  font-family: 'Inter', sans-serif;
 }
-.btn-cta-primary:hover { transform: translateY(-2px); box-shadow: 0 0 50px rgba(56,189,248,0.6); filter: brightness(1.08); }
+.btn-primary:hover { background: var(--blue); transform: translateY(-2px); box-shadow: 0 0 40px rgba(56,189,248,0.5), 0 8px 20px rgba(0,0,0,0.4); }
 
-.btn-cta-secondary {
+.btn-secondary {
   display: inline-flex; align-items: center; gap: 8px;
-  padding: 13px 28px; border-radius: 10px;
-  background: rgba(255,255,255,0.1); backdrop-filter: blur(8px);
-  border: 1px solid rgba(255,255,255,0.2);
-  color: #fff; font-size: 14px; font-weight: 600;
-  letter-spacing: 0.04em; text-transform: uppercase;
+  padding: 12px 26px; border-radius: 10px;
+  background: rgba(255,255,255,0.06); backdrop-filter: blur(8px);
+  border: 1px solid rgba(255,255,255,0.12);
+  color: rgba(255,255,255,0.8); font-family: var(--font); font-size: 14px; font-weight: 500;
   transition: all .18s; cursor: pointer;
-  font-family: 'Inter', sans-serif;
 }
-.btn-cta-secondary:hover { background: rgba(255,255,255,.18); transform: translateY(-2px); }
+.btn-secondary:hover { background: rgba(255,255,255,0.12); transform: translateY(-2px); }
 
-/* STAT STRIP — přesně jako kasino */
-.hero-stats {
+/* ══ STAT STRIP ══ */
+.hero-strip {
   position: absolute; bottom: 0; left: 0; right: 0; z-index: 3;
   display: flex; justify-content: center;
-  animation: fadeUp .6s .35s ease both;
+  animation: fadeUp .5s .25s ease both;
 }
-.hero-stats-inner {
-  display: flex; gap: 0;
-  background: rgba(4,7,18,0.82);
-  backdrop-filter: blur(20px);
-  border-top: 1px solid rgba(255,255,255,0.08);
-  border-left: 1px solid rgba(255,255,255,0.06);
-  border-right: 1px solid rgba(255,255,255,0.06);
-  border-radius: 16px 16px 0 0;
-  overflow: hidden;
-  max-width: 700px; width: 100%;
+.strip-inner {
+  display: flex; max-width: 820px; width: 100%;
+  background: rgba(2,9,23,0.95);
+  backdrop-filter: blur(32px);
+  border-top: 1px solid var(--border2);
+  border-left: 1px solid var(--border);
+  border-right: 1px solid var(--border);
+  border-radius: 18px 18px 0 0; overflow: hidden;
 }
-.hstat {
-  flex: 1; padding: 16px 24px; text-align: center;
-  border-right: 1px solid rgba(255,255,255,0.06);
-  transition: background .15s;
+.sstat {
+  flex: 1; padding: 16px 22px; text-align: center;
+  border-right: 1px solid var(--border);
+  transition: background .15s; position: relative;
 }
-.hstat:last-child { border-right: none; }
-.hstat:hover { background: rgba(255,255,255,0.04); }
-.hstat-val {
-  font-family: 'Inter', sans-serif;
-  font-size: 20px; font-weight: 700; line-height: 1;
-  margin-bottom: 4px;
+.sstat::before {
+  content: ''; position: absolute; top: 0; left: 20%; right: 20%; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--blue2), transparent);
+  opacity: 0; transition: opacity .25s;
 }
-.hstat-val.green { color: var(--green); }
-.hstat-val.blue  { color: var(--blue); }
-.hstat-val.gold  { color: var(--gold); }
-.hstat-val.purple{ color: var(--purple); }
-.hstat-lbl {
-  font-size: 9px; font-weight: 600; letter-spacing: 0.16em;
-  text-transform: uppercase; color: rgba(255,255,255,0.35);
+.sstat:hover { background: rgba(56,189,248,0.04); }
+.sstat:hover::before { opacity: 0.8; }
+.sstat:last-child { border-right: none; }
+
+.sstat-val {
+  font-family: var(--font); font-size: 20px; font-weight: 700;
+  line-height: 1; margin-bottom: 5px; letter-spacing: -0.01em;
+}
+.sstat-val.g { color: var(--green); }
+.sstat-val.b { color: var(--blue3); }
+.sstat-val.p { color: var(--purple); }
+.sstat-val.w { color: var(--white); }
+.sstat-lbl {
+  font-family: var(--fontb); font-size: 9px; font-weight: 500;
+  letter-spacing: 0.16em; text-transform: uppercase;
+  color: rgba(255,255,255,0.28);
 }
 
-@keyframes fadeDown { from{opacity:0;transform:translateY(-14px);} to{opacity:1;transform:translateY(0);} }
-@keyframes fadeUp   { from{opacity:0;transform:translateY(20px);} to{opacity:1;transform:translateY(0);} }
+@keyframes fadeUp { from{opacity:0;transform:translateY(18px);} to{opacity:1;transform:translateY(0);} }
 
-/* ══════════════ MAIN ══════════════ */
-.main { max-width: 1200px; margin: 0 auto; padding: 56px 22px 80px; }
+/* ══════════════════════════════
+   MAIN CONTENT
+══════════════════════════════ */
+.main { max-width: 1200px; margin: 0 auto; padding: 52px 24px 80px; }
 
-.sec-head { display: flex; align-items: center; gap: 14px; margin-bottom: 20px; }
-.sec-title { font-family: 'Inter', sans-serif; font-size: 18px; font-weight: 700; letter-spacing: -0.01em; }
-.sec-line { flex: 1; height: 1px; background: var(--border); }
-.sec-pill {
-  font-size: 10px; font-weight: 600; letter-spacing: 0.12em;
-  text-transform: uppercase; padding: 3px 10px; border-radius: 999px;
-  border: 1px solid var(--border); color: var(--muted);
+/* Section header */
+.sec {
+  display: flex; align-items: center; gap: 14px; margin-bottom: 20px;
 }
+.sec-title {
+  font-family: var(--font); font-size: 12px; font-weight: 600;
+  letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted2);
+  white-space: nowrap;
+}
+.sec-line { flex: 1; height: 1px; background: linear-gradient(90deg, var(--border2), transparent); }
+.sec-dot { display: flex; align-items: center; gap: 6px; font-family: var(--fontb); font-size: 11px; color: var(--muted); flex-shrink: 0; }
 
-/* ══════════════ CARDS ══════════════ */
+/* ══ CARDS GRID ══ */
 .grid3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; margin-bottom: 14px; }
 .grid2 { display: grid; grid-template-columns: 2fr 1fr; gap: 14px; margin-bottom: 40px; }
 
-.card {
+/* Feature card */
+.fcard {
   position: relative; overflow: hidden;
-  background: var(--card); border: 1px solid var(--border);
-  border-radius: 16px; padding: 22px 20px 20px;
-  backdrop-filter: blur(20px);
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px; padding: 24px 22px 22px;
   display: flex; flex-direction: column;
   text-decoration: none; color: inherit;
-  transition: transform .22s, border-color .22s, box-shadow .22s;
   cursor: pointer;
+  transition: transform .2s, border-color .2s, box-shadow .2s;
 }
-/* Top accent */
-.card::before {
-  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
-  background: var(--c-line, linear-gradient(90deg,var(--blue),transparent));
-  opacity: .7; transition: opacity .25s;
+
+/* Top glow line */
+.fcard::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--fc-color, var(--blue)), transparent);
+  opacity: 0.5; transition: opacity .25s;
 }
-/* Glow on hover */
-.card::after {
-  content: ''; position: absolute; inset: 0; opacity: 0; transition: opacity .25s; pointer-events: none;
-  background: radial-gradient(circle at 20% 10%, var(--c-glow, rgba(56,189,248,.07)), transparent 55%);
+/* Background radial */
+.fcard::after {
+  content: ''; position: absolute; inset: 0; opacity: 0; transition: opacity .3s; pointer-events: none;
+  background: radial-gradient(ellipse 60% 40% at 30% 0%, var(--fc-glow, rgba(56,189,248,0.06)), transparent);
 }
-.card:hover { transform: translateY(-4px); border-color: var(--c-border, rgba(56,189,248,.3)); box-shadow: 0 20px 50px rgba(0,0,0,.5), 0 0 0 1px var(--c-border, rgba(56,189,248,.1)) inset; }
-.card:hover::before { opacity: 1; }
-.card:hover::after  { opacity: 1; }
 
-.card.green  { --c-line:linear-gradient(90deg,var(--green),transparent); --c-glow:rgba(34,197,94,.08); --c-border:rgba(34,197,94,.3); }
-.card.blue   { --c-line:linear-gradient(90deg,var(--blue),transparent);  --c-glow:rgba(56,189,248,.07); --c-border:rgba(56,189,248,.3); }
-.card.purple { --c-line:linear-gradient(90deg,var(--purple),transparent); --c-glow:rgba(167,139,250,.07); --c-border:rgba(167,139,250,.3); }
-.card.gold   { --c-line:linear-gradient(90deg,var(--gold),transparent);  --c-glow:rgba(245,200,66,.06); --c-border:rgba(245,200,66,.28); }
-
-.card-icon {
-  width: 46px; height: 46px; border-radius: 11px;
-  background: rgba(255,255,255,.05); border: 1px solid var(--border);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 20px; margin-bottom: 14px; flex-shrink: 0;
+.fcard:hover {
+  transform: translateY(-4px);
+  border-color: var(--fc-border, rgba(56,189,248,0.3));
+  box-shadow: 0 20px 48px rgba(0,0,0,0.5), 0 0 0 1px var(--fc-border, rgba(56,189,248,0.1)) inset;
 }
-.card-tag { font-size: 10px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin-bottom: 3px; }
-.card-title { font-size: 16px; font-weight: 700; margin-bottom: 8px; letter-spacing: -0.01em; }
-.card-desc { font-size: 13px; color: var(--muted2); line-height: 1.6; flex: 1; }
+.fcard:hover::before { opacity: 1; }
+.fcard:hover::after  { opacity: 1; }
 
-.card-bottom { margin-top: 18px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,.06); }
-.card-val { font-family: 'Inter', sans-serif; font-size: 28px; font-weight: 800; line-height: 1; letter-spacing: -0.02em; }
-.card-val.green  { color: var(--green); }
-.card-val.blue   { color: var(--blue); }
-.card-val.purple { color: var(--purple); }
-.card-val.gold   { color: var(--gold); }
-.card-unit { font-size: 12px; color: var(--muted); margin-top: 2px; }
+.fcard.c-green  { --fc-color:var(--green); --fc-glow:rgba(34,197,94,0.07);  --fc-border:rgba(34,197,94,0.25); }
+.fcard.c-blue   { --fc-color:var(--blue);  --fc-glow:rgba(56,189,248,0.06); --fc-border:rgba(56,189,248,0.25); }
+.fcard.c-purple { --fc-color:var(--purple);--fc-glow:rgba(129,140,248,0.06);--fc-border:rgba(129,140,248,0.25); }
+.fcard.c-teal   { --fc-color:#2dd4bf;      --fc-glow:rgba(45,212,191,0.06); --fc-border:rgba(45,212,191,0.25); }
 
-.card-arrow {
-  position: absolute; top: 20px; right: 20px;
-  font-size: 16px; opacity: 0; transform: translateX(-6px);
-  transition: opacity .2s, transform .2s; color: var(--muted2);
+/* Card content */
+.fc-head { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 16px; }
+.fc-icon {
+  width: 44px; height: 44px; border-radius: 10px;
+  background: rgba(255,255,255,0.04); border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center; font-size: 20px;
 }
-.card:hover .card-arrow { opacity: 1; transform: translateX(0); }
+.fc-badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 3px 9px; border-radius: 999px;
+  background: rgba(56,189,248,0.06); border: 1px solid var(--border);
+  font-family: var(--fontb); font-size: 10px; font-weight: 500;
+  letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted2);
+}
+.fc-tag   { font-family: var(--fontb); font-size: 10px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+.fc-title { font-family: var(--font); font-size: 17px; font-weight: 600; margin-bottom: 8px; letter-spacing: -0.01em; color: var(--white); }
+.fc-desc  { font-family: var(--fontb); font-size: 13px; color: var(--muted2); line-height: 1.65; flex: 1; }
 
-/* Progress */
-.prog { margin-top: 12px; }
-.prog-top { display: flex; justify-content: space-between; font-size: 11px; color: var(--muted2); margin-bottom: 6px; }
-.prog-bg { height: 4px; background: rgba(255,255,255,.06); border-radius: 999px; overflow: hidden; }
-.prog-fill { height: 100%; border-radius: 999px; width: 0%; transition: width 1.4s cubic-bezier(.25,.46,.45,.94); background: linear-gradient(90deg,var(--green),#4ade80); box-shadow: 0 0 8px rgba(34,197,94,.4); }
+.fc-bottom { margin-top: 20px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.05); }
+.fc-val  { font-family: var(--font); font-size: 30px; font-weight: 700; line-height: 1; letter-spacing: -0.02em; }
+.fc-val.g { color: var(--green); }
+.fc-val.b { color: var(--blue3); }
+.fc-val.p { color: var(--purple); }
+.fc-unit { font-family: var(--fontb); font-size: 12px; color: var(--muted); margin-top: 3px; }
+
+.fc-arrow { position: absolute; top: 22px; right: 20px; font-size: 14px; opacity: 0; transform: translateX(-5px); transition: opacity .2s, transform .2s; color: var(--muted2); }
+.fcard:hover .fc-arrow { opacity: 1; transform: translateX(0); }
+
+/* Progress bar */
+.prog { margin-top: 14px; }
+.prog-row { display: flex; justify-content: space-between; font-family: var(--fontb); font-size: 11px; color: var(--muted); margin-bottom: 6px; }
+.prog-bg   { height: 3px; background: rgba(255,255,255,0.06); border-radius: 999px; overflow: hidden; }
+.prog-fill { height: 100%; border-radius: 999px; width: 0%; transition: width 1.4s cubic-bezier(.25,.46,.45,.94); background: linear-gradient(90deg,var(--green),#4ade80); }
 
 /* Benefits layout */
-.ben-layout { display: flex; gap: 18px; align-items: flex-start; }
-.ben-pills { display: flex; flex-direction: column; gap: 7px; flex-shrink: 0; }
-.ben-pill {
+.ben-wrap { display: flex; gap: 18px; align-items: flex-start; }
+.ben-list { display: flex; flex-direction: column; gap: 6px; flex-shrink: 0; }
+.ben-row {
   display: flex; align-items: center; gap: 8px;
-  padding: 8px 12px; border-radius: 9px; white-space: nowrap;
-  background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.07);
-  font-size: 12px; transition: border-color .15s;
+  padding: 7px 11px; border-radius: 8px; white-space: nowrap;
+  background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07);
+  transition: border-color .15s, background .15s;
 }
-.ben-pill:hover { border-color: rgba(245,200,66,.25); }
-.ben-pill-icon { font-size: 14px; }
-.ben-pill-name { font-size: 10px; color: var(--muted2); letter-spacing: .06em; text-transform: uppercase; }
-.ben-pill-price { font-weight: 700; color: var(--gold); font-size: 12px; margin-left: auto; padding-left: 10px; }
+.ben-row:hover { background: rgba(56,189,248,0.05); border-color: rgba(56,189,248,0.15); }
+.ben-icon { font-size: 13px; }
+.ben-name { font-family: var(--fontb); font-size: 10px; color: var(--muted2); letter-spacing: 0.08em; text-transform: uppercase; }
+.ben-price { font-family: var(--font); font-weight: 600; color: var(--blue3); font-size: 12px; margin-left: auto; padding-left: 10px; }
 
-/* ══════════════ SNAPSHOT ══════════════ */
+/* ══ SYSTEM SNAPSHOT ══ */
 .snap {
   background: var(--card); border: 1px solid var(--border);
-  border-radius: 16px; padding: 22px 20px;
-  backdrop-filter: blur(20px); margin-bottom: 40px;
+  border-radius: 16px; padding: 24px 22px; margin-bottom: 40px;
 }
-.snap-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; flex-wrap: wrap; gap: 8px; }
-.snap-title { font-size: 15px; font-weight: 700; }
-.snap-sub   { font-size: 11px; color: var(--muted); margin-top: 2px; }
-.snap-live  { display: flex; align-items: center; gap: 7px; font-size: 12px; color: var(--muted); }
-.led { width: 7px; height: 7px; border-radius: 50%; background: #ef4444; box-shadow: 0 0 6px rgba(239,68,68,.6); flex-shrink: 0; transition: all .3s; }
-.led.on { background: var(--green); box-shadow: 0 0 10px rgba(34,197,94,.8); animation: ledpulse 2s ease-in-out infinite; }
-@keyframes ledpulse { 0%,100%{box-shadow:0 0 6px rgba(34,197,94,.5);} 50%{box-shadow:0 0 14px rgba(34,197,94,.9);} }
+.snap-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
+.snap-left {}
+.snap-title { font-family: var(--font); font-size: 15px; font-weight: 600; letter-spacing: -0.01em; color: var(--white); }
+.snap-sub   { font-family: var(--fontb); font-size: 11px; color: var(--muted); margin-top: 2px; letter-spacing: 0.04em; }
+.snap-live  { display: flex; align-items: center; gap: 7px; font-family: var(--fontb); font-size: 11px; color: var(--muted); }
 
 .snap-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; }
-.snap-item { padding: 14px 12px; border-radius: 11px; background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.06); }
-.snap-lbl { font-size: 9px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
-.snap-val { font-size: 19px; font-weight: 800; letter-spacing: -0.01em; }
-.snap-sub-lbl { font-size: 10px; color: var(--muted); margin-top: 3px; }
+.snap-item { padding: 14px 13px; border-radius: 11px; background: rgba(255,255,255,0.02); border: 1px solid var(--border); }
+.snap-lbl  { font-family: var(--fontb); font-size: 9px; font-weight: 500; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+.snap-val  { font-family: var(--font); font-size: 20px; font-weight: 700; letter-spacing: -0.01em; }
+.snap-hint { font-family: var(--fontb); font-size: 10px; color: var(--muted); margin-top: 3px; }
 
-/* ══════════════ ACTIONS ══════════════ */
+/* ══ QUICK ACTIONS ══ */
 .actions { display: flex; gap: 10px; flex-wrap: wrap; }
-.btn { display: inline-flex; align-items: center; gap: 7px; padding: 10px 20px; border-radius: 10px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all .18s; text-decoration: none; border: none; font-family: 'Inter', sans-serif; }
-.btn-primary { background: linear-gradient(135deg,#16a34a,#22c55e); color: #020617; box-shadow: 0 4px 18px rgba(34,197,94,.28); }
-.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(34,197,94,.45); filter: brightness(1.05); }
-.btn-outline { background: rgba(255,255,255,.06); color: var(--text); border: 1px solid rgba(255,255,255,.1); }
-.btn-outline:hover { background: rgba(255,255,255,.1); border-color: rgba(255,255,255,.18); transform: translateY(-1px); }
+.act-btn {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 10px 20px; border-radius: 10px;
+  font-family: var(--font); font-size: 13px; font-weight: 600;
+  cursor: pointer; transition: all .18s; text-decoration: none; border: none;
+}
+.act-btn.p { background: var(--blue2); color: #fff; box-shadow: 0 4px 16px rgba(14,165,233,0.3); }
+.act-btn.p:hover { background: var(--blue); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(56,189,248,0.4); }
+.act-btn.o { background: rgba(255,255,255,0.05); color: var(--text); border: 1px solid var(--border); }
+.act-btn.o:hover { background: rgba(255,255,255,0.09); border-color: var(--border2); transform: translateY(-1px); }
 
-/* ══════════════ FOOTER ══════════════ */
-.foot { border-top: 1px solid var(--border); margin-top: 48px; padding: 20px 22px; text-align: center; font-size: 11px; color: var(--muted); letter-spacing: .08em; }
+/* ══ PAGE FOOTER ══ */
+.foot { border-top: 1px solid var(--border); margin-top: 48px; padding: 20px; text-align: center; font-family: var(--fontb); font-size: 11px; font-weight: 400; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
 
-/* ══════════════ RESPONSIVE ══════════════ */
-@media(max-width:900px) {
+/* ══ RESPONSIVE ══ */
+@media(max-width:960px) {
   .grid3 { grid-template-columns: 1fr 1fr; }
   .grid2 { grid-template-columns: 1fr; }
   .snap-grid { grid-template-columns: 1fr 1fr; }
-  .ben-layout { flex-direction: column; }
-  .ben-pills { flex-direction: row; flex-wrap: wrap; }
+  .ben-wrap { flex-direction: column; }
+  .ben-list { flex-direction: row; flex-wrap: wrap; }
 }
-
-@media(max-width:600px) {
-  .topbar { padding: 0 16px; }
-  .topbar-nav { display: none; }
+@media(max-width:640px) {
+  .topbar { padding: 0 14px; }
+  nav { display: none; }
   .user-name { display: none; }
-
-  .hero-headline { font-size: clamp(42px,11vw,72px); }
-  .hero-sub { font-size: 11px; letter-spacing: .1em; }
-  .btn-cta-primary, .btn-cta-secondary { padding: 11px 20px; font-size: 13px; }
-  .hero-badges { gap: 6px; }
-  .hbadge { padding: 3px 10px; font-size: 10px; }
-
-  .hstat { padding: 12px 14px; }
-  .hstat-val { font-size: 16px; }
-
-  .main { padding: 40px 16px 60px; }
+  .hero { padding-bottom: 70px; }
+  .hero-name { font-size: clamp(36px,10vw,60px); }
+  .sstat { padding: 12px 10px; }
+  .sstat-val { font-size: 16px; }
+  .main { padding: 36px 14px 60px; }
   .grid3 { grid-template-columns: 1fr; }
-  .card-val { font-size: 24px; }
   .snap-grid { grid-template-columns: 1fr 1fr; }
-  .ben-pills { flex-direction: column; }
-  .ben-pill { white-space: normal; }
+  .ben-list { flex-direction: column; }
+  .hero-cta { gap: 10px; }
+  .btn-primary, .btn-secondary { padding: 11px 18px; font-size: 13px; }
 }
 </style>
 </head>
@@ -399,71 +449,74 @@ a { text-decoration: none; color: inherit; }
 <!-- TOPBAR -->
 <div class="topbar">
   <a href="/" class="brand">
-    <div class="brand-icon">A7</div>
+    <div class="brand-logo">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 2L20 7V12L12 17L4 12V7L12 2Z" stroke="#38bdf8" stroke-width="1.5" stroke-linejoin="round"/>
+        <path d="M12 7L16 10V14L12 17L8 14V10L12 7Z" fill="rgba(56,189,248,0.2)" stroke="#38bdf8" stroke-width="1"/>
+      </svg>
+    </div>
     <div>
       <span class="brand-name">WIN.WIN</span>
       <span class="brand-sub">Cooperative</span>
     </div>
   </a>
-  <nav class="topbar-nav">
+
+  <nav>
     <a href="/login/member.html" class="active">Můj účet</a>
     <a href="/login/benefits.html">Benefity</a>
     <a href="/login/affiliate.html">Síť</a>
     <a href="/login/support.html">Podpora</a>
   </nav>
-  <div class="topbar-user" onclick="doLogout()">
-    <div class="user-av" id="userAv">?</div>
-    <div class="user-name" id="userName">…</div>
-    <div class="user-dot"></div>
+
+  <div class="topbar-right">
+    <div class="user-chip" onclick="doLogout()">
+      <div class="user-av" id="userAv">?</div>
+      <span class="user-name" id="userName">…</span>
+      <div class="led-dot"></div>
+    </div>
   </div>
 </div>
 
 <!-- HERO -->
 <section class="hero">
-  <div class="hero-bg-img">
+  <div class="hero-bg">
     <img src="/icons/hero.jpg" alt="" aria-hidden="true">
   </div>
 
   <div class="hero-content">
-    <!-- Badges jako kasino -->
-    <div class="hero-badges">
-      <div class="hbadge"><span class="hbadge-dot"></span>Live systém</div>
-      <div class="hbadge"><span class="hbadge-dot gold"></span>DeFi farming</div>
-      <div class="hbadge"><span class="hbadge-dot blue"></span>Blockchain audit</div>
+    <div class="hero-live">
+      <div class="led-dot"></div>
+      Členský dashboard · WIN.WIN Cooperative
     </div>
 
-    <!-- Headline — bílý + zlatý řádek jako kasino -->
-    <h1 class="hero-headline">
-      Vítejte,
-      <span class="gold-line" id="heroName">Člene</span>
-    </h1>
-
-    <p class="hero-sub">Kooperativní ekonomický systém · CRX · WW-Key · DeFi výnosy</p>
+    <div class="hero-label">Vítejte</div>
+    <h1 class="hero-name" id="heroName">—</h1>
+    <p class="hero-sub">Kooperativní ekonomický systém · CRX · WW-Key · DeFi</p>
 
     <div class="hero-cta">
-      <a href="/login/benefits.html" class="btn-cta-primary">🎁 Uplatnit CRX</a>
-      <a href="/login/affiliate.html" class="btn-cta-secondary">🌐 Moje síť</a>
+      <a href="/login/benefits.html" class="btn-primary">Uplatnit CRX →</a>
+      <a href="/login/affiliate.html" class="btn-secondary">Moje síť</a>
     </div>
   </div>
 
-  <!-- Stat strip dole — přesně jako kasino -->
-  <div class="hero-stats">
-    <div class="hero-stats-inner">
-      <div class="hstat">
-        <div class="hstat-val green" id="hCrx">—</div>
-        <div class="hstat-lbl">CRX zůstatek</div>
+  <!-- STAT STRIP -->
+  <div class="hero-strip">
+    <div class="strip-inner">
+      <div class="sstat">
+        <div class="sstat-val g" id="hCrx">—</div>
+        <div class="sstat-lbl">CRX zůstatek</div>
       </div>
-      <div class="hstat">
-        <div class="hstat-val blue" id="hWwkey">—</div>
-        <div class="hstat-lbl">WW-Key</div>
+      <div class="sstat">
+        <div class="sstat-val b" id="hWwkey">—</div>
+        <div class="sstat-lbl">WW-Key</div>
       </div>
-      <div class="hstat">
-        <div class="hstat-val purple" id="hCareer">—</div>
-        <div class="hstat-lbl">Kariérní stupeň</div>
+      <div class="sstat">
+        <div class="sstat-val p" id="hCareer">—</div>
+        <div class="sstat-lbl">Kariérní pozice</div>
       </div>
-      <div class="hstat">
-        <div class="hstat-val gold" id="hStatus">—</div>
-        <div class="hstat-lbl">Status</div>
+      <div class="sstat">
+        <div class="sstat-val w" id="hStatus">—</div>
+        <div class="sstat-lbl">Členský status</div>
       </div>
     </div>
   </div>
@@ -472,55 +525,63 @@ a { text-decoration: none; color: inherit; }
 <!-- MAIN -->
 <div class="main">
 
-  <div class="sec-head">
-    <div class="sec-title">Váš přehled</div>
+  <!-- Sekce: Přehled -->
+  <div class="sec">
+    <div class="sec-title">Přehled</div>
     <div class="sec-line"></div>
-    <div class="sec-pill">Live data</div>
+    <div class="sec-dot"><div class="led-dot blue" style="width:5px;height:5px;"></div>Live</div>
   </div>
 
   <div class="grid3">
 
     <!-- CRX -->
-    <a href="/login/crx.html" class="card green">
-      <div class="card-icon">💎</div>
-      <div class="card-tag">Věrnostní poukázky</div>
-      <div class="card-title">CRX Účet</div>
-      <div class="card-desc">Uplatněte v interní tržnici — elektřina, PHM, zlato, autobonus a Pluxee.</div>
-      <div class="card-bottom">
-        <div class="card-val green" id="crxVal">—</div>
-        <div class="card-unit">CRX k dispozici</div>
+    <a href="/crx.html" class="fcard c-green">
+      <div class="fc-head">
+        <div class="fc-icon">💎</div>
+        <div class="fc-badge"><div class="led-dot" style="width:5px;height:5px;animation:none;background:var(--green);box-shadow:none;"></div>Aktivní</div>
+      </div>
+      <div class="fc-tag">Věrnostní poukázky</div>
+      <div class="fc-title">CRX Účet</div>
+      <div class="fc-desc">Vaše interní CRX — uplatněte v tržnici na elektřinu, PHM, zlato, autobonus a Pluxee.</div>
+      <div class="fc-bottom">
+        <div class="fc-val g" id="crxVal">—</div>
+        <div class="fc-unit">CRX k dispozici</div>
         <div class="prog">
-          <div class="prog-top"><span>Využito měsíc</span><span id="crxPct">—</span></div>
+          <div class="prog-row"><span>Využito tento měsíc</span><span id="crxPct">—</span></div>
           <div class="prog-bg"><div class="prog-fill" id="crxBar"></div></div>
         </div>
       </div>
-      <div class="card-arrow">→</div>
+      <div class="fc-arrow">→</div>
     </a>
 
     <!-- WW-KEY -->
-    <a href="/login/certificate-info.html" class="card blue">
-      <div class="card-icon">🔑</div>
-      <div class="card-tag">Členské jednotky</div>
-      <div class="card-title">WW-Key Certifikát</div>
-      <div class="card-desc">Vaše angažovanost v systému. Určuje výši CRX alokace a kariérní status.</div>
-      <div class="card-bottom">
-        <div class="card-val blue" id="wwkeyVal">—</div>
-        <div class="card-unit">WW-Key · Vklad: <span id="depositVal">—</span></div>
+    <a href="/login/certificate-info.html" class="fcard c-blue">
+      <div class="fc-head">
+        <div class="fc-icon">🔑</div>
       </div>
-      <div class="card-arrow">→</div>
+      <div class="fc-tag">Členské jednotky</div>
+      <div class="fc-title">WW-Key Certifikát</div>
+      <div class="fc-desc">Váš certifikát angažovanosti. Určuje výši měsíční CRX alokace a kariérní status.</div>
+      <div class="fc-bottom">
+        <div class="fc-val b" id="wwkeyVal">—</div>
+        <div class="fc-unit">WW-Key · Vklad: <span id="depositVal">—</span></div>
+      </div>
+      <div class="fc-arrow">→</div>
     </a>
 
     <!-- KARIÉRA -->
-    <a href="/login/affiliate.html" class="card purple">
-      <div class="card-icon">⭐</div>
-      <div class="card-tag">Matching bonus</div>
-      <div class="card-title">Kariérní program</div>
-      <div class="card-desc">Váš bonus z CRX alokace sítě. Čím vyšší stupeň, tím vyšší procento.</div>
-      <div class="card-bottom">
-        <div class="card-val purple" id="mbVal">—</div>
-        <div class="card-unit">z alokace sítě · <span id="careerVal" style="color:var(--purple)">—</span></div>
+    <a href="/login/affiliate.html" class="fcard c-purple">
+      <div class="fc-head">
+        <div class="fc-icon">⭐</div>
       </div>
-      <div class="card-arrow">→</div>
+      <div class="fc-tag">Matching bonus</div>
+      <div class="fc-title">Kariérní program</div>
+      <div class="fc-desc">Váš bonus z CRX alokace členů ve vaší síti. Čím vyšší kariérní stupeň, tím více.</div>
+      <div class="fc-bottom">
+        <div class="fc-val p" id="mbVal">—</div>
+        <div class="fc-unit">z alokace sítě · <span id="careerVal" style="color:var(--purple)">—</span></div>
+      </div>
+      <div class="fc-arrow">→</div>
     </a>
 
   </div>
@@ -528,94 +589,99 @@ a { text-decoration: none; color: inherit; }
   <div class="grid2">
 
     <!-- BENEFITY -->
-    <a href="/login/benefits.html" class="card gold">
-      <div class="ben-layout">
+    <a href="/login/benefits.html" class="fcard c-teal">
+      <div class="ben-wrap">
         <div style="flex:1;min-width:0;">
-          <div class="card-icon">🎁</div>
-          <div class="card-tag">Tržnice</div>
-          <div class="card-title">Moje benefity</div>
-          <div class="card-desc">Každý program stojí 30 CRX za aktivaci. Vyberte co potřebujete.</div>
-          <div class="card-bottom">
-            <div class="card-val gold" id="benVal">—</div>
-            <div class="card-unit">aktivních benefitů</div>
+          <div class="fc-head" style="margin-bottom:12px;">
+            <div class="fc-icon">🎁</div>
+          </div>
+          <div class="fc-tag">Tržnice benefitů</div>
+          <div class="fc-title">Moje benefity</div>
+          <div class="fc-desc">Aktivujte programy za CRX. Každý program stojí 30 CRX.</div>
+          <div class="fc-bottom">
+            <div class="fc-val b" id="benVal">—</div>
+            <div class="fc-unit">aktivních benefitů</div>
           </div>
         </div>
-        <div class="ben-pills">
-          <div class="ben-pill"><span class="ben-pill-icon">⚡</span><span class="ben-pill-name">Elektřina SHX</span><span class="ben-pill-price">30 CRX</span></div>
-          <div class="ben-pill"><span class="ben-pill-icon">⛽</span><span class="ben-pill-name">PHM FLX</span><span class="ben-pill-price">30 CRX</span></div>
-          <div class="ben-pill"><span class="ben-pill-icon">🥇</span><span class="ben-pill-name">Zlato AUX</span><span class="ben-pill-price">30 CRX</span></div>
-          <div class="ben-pill"><span class="ben-pill-icon">🛒</span><span class="ben-pill-name">Pluxee</span><span class="ben-pill-price">30 CRX</span></div>
-          <div class="ben-pill"><span class="ben-pill-icon">🚗</span><span class="ben-pill-name">Autobonus ATX</span><span class="ben-pill-price">30 CRX</span></div>
+        <div class="ben-list">
+          <div class="ben-row"><span class="ben-icon">⚡</span><span class="ben-name">Elektřina SHX</span><span class="ben-price">30 CRX</span></div>
+          <div class="ben-row"><span class="ben-icon">⛽</span><span class="ben-name">PHM FLX</span><span class="ben-price">30 CRX</span></div>
+          <div class="ben-row"><span class="ben-icon">🥇</span><span class="ben-name">Zlato AUX</span><span class="ben-price">30 CRX</span></div>
+          <div class="ben-row"><span class="ben-icon">🛒</span><span class="ben-name">Pluxee</span><span class="ben-price">30 CRX</span></div>
+          <div class="ben-row"><span class="ben-icon">🚗</span><span class="ben-name">Autobonus ATX</span><span class="ben-price">30 CRX</span></div>
         </div>
       </div>
-      <div class="card-arrow">→</div>
+      <div class="fc-arrow">→</div>
     </a>
 
     <!-- SÍŤ -->
-    <a href="/login/affiliate.html" class="card blue">
-      <div class="card-icon">🌐</div>
-      <div class="card-tag">Partnerský program</div>
-      <div class="card-title">Moje síť</div>
-      <div class="card-desc">Členové doporučení přes váš referral kód. Dostáváte matching bonus z jejich CRX.</div>
-      <div class="card-bottom">
-        <div class="card-val blue" id="netVal">—</div>
-        <div class="card-unit">členů v síti</div>
+    <a href="/login/affiliate.html" class="fcard c-blue">
+      <div class="fc-head">
+        <div class="fc-icon">🌐</div>
       </div>
-      <div class="card-arrow">→</div>
+      <div class="fc-tag">Partnerský program</div>
+      <div class="fc-title">Moje síť</div>
+      <div class="fc-desc">Členové doporučení přes váš referral kód. Z jejich CRX alokace dostáváte matching bonus.</div>
+      <div class="fc-bottom">
+        <div class="fc-val b" id="netVal">—</div>
+        <div class="fc-unit">členů ve vaší síti</div>
+      </div>
+      <div class="fc-arrow">→</div>
     </a>
 
   </div>
 
-  <!-- SNAPSHOT -->
-  <div class="sec-head">
+  <!-- SYSTEM SNAPSHOT -->
+  <div class="sec" style="margin-top:8px;">
     <div class="sec-title">Stav systému</div>
     <div class="sec-line"></div>
   </div>
+
   <div class="snap">
     <div class="snap-head">
-      <div>
+      <div class="snap-left">
         <div class="snap-title">AYAS-7 · DeFi Engine</div>
         <div class="snap-sub">PancakeSwap · BNB Chain · Multisig Treasury</div>
       </div>
       <div class="snap-live">
-        <span class="led" id="snapLed"></span>
+        <div class="led-dot off" id="snapLed" style="width:7px;height:7px;"></div>
         <span id="snapTxt">Připojuji…</span>
       </div>
     </div>
     <div class="snap-grid">
       <div class="snap-item">
         <div class="snap-lbl">APR Pool</div>
-        <div class="snap-val" style="color:var(--blue)" id="sApr">—</div>
-        <div class="snap-sub-lbl">USDT / BNB</div>
+        <div class="snap-val" style="color:var(--blue3)" id="sApr">—</div>
+        <div class="snap-hint">USDT / BNB</div>
       </div>
       <div class="snap-item">
         <div class="snap-lbl">TVL</div>
-        <div class="snap-val" style="color:var(--gold)" id="sTvl">—</div>
-        <div class="snap-sub-lbl">Total Value Locked</div>
+        <div class="snap-val" style="color:#f59e0b" id="sTvl">—</div>
+        <div class="snap-hint">Total Value Locked</div>
       </div>
       <div class="snap-item">
         <div class="snap-lbl">WW-UNIT</div>
         <div class="snap-val" style="color:var(--green)" id="sUnit">—</div>
-        <div class="snap-sub-lbl">DEX · BSC</div>
+        <div class="snap-hint">DEX · BSC</div>
       </div>
       <div class="snap-item">
         <div class="snap-lbl">System Health</div>
         <div class="snap-val" style="color:var(--purple)" id="sHealth">—</div>
-        <div class="snap-sub-lbl" id="sHealthLbl">—</div>
+        <div class="snap-hint" id="sHealthLbl">—</div>
       </div>
     </div>
   </div>
 
-  <!-- AKCE -->
-  <div class="sec-head">
+  <!-- RYCHLÉ AKCE -->
+  <div class="sec">
     <div class="sec-title">Rychlé akce</div>
     <div class="sec-line"></div>
   </div>
   <div class="actions">
-    <a href="/login/benefits.html"         class="btn btn-primary">🎁 Uplatnit CRX</a>
-    <a href="/login/affiliate.html"        class="btn btn-outline">🌐 Partnerský program</a>
-    <a href="/login/certificate-info.html" class="btn btn-outline">📄 Certifikát</a>
-    <a href="/login/support.html"          class="btn btn-outline">💬 Podpora</a>
+    <a href="/login/benefits.html"         class="act-btn p">🎁 Uplatnit CRX</a>
+    <a href="/login/affiliate.html"        class="act-btn o">🌐 Partnerský program</a>
+    <a href="/login/certificate-info.html" class="act-btn o">📄 Certifikát</a>
+    <a href="/login/support.html"          class="act-btn o">💬 Podpora</a>
   </div>
 
 </div>
@@ -629,8 +695,8 @@ const SB_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsIn
 const SNAP    = 'https://snapshot.ayas7.com/api/snapshot';
 const YIELD   = 'https://api.ayas7.com/api/yield';
 
-const sb = supabase.createClient(SB_URL, SB_ANON);
-const $  = id => document.getElementById(id);
+const sb  = supabase.createClient(SB_URL, SB_ANON);
+const $   = id => document.getElementById(id);
 const fmt    = n => n != null ? Number(n).toLocaleString('cs-CZ') : '—';
 const fmtUSD = n => n != null ? '$'+Number(n).toLocaleString('en-US',{maximumFractionDigits:2}) : '—';
 const fmtPct = n => n != null ? Number(n).toFixed(2)+'%' : '—';
@@ -642,7 +708,7 @@ const TIERS = [
 ];
 
 async function doLogout() {
-  if(!confirm('Odhlásit se?')) return;
+  if(!confirm('Odhlásit se ze systému WIN.WIN?')) return;
   await sb.auth.signOut();
   window.location.href = '/login/signin.html';
 }
@@ -656,15 +722,23 @@ async function loadSnap() {
     const sd = await sr.json();
     const yd = await yr.json();
     const y  = yd.yield;
+
     $('sApr').textContent    = fmtPct(y?.apr);
     $('sTvl').textContent    = fmtUSD(y?.tvl);
     $('sUnit').textContent   = sd.tokens?.WW_UNIT?.priceUSD ? '$'+Number(sd.tokens.WW_UNIT.priceUSD).toFixed(4) : '—';
     $('sHealth').textContent = sd.meta?.health ? Number(sd.meta.health).toFixed(1)+'%' : '—';
     $('sHealthLbl').textContent = sd.meta?.health >= 75 ? 'STABLE' : sd.meta?.health >= 40 ? 'ACTIVE' : 'LIMITED';
-    $('snapLed').classList.add('on');
-    $('snapTxt').textContent = 'Live · '+new Date().toLocaleTimeString('cs-CZ');
+
+    const led = $('snapLed');
+    led.classList.remove('off');
+    led.style.background = 'var(--green)';
+    led.style.boxShadow  = '0 0 0 2px rgba(34,197,94,0.2), 0 0 10px rgba(34,197,94,0.6)';
+    led.style.animation  = 'ledpulse 2.4s ease-in-out infinite';
+    $('snapTxt').textContent = 'Live · ' + new Date().toLocaleTimeString('cs-CZ');
   } catch {
-    $('snapLed').classList.remove('on');
+    const led = $('snapLed');
+    led.className = 'led-dot off';
+    led.style.width = '7px'; led.style.height = '7px';
     $('snapTxt').textContent = 'Offline';
   }
 }
@@ -684,23 +758,23 @@ async function init() {
   const { data: acc } = await sb.from('member_accounts').select('*').eq('user_id',user.id).single();
 
   if(acc) {
-    const map = {active:'Aktivní',pending:'Čekající',inactive:'Neaktivní'};
-    $('hStatus').textContent   = map[acc.status] || acc.status;
-    $('hWwkey').textContent    = fmt(acc.ww_key_balance);
-    $('wwkeyVal').textContent  = fmt(acc.ww_key_balance);
+    const map = { active:'Aktivní', pending:'Čekající', inactive:'Neaktivní' };
+    $('hStatus').textContent    = map[acc.status] || acc.status;
+    $('hWwkey').textContent     = fmt(acc.ww_key_balance);
+    $('wwkeyVal').textContent   = fmt(acc.ww_key_balance);
     $('depositVal').textContent = acc.total_paid ? fmt(acc.total_paid)+' Kč' : '—';
   }
 
   const { data: crx } = await sb.from('member_crx_balances_internal').select('*').eq('member_id',acc?.member_id).maybeSingle();
   if(crx) {
-    const bal = Number(crx.available||crx.balance||0);
+    const bal  = Number(crx.available||crx.balance||0);
     const used = Number(crx.used||0);
-    const tot = bal+used;
-    const pct = tot>0 ? Math.round((used/tot)*100) : 0;
-    $('hCrx').textContent  = fmt(bal.toFixed(0));
-    $('crxVal').textContent = fmt(bal.toFixed(0));
-    $('crxPct').textContent = pct+'%';
-    setTimeout(()=>{ $('crxBar').style.width = pct+'%'; }, 400);
+    const tot  = bal+used;
+    const pct  = tot>0 ? Math.round((used/tot)*100) : 0;
+    $('hCrx').textContent    = fmt(bal.toFixed(0));
+    $('crxVal').textContent   = fmt(bal.toFixed(0));
+    $('crxPct').textContent   = pct+'%';
+    setTimeout(()=>{ $('crxBar').style.width = pct+'%'; }, 500);
   }
 
   const { data: career } = await sb.from('member_career_roles').select('role_code,role_name').eq('member_id',acc?.member_id).order('created_at',{ascending:false}).limit(1).maybeSingle();
