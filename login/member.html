@@ -6,7 +6,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <link rel="icon" type="image/png" sizes="192x192" href="/ayas7-192.png">
 <link rel="apple-touch-icon" href="/ayas7-192.png">
-<meta name="theme-color" content="#020617">
+<meta name="theme-color" content="#020917">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="WIN.WIN">
+<link rel="manifest" href="/manifest.json">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
@@ -774,6 +779,25 @@ nav a.active {
         <span id="snapTxt">Připojuji…</span>
       </div>
     </div>
+    <!-- Token row -->
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:10px">
+      <div class="snap-item" style="border-top:2px solid var(--blue2)">
+        <div class="snap-lbl">WW-UNIT</div>
+        <div class="snap-val" style="color:var(--blue3)" id="sUnit">—</div>
+        <div class="snap-hint">DEX · PancakeSwap</div>
+      </div>
+      <div class="snap-item" style="border-top:2px solid #f59e0b">
+        <div class="snap-lbl">WW-RESERVE</div>
+        <div class="snap-val" style="color:#f59e0b" id="sReserve">—</div>
+        <div class="snap-hint">Stability · Backed</div>
+      </div>
+      <div class="snap-item" style="border-top:2px solid var(--purple)">
+        <div class="snap-lbl">WW-Key Issued</div>
+        <div class="snap-val" style="color:var(--purple)" id="sKeyIssued">—</div>
+        <div class="snap-hint"><span id="sKeyHolders">—</span> držitelů</div>
+      </div>
+    </div>
+    <!-- Pool + CRX row -->
     <div class="snap-grid">
       <div class="snap-item">
         <div class="snap-lbl">APR Pool</div>
@@ -786,9 +810,9 @@ nav a.active {
         <div class="snap-hint">Total Value Locked</div>
       </div>
       <div class="snap-item">
-        <div class="snap-lbl">WW-UNIT</div>
-        <div class="snap-val" style="color:var(--green)" id="sUnit">—</div>
-        <div class="snap-hint">DEX · BSC</div>
+        <div class="snap-lbl">CRX Systém</div>
+        <div class="snap-val" style="color:var(--green)" id="sCrxTotal">—</div>
+        <div class="snap-hint">Vydáno celkem</div>
       </div>
       <div class="snap-item">
         <div class="snap-lbl">System Health</div>
@@ -848,20 +872,37 @@ async function loadSnap() {
     const sd = await sr.json();
     const yd = await yr.json();
     const y  = yd.yield;
+    const t  = sd.tokens || {};
+    const m  = sd.meta   || {};
 
-    $('sApr').textContent    = fmtPct(y?.apr);
-    $('sTvl').textContent    = fmtUSD(y?.tvl);
-    $('sUnit').textContent   = sd.tokens?.WW_UNIT?.priceUSD ? '$'+Number(sd.tokens.WW_UNIT.priceUSD).toFixed(4) : '—';
-    $('sHealth').textContent = sd.meta?.health ? Number(sd.meta.health).toFixed(1)+'%' : '—';
-    $('sHealthLbl').textContent = sd.meta?.health >= 75 ? 'STABLE' : sd.meta?.health >= 40 ? 'ACTIVE' : 'LIMITED';
+    // Pool data
+    $('sApr').textContent = fmtPct(y?.apr);
+    $('sTvl').textContent = fmtUSD(y?.tvl);
 
+    // Token prices
+    $('sUnit').textContent    = t.WW_UNIT?.priceUSD    ? '$'+Number(t.WW_UNIT.priceUSD).toFixed(6)    : '—';
+    $('sReserve').textContent = t.WW_RESERVE?.priceUSD ? '$'+Number(t.WW_RESERVE.priceUSD).toFixed(6) : '—';
+
+    // WW-Key
+    $('sKeyIssued').textContent  = t.WW_KEY?.issued  ? fmt(t.WW_KEY.issued)  : '—';
+    $('sKeyHolders').textContent = t.WW_KEY?.holders ? fmt(t.WW_KEY.holders) : '—';
+
+    // CRX system
+    $('sCrxTotal').textContent = sd.crx?.total ? Number(sd.crx.total).toFixed(0) : '—';
+
+    // Health
+    $('sHealth').textContent    = m.health ? Number(m.health).toFixed(1)+'%' : '—';
+    $('sHealthLbl').textContent = m.health >= 75 ? 'STABLE' : m.health >= 40 ? 'ACTIVE' : 'LIMITED';
+
+    // LED online
     const led = $('snapLed');
     led.classList.remove('off');
-    led.style.background = 'var(--green)';
-    led.style.boxShadow  = '0 0 0 2px rgba(34,197,94,0.2), 0 0 10px rgba(34,197,94,0.6)';
-    led.style.animation  = 'ledpulse 2.4s ease-in-out infinite';
+    led.style.background  = 'var(--green)';
+    led.style.boxShadow   = '0 0 0 2px rgba(34,197,94,0.2), 0 0 10px rgba(34,197,94,0.6)';
+    led.style.animation   = 'ledpulse 2.4s ease-in-out infinite';
     $('snapTxt').textContent = 'Live · ' + new Date().toLocaleTimeString('cs-CZ');
-  } catch {
+  } catch(e) {
+    console.warn('Snapshot offline:', e.message);
     const led = $('snapLed');
     led.className = 'led-dot off';
     led.style.width = '7px'; led.style.height = '7px';
