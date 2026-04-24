@@ -1,1572 +1,558 @@
 <!DOCTYPE html>
 <html lang="cs">
 <head>
- <meta charset="UTF-8" />
- <title>WIN.WIN – Přihlášení</title>
- <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <!-- FAVICON / PWA -->
-  <link rel="icon" type="image/png" sizes="192x192" href="/ayas7-192.png">
-  <link rel="icon" type="image/png" sizes="512x512" href="/ayas7-512.png">
-  <link rel="apple-touch-icon" href="/ayas7-192.png">
-  <meta name="theme-color" content="#020617">
-<script type="module" src="./assets/js/gate.js"></script>
-  <title>WIN-WIN · …</title>
- <style>
-   :root {
-     --blue-dark: #0a1a33;
-     --blue-mid: #124c99;
-     --blue-light: #4fa3ff;
-     --bg-page: #020617;
-     --card-bg: #0b1220;
-     --border-soft: rgba(148, 163, 184, 0.4);
-     --text-main: #e5e7eb;
-     --text-muted: #9ca3af;
-     --accent: #22c55e;
-   }
+<meta charset="UTF-8"/>
+<title>WIN.WIN · Moje benefity</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<link rel="icon" type="image/png" sizes="192x192" href="/ayas7-192.png">
+<link rel="apple-touch-icon" href="/ayas7-192.png">
+<meta name="theme-color" content="#020917">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script type="module" src="/assets/js/gate.js"></script>
 
-
-   * {
-     box-sizing: border-box;
-     margin: 0;
-     padding: 0;
-   }
-
-   html, #msg_body {
-     width: 100%;
-     height: 100%;
-     font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-     background: radial-gradient(circle at 40% 0%, #0f172a 0%, #020617 55%, #000 100%);
-     color: var(--text-main);
-     overflow-x: hidden;
-   }
-
-   a {
-     text-decoration: none;
-     color: inherit;
-   }
-
-   /* TOP BAR / MENU */
-   header.topbar {
-     background: linear-gradient(to right, #060b16, #0a1a33);
-     color: #fff;
-     padding: 10px 0;
-     border-bottom: 1px solid rgba(15, 23, 42, 0.9);
-   }
-
-   .topbar-inner {
-     max-width: 1200px;
-     margin: 0 auto;
-     padding: 0 16px;
-     display: flex;
-     align-items: center;
-     justify-content: space-between;
-     gap: 24px;
-   }
-
-   /* LEVÁ ČÁST – textová značka (bez loga) */
-   .brand {
-     display: flex;
-     flex-direction: column;
-     gap: 2px;
-     min-width: 0;
-   }
-
-   .brand-text-main {
-     font-size: 18px;
-     font-weight: 600;
-     letter-spacing: 0.06em;
-     text-transform: uppercase;
-     white-space: nowrap;
-   }
-
-   .brand-text-sub {
-     font-size: 11px;
-     text-transform: uppercase;
-     letter-spacing: 0.18em;
-     color: rgba(226, 232, 240, 0.75);
-   }
-
-   /* STŘED – hlavní menu (3 položky) */
-   nav.main-nav {
-     display: flex;
-     align-items: center;
-     justify-content: center;
-     flex: 1;
-     min-width: 0;
-   }
-
-   .nav-list {
-     display: flex;
-     align-items: center;
-     justify-content: center;
-     gap: 22px;
-     list-style: none;
-     margin: 0;
-     padding: 0;
-     font-size: 14px;
-   }
-
-   .nav-link {
-     position: relative;
-     padding: 4px 0;
-     color: rgba(226, 232, 240, 0.86);
-     transition: color 0.18s ease;
-     white-space: nowrap;
-   }
-
-   .nav-link::after {
-     content: "";
-     position: absolute;
-     left: 0;
-     bottom: -3px;
-     width: 0;
-     height: 2px;
-     border-radius: 999px;
-     background: linear-gradient(to right, #22c55e, #4ade80);
-     transition: width 0.22s ease;
-   }
-
-   .nav-link:hover {
-     color: #ffffff;
-   }
-
-   .nav-link:hover::after {
-     width: 100%;
-   }
-
-   .nav-link.active {
-     color: #ffffff;
-     font-weight: 600;
-   }
-
-   .nav-link.active::after {
-     width: 100%;
-   }
-
-   /* PRAVÁ ČÁST – jazyk + login */
-   .topbar-right {
-     display: flex;
-     align-items: center;
-     gap: 16px;
-     flex-shrink: 0;
-   }
-
-   .lang-switch {
-     font-size: 12px;
-     letter-spacing: 0.12em;
-     text-transform: uppercase;
-     color: rgba(226, 232, 240, 0.8);
-     display: flex;
-     align-items: center;
-     gap: 6px;
-     white-space: nowrap;
-   }
-
-   .lang-switch span {
-     cursor: pointer;
-     opacity: 0.65;
-   }
-
-   .lang-switch span.active {
-     opacity: 1;
-     font-weight: 600;
-     text-decoration: underline;
-     text-underline-offset: 3px;
-   }
-
-   .lang-sep {
-     opacity: 0.4;
-   }
-
-   .btn-login {
-     padding: 6px 16px;
-     border-radius: 999px;
-     border: 1px solid rgba(226, 232, 240, 0.6);
-     background: rgba(15, 23, 42, 0.18);
-     color: #f9fafb;
-     font-size: 13px;
-     font-weight: 500;
-     cursor: pointer;
-     display: inline-flex;
-     align-items: center;
-     gap: 8px;
-     transition: background 0.18s ease, border-color 0.18s ease, transform 0.12s ease;
-     white-space: nowrap;
-   }
-
-   .btn-login span.dot {
-     width: 8px;
-     height: 8px;
-     border-radius: 999px;
-     background: var(--accent);
-     box-shadow: 0 0 8px rgba(34, 197, 94, 0.9);
-   }
-
-   .btn-login:hover {
-     background: rgba(15, 23, 42, 0.35);
-     border-color: #ffffff;
-     transform: translateY(-1px);
-   }
-
-   .btn-login:active {
-     transform: translateY(0);
-   }
-
-   /* HLAVNÍ OBSAH – login karta */
-   main {
-     min-height: calc(100vh - 72px - 50px);
-     display: flex;
-     align-items: center;
-     justify-content: center;
-     padding: 40px 16px 32px;
-   }
-
-   .login-wrapper {
-     max-width: 420px;
-     width: 100%;
-     background: radial-gradient(circle at top left, #0b1120 0, #020617 60%);
-     border-radius: 18px;
-     border: 1px solid rgba(148, 163, 184, 0.4);
-     box-shadow:
-       0 24px 60px rgba(15, 23, 42, 0.85),
-       0 0 0 1px rgba(15, 23, 42, 0.8);
-     padding: 24px 22px 20px;
-   }
-
-   .login-badge {
-     display: inline-flex;
-     align-items: center;
-     gap: 6px;
-     padding: 2px 10px;
-     border-radius: 999px;
-     border: 1px solid rgba(148, 163, 184, 0.5);
-     font-size: 11px;
-     color: var(--text-muted);
-     margin-bottom: 10px;
-   }
-
-   .login-badge-dot {
-     width: 7px;
-     height: 7px;
-     border-radius: 999px;
-     background: var(--accent);
-     box-shadow: 0 0 8px rgba(34, 197, 94, 0.9);
-   }
-
-   .login-title {
-     font-size: 22px;
-     font-weight: 600;
-     margin: 0 0 4px;
-   }
-
-   .login-subtitle {
-     font-size: 13px;
-     color: var(--text-muted);
-     margin: 0 0 14px;
-   }
-
-   /* NOVÝ INFO BLOK PRO NOVÉHO ČLENA */
-   .login-intro {
-     margin-bottom: 16px;
-     padding: 10px 10px 8px;
-     border-radius: 12px;
-     border: 1px solid rgba(148, 163, 184, 0.45);
-     background: radial-gradient(circle at top left, rgba(15,23,42,0.95), rgba(15,23,42,0.75));
-   }
-
-   .login-intro-header {
-     display: flex;
-     align-items: center;
-     gap: 8px;
-     font-size: 12px;
-     margin-bottom: 6px;
-     color: var(--text-main);
-   }
-
-   .login-intro-dot {
-     width: 7px;
-     height: 7px;
-     border-radius: 999px;
-     background: var(--blue-light);
-     box-shadow: 0 0 10px rgba(79, 163, 255, 1);
-   }
-
-   .login-intro-text {
-     font-size: 12px;
-     color: var(--text-muted);
-     line-height: 1.55;
-   }
-
-   .login-intro-text b {
-     color: var(--text-main);
-     font-weight: 600;
-   }
-
-   .form-group {
-     margin-bottom: 12px;
-   }
-
-   .form-label {
-     display: block;
-     font-size: 12px;
-     color: var(--text-muted);
-     margin-bottom: 4px;
-   }
-
-   .form-input {
-     width: 100%;
-     padding: 8px 10px;
-     border-radius: 8px;
-     border: 1px solid var(--border-soft);
-     background: rgba(15, 23, 42, 0.7);
-     color: var(--text-main);
-     font-size: 13px;
-     outline: none;
-     transition: border-color 0.16s ease, box-shadow 0.16s ease, background 0.16s ease;
-   }
-
-   .form-input::placeholder {
-     color: rgba(148, 163, 184, 0.7);
-   }
-
-   .form-input:focus {
-     border-color: var(--blue-light);
-     box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.6);
-     background: rgba(15, 23, 42, 0.95);
-   }
-
-   .form-row-between {
-     display: flex;
-     align-items: center;
-     justify-content: space-between;
-     gap: 8px;
-     margin-bottom: 16px;
-   }
-
-   .form-check {
-     display: flex;
-     align-items: center;
-     gap: 6px;
-     font-size: 12px;
-     color: var(--text-muted);
-   }
-
-   .form-check input[type="checkbox"] {
-     width: 14px;
-     height: 14px;
-     border-radius: 4px;
-     border: 1px solid var(--border-soft);
-     background: transparent;
-     accent-color: var(--accent);
-     cursor: pointer;
-   }
-
-   .link-small {
-     font-size: 12px;
-     color: var(--blue-light);
-     cursor: pointer;
-     white-space: nowrap;
-   }
-
-   .link-small:hover {
-     text-decoration: underline;
-     text-underline-offset: 3px;
-   }
-
-   .btn-submit {
-     width: 100%;
-     padding: 9px 14px;
-     border-radius: 999px;
-     border: none;
-     background: linear-gradient(to right, #22c55e, #4ade80);
-     color: #020617;
-     font-weight: 600;
-     font-size: 14px;
-     cursor: pointer;
-     margin-bottom: 10px;
-     box-shadow: 0 18px 40px rgba(22, 163, 74, 0.6);
-     transition: transform 0.12s ease, box-shadow 0.12s ease, filter 0.12s ease;
-   }
-
-   .btn-submit:hover {
-     filter: brightness(1.03);
-     transform: translateY(-1px);
-     box-shadow: 0 22px 52px rgba(22, 163, 74, 0.75);
-   }
-
-   .btn-submit:active {
-     transform: translateY(0);
-     box-shadow: 0 16px 36px rgba(22, 163, 74, 0.5);
-   }
-
-   .login-footer-text {
-     font-size: 12px;
-     color: var(--text-muted);
-     text-align: center;
-     margin-top: 6px;
-   }
-
-   .login-footer-text a {
-     color: var(--blue-light);
-   }
-
-   .login-footer-text a:hover {
-     text-decoration: underline;
-     text-underline-offset: 3px;
-   }
-
-   /* Footer stránky */
-   footer {
-     text-align: center;
-     padding: 10px 16px 16px;
-     font-size: 11px;
-     color: var(--text-muted);
-   }
-
-   /* RESPONSIVE */
-   @media (max-width: 900px) {
-     .topbar-inner {
-       flex-wrap: wrap;
-       row-gap: 8px;
-     }
-     nav.main-nav {
-       order: 3;
-       width: 100%;
-       justify-content: flex-start;
-     }
-     .nav-list {
-       flex-wrap: wrap;
-       row-gap: 4px;
-     }
-   }
-
-   @media (max-width: 640px) {
-     .topbar-inner {
-       flex-direction: column;
-       align-items: flex-start;
-     }
-
-     nav.main-nav {
-       width: 100%;
-     }
-
-     .nav-list {
-       font-size: 13px;
-       gap: 14px;
-     }
-
-     .topbar-right {
-       align-self: stretch;
-       justify-content: space-between;
-       width: 100%;
-     }
-
-     .brand-text-main {
-       font-size: 16px;
-     }
-
-     .login-wrapper {
-       padding: 20px 16px 18px;
-     }
-   }
-main {
-  padding-top: 0 !important;
-  margin-top: -24px;
+<style>
+:root {
+  --bg:    #020917;
+  --card:  rgba(6,14,31,0.92);
+  --b1:    rgba(56,189,248,0.1);
+  --b2:    rgba(56,189,248,0.22);
+  --blue:  #38bdf8;
+  --blue2: #0ea5e9;
+  --blue3: #7dd3fc;
+  --green: #22c55e;
+  --green2:#16a34a;
+  --white: #f8fafc;
+  --text:  #e2e8f0;
+  --muted: #475569;
+  --m2:    #94a3b8;
+  --purple:#818cf8;
+  --amber: #f59e0b;
+  --font:  'Space Grotesk', sans-serif;
+  --fontb: 'DM Sans', sans-serif;
 }
 
+*,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+html,body { min-height:100%; font-family:var(--fontb); background:var(--bg); color:var(--text); overflow-x:hidden; -webkit-font-smoothing:antialiased; }
+a { text-decoration:none; color:inherit; }
 
- </style>
+/* ═══ TOPBAR ═══ */
+.topbar {
+  position:sticky; top:0; z-index:200; height:54px;
+  display:flex; align-items:center; justify-content:space-between; padding:0 28px;
+  background:rgba(2,9,23,0.85); backdrop-filter:blur(24px);
+  border-bottom:1px solid var(--b1);
+}
+.brand { display:flex; align-items:center; gap:10px; }
+.brand-logo { width:30px; height:30px; border-radius:7px; flex-shrink:0; background:linear-gradient(135deg,rgba(56,189,248,0.15),rgba(56,189,248,0.04)); border:1px solid var(--b2); display:flex; align-items:center; justify-content:center; }
+.brand-logo svg { width:16px; height:16px; }
+.brand-name { font-family:var(--font); font-size:14px; font-weight:700; letter-spacing:-0.01em; color:var(--white); }
+.brand-sub  { font-size:8px; letter-spacing:0.2em; text-transform:uppercase; color:var(--m2); display:block; }
+nav { display:flex; gap:2px; }
+nav a { padding:5px 13px; border-radius:8px; font-family:var(--fontb); font-size:13px; font-weight:500; color:var(--m2); transition:all .15s; }
+nav a:hover { color:var(--text); background:rgba(255,255,255,.06); }
+nav a.active { color:var(--blue3); background:rgba(56,189,248,0.08); border:1px solid var(--b1); }
+.user-chip { display:flex; align-items:center; gap:8px; padding:4px 12px 4px 6px; border-radius:999px; border:1px solid var(--b1); background:rgba(255,255,255,.04); cursor:pointer; transition:all .15s; flex-shrink:0; }
+.user-chip:hover { border-color:var(--b2); }
+.user-av { width:26px; height:26px; border-radius:50%; background:linear-gradient(135deg,#0ea5e9,#0369a1); display:flex; align-items:center; justify-content:center; font-family:var(--font); font-size:11px; font-weight:700; color:#fff; }
+.user-name { font-family:var(--fontb); font-size:12px; font-weight:500; max-width:110px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+
+/* LED */
+.led { display:inline-block; border-radius:50%; flex-shrink:0; animation:lp 2.4s ease-in-out infinite; }
+.led-g  { width:7px; height:7px; background:var(--green); box-shadow:0 0 0 2px rgba(34,197,94,.2),0 0 10px rgba(34,197,94,.8); }
+.led-b  { width:7px; height:7px; background:var(--blue);  box-shadow:0 0 0 2px rgba(56,189,248,.2),0 0 10px rgba(56,189,248,.8); }
+.led-sg { width:5px; height:5px; background:var(--green); box-shadow:0 0 0 1px rgba(34,197,94,.2),0 0 7px rgba(34,197,94,.8); }
+.led-sb { width:5px; height:5px; background:var(--blue);  box-shadow:0 0 0 1px rgba(56,189,248,.2),0 0 7px rgba(56,189,248,.8); }
+@keyframes lp { 0%,100%{opacity:1} 50%{opacity:.5} }
+
+/* ═══ PAGE ═══ */
+.page { max-width:1080px; margin:0 auto; padding:36px 22px 80px; }
+
+.sec { display:flex; align-items:center; gap:14px; margin-bottom:18px; }
+.sec-title { font-family:var(--font); font-size:12px; font-weight:600; letter-spacing:.14em; text-transform:uppercase; color:var(--m2); white-space:nowrap; }
+.sec-line  { flex:1; height:1px; background:linear-gradient(90deg,var(--b2),transparent); }
+.sec-dot   { display:flex; align-items:center; gap:6px; font-family:var(--fontb); font-size:11px; color:var(--muted); flex-shrink:0; }
+
+/* PAGE HEADER */
+.page-header { margin-bottom:32px; }
+.page-kicker { display:inline-flex; align-items:center; gap:7px; font-family:var(--fontb); font-size:10px; font-weight:600; letter-spacing:.14em; text-transform:uppercase; color:var(--m2); margin-bottom:12px; }
+.page-title  { font-family:var(--font); font-size:clamp(24px,4vw,36px); font-weight:700; letter-spacing:-.02em; color:var(--white); margin-bottom:8px; line-height:1.1; }
+.page-title span { color:var(--blue3); }
+.page-sub    { font-family:var(--fontb); font-size:14px; color:var(--m2); line-height:1.65; max-width:560px; }
+.page-sub strong { color:var(--green); font-weight:500; }
+
+/* ═══ CARD ═══ */
+.card {
+  background:var(--card); border:1px solid var(--b1); border-radius:16px;
+  padding:22px 20px; margin-bottom:20px; position:relative; overflow:hidden;
+  transition:border-color .2s;
+}
+.card::before { content:''; position:absolute; top:0; left:8%; right:8%; height:1px; background:linear-gradient(90deg,transparent,var(--blue2),transparent); opacity:.4; }
+
+.card-kicker { display:inline-flex; align-items:center; gap:7px; font-family:var(--fontb); font-size:10px; font-weight:600; letter-spacing:.14em; text-transform:uppercase; color:var(--m2); margin-bottom:10px; }
+.card-title  { font-family:var(--font); font-size:17px; font-weight:600; color:var(--white); margin-bottom:6px; }
+.card-sub    { font-family:var(--fontb); font-size:13px; color:var(--m2); line-height:1.6; margin-bottom:14px; }
+
+/* ═══ TABLE ═══ */
+.table-wrap { border:1px solid var(--b1); border-radius:12px; overflow-x:auto; margin-bottom:14px; }
+table { width:100%; border-collapse:collapse; min-width:500px; }
+thead tr { background:rgba(255,255,255,.03); }
+th { padding:10px 14px; text-align:left; font-family:var(--fontb); font-size:9px; font-weight:600; letter-spacing:.16em; text-transform:uppercase; color:var(--muted); border-bottom:1px solid var(--b1); white-space:nowrap; }
+td { padding:11px 14px; font-family:var(--fontb); font-size:13px; border-bottom:1px solid rgba(255,255,255,.04); vertical-align:middle; }
+tbody tr:last-child td { border-bottom:none; }
+tbody tr:hover td { background:rgba(255,255,255,.02); }
+
+/* ═══ STATUS BADGES ═══ */
+.badge { display:inline-flex; align-items:center; gap:5px; padding:3px 9px; border-radius:999px; font-family:var(--fontb); font-size:11px; font-weight:600; }
+.badge.green  { background:rgba(34,197,94,.1);  color:var(--green);  border:1px solid rgba(34,197,94,.2);  }
+.badge.amber  { background:rgba(245,158,11,.1); color:var(--amber);  border:1px solid rgba(245,158,11,.2); }
+.badge.red    { background:rgba(239,68,68,.1);  color:#fca5a5;       border:1px solid rgba(239,68,68,.2);  }
+.badge.gray   { background:rgba(71,85,105,.1);  color:var(--m2);     border:1px solid rgba(71,85,105,.2);  }
+
+/* ═══ BENEFIT REQUEST BTN ═══ */
+.btn-req {
+  display:inline-flex; align-items:center; gap:6px;
+  padding:6px 14px; border-radius:8px;
+  background:rgba(34,197,94,.1); border:1px solid rgba(34,197,94,.2);
+  color:var(--green); font-family:var(--fontb); font-size:12px; font-weight:600;
+  cursor:pointer; transition:all .15s;
+}
+.btn-req:hover { background:rgba(34,197,94,.18); border-color:rgba(34,197,94,.35); transform:translateY(-1px); }
+.btn-req.disabled { opacity:.4; cursor:not-allowed; transform:none; }
+
+/* ═══ INFO GRID ═══ */
+.info-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:20px; }
+.info-card { background:var(--card); border:1px solid var(--b1); border-radius:16px; padding:22px 20px; }
+.info-card.blue::before { content:''; display:block; height:1px; background:linear-gradient(90deg,transparent,var(--blue),transparent); opacity:.5; margin:-22px -20px 18px; }
+.info-card.green::before { content:''; display:block; height:1px; background:linear-gradient(90deg,transparent,var(--green),transparent); opacity:.5; margin:-22px -20px 18px; }
+.ic-title { font-family:var(--font); font-size:16px; font-weight:700; color:var(--white); margin-bottom:6px; }
+.ic-sub   { font-family:var(--fontb); font-size:13px; color:var(--m2); line-height:1.6; margin-bottom:12px; }
+.ic-list  { padding-left:16px; }
+.ic-list li { font-family:var(--fontb); font-size:12px; color:var(--m2); line-height:1.7; }
+.ic-list li b { color:var(--text); font-weight:500; }
+.ic-note  { font-family:var(--fontb); font-size:11px; color:var(--muted); margin-top:10px; line-height:1.6; padding:10px 12px; background:rgba(255,255,255,.02); border:1px solid var(--b1); border-radius:8px; }
+
+/* ═══ ALERT BOX ═══ */
+.alert-box { padding:14px 16px; border-radius:12px; font-family:var(--fontb); font-size:13px; line-height:1.6; margin-bottom:20px; }
+.alert-box.amber { background:rgba(245,158,11,.08); border:1px solid rgba(245,158,11,.25); color:#fde68a; }
+.alert-box.blue  { background:rgba(56,189,248,.06);  border:1px solid var(--b2);             color:var(--blue3); }
+.alert-box strong { font-weight:600; }
+.alert-list { margin:8px 0 4px 18px; }
+.alert-list li { margin-bottom:3px; }
+
+/* ═══ STATUS TABLE ═══ */
+.status-table { width:100%; border-collapse:collapse; font-family:var(--fontb); font-size:13px; }
+.status-table th { padding:9px 12px; background:rgba(255,255,255,.03); font-size:9px; font-weight:600; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); border-bottom:1px solid var(--b1); text-align:left; }
+.status-table td { padding:9px 12px; border-bottom:1px solid rgba(255,255,255,.04); }
+.status-table tbody tr:last-child td { border-bottom:none; }
+.status-table tbody tr:hover td { background:rgba(255,255,255,.02); }
+
+/* ═══ POLICY CTA ═══ */
+.policy-card {
+  background:rgba(56,189,248,.04); border:1px solid var(--b2);
+  border-radius:16px; padding:22px 20px; margin-bottom:20px;
+}
+.policy-card::before { content:''; display:block; height:1px; background:linear-gradient(90deg,transparent,var(--blue2),transparent); opacity:.6; margin:-22px -20px 18px; }
+.policy-title { font-family:var(--font); font-size:16px; font-weight:600; color:var(--white); margin-bottom:6px; }
+.policy-sub   { font-family:var(--fontb); font-size:13px; color:var(--m2); line-height:1.6; margin-bottom:14px; }
+.policy-btns  { display:flex; gap:10px; flex-wrap:wrap; }
+.btn-policy {
+  display:inline-flex; align-items:center; gap:7px;
+  padding:10px 18px; border-radius:10px;
+  background:rgba(56,189,248,.1); border:1px solid var(--b2);
+  color:var(--blue3); font-family:var(--font); font-size:13px; font-weight:600;
+  cursor:pointer; transition:all .15s;
+}
+.btn-policy:hover { background:rgba(56,189,248,.18); transform:translateY(-1px); }
+
+/* ═══ DISCLAIMER ═══ */
+.disclaimer { background:rgba(255,255,255,.02); border:1px solid var(--b1); border-radius:12px; padding:14px 16px; font-family:var(--fontb); font-size:12px; color:var(--muted); line-height:1.65; margin-top:8px; }
+
+/* ═══ FOOTER ═══ */
+.foot { border-top:1px solid var(--b1); margin-top:40px; padding:18px; text-align:center; font-family:var(--fontb); font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); }
+
+/* ═══ RESPONSIVE ═══ */
+@media(max-width:900px) {
+  .info-grid { grid-template-columns:1fr; }
+}
+@media(max-width:640px) {
+  .topbar  { padding:0 14px; height:50px; }
+  nav      { display:none; }
+  .user-name { display:none; }
+  .brand-sub { display:none; }
+  .page    { padding:24px 14px 60px; }
+  .page-title { font-size:22px; }
+  .card    { padding:18px 14px; }
+  th,td    { padding:9px 10px; font-size:12px; }
+  th       { font-size:8px; }
+  .policy-btns { flex-direction:column; }
+  .btn-policy  { width:100%; justify-content:center; }
+  .foot { font-size:9px; }
+}
+</style>
 </head>
 <body>
 
- <title>WIN.WIN · …</title>
- <style>
-   /* ========== RESET & BASE ========== */
-   * { box-sizing: border-box; margin:0; padding:0; }
-   html, #msg_body { height:100%; width:100%; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; background: radial-gradient(circle at 40% 0%, #0f172a 0%, #020617 55%, #000 100%); color:#e5e7eb; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
-   a { color:inherit; text-decoration:none; }
-
-   :root{
-     --accent: #22c55e;
-     --blue-light: #4fa3ff;
-     --card-bg-start: #0b1120;
-     --card-bg-end: #020617;
-     --card-border: rgba(51,65,85,0.9);
-     --muted: #9ca3af;
-     --glass: rgba(15,23,42,0.75);
-   }
-
-
-   /* ===== TOPBAR ===== */
-   header.topbar { background: linear-gradient(to right,#020617,#020617); border-bottom:1px solid rgba(15,23,42,0.9); }
-   .topbar-inner { max-width:1200px; margin:0 auto; padding:10px 16px; display:flex; align-items:center; justify-content:space-between; gap:24px; }
-   .brand { display:flex; flex-direction:column; gap:2px; }
-   .brand-text-main { font-size:18px; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; color:#e5e7eb; }
-   .brand-text-sub { font-size:11px; letter-spacing:0.18em; text-transform:uppercase; color:rgba(148,163,184,0.9); }
-
-   nav.main-nav { flex:1; display:flex; justify-content:center; }
-   .nav-list { list-style:none; display:flex; gap:18px; font-size:14px; }
-   .nav-link { position:relative; padding:4px 0; color:rgba(226,232,240,0.9); white-space:nowrap; transition:color .18s; }
-   .nav-link::after { content:""; position:absolute; left:0; bottom:-3px; width:0; height:2px; border-radius:999px; background:linear-gradient(to right,var(--accent),#4ade80); transition:width .22s; }
-   .nav-link:hover{ color:#fff; } .nav-link:hover::after{ width:100%; }
-   .nav-link.active{ color:#fff; font-weight:600; } .nav-link.active::after{ width:100%; }
-
-   .topbar-right{ display:flex; align-items:center; gap:16px; flex-shrink:0; }
-   .lang-switch{ font-size:12px; letter-spacing:0.12em; text-transform:uppercase; color:rgba(226,232,240,0.8); display:flex; gap:6px; }
-   .btn-login{ padding:6px 16px; border-radius:999px; border:1px solid rgba(226,232,240,0.6); background: radial-gradient(circle at top left,#0b1120,#020617); color:#f9fafb; font-size:13px; font-weight:500; cursor:pointer; display:inline-flex; align-items:center; gap:8px; transition:transform .12s; }
-   .btn-login .dot{ width:8px; height:8px; border-radius:999px; background:var(--accent); box-shadow:0 0 10px rgba(34,197,94,0.9); display:inline-block; }
-
-   /* ===== MAIN LAYOUT ===== */
-   main{ min-height:calc(100vh - 80px - 60px); padding:28px 16px 32px; display:flex; justify-content:center; }
-   .page-inner{ max-width:1200px; width:100%; }
-   .page-header{ margin-bottom:20px; }
-   .page-kicker{ font-size:12px; text-transform:uppercase; letter-spacing:0.14em; color:var(--muted); margin-bottom:4px; display:inline-flex; align-items:center; gap:6px; }
-   .page-kicker-dot{ width:7px; height:7px; border-radius:999px; background:var(--accent); box-shadow:0 0 8px rgba(34,197,94,1); }
-   .page-title{ font-size:24px; font-weight:600; margin-bottom:6px; }
-   .page-subtitle{ font-size:13px; color:var(--muted); max-width:780px; line-height:1.6; }
-
-   .columns{ display:flex; gap:20px; align-items:flex-start; flex-wrap:wrap; margin-top:22px; }
-   .col{ flex:1; min-width:0; }
-
-   /* ===== CARDS (UNIFORM) ===== */
-   .card, .link-card, .info-card { background: radial-gradient(circle at top left, var(--card-bg-start), var(--card-bg-end) 70%); border-radius:18px; border:1px solid var(--card-border); box-shadow:0 24px 60px rgba(15,23,42,0.9); padding:18px 18px 16px; position:relative; overflow:visible; }
-   .card::before, .link-card::before, .info-card::before {
-  content:"";
-  position:absolute;
-  inset:0;
-  background:radial-gradient(circle at top right, rgba(79,172,255,0.08), transparent 65%);
-  pointer-events:none;
-  opacity:0.95;
-  z-index:0;               /* 🔥 DŮLEŽITÉ */
-}
-
-   .card-inner, .link-inner, .info-inner {
-  position:relative;
-  z-index:2;
-  overflow:visible; /* 🔥 KRITICKÉ */
-}
-.link-inner{
-  padding-top: 10px;   /* ← PŘIDEJ JEN TOTO */
-}
-
-
-
-   .card-badge, .info-badge{ display:inline-flex; align-items:center; gap:6px; padding:2px 10px; border-radius:999px; border:1px solid rgba(148,163,184,0.5); font-size:11px; color:var(--muted); margin-bottom:10px; background:rgba(15,23,42,0.7); }
-   .card-badge-dot, .info-badge-dot{ width:7px; height:7px; border-radius:999px; background:var(--accent); box-shadow:0 0 8px rgba(34,197,94,0.9); display:inline-block; }
-
-   .card-title{ font-size:18px; font-weight:600; margin-bottom:6px; }
-   .card-sub{ font-size:12px; color:var(--muted); margin-bottom:14px; line-height:1.6; }
-   .form-group{ margin-bottom:10px; }
-   .form-label{ display:block; font-size:12px; color:var(--muted); margin-bottom:4px; }
-   .form-input{ width:100%; padding:8px 10px; border-radius:8px; border:1px solid rgba(148,163,184,0.15); background:var(--glass); color:var(--text-main); font-size:13px; outline:none; transition:box-shadow .16s, border-color .16s; }
-   .form-input::placeholder{ color: rgba(148,163,184,0.6); }
-   .form-input:focus{ box-shadow: 0 0 0 2px rgba(79,163,255,0.06); border-color: rgba(79,163,255,0.2); }
-
-   .btn-primary{ width:100%; padding:9px 14px; border-radius:999px; border:none; background: linear-gradient(to right,#4fa3ff,#70c3ff); color:#020617; font-weight:600; font-size:14px; cursor:pointer; margin-top:4px; box-shadow:0 18px 40px rgba(79,163,255,0.45); transition:transform .12s, filter .12s; }
-   .btn-primary:hover{ transform:translateY(-1px); filter:brightness(1.04); box-shadow:0 22px 52px rgba(79,163,255,0.7); }
-
-   .result-panel{ margin-top:10px; padding:8px 10px; border-radius:10px; background: rgba(22,163,74,0.08); border:1px solid rgba(34,197,94,0.18); font-size:12px; color:#bbf7d0; }
-
-   .muted{ font-size:11px; color:var(--muted); margin-top:8px; }
-
-  /* ===== MEMBERS TABLE ===== */
-.members-table-wrap{
-  margin-top:6px;
-  border-radius:12px;
-  border:1px solid rgba(30,64,175,0.07);
-  background: radial-gradient(circle at top left,#020617,#020617 75%);
-  overflow-x:auto;   /* ← ZMĚNA */
-  overflow-y:visible;
-}
-table.members-xtable { 
-  width:100%; 
-  border-collapse:collapse; 
-  font-size:12px; 
-}
-table.members-table th, 
-table.members-table td{
-  padding:7px 8px;
-  border-bottom:1px solid rgba(30,64,175,0.05);
-  text-align:left;
-  color:#e5e7eb;
-}
-table.members-table thead{
-  background:linear-gradient(to right,#0b1120,#111827);
-}
-table.members-table tbody tr:nth-child(even){
-  background: rgba(15,23,42,0.82);
-}
-table.members-table tbody tr:nth-child(odd){
-  background: rgba(15,23,42,0.88);
-}
-
-
-   /* ===== INFO ROW ===== */
-   .info-row{ margin-top:26px; display:grid; grid-template-columns:1.6fr 1.4fr; gap:18px; }
-   .info-heading{ font-size:14px; font-weight:600; margin-bottom:6px; }
-   .info-text{ font-size:12px; color:var(--muted); line-height:1.6; }
-   .info-list{ margin-top:6px; padding-left:18px; font-size:12px; color:var(--muted); }
-   .btn-investor{ margin-top:10px; padding:8px 14px; border-radius:999px; border:1px solid rgba(148,163,184,0.8); background:rgba(15,23,42,0.85); color:#e5e7eb; font-size:13px; display:inline-flex; align-items:center; gap:8px; cursor:pointer; transition:transform .12s; }
-   .btn-investor-dot{ width:7px; height:7px; border-radius:999px; background:var(--blue-light); box-shadow:0 0 10px rgba(79,163,255,0.9); }
-
-   /* ===== LINK SECTION (uniform border fixed) ===== */
-   .link-section{ margin-top:26px; display:flex; flex-direction:column; gap:14px; }
-   .link-card{
-  border:1px solid var(--card-border);
-  position: relative;   /* ← PŘIDEJ JEN TOTO */
-}
-
-   .link-led-bar{ position:absolute; top:0; left:0; right:0; height:3px; background: linear-gradient(to right, #4fa3ff, var(--accent)); opacity:0.95; }
-   .link-heading-row{ display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:4px; }
-   .link-title{ font-size:14px; font-weight:600; }
-   .link-pill{ font-size:11px; padding:2px 9px; border-radius:999px; border:1px solid rgba(148,163,184,0.7); display:inline-flex; align-items:center; gap:5px; color:var(--muted); background:rgba(15,23,42,0.9); }
-   .link-pill-dot{ width:6px; height:6px; border-radius:999px; background:var(--blue-light); box-shadow:0 0 8px rgba(79,163,255,1); }
-
-   .link-text{ font-size:12px; color:var(--muted); line-height:1.6; margin-top:2px; }
-   .link-actions{ margin-top:8px; display:flex; justify-content:flex-start; gap:10px; }
-
-   .btn-link{ padding:7px 14px; border-radius:999px; border:1px solid rgba(148,163,184,0.8); background:rgba(15,23,42,0.85); color:#e5e7eb; font-size:12px; display:inline-flex; align-items:center; gap:7px; cursor:pointer; transition:transform .12s; }
-   .btn-link-dot{ width:6px; height:6px; border-radius:999px; background:var(--accent); box-shadow:0 0 8px rgba(34,197,94,0.9); }
-   .btn-link:hover{ transform:translateY(-1px); }
-
-   /* ===== TOKENOMIKA small ===== */
-   .tokenomika{ margin-top:10px; font-size:0.9em; background:rgba(232,244,255,0.02); padding:10px; border-radius:5px; color:var(--muted); border:1px solid rgba(148,163,184,0.06); }
-
-   /* ===== FOOTER ===== */
-   footer{ text-align:center; padding:10px 16px 16px; font-size:11px; color:var(--muted); }
-
-   /* ===== LED / DOT ANIMATIONS (subtle premium) ===== */
-   @keyframes pulse {
-     0% { transform: scale(1); opacity:1; }
-     50% { transform: scale(1.35); opacity:0.7; }
-     100% { transform: scale(1); opacity:1; }
-   }
-   .card-badge-dot, .info-badge-dot, .btn-investor-dot, .btn-link-dot { animation: pulse 2.4s infinite; }
-   .link-led-bar { animation: shift 6s linear infinite; background-size:200% 100%; }
-   @keyframes shift { 0% { background-position:0% 0%; } 50% { background-position:100% 0%; } 100% { background-position:0% 0%; } }
-
-   /* RESPONSIVE */
-   @media(max-width:900px){ .columns{ flex-direction:column; } .info-row{ grid-template-columns:1fr; } }
-   @media(max-width:640px){
-     .topbar-inner{ flex-direction:column; align-items:flex-start; gap:8px; }
-     nav.main-nav{ width:100%; justify-content:flex-start; }
-     .nav-list{ flex-wrap:wrap; row-gap:4px; font-size:13px; }
-   }
-
-/* ===== CERTIFIKÁT STAV ===== */
-.cert-action {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 6px 14px;
-  border-radius: 999px;
-  font-size: 12px;
-  font-weight: 600;
-  border: 1px solid rgba(148,163,184,0.5);
-  background: rgba(15,23,42,0.85);
-  color: #e5e7eb;
-  cursor: default;
-}
-
-.cert-action.active {
-  cursor: pointer;
-  background: linear-gradient(to right, #22c55e, #4ade80);
-  color: #020617;
-  border: none;
-}
-
-.cert-action.waiting {
-  background: rgba(15,23,42,0.9);
-  color: #9ca3af;
-}
-
-.cert-led {
-  width: 8px;
-  height: 8px;
-  border-radius: 999px;
-}
-
-.cert-led.green {
-  background: #22c55e;
-  box-shadow: 0 0 8px rgba(34,197,94,0.9);
-}
-
-.cert-led.blue {
-  background: #4fa3ff;
-  box-shadow: 0 0 8px rgba(79,163,255,0.9);
-}
-
-.cert-led.yellow {
-  background: #facc15;
-  box-shadow: 0 0 8px rgba(250,204,21,0.9);
-}
-/* === FIX: posunutí obsahu výš === */
-main {
-  padding-top: 50px !important;
-}
-
-.page-inner {
-  margin-top: 0 !important;
-}
-
-.page-header {
-  margin-top: 0 !important;
-  padding-top: 0 !important;
-}
-/* ===== FIX: srovnání horních benefit boxů ===== */
-.benefits-grid{
-  display:grid;
-  grid-template-columns: 1fr 1fr;
-  gap:24px;
-  align-items:stretch;
-  margin-top:22px;
-}
-
-/* mobile fallback */
-@media(max-width:900px){
-  .benefits-grid{
-    grid-template-columns:1fr;
-  }
-}
-/* ===== BENEFITS GRID – čisté a rovné boxy ===== */
-.benefits-grid{
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 24px;
-  margin-top: 22px;
-  align-items: stretch;
-}
-
-@media (max-width: 900px){
-  .benefits-grid{
-    grid-template-columns: 1fr;
-  }
-}
-.btn-benefit-request{
-  padding:6px 14px;
-  border-radius:999px;
-  border:1px solid rgba(148,163,184,.6);
-  background:rgba(15,23,42,.85);
-  color:#e5e7eb;
-  font-size:12px;
-  cursor:pointer;
-  display:inline-flex;
-  align-items:center;
-  gap:8px;
-  transition:transform .12s, background .12s;
-}
-
-.btn-benefit-request:hover{
-  transform:translateY(-1px);
-  background:rgba(15,23,42,.95);
-}
-
-.btn-dot{
-  width:7px;
-  height:7px;
-  border-radius:999px;
-  background:#22c55e;
-  box-shadow:0 0 8px rgba(34,197,94,.9);
-}
-
-
- </style>
-</head>
-<body>
-<div id="user-bar" style="
-  position:fixed;
-  top:12px;
-  right:16px;
-  z-index:9999;
-  font-size:12px;
-  color:#e5e7eb;
-  background:rgba(2,6,23,0.85);
-  border:1px solid rgba(148,163,184,0.3);
-  padding:6px 12px;
-  border-radius:999px;
-  display:none;
-">
-  Přihlášen: <span id="user-email"></span>
-  · <a href="#" id="logout" style="color:#4fa3ff;text-decoration:none;">Odhlásit</a>
+<!-- TOPBAR -->
+<div class="topbar">
+  <a href="/login/member.html" class="brand">
+    <div class="brand-logo">
+      <svg viewBox="0 0 24 24" fill="none">
+        <path d="M12 2L20 7V12L12 17L4 12V7L12 2Z" stroke="#38bdf8" stroke-width="1.5" stroke-linejoin="round"/>
+        <path d="M12 7L16 10V14L12 17L8 14V10L12 7Z" fill="rgba(56,189,248,0.2)" stroke="#38bdf8" stroke-width="1"/>
+      </svg>
+    </div>
+    <div>
+      <span class="brand-name">WIN.WIN</span>
+      <span class="brand-sub">Cooperative</span>
+    </div>
+  </a>
+  <nav>
+    <a href="/login/member.html">Dashboard</a>
+    <a href="/crx.html">CRX Účet</a>
+    <a href="/login/benefits.html" class="active">Benefity</a>
+    <a href="/login/affiliate.html">Síť</a>
+    <a href="/login/support.html">Podpora</a>
+  </nav>
+  <div class="user-chip" id="userChip" onclick="doLogout()">
+    <div class="user-av" id="userAv">?</div>
+    <span class="user-name" id="userName">…</span>
+    <span class="led led-g"></span>
+  </div>
 </div>
- 
- <header class="topbar">
-   <div class="topbar-inner">
 
-     
-     <div class="brand">
-       <div class="brand-text-main">WIN.WIN</div>
-       <div class="brand-text-sub">WIN-WIN COOPERATIVE</div>
-     </div>
+<!-- PAGE -->
+<div class="page">
 
-     
-<nav class="main-nav" aria-label="Hlavní menu">
-  <ul class="nav-list">
+  <!-- HEADER -->
+  <div class="page-header">
+    <div class="page-kicker"><span class="led led-sb"></span>Členské benefity · WIN.WIN</div>
+    <div class="page-title">Moje <span>benefity</span></div>
+    <p class="page-sub">Přehled vašich interních benefitů a dostupných programů. Každý benefit je řízen systémem <strong>AYAS-7</strong> a schvalován vnitřními pravidly družstva.</p>
+  </div>
 
-    <li>
-      <a href="/login/member.html" class="nav-link">
-        Můj účet
-      </a>
-    </li>
+  <!-- MOJE PŘIDĚLENÉ BENEFITY -->
+  <div class="sec">
+    <div class="sec-title">Přidělené benefity</div>
+    <div class="sec-line"></div>
+    <div class="sec-dot"><span class="led led-sg"></span>Live</div>
+  </div>
 
-    <li>
-      <a href="/login/benefits.html" class="nav-link">
-        Moje benefity
-      </a>
-    </li>
-
-    <li>
-      <a href="/login/support.html" class="nav-link">
-        Podpora
-      </a>
-    </li>
-
-  </ul>
-</nav>
-
-
-
-     
-     <div class="topbar-right">
-       <div class="lang-switch" aria-label="Přepnutí jazyka">
-         <span class="active">CZ</span>
-         <span class="lang-sep">|</span>
-         <span>EN</span>
-       </div>
- <a href="/login/signin.html">
-  <button type="button" class="btn-login">
-    <span class="dot"></span>
-    <span>Přihlášení</span>
-  </button>
-</a>
-
-
-     </div>
-
-   </div>
- </header>
-
-<main>
-  <div class="page-inner">
-
-<section class="card" style="margin-top:26px;">
-  <div class="card-inner">
-
-    <!-- ===== MOJE BENEFITY ===== -->
-    <div class="card-badge">
-      <span class="card-badge-dot"></span>
-      Přehled benefitů
-    </div>
-
+  <div class="card">
+    <div class="card-kicker"><span class="led led-sg"></span>Výpočet AYAS-7 · WW-KEY a CRX</div>
     <div class="card-title">Moje přidělené benefity</div>
+    <div class="card-sub">Přehled interních benefitů vypočtených systémem AYAS-7 na základě WW-KEY a CRX pro jednotlivá období.</div>
 
-    <div class="card-sub">
-      Přehled interních benefitů vypočtených systémem AYAS-7
-      na základě WW-KEY a CRX pro jednotlivá období.
-    </div>
-
-    <div class="members-table-wrap">
-      <table class="members-table">
+    <div class="table-wrap">
+      <table>
         <thead>
           <tr>
             <th>Období</th>
-            <th>WW-KEY</th>
+            <th>WW-Key</th>
             <th>CRX</th>
             <th>Úroveň</th>
             <th>PLX</th>
             <th>CRX+</th>
+            <th>Stav</th>
             <th>Poznámka</th>
           </tr>
         </thead>
         <tbody id="benefitsTableBody">
-          <tr>
-            <td colspan="7">Načítám data…</td>
-          </tr>
+          <tr><td colspan="8" style="color:var(--m2)">Načítám data…</td></tr>
         </tbody>
       </table>
     </div>
+    <div class="disclaimer">Benefity mají interní, evidenční a nefinanční charakter. Nejedná se o investici ani příslib výnosu.</div>
+  </div>
 
-    <p class="muted">
-      Benefity mají interní, evidenční a nefinanční charakter.
-      Nejedná se o investici ani příslib výnosu.
-    </p>
+  <!-- DOSTUPNÉ BENEFITY -->
+  <div class="sec" style="margin-top:8px">
+    <div class="sec-title">Dostupné benefity</div>
+    <div class="sec-line"></div>
+  </div>
 
-    <!-- ===== ODDĚLOVAČ (jen vizuální) ===== -->
-    <hr style="margin:26px 0; border:0; border-top:1px solid rgba(148,163,184,.25);">
+  <div class="card">
+    <div class="card-kicker"><span class="led led-sb"></span>Výběr programů</div>
+    <div class="card-title">Vyberte si benefit</div>
+    <div class="card-sub">Každá volba podléhá vyhodnocení systému AYAS-7 a schválení vnitřních pravidel družstva.</div>
 
-    <!-- ===== VÝBĚR BENEFITŮ ===== -->
-    <div class="card-badge">
-      <span class="card-badge-dot"></span>
-      Výběr benefitů
-    </div>
-
-    <div class="card-title">Dostupné benefity</div>
-
-    <div class="card-sub">
-      Člen si zde může <b>zvolit benefity</b>, o které má zájem.
-      Výběr nepředstavuje nárok ani automatické přidělení.
-      Každá volba podléhá vyhodnocení systému AYAS-7
-      a schválení vnitřních pravidel družstva.
-    </div>
-
-    <div class="members-table-wrap">
-      <table class="members-table">
-       <thead>
-  <tr>
-    <th>Název benefitu</th>
-    <th>Typ</th>
-    <th>Popis</th>
-    <th>CRX</th>
-    <th>Stav</th>
-    <th>Akce</th>
-  </tr>
-</thead>
-
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Název benefitu</th>
+            <th>Typ</th>
+            <th>Popis</th>
+            <th>CRX</th>
+            <th>Stav</th>
+            <th>Akce</th>
+          </tr>
+        </thead>
         <tbody id="availableBenefits">
-          <tr>
-            <td colspan="5">Načítám dostupné benefity…</td>
-          </tr>
+          <tr><td colspan="6" style="color:var(--m2)">Načítám dostupné benefity…</td></tr>
         </tbody>
       </table>
     </div>
-<!-- ================= BENEFIT NOTICE ================= -->
-<div style="
-  margin:18px 0 10px 0;
-  padding:14px 16px;
-  border-radius:10px;
-  background:linear-gradient(
-    to right,
-    rgba(245,158,11,0.12),
-    rgba(245,158,11,0.05)
-  );
-  border:1px solid rgba(245,158,11,0.45);
-  color:#fde68a;
-  font-size:13px;
-  line-height:1.45;
-">
-  <strong>⚠️ Informace k dostupnosti benefitů</strong><br><br>
 
-  Zobrazené benefity představují <b>aktuálně aktivní programy</b>
-  dostupné pro tvůj členský status a období.<br><br>
-
-  Další družstevní benefity (např. <b>energie, pohonné hmoty,
-  sdílení vozidel nebo provozní služby</b>) se v systému
-  <b>zobrazují postupně</b> podle:
-  <ul style="margin:6px 0 6px 18px;">
-    <li>úrovně WW-KEY a statusu člena</li>
-    <li>schválení konkrétního programu družstvem</li>
-    <li>aktuální kapacity a fáze spuštění</li>
-  </ul>
-
-  Nejedná se o nárok ani automatické plnění.
-  Benefity jsou <b>interní družstevní služby</b>
-  řízené systémem <b>AYAS-7</b>.
-</div>
-<!-- =============== END BENEFIT NOTICE =============== -->
-
-
-    <p class="muted">
-      Benefity jsou interní, evidenční a nefinanční povahy.
-      Výběr benefitu slouží jako žádost a může být zamítnut
-      nebo upraven dle pravidel družstva.
-    </p>
-<hr style="margin:26px 0; border:0; border-top:1px solid rgba(148,163,184,.25);">
-
-<div class="card-badge">
-  <span class="card-badge-dot"></span>
-  Moje žádosti
-</div>
-
-<div class="card-title">Čekající žádosti o benefity</div>
-
-<div class="members-table-wrap">
-  <table class="members-table">
-    <thead>
-      <tr>
-        <th>Produkt</th>
-        <th>Období</th>
-        <th>Stav</th>
-      </tr>
-    </thead>
-    <tbody id="myRequests">
-      <tr>
-        <td colspan="3">Načítám žádosti…</td>
-      </tr>
-    </tbody>
-  </table>
-</div>
-
-
-  </div>
-</section>
-
-
-<!-- ================= BENEFITS GRID ================= -->
-<div class="benefits-grid">
-
-  <!-- ===== CREDIX ===== -->
-  <section class="card">
-    <div class="card-inner">
-      <div class="card-badge">
-        <span class="card-badge-dot"></span>
-        Věrnostní systém
-      </div>
-
-<div class="card-sub">
-  <div style="
-    font-size:18px;
-    font-weight:600;
-    color:#ffffff;
-    margin-bottom:6px;
-  ">
-    CREDIX (CRX)
+    <div class="alert-box amber">
+      <strong>⚠️ Informace k dostupnosti benefitů</strong><br><br>
+      Zobrazené benefity představují aktuálně aktivní programy dostupné pro váš členský status. Další benefity se zobrazují postupně podle:
+      <ul class="alert-list">
+        <li>úrovně WW-KEY a statusu člena</li>
+        <li>schválení konkrétního programu družstvem</li>
+        <li>aktuální kapacity a fáze spuštění</li>
+      </ul>
+      Benefity jsou interní družstevní služby řízené systémem AYAS-7.
+    </div>
   </div>
 
-  je interní věrnostní a benefitní jednotka družstva WIN.WIN,
-  která je <b>odvozena od celkové míry angažovanosti člena</b> v systému.
-</div>
-
-
-<ul class="info-list">
-  <li>není převoditelný ani směnitelný</li>
-  <li>nemá peněžní ani investiční povahu</li>
-  <li>nepředstavuje nárok ani automatické plnění</li>
-  <li>slouží k uplatnění interních členských výhod</li>
-</ul>
-
-<p class="muted">
-  CRX nejsou zdrojem angažovanosti, ale jejím možným důsledkem.
-  Nejde o finanční instrument ani příslib výnosu.
-</p>
-
-    </div>
-
-
-  </section>
-
-
-
-  <!-- ===== PLUX ===== -->
-  <section class="card">
-    <div class="card-inner">
-      <div class="card-badge">
-        <span class="card-badge-dot"></span>
-        Benefitní poukázky
-      </div>
-
-      <div class="card-sub">
-  <div style="
-    font-size:18px;
-    font-weight:600;
-    color:#ffffff;
-    margin-bottom:6px;
-  ">
-    PLUX (PLX)
+  <!-- MOJE ŽÁDOSTI -->
+  <div class="sec">
+    <div class="sec-title">Moje žádosti</div>
+    <div class="sec-line"></div>
   </div>
 
-  představuje model interní provozní benefitní poukázky,
-  která může být členu zpřístupněna <b>na základě jeho statusu</b>
-  a schváleného rozsahu benefitů v systému WIN.WIN.
-</div>
-
-
-<ul class="info-list">
-  <li>nepředstavuje investici ani finanční produkt</li>
-  <li>nelze jej směnit za peníze</li>
-  <li>není nárokový ani automatický</li>
-  <li>slouží výhradně k interním benefitním účelům</li>
-</ul>
-
-<p class="muted">
-  PLX je provozní benefitní nástroj družstva,
-  jehož dostupnost podléhá vnitřním pravidlům.
-</p>
-
+  <div class="card">
+    <div class="card-kicker"><span class="led led-sb" style="animation:none;opacity:.6"></span>Čekající žádosti</div>
+    <div class="card-title">Žádosti o benefity</div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Produkt</th><th>Období</th><th>Stav</th></tr>
+        </thead>
+        <tbody id="myRequests">
+          <tr><td colspan="3" style="color:var(--m2)">Načítám žádosti…</td></tr>
+        </tbody>
+      </table>
     </div>
-  </section>
-
-</div>
-
-
-    <!-- ================= AURIX SECTION ================= -->
-    <section class="card" style="margin-top:26px;">
-      <div class="card-inner">
-
-        <div class="card-badge">
-          <span class="card-badge-dot"></span>
-          Koncepční model
-        </div>
-
-        <div class="card-title">AURIX – kovové poukázky</div>
-
-       <div class="card-sub">
-  <b>AURIX</b> je koncepční model interní evidence,
-  který slouží k <b>symbolickému znázornění struktury
-  dlouhodobých hodnot</b> v systému družstva WIN.WIN.
-</div>
-
-<p class="muted">
-  Jednotky AURIX nemají samostatnou ekonomickou existenci
-  a neslouží k oceňování ani výplatě hodnot.
-</p>
-
-
-        <ul class="info-list">
-          <li><b>AUX</b> – model 1 g investičního zlata</li>
-          <li><b>AGX</b> – model 1 g investičního stříbra</li>
-          <li><b>PTX</b> – model 1 g investiční platiny</li>
-          <li><b>PDX</b> – model 1 g investičního palladia</li>
-        </ul>
-
-        <div class="tokenomika">
-          Nejedná se o cenné papíry, komodity ani investiční produkty.
-          AURIX slouží výhradně jako interní modelová evidence.
-        </div>
-
-      </div>
-    </section>
-
-    <!-- ================= DISCLAIMER ================= -->
-    <section class="info-card" style="margin-top:26px;">
-      <div class="info-inner">
-        <div class="info-heading">Regulatorní informace</div>
-        <div class="info-text">
-          Tato stránka nepředstavuje investiční nabídku, veřejnou výzvu,
-          finanční doporučení ani příslib výnosu.
-          Všechny uvedené benefity mají interní, evidenční a informační charakter
-          a jsou vázány výhradně na členství v družstvu WIN.WIN.
-        </div>
-      </div>
-    </section>
-<section class="info-card" style="margin-top:24px;">
-  <div class="info-inner">
-
-    <div class="info-badge">
-      <span class="info-badge-dot"></span>
-      Členský systém · WIN.WIN
-    </div>
-
-    <div class="info-heading">Jak WW-KEY otevírá cestu k benefitům</div>
-
-<!-- ================= STATUSY ANGAŽOVANOSTI ================= -->
-<div class="members-table-wrap" style="
-  margin-top:16px;
-  width:100%;
-  background: radial-gradient(circle at top left, #0b1120, #020617 75%);
-  border-radius:14px;
-  padding:8px;
-">
-  <table class="members-table" style="width:100%;">
-    <thead>
-      <tr>
-        <th>Status</th>
-        <th>Rozsah WW-KEY</th>
-        <th>Koeficient CRX<br>
-          <span style="font-weight:400;font-size:11px;">/ měsíc / WW-KEY</span>
-        </th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr><td>MEMBER</td><td>0 – 999</td><td>0,23 – 0,25</td></tr>
-      <tr><td>METAL</td><td>1&nbsp;000 – 1&nbsp;999</td><td>0,25 – 0,30</td></tr>
-      <tr><td>BRONZE</td><td>2&nbsp;000 – 5&nbsp;999</td><td>0,30 – 0,32</td></tr>
-      <tr><td>SILVER</td><td>6&nbsp;000 – 11&nbsp;999</td><td>0,32 – 0,34</td></tr>
-      <tr><td>GOLD</td><td>12&nbsp;000 – 19&nbsp;999</td><td>0,34 – 0,36</td></tr>
-      <tr><td>PLATINUM</td><td>20&nbsp;000 – 39&nbsp;999</td><td>0,36 – 0,38</td></tr>
-      <tr><td>DIAMOND</td><td>40&nbsp;000+</td><td>0,38 – 0,45</td></tr>
-    </tbody>
-  </table>
-</div>
-
-<p class="muted" style="margin-top:10px;">
-  O přidělení konkrétní hodnoty koeficientu CRX v rámci uvedeného rozmezí
-  rozhoduje schvalovací proces družstva.
-</p>
-<!-- ================= KONEC TABULKY ================= -->
-<div class="info-text" style="margin-top:14px;">
-
-  <b>Angažovanost člena</b> je v systému Podílového družstva WIN.WIN
-  chápána jako centrální řídicí veličina, ze které jsou odvozovány
-  statusové úrovně a rozsah interních benefitů.
-  Nejde o investici, vklad ani nárok na výnos, ale o interní vyjádření
-  dlouhodobého vztahu člena k družstvu.
-
-</div>
-
-<ul class="info-list" style="margin-top:8px;">
-  <li>angažovanost vyjadřuje míru zapojení člena do života družstva</li>
-  <li>není odvozena od jednorázové aktivity ani garantovaného plnění</li>
-  <li>slouží k spravedlivému rozlišení statusů a benefitů mezi členy</li>
-</ul>
-
-<div class="info-text" style="margin-top:10px;">
-  Interní jednotka <b>WW-KEY</b> slouží jako standardizované měřítko
-  angažovanosti člena napříč různými formami zapojení
-  (kapitálovými, provozními i participačními).
-</div>
-
-<div class="info-text" style="margin-top:10px;">
-  Na základě dosaženého rozsahu WW-KEY je člen zařazen do odpovídající
-  <b>statusové úrovně</b>. Každý status určuje pouze <b>rozmezí</b>
-  hodnoticího koeficientu CRX, nikoli jeho konkrétní hodnotu.
-</div>
-
-<div class="info-text" style="margin-top:10px;">
-  O přidělení konkrétní hodnoty CRX v rámci uvedeného rozmezí
-  rozhoduje <b>schvalovací proces družstva</b>.
-  Přidělování CRX je nenárokové, nepodléhá automatismu
-  a může být v čase upraveno nebo pozastaveno.
-</div>
-
-<div class="tokenomika" style="margin-top:12px;">
-  WW-KEY ani CRX nejsou investičním nástrojem, cenným papírem
-  ani příslibem výnosu. Slouží výhradně jako interní
-  evidenční a řídicí nástroje systému WIN.WIN.
-</div>
-
-    <div class="info-text">
-      Členské jednotky <b>WW-KEY</b> představují interní evidenční nástroj družstva
-      WIN.WIN. Na jejich základě je člen identifikován v systému a získává
-      <b>přístup k připravovaným členským výhodám</b> a interním funkcím.
-    </div>
-
-    <ul class="info-list">
-      <li>přehled členského postavení a historie vstupů</li>
-      <li>návaznost na interní certifikaci WW-KEY</li>
-      <li>možnost zapojení do věrnostních a benefitních programů</li>
-      <li>přístup k připravovaným službám družstva</li>
-    </ul>
-
-    <div class="info-text" style="margin-top:10px;">
-      Družstvo WIN.WIN postupně připravuje další formy <b>nefinančních benefitů</b>,
-      věrnostních mechanismů a provozních výhod, které budou zpřístupňovány
-      v souladu s vnitřními pravidly družstva a regulatorními požadavky.
-    </div>
-
-    <div class="tokenomika" style="margin-top:12px;">
-      WW-KEY nejsou investičním nástrojem, cenným papírem ani příslibem výnosu.
-      Slouží výhradně jako interní členská evidence v rámci systému WIN.WIN.
-    </div>
-
   </div>
-</section>
 
-<!-- ================= BENEFITS POLICY CTA ================= -->
-<section class="info-card" style="
-  margin-top:32px;
-  border:1px solid rgba(79,163,255,0.35);
-  background:radial-gradient(circle at top left, rgba(79,163,255,0.08), rgba(2,6,23,0.9));
-">
-  <div class="info-inner">
+  <!-- CRX + PLX INFO -->
+  <div class="sec">
+    <div class="sec-title">Systém benefitů</div>
+    <div class="sec-line"></div>
+  </div>
 
-    <div class="info-badge">
-      <span class="info-badge-dot" style="
-        background:#4fa3ff;
-        box-shadow:0 0 12px rgba(79,163,255,1);
-      "></span>
-      Politika benefitů
+  <div class="info-grid">
+    <div class="info-card blue">
+      <div class="ic-title">💎 CREDIX (CRX)</div>
+      <div class="ic-sub">Interní věrnostní jednotka odvozená od celkové míry angažovanosti člena v systému WIN.WIN.</div>
+      <ul class="ic-list">
+        <li>není převoditelný ani směnitelný</li>
+        <li>nemá peněžní ani investiční povahu</li>
+        <li>slouží k uplatnění interních členských výhod</li>
+        <li>nepředstavuje nárok ani automatické plnění</li>
+      </ul>
+      <div class="ic-note">CRX nejsou zdrojem angažovanosti, ale jejím možným důsledkem. Nejde o finanční instrument ani příslib výnosu.</div>
     </div>
 
-    <div class="info-heading">
-      Jak družstvo WIN.WIN spravedlivě rozděluje benefity
+    <div class="info-card green">
+      <div class="ic-title">🎁 PLUX (PLX)</div>
+      <div class="ic-sub">Interní provozní benefitní poukázka zpřístupněná na základě statusu a schváleného rozsahu benefitů.</div>
+      <ul class="ic-list">
+        <li>nepředstavuje investici ani finanční produkt</li>
+        <li>nelze jej směnit za peníze</li>
+        <li>není nárokový ani automatický</li>
+        <li>slouží výhradně k interním benefitním účelům</li>
+      </ul>
+      <div class="ic-note">PLX je provozní benefitní nástroj družstva, jehož dostupnost podléhá vnitřním pravidlům.</div>
     </div>
+  </div>
 
-    <div class="info-text">
-      Systém benefitů družstva WIN.WIN je řízen jasnými vnitřními pravidly
-      a analytickou vrstvou <b>AYAS-7</b>.  
-      Na této stránce najdeš <b>kompletní vysvětlení principů</b>,
-      podle kterých jsou benefity evidovány, přidělovány a rozvíjeny.
+  <!-- WW-KEY STATUS TABULKA -->
+  <div class="card">
+    <div class="card-kicker"><span class="led led-sb"></span>Statusy angažovanosti</div>
+    <div class="card-title">Jak WW-Key otevírá cestu k benefitům</div>
+    <div class="card-sub">Na základě dosaženého rozsahu WW-Key je člen zařazen do odpovídající statusové úrovně, která určuje rozmezí koeficientu CRX.</div>
+
+    <div class="table-wrap">
+      <table class="status-table">
+        <thead>
+          <tr>
+            <th>Status</th>
+            <th>Rozsah WW-Key</th>
+            <th>Koeficient CRX / měsíc / WW-Key</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><span class="badge gray">Member</span></td>  <td>0 – 999</td>          <td>0,23 – 0,25</td></tr>
+          <tr><td><span class="badge gray">Metal</span></td>   <td>1 000 – 1 999</td>    <td>0,25 – 0,30</td></tr>
+          <tr><td><span class="badge amber">Bronze</span></td> <td>2 000 – 5 999</td>    <td>0,30 – 0,32</td></tr>
+          <tr><td><span class="badge amber">Silver</span></td> <td>6 000 – 11 999</td>   <td>0,32 – 0,34</td></tr>
+          <tr><td><span class="badge green">Gold</span></td>   <td>12 000 – 19 999</td>  <td>0,34 – 0,36</td></tr>
+          <tr><td><span class="badge green">Platinum</span></td><td>20 000 – 39 999</td> <td>0,36 – 0,38</td></tr>
+          <tr><td><span class="badge" style="background:rgba(56,189,248,.1);color:var(--blue3);border:1px solid rgba(56,189,248,.2)">Diamond</span></td><td>40 000+</td><td>0,38 – 0,45</td></tr>
+        </tbody>
+      </table>
     </div>
+    <div class="disclaimer">O přidělení konkrétní hodnoty koeficientu CRX v rámci uvedeného rozmezí rozhoduje schvalovací proces družstva. Přidělování CRX je nenárokové a může být v čase upraveno.</div>
+  </div>
 
-    <ul class="info-list">
-      <li>jakou roli hraje WW-KEY v členském systému</li>
-      <li>jak fungují CRX, PLX a model AURIX</li>
-      <li>jak je zajištěna transparentnost a rovnost členů</li>
-      <li>proč jsou benefity nefinanční a regulatorně oddělené</li>
-    </ul>
-
-    <div style="margin-top:14px;">
-      <a href="/login/benefits-policy.html">
-        <button class="btn-link" style="
-          padding:10px 18px;
-          font-size:13px;
-          border:1px solid rgba(79,163,255,0.9);
-          background:linear-gradient(to right, rgba(79,163,255,0.25), rgba(34,197,94,0.25));
-        ">
-          <span class="btn-link-dot" style="
-            background:#4fa3ff;
-            box-shadow:0 0 10px rgba(79,163,255,1);
-          "></span>
-          Otevřít politiku členských benefitů
-        </button>
-
- <div class="link-inner">
-    <div class="link-heading-row">
-      <div class="link-title">Jak funguje systém benefitů</div>
-         </div>
+  <!-- POLICY CTA — opravené odkazy -->
+  <div class="policy-card">
+    <div class="policy-title">📋 Politika benefitů WIN.WIN</div>
+    <div class="policy-sub">
+      Jak družstvo WIN.WIN spravedlivě rozděluje benefity — kompletní vysvětlení principů, podle kterých jsou benefity evidovány, přidělovány a rozvíjeny. Řízeno systémem AYAS-7.
     </div>
-
-    <div class="link-text">
-      Podrobný popis interní politiky rozdělování benefitů,
-      vyhodnocovacích pravidel a role systému AYAS-7.
-      Dokument slouží jako referenční rámec pro členy i vedení družstva.
-    </div>
-
-    <div class="link-actions">
-      <a href="/login/politika-benefitu.html" target="_blank">
-        <button class="btn-link">
-          <span class="btn-link-dot"></span>
-          Otevřít politiku benefitů
-        </button>
+    <div class="policy-btns">
+      <a href="/login/benefits-policy.html" class="btn-policy">
+        <span class="led led-sb" style="width:5px;height:5px;animation:none"></span>
+        Politika členských benefitů
+      </a>
+      <a href="/login/politika-benefitu.html" class="btn-policy">
+        <span class="led led-sg" style="width:5px;height:5px;animation:none"></span>
+        Politika benefitů (CZ)
       </a>
     </div>
-
   </div>
-</section>
+
+  <!-- DISCLAIMER -->
+  <div class="alert-box blue">
+    <strong>Regulatorní informace:</strong> Tato stránka nepředstavuje investiční nabídku, veřejnou výzvu ani příslib výnosu. Všechny benefity mají interní, evidenční a informační charakter a jsou vázány výhradně na členství v družstvu WIN.WIN.
   </div>
-</main>
 
-<footer>
-© 2025 Win-Win Družstvo · Evidence členství
-</footer>
+</div><!-- /page -->
 
-<script type="module">
-import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+<footer class="foot">© 2025 WIN-WIN Družstvo · AYAS-7 Engine · Evidence členství</footer>
 
-const supabase = createClient(
-  "https://azfrniqqtetoqploxwgq.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF6ZnJuaXFxdGV0b3FwbG94d2dxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3MzQ1OTYsImV4cCI6MjA4MzMxMDU5Nn0.QchmzNhs8owd6pkjZCk04u6PJoJ2Bhzz7oGV0KFyqdU"
-);
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+const SB_URL  = 'https://azfrniqqtetoqploxwgq.supabase.co';
+const SB_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF6ZnJuaXFxdGV0b3FwbG94d2dxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3MzQ1OTYsImV4cCI6MjA4MzMxMDU5Nn0.QchmzNhs8owd6pkjZCk04u6PJoJ2Bhzz7oGV0KFyqdU';
+const sb = supabase.createClient(SB_URL, SB_ANON);
+const $  = id => document.getElementById(id);
 
-/* ===============================
-   AUTH BAR
-================================ */
-(async () => {
-  const { data: { session } } = await supabase.auth.getSession();
-  if (!session) return;
-
-  const userBar = document.getElementById("user-bar");
-  const emailEl = document.getElementById("user-email");
-  const logoutBtn = document.getElementById("logout");
-
-  emailEl.textContent = session.user.email;
-  userBar.style.display = "flex";
-
-  logoutBtn.onclick = async (e) => {
-    e.preventDefault();
-    await supabase.auth.signOut();
-    window.location.href = "/login/signin.html";
-  };
-})();
-
-/* ===============================
-   MOJE PŘIDĚLENÉ BENEFITY
-================================ */
-async function loadMyBenefits() {
-  const { data: sessionData } = await supabase.auth.getSession();
-  const session = sessionData?.session;
-  if (!session) return;
-
-  const { data, error } = await supabase
-    .from("benefit_results")
-.select(`
-  period,
-  ww_key_snapshot,
-  crx_snapshot,
-  benefit_level,
-  plx_allocated,
-  crx_awarded,
-  status,
-  approved_at,
-  rejected_reason,
-  note
-`)
-
-   .order("period", { ascending: false });
-
-const tbody = document.getElementById("benefitsTableBody");
-tbody.innerHTML = "";
-
-if (error) {
-  tbody.innerHTML =
-    "<tr><td colspan='8'>Chyba při načítání dat</td></tr>";
-  return;
+async function doLogout() {
+  if(!confirm('Odhlásit se?')) return;
+  await sb.auth.signOut();
+  window.location.href = '/login/login.html';
 }
 
-if (!data || data.length === 0) {
-  tbody.innerHTML =
-    "<tr><td colspan='8'>Zatím nejsou přiděleny žádné benefity</td></tr>";
-  return;
+/* ═══ INIT USER ═══ */
+async function initUser() {
+  const { data:{ session } } = await sb.auth.getSession();
+  if(!session) { window.location.href = '/login/login.html'; return; }
+
+  const user = session.user;
+  const name = user.user_metadata?.full_name || user.email || '';
+  const first = name.includes('@') ? name.split('@')[0] : name.split(' ')[0];
+  $('userName').textContent = first;
+  $('userAv').textContent   = (first[0]||'?').toUpperCase();
+
+  loadMyBenefits(session);
+  loadAvailableBenefits(session);
+  loadMyRequests(session);
 }
 
-data.forEach(row => {
+/* ═══ MOJE BENEFITY ═══ */
+async function loadMyBenefits(session) {
+  const tbody = $('benefitsTableBody');
+  const { data, error } = await sb
+    .from('benefit_results')
+    .select('period,ww_key_snapshot,crx_snapshot,benefit_level,plx_allocated,crx_awarded,status,note')
+    .order('period', { ascending: false });
 
-  let statusLabel = "—";
-
-  if (row.status === "pending") {
-    statusLabel = "<span style='color:#f59e0b'>Čeká na schválení</span>";
-  }
-
-  if (row.status === "approved") {
-    statusLabel = "<span style='color:#22c55e;font-weight:600'>Schváleno</span>";
-  }
-
-  if (row.status === "rejected") {
-    statusLabel = "<span style='color:#ef4444'>Zamítnuto</span>";
-  }
-
-  tbody.insertAdjacentHTML("beforeend", `
-    <tr>
-      <td>${row.period}</td>
-      <td>${row.ww_key_snapshot}</td>
-      <td>${row.crx_snapshot}</td>
-      <td>${row.benefit_level}</td>
-      <td>${row.plx_allocated}</td>
-      <td>${row.crx_awarded}</td>
-      <td>${statusLabel}</td>
-      <td>${row.note ?? "—"}</td>
-    </tr>
-  `);
-});
-
-}
-/* ===============================
-   DOSTUPNÉ BENEFITY (VÝBĚR)
-================================ */
-async function loadAvailableBenefits() {
-  const tbody = document.getElementById("availableBenefits");
-  tbody.innerHTML = "<tr><td colspan='6'>Načítám…</td></tr>";
-
-  const { data, error } = await supabase
-    .from("benefits")
-    .select("id, name, type, description, crx_cost, is_active")
-    .order("name");
-
-  if (error) {
-    tbody.innerHTML =
-      "<tr><td colspan='6'>Chyba načtení benefitů</td></tr>";
-    console.error(error);
+  tbody.innerHTML = '';
+  if(error || !data || data.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="8" style="color:var(--m2);text-align:center;padding:24px">Zatím nejsou přiděleny žádné benefity</td></tr>';
     return;
   }
 
-  if (!data || data.length === 0) {
-    tbody.innerHTML =
-      "<tr><td colspan='6'>Žádné benefity nejsou k dispozici</td></tr>";
-    return;
-  }
-
-  tbody.innerHTML = "";
-
-  data.forEach(b => {
-
-    const statusLabel = b.is_active
-      ? "<span style='color:#22c55e'>Aktivní</span>"
-      : "<span style='color:#f59e0b'>Připravuje se</span>";
-
-    const actionBtn = b.is_active
-      ? `
-        <button class="btn-benefit-request"
-          onclick="requestBenefit('${b.code}')">
-          <span class="btn-dot"></span>
-          Požádat
-        </button>`
-      : "—";
-
-    tbody.insertAdjacentHTML("beforeend", `
+  data.forEach(row => {
+    const st = row.status === 'approved' ? '<span class="badge green">Schváleno</span>' :
+               row.status === 'pending'  ? '<span class="badge amber">Čeká</span>' :
+               row.status === 'rejected' ? '<span class="badge red">Zamítnuto</span>' : '—';
+    tbody.insertAdjacentHTML('beforeend', `
       <tr>
-        <td>${b.name}</td>
-        <td>${b.type}</td>
-        <td>${b.description}</td>
-        <td>${b.crx_cost}</td>
-        <td>${statusLabel}</td>
-        <td>${actionBtn}</td>
+        <td style="font-family:var(--font);font-weight:600">${row.period||'—'}</td>
+        <td>${(row.ww_key_snapshot||0).toLocaleString('cs-CZ')}</td>
+        <td>${(row.crx_snapshot||0).toLocaleString('cs-CZ')}</td>
+        <td>${row.benefit_level||'—'}</td>
+        <td>${row.plx_allocated||'—'}</td>
+        <td style="color:var(--green);font-weight:600">${row.crx_awarded||'—'}</td>
+        <td>${st}</td>
+        <td style="color:var(--m2);font-size:12px">${row.note||'—'}</td>
       </tr>
     `);
   });
 }
 
-/* ===============================
-   MOJE ŽÁDOSTI O BENEFITY
-================================ */
-async function loadMyRequests() {
-  const { data: sessionData } = await supabase.auth.getSession();
-  const session = sessionData?.session;
-  if (!session) return;
+/* ═══ DOSTUPNÉ BENEFITY ═══ */
+async function loadAvailableBenefits(session) {
+  const tbody = $('availableBenefits');
+  const { data, error } = await sb
+    .from('benefits')
+    .select('id,name,type,description,crx_cost,is_active,code')
+    .order('name');
 
-  const { data, error } = await supabase
-    .from("benefit_requests")
-    .select("benefit_code, period, status, requested_at, note")
-    .eq("member_id", session.user.id)
-    .order("requested_at", { ascending: false });
+  tbody.innerHTML = '';
+  if(error || !data || data.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="6" style="color:var(--m2);text-align:center;padding:24px">Žádné benefity nejsou k dispozici</td></tr>';
+    return;
+  }
 
-  const tbody = document.getElementById("myRequests");
-  if (!tbody) return;
+  data.forEach(b => {
+    const st  = b.is_active ? '<span class="badge green">Aktivní</span>' : '<span class="badge gray">Připravuje se</span>';
+    const btn = b.is_active
+      ? `<button class="btn-req" onclick="requestBenefit('${b.code||b.id}')"><span class="led led-sg" style="width:5px;height:5px;animation:none"></span>Požádat</button>`
+      : '<span style="color:var(--muted);font-size:12px">—</span>';
+    tbody.insertAdjacentHTML('beforeend', `
+      <tr>
+        <td style="font-family:var(--font);font-weight:600;color:var(--white)">${b.name||'—'}</td>
+        <td style="color:var(--m2)">${b.type||'—'}</td>
+        <td style="color:var(--m2);font-size:12px">${b.description||'—'}</td>
+        <td style="color:var(--green);font-weight:600">${b.crx_cost||'—'}</td>
+        <td>${st}</td>
+        <td>${btn}</td>
+      </tr>
+    `);
+  });
+}
 
-  tbody.innerHTML = "";
+/* ═══ MOJE ŽÁDOSTI ═══ */
+async function loadMyRequests(session) {
+  const tbody = $('myRequests');
+  const { data, error } = await sb
+    .from('benefit_requests')
+    .select('benefit_code,period,status,requested_at')
+    .eq('member_id', session.user.id)
+    .order('requested_at', { ascending: false });
 
-  if (error || !data || data.length === 0) {
-    tbody.innerHTML =
-      "<tr><td colspan='3'>Zatím nemáte žádné žádosti</td></tr>";
+  tbody.innerHTML = '';
+  if(error || !data || data.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="3" style="color:var(--m2);text-align:center;padding:24px">Zatím nemáte žádné žádosti</td></tr>';
     return;
   }
 
   data.forEach(r => {
-    let statusText = "—";
-
-    if (r.status === "pending") statusText = "Čeká na schválení";
-    if (r.status === "approved") statusText = "Schváleno";
-    if (r.status === "rejected") statusText = "Zamítnuto";
-
-    tbody.insertAdjacentHTML("beforeend", `
+    const st = r.status === 'approved' ? '<span class="badge green">Schváleno</span>' :
+               r.status === 'pending'  ? '<span class="badge amber">Čeká</span>' :
+               r.status === 'rejected' ? '<span class="badge red">Zamítnuto</span>' : '—';
+    tbody.insertAdjacentHTML('beforeend', `
       <tr>
-        <td>${r.benefit_code}</td>
-        <td>${r.period}</td>
-        <td>${statusText}</td>
+        <td style="font-family:var(--font);font-weight:600">${r.benefit_code||'—'}</td>
+        <td style="color:var(--m2)">${r.period||'—'}</td>
+        <td>${st}</td>
       </tr>
     `);
   });
 }
 
-
-/* ===============================
-   ŽÁDOST O BENEFIT
-================================ */
-window.requestBenefit = async function(benefitCode) {
-  const { data: sessionData } = await supabase.auth.getSession();
-  const session = sessionData?.session;
-  if (!session) {
-    alert("Musíte být přihlášen.");
-    return;
-  }
+/* ═══ ŽÁDOST O BENEFIT ═══ */
+window.requestBenefit = async function(code) {
+  const { data:{ session } } = await sb.auth.getSession();
+  if(!session) { alert('Musíte být přihlášen.'); return; }
 
   const period = new Date().toISOString().slice(0,7);
+  const { error } = await sb.from('benefit_requests').insert({ member_id: session.user.id, benefit_code: code, period });
 
-  const { error } = await supabase
-    .from("benefit_requests")
-    .insert({
-      member_id: session.user.id,
-      benefit_code: benefitCode,
-      period
-    });
-
-  if (error) {
-    alert("Nelze odeslat žádost:\n" + error.message);
-    return;
-  }
-
-  alert("Žádost byla odeslána ke schválení.");
+  if(error) { alert('Nelze odeslat žádost:\n' + error.message); return; }
+  alert('Žádost byla odeslána ke schválení.');
+  loadMyRequests(session);
 };
 
-/* ===============================
-   START
-================================ */
-document.addEventListener("DOMContentLoaded", () => {
-  loadMyBenefits();
-  loadAvailableBenefits();
-  loadMyRequests();
-});
+initUser();
 </script>
-
-
 </body>
 </html>
