@@ -1,202 +1,102 @@
 <!DOCTYPE html>
 <html lang="cs">
 <head>
- <meta charset="UTF-8" />
- <title>AYAS-7 Engine – Win-Win Cooperative</title>
- <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <!-- FAVICON / PWA -->
-  <link rel="icon" type="image/png" sizes="192x192" href="/ayas7-192.png">
-  <link rel="icon" type="image/png" sizes="512x512" href="/ayas7-512.png">
-  <link rel="apple-touch-icon" href="/ayas7-192.png">
-  <meta name="theme-color" content="#020617">
-
-  <title>AYAS-7 · …</title>
- <style>
-  * {
- margin: 0;
- padding: 0;
- box-sizing: border-box;
+<meta charset="UTF-8"/>
+<title>AYAS-7 Engine – Win-Win Cooperative</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<link rel="icon" type="image/png" sizes="192x192" href="/ayas7-192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="/ayas7-512.png">
+<link rel="apple-touch-icon" href="/ayas7-192.png">
+<meta name="theme-color" content="#020617">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--blue-light:#38bdf8;--text-main:#e5e7eb;--text-muted:#9ca3af}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{
+  width:100%;min-height:100%;
+  background:radial-gradient(circle at 40% 0%,#0f172a 0%,#020617 55%,#000 100%);
+  font-family:'DM Sans',sans-serif;color:var(--text-main);overflow-x:hidden;
 }
-
-html, #msg_body {
- width: 100%;
- height: 100%;
- background: radial-gradient(circle at 40% 0%, #0f172a 0%, #020617 55%, #000 100%) !important;
- font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
- overflow-x: hidden;
+.hero{
+  min-height:100vh;display:flex;align-items:center;justify-content:center;
+  padding:40px 16px;position:relative;
 }
-   :root {
-     --blue-light: #4fa3ff;
-     --neon: #4dabff;
-     --text-main: #e5e7eb;
-     --text-muted: #9ca3af;
-   }
-
-   * { box-sizing: border-box; margin:0; padding:0; }
-
-   /* 🔥 TMAVÉ FINTECH POZADÍ – jako login page */
-   #msg_body {
-     font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-     background: radial-gradient(circle at 40% 0%, #0f172a, #020617 60%, #000 100%);
-     color: var(--text-main);
-     overflow-x: hidden;
-     min-height: 100vh;
-   }
-
-   /* CELÝ OBSAH */
-   .hero {
-     min-height: 100vh;
-     display: flex;
-     align-items: center;
-     justify-content: center;
-     padding: 40px 16px;
-     position: relative;
-   }
-
-   /* Ambientní světlo */
-   .hero::before {
-     content: "";
-     position: absolute;
-     width: 520px;
-     height: 520px;
-     background: radial-gradient(circle, rgba(76, 162, 255, 0.18), transparent 70%);
-     top: -140px;
-     left: 50%;
-     transform: translateX(-50%);
-     filter: blur(70px);
-     z-index: 0;
-   }
-
-   /* 🔥 HERO BOX – plně tmavý jako login box */
-   .hero-box {
-     max-width: 560px;
-     width: 100%;
-     background: radial-gradient(circle at top left, #0c1424, #0a0f1a 80%);
-     border: 1px solid rgba(148, 163, 184, 0.4);
-     border-radius: 22px;
-     padding: 40px 32px 36px;
-     text-align: center;
-     box-shadow:
-       0 30px 80px rgba(15, 23, 42, 0.7),
-       0 0 0 1px rgba(15, 23, 42, 0.9);
-     position: relative;
-     z-index: 2;
-   }
-
-   /* Badge */
-   .hero-badge {
-     display: inline-flex;
-     align-items: center;
-     gap: 6px;
-     padding: 3px 12px;
-     border-radius: 999px;
-     border: 1px solid rgba(148, 163, 184, 0.45);
-     background: rgba(10, 20, 40, 0.6);
-     font-size: 12px;
-     color: var(--text-muted);
-     margin-bottom: 14px;
-   }
-
-   .hero-badge-dot {
-     width: 8px;
-     height: 8px;
-     border-radius: 999px;
-     background: var(--blue-light);
-     box-shadow: 0 0 12px rgba(79, 163, 255, 1);
-   }
-
-   .hero-title {
-     font-size: 42px;
-     font-weight: 700;
-     letter-spacing: 0.03em;
-     margin: 0 0 10px;
-     background: linear-gradient(to right, #74b7ff, #d7e9ff);
-     -webkit-background-clip: text;
-     color: transparent;
-   }
-
-   .hero-sub {
-     font-size: 15px;
-     line-height: 1.6;
-     color: var(--text-muted);
-     margin-bottom: 26px;
-   }
-
-   .btn-main {
-     display: block;
-     width: 100%;
-     padding: 12px 18px;
-     margin-bottom: 12px;
-     border-radius: 12px;
-     background: linear-gradient(to right, #4fa3ff, #70c3ff);
-     color: #0a0f1a;
-     font-size: 15px;
-     font-weight: 600;
-     border: none;
-     cursor: pointer;
-     transition: transform 0.15s ease, filter 0.15s ease;
-     box-shadow: 0 20px 40px rgba(79, 163, 255, 0.5);
-   }
-
-   .btn-main:hover {
-     transform: translateY(-2px);
-     filter: brightness(1.05);
-   }
-
-   .btn-secondary {
-     display: block;
-     width: 100%;
-     padding: 12px 18px;
-     border-radius: 12px;
-     border: 1px solid rgba(148, 163, 184, 0.4);
-     background: rgba(15, 23, 42, 0.4);
-     color: var(--text-main);
-     font-size: 15px;
-     font-weight: 500;
-     cursor: pointer;
-     transition: background 0.2s ease, border-color 0.2s ease;
-   }
-
-   .btn-secondary:hover {
-     background: rgba(15, 23, 42, 0.65);
-     border-color: rgba(209, 213, 219, 0.6);
-   }
-
-   @media (max-width: 600px) {
-     .hero-box { padding: 32px 22px 30px; }
-     .hero-title { font-size: 32px; }
-     .hero-sub { font-size: 14px; }
-   }
- </style>
+.hero::before{
+  content:"";position:absolute;width:520px;height:520px;
+  background:radial-gradient(circle,rgba(56,189,248,0.15),transparent 70%);
+  top:-140px;left:50%;transform:translateX(-50%);filter:blur(70px);z-index:0;
+}
+.hero-box{
+  max-width:520px;width:100%;
+  background:radial-gradient(circle at top left,#0b1220,#020617 80%);
+  border:1px solid rgba(148,163,184,0.35);border-radius:22px;
+  padding:40px 32px 36px;text-align:center;
+  box-shadow:0 30px 80px rgba(15,23,42,0.7),0 0 0 1px rgba(15,23,42,0.9);
+  position:relative;z-index:2;
+}
+.hero-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:3px 12px;border-radius:999px;
+  border:1px solid rgba(148,163,184,0.4);background:rgba(10,20,40,0.6);
+  font-size:11px;color:var(--text-muted);margin-bottom:16px;letter-spacing:.1em;text-transform:uppercase;
+}
+.hero-badge-dot{
+  width:7px;height:7px;border-radius:50%;
+  background:var(--blue-light);box-shadow:0 0 10px rgba(56,189,248,0.9);
+  animation:lp 2s ease-in-out infinite;
+}
+@keyframes lp{0%,100%{opacity:1}50%{opacity:.4}}
+.hero-title{
+  font-family:'Space Grotesk',sans-serif;
+  font-size:42px;font-weight:700;letter-spacing:.02em;margin:0 0 12px;
+  background:linear-gradient(to right,#7dd3fc,#e0f2fe);
+  -webkit-background-clip:text;color:transparent;
+}
+.hero-sub{font-size:15px;line-height:1.65;color:var(--text-muted);margin-bottom:28px}
+.btn-main{
+  display:block;width:100%;padding:13px 18px;margin-bottom:12px;
+  border-radius:12px;
+  background:linear-gradient(to right,#38bdf8,#7dd3fc);
+  color:#020617;font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:600;
+  border:none;cursor:pointer;
+  box-shadow:0 16px 40px rgba(56,189,248,0.4);
+  transition:transform .15s,filter .15s;
+}
+.btn-main:hover{transform:translateY(-2px);filter:brightness(1.05)}
+.btn-secondary{
+  display:block;width:100%;padding:13px 18px;border-radius:12px;
+  border:1px solid rgba(148,163,184,0.35);background:rgba(15,23,42,0.4);
+  color:var(--text-main);font-size:15px;font-weight:500;cursor:pointer;
+  transition:background .2s,border-color .2s;
+}
+.btn-secondary:hover{background:rgba(15,23,42,0.65);border-color:rgba(209,213,219,0.55)}
+@media(max-width:600px){
+  .hero-box{padding:32px 22px 30px}
+  .hero-title{font-size:32px}
+}
+</style>
 </head>
-
 <body>
-
 <div class="hero">
- <div class="hero-box">
-
-   <div class="hero-badge">
-     <span class="hero-badge-dot"></span>
-     Next-Generation Financial Engine
-   </div>
-
-   <h1 class="hero-title">AYAS-7 Engine</h1>
-
-   <p class="hero-sub">
-     Revoluční sedmivrstvý finanční systém pro družstvo Win-Win.<br />
-     Bezpečný. Auditovatelný. Výkonný.
-   </p>
-
-   <a href="/login/index.html">
-     <button class="btn-main">Vstoupit do systému</button>
-   </a>
-
-   <a href="about.html">
-     <button class="btn-secondary">O družstvu Win-Win</button>
-   </a>
-
- </div>
+  <div class="hero-box">
+    <div class="hero-badge">
+      <span class="hero-badge-dot"></span>
+      Next-Generation Financial Engine
+    </div>
+    <h1 class="hero-title">AYAS-7 Engine</h1>
+    <p class="hero-sub">
+      Revoluční sedmivrstvý finanční systém pro družstvo Win-Win.<br/>
+      Bezpečný. Auditovatelný. Výkonný.
+    </p>
+    <a href="/login/login.html">
+      <button class="btn-main">Vstoupit do systému</button>
+    </a>
+    <a href="about.html">
+      <button class="btn-secondary">O družstvu Win-Win</button>
+    </a>
+  </div>
 </div>
-
 </body>
 </html>
