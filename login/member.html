@@ -848,7 +848,6 @@ async function init() {
     $('wwkeyVal').textContent   = fmt(acc.ww_key_balance);
     $('depositVal').textContent = acc.total_paid ? fmt(acc.total_paid)+' Kč' : '—';
   }
-
   const { data: crx } = await sb.from('member_crx_balances_internal').select('*').eq('member_id',acc?.member_id).maybeSingle();
   if(crx) {
     const bal  = Number(crx.available||crx.balance||0);
