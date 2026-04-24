@@ -95,38 +95,130 @@ main{max-width:1200px;margin:48px auto 140px;padding:0 18px}
 .pool-box.vol{border-top:3px solid #a855f7}
 
 footer{margin-top:72px;padding-top:14px;border-top:1px solid var(--border);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#64748b}
+
+/* ═══ HERO ═══ */
+.hero {
+  position: relative;
+  height: 100vh; min-height: 560px; max-height: 860px;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: flex-end;
+  overflow: hidden;
+  padding-bottom: 80px;
+}
+.hero-bg { position: absolute; inset: 0; z-index: 0; }
+.hero-bg img { width: 100%; height: 100%; object-fit: cover; object-position: center top; display: block; }
+.hero-bg::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(to bottom,rgba(2,9,23,0) 0%,rgba(2,9,23,0) 50%,rgba(2,9,23,.75) 75%,rgba(2,9,23,1) 100%);
+}
+.hero-bg::before {
+  content: ''; position: absolute; inset: 0; z-index: 1;
+  background: radial-gradient(ellipse 35% 100% at 0% 50%,rgba(2,9,23,.5),transparent),
+    radial-gradient(ellipse 35% 100% at 100% 50%,rgba(2,9,23,.5),transparent);
+}
+.hero-bloom {
+  position: absolute; z-index: 1; pointer-events: none;
+  top: 5%; left: 50%; transform: translateX(-50%);
+  width: 700px; height: 500px;
+  background: radial-gradient(ellipse at center,rgba(56,189,248,.08) 0%,transparent 65%);
+}
+.hero-content {
+  position: relative; z-index: 2;
+  text-align: center; padding: 0 20px 32px;
+}
+.hero-live {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--fontb); font-size: 11px; letter-spacing: .2em;
+  text-transform: uppercase; color: rgba(226,232,240,.75); margin-bottom: 14px;
+}
+.hero-label {
+  font-family: var(--font); font-size: 13px; letter-spacing: .3em;
+  text-transform: uppercase; color: rgba(226,232,240,.6); margin-bottom: 8px;
+}
+.hero-name {
+  font-family: var(--font); font-size: clamp(32px,6vw,62px);
+  font-weight: 700; color: #f8fafc; margin: 0 0 14px; letter-spacing: -.01em;
+}
+.hero-sub { font-family: var(--fontb); font-size: 14px; color: rgba(226,232,240,.65); line-height: 1.65; margin: 0 0 24px; }
+.hero-cta { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.btn-primary {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 11px 24px; border-radius: 999px;
+  background: linear-gradient(135deg,rgba(56,189,248,.2),rgba(56,189,248,.1));
+  border: 1px solid rgba(56,189,248,.35); color: #7dd3fc;
+  font-family: var(--font); font-size: 14px; font-weight: 600;
+  text-decoration: none; transition: all .15s;
+}
+.btn-primary:hover { background: rgba(56,189,248,.25); transform: translateY(-1px); }
+/* STRIP */
+.hero-strip {
+  position: relative; z-index: 2; width: 100%;
+  background: rgba(2,9,23,.75); backdrop-filter: blur(20px);
+  border-top: 1px solid rgba(56,189,248,.1);
+}
+.strip-inner {
+  max-width: 1200px; margin: 0 auto; padding: 0 20px;
+  display: grid; grid-template-columns: repeat(4,1fr);
+}
+.sstat { padding: 16px 20px; border-right: 1px solid rgba(56,189,248,.08); text-align: center; }
+.sstat:last-child { border-right: none; }
+.sstat-val { font-family: var(--font); font-size: 18px; font-weight: 700; margin-bottom: 3px; }
+.sstat-lbl { font-family: var(--fontb); font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: #475569; }
+.sstat-val.g { color: #22c55e; }
+.sstat-val.b { color: #38bdf8; }
+.sstat-val.w { color: #f8fafc; }
+.led-dot { width: 7px; height: 7px; border-radius: 50%; background: #ef4444; box-shadow: 0 0 8px rgba(239,68,68,.8); flex-shrink: 0; animation: lp 2.4s ease-in-out infinite; }
+.led-dot.live { background: #22c55e; box-shadow: 0 0 8px rgba(34,197,94,.8); }
+@keyframes lp { 0%,100%{opacity:1}50%{opacity:.5} }
+@media(max-width:640px) {
+  .strip-inner { grid-template-columns: 1fr 1fr; }
+  .sstat:nth-child(2) { border-right: none; }
+  .sstat:nth-child(3) { border-top: 1px solid rgba(56,189,248,.08); }
+  .sstat:nth-child(4) { border-top: 1px solid rgba(56,189,248,.08); }
+}
 </style>
 </head>
 <body>
 
-<!-- HERO s hero.jpg -->
-<div style="
-  position:relative;
-  width:100%;
-  min-height:340px;
-  background:url('/icons/hero.jpg') center center/cover no-repeat;
-  display:flex;align-items:flex-end;
-  overflow:hidden;
-">
-  <!-- tmave prekryti -->
-  <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(2,6,23,.35) 0%,rgba(2,6,23,.85) 70%,rgba(2,6,23,1) 100%)"></div>
-  <!-- obsah hero -->
-  <div style="position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:0 18px 48px;width:100%">
-    <div style="display:inline-flex;align-items:center;gap:8px;font-family:var(--fontb);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:rgba(226,232,240,.7);margin-bottom:16px">
-      <span id="heroLed" style="width:8px;height:8px;border-radius:50%;background:#ef4444;box-shadow:0 0 8px rgba(239,68,68,.8);transition:all .3s"></span>
+<section class="hero">
+  <div class="hero-bg">
+    <img src="/icons/hero.jpg" alt="" aria-hidden="true">
+  </div>
+  <div class="hero-bloom"></div>
+  <div class="hero-content">
+    <div class="hero-live">
+      <div class="led-dot" id="heroLed"></div>
       Truth Snapshot · Read Only
     </div>
-    <h1 style="font-family:'Space Grotesk',sans-serif;font-size:42px;font-weight:700;color:#f8fafc;margin:0 0 12px;letter-spacing:-.01em">
-      AYAS-7 · Stav systému
-    </h1>
-    <p style="font-family:var(--fontb);font-size:15px;color:rgba(226,232,240,.75);max-width:600px;line-height:1.6;margin:0 0 24px">
-      Klidný, neměnný pohled na skutečný stav architektury AYAS-7. Tato obrazovka nic neřídí — pouze zobrazuje pravdu systému.
-    </p>
-    <a href="/login/member.html" style="display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:10px;background:rgba(56,189,248,.1);border:1px solid rgba(56,189,248,.25);color:#7dd3fc;font-family:var(--fontb);font-size:13px;font-weight:500;text-decoration:none;transition:all .15s">
-      ← Zpět na dashboard
-    </a>
+    <div class="hero-label">AYAS-7</div>
+    <h1 class="hero-name">Stav systému</h1>
+    <p class="hero-sub">Klidný, neměnný pohled na skutečný stav architektury AYAS-7.<br>Tato obrazovka nic neřídí — pouze zobrazuje pravdu systému.</p>
+    <div class="hero-cta">
+      <a href="/login/member.html" class="btn-primary">← Zpět na dashboard</a>
+    </div>
   </div>
-</div>
+  <!-- STAT STRIP - system stats -->
+  <div class="hero-strip">
+    <div class="strip-inner">
+      <div class="sstat">
+        <div class="sstat-val b" id="stripUnit">—</div>
+        <div class="sstat-lbl">WW-UNIT</div>
+      </div>
+      <div class="sstat">
+        <div class="sstat-val" style="color:#facc15" id="stripReserve">—</div>
+        <div class="sstat-lbl">WW-RESERVE</div>
+      </div>
+      <div class="sstat">
+        <div class="sstat-val g" id="stripHealth">—</div>
+        <div class="sstat-lbl">System Health</div>
+      </div>
+      <div class="sstat">
+        <div class="sstat-val" style="color:#a855f7" id="stripTvl">—</div>
+        <div class="sstat-lbl">TVL</div>
+      </div>
+    </div>
+  </div>
+</section>
 
 <main>
 
@@ -285,13 +377,19 @@ function setOnline(online){
   const heroLed = $('heroLed');
   const secLed  = $('sectionLed');
   const statLed = $('statusLed');
-  if(heroLed){
-    heroLed.style.background  = online ? '#22c55e' : '#ef4444';
-    heroLed.style.boxShadow   = online ? '0 0 8px rgba(34,197,94,.8)' : '0 0 8px rgba(239,68,68,.8)';
-  }
+  if(heroLed) heroLed.classList.toggle('live',online);
   if(secLed)  secLed.classList.toggle('live',online);
   if(statLed) statLed.classList.toggle('live',online);
   document.body.classList.toggle('offline',!online);
+}
+function updateStrip(s,tvl){
+  const u = s?.tokens?.WW_UNIT?.priceUSD;
+  const r = s?.tokens?.WW_RESERVE?.priceUSD;
+  const h = s?.meta?.health;
+  if($('stripUnit'))    $('stripUnit').textContent    = u ? '$'+Number(u).toFixed(4) : '-';
+  if($('stripReserve')) $('stripReserve').textContent = r ? '$'+Number(r).toFixed(4) : '-';
+  if($('stripHealth'))  $('stripHealth').textContent  = h ? Number(h).toFixed(1)+'%' : '-';
+  if($('stripTvl'))     $('stripTvl').textContent     = tvl ? '$'+Number(tvl/1e6).toFixed(2)+'M' : '-';
 }
 
 /* ═══ SNAPSHOT ═══ */
@@ -330,6 +428,8 @@ async function loadSnapshot(){
     set('crxCoop',    s.crx?.coop   != null ? Number(s.crx.coop).toFixed(2)   : '—');
     set('crxState',   (s.crx?.allocated??0)>0 ? 'ROZDĚLOVÁNO' : 'BOOTSTRAP');
 
+    const tvlTotal = (s.dexPools?.USDT_BNB?.liquidityUSD||0)+(s.dexPools?.WW_UNIT_USDT?.liquidityUSD||0)+(s.dexPools?.WW_RESERVE_USDT?.liquidityUSD||0);
+    updateStrip(s, tvlTotal);
     setOnline(true);
   } catch(e){
     console.warn('Snapshot offline:', e.message);
