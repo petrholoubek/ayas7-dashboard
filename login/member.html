@@ -952,9 +952,13 @@ async function init() {
     $('depositVal').textContent = acc.total_paid ? fmt(acc.total_paid)+' Kč' : '—';
   }
 
-  const { data: crx } = await sb.from('member_crx_balances_internal').select('*').eq('member_id',acc?.member_id).maybeSingle();
+  // CRX - pouzij member_id z member_accounts
+  const memberId = acc?.member_id;
+  console.log('member_id:', memberId, 'acc:', acc);
+  const { data: crx } = memberId ? await sb.from('member_crx_balances_internal').select('*').eq('member_id', memberId).maybeSingle() : {data:null};
+  console.log('CRX data:', crx);
   if(crx) {
-    const bal  = Number(crx.available||crx.balance||0);
+    const bal  = Number(crx.crx_balance||crx.balance||crx.available||0);
     const used = Number(crx.used||0);
     const tot  = bal+used;
     const pct  = tot>0 ? Math.round((used/tot)*100) : 0;
