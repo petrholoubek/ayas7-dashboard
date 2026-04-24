@@ -164,28 +164,38 @@ function openPrint(){
   if(u) window.open('/certificates/certificate-print.html?uid='+u,'_blank');
 }
 async function loadCert(){
-  if(!uid){showError('Chybí ID certifikátu','URL musí obsahovat parametr ?uid=...');return}
-  try{
-    const{data:cert,error}=await sb.from('member_certificates').select('*').eq('certificate_uid',uid).maybeSingle();
-    if(error)throw error;
-    if(!cert){showError('Certifikát nenalezen','UID: '+uid+' - zkontrolujte odkaz nebo kontaktujte podporu.');return}
-    const name=cert.full_name||cert.member_name||'-';
-    const email=cert.member_email||'-';
-    const wwkey=cert.ww_key_amount||0;
-    const deposit=cert.deposit_amount||0;
-    const issued=cert.issued_at||cert.created_at;
-    const num=cert.id||'-';
-    $('certName').textContent=name;
-    $('certEmail').textContent=email;
-    $('certWwkey').textContent='0';
-    $('certDeposit').textContent=fmt(deposit)+' Kč';
-    $('certDate').textContent=fmtDate(issued);
-    $('certNum').textContent='#'+num;
-    $('certUid').textContent=cert.certificate_uid;
-    $('loadingState').style.display='none';
-    $('certWrap').style.display='block';
-    animateNumber($('certWwkey'),0,wwkey,1200);
-  }catch(e){console.error(e);showError('Chyba načítání',e.message)}
+  if(!uid){ showError('Chyba', 'URL musi obsahovat ?uid=...'); return; }
+  try {
+    console.log('CERT: loading uid =', uid);
+    const { data: cert, error } = await sb
+      .from('member_certificates')
+      .select('*')
+      .eq('certificate_uid', uid)
+      .maybeSingle();
+    console.log('CERT: data =', cert, 'error =', error);
+    if(error)  { showError('DB Chyba', error.message); return; }
+    if(!cert)  { showError('Certifikat nenalezen', 'UID: ' + uid); return; }
+    const name    = cert.full_name || cert.member_name || 'Clen';
+    const email   = cert.member_email || '';
+    const wwkey   = Number(cert.ww_key_amount   || 0);
+    const deposit = Number(cert.deposit_amount  || 0);
+    const issued  = cert.issued_at || cert.created_at;
+    const num     = cert.id || '';
+    $('certName').textContent    = name;
+    $('certEmail').textContent   = email;
+    $('certWwkey').textContent   = '0';
+    $('certDeposit').textContent = fmt(deposit) + ' Kc';
+    $('certDate').textContent    = fmtDate(issued);
+    $('certNum').textContent     = '#' + num;
+    $('certUid').textContent     = cert.certificate_uid;
+    $('loadingState').style.display = 'none';
+    $('certWrap').style.display     = 'block';
+    animateNumber($('certWwkey'), 0, wwkey, 1200);
+    console.log('CERT: render OK');
+  } catch(e) {
+    console.error('CERT error:', e);
+    showError('Chyba: ' + e.message, 'Zkontrolujte F12 konzoli');
+  }
 }
 loadCert();
 </script>
