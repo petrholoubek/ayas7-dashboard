@@ -1,278 +1,215 @@
 <!DOCTYPE html>
 <html lang="cs">
 <head>
-<meta charset="UTF-8">
-<title>Model rozdělování benefitů · WIN.WIN</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+<meta charset="UTF-8"/>
+<title>Politika benefitů · Model rozdělování · WIN.WIN</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<link rel="icon" type="image/png" sizes="192x192" href="/ayas7-192.png">
+<link rel="apple-touch-icon" href="/ayas7-192.png">
+<meta name="theme-color" content="#020917">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-:root{
-  --bg:#020617;
-  --card:#0b1120;
-  --border:rgba(148,163,184,.25);
-  --text:#e5e7eb;
-  --muted:#9ca3af;
-  --green:#22c55e;
-  --blue:#4fa3ff;
-}
-
-*{box-sizing:border-box;margin:0;padding:0}
-
-body{
-  font-family:"Segoe UI",Tahoma,Geneva,Verdana,sans-serif;
-  background:radial-gradient(circle at 40% 0%, #0f172a 0%, #020617 60%, #000 100%);
-  color:var(--text);
-}
-
-.page{
-  max-width:1200px;
-  margin:0 auto;
-  padding:48px 16px 80px;
-}
-
-/* ===== COMMON ===== */
-.section{margin-bottom:32px}
-
-.card{
-  background:radial-gradient(circle at top left,#0b1120,#020617 70%);
-  border:1px solid var(--border);
-  border-radius:20px;
-  padding:24px;
-  box-shadow:0 24px 60px rgba(15,23,42,.9);
-}
-
-.kicker{
-  display:flex;
-  align-items:center;
-  gap:8px;
-  font-size:12px;
-  letter-spacing:.14em;
-  text-transform:uppercase;
-  color:var(--muted);
-  margin-bottom:6px;
-}
-
-.dot{
-  width:7px;
-  height:7px;
-  border-radius:999px;
-  background:currentColor;
-  box-shadow:0 0 10px currentColor;
-}
-
-h1{font-size:28px;margin-bottom:10px}
-h2{font-size:20px;margin-bottom:8px}
-p{font-size:14px;line-height:1.65;color:var(--muted)}
-
-ul{margin-top:10px;padding-left:18px;font-size:13px;color:var(--muted)}
-li{margin-bottom:4px}
-
-/* ===== TABLE ===== */
-table{
-  width:100%;
-  border-collapse:collapse;
-  margin-top:14px;
-  font-size:13px;
-}
-
-th,td{
-  padding:10px 12px;
-  text-align:left;
-  border-bottom:1px solid rgba(148,163,184,.15);
-}
-
-thead{
-  background:linear-gradient(to right,#0b1120,#111827);
-}
-
-tbody tr:nth-child(even){
-  background:rgba(15,23,42,.65);
-}
-
-/* ===== GRID ===== */
-.grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:24px;
-}
-
-@media(max-width:900px){
-  .grid{grid-template-columns:1fr}
-}
+:root{--bg:#020917;--card:rgba(6,14,31,0.92);--b1:rgba(56,189,248,0.1);--b2:rgba(56,189,248,0.22);--blue:#38bdf8;--blue2:#0ea5e9;--blue3:#7dd3fc;--green:#22c55e;--white:#f8fafc;--text:#e2e8f0;--muted:#475569;--m2:#94a3b8;--purple:#818cf8;--amber:#f59e0b;--font:'Space Grotesk',sans-serif;--fontb:'DM Sans',sans-serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{min-height:100%;font-family:var(--fontb);background:var(--bg);color:var(--text);overflow-x:hidden;-webkit-font-smoothing:antialiased}
+a{text-decoration:none;color:inherit}
+.topbar{position:sticky;top:0;z-index:200;height:54px;display:flex;align-items:center;justify-content:space-between;padding:0 28px;background:rgba(2,9,23,0.85);backdrop-filter:blur(24px);border-bottom:1px solid var(--b1)}
+.brand{display:flex;align-items:center;gap:10px}
+.brand-logo{width:30px;height:30px;border-radius:7px;flex-shrink:0;background:linear-gradient(135deg,rgba(56,189,248,0.15),rgba(56,189,248,0.04));border:1px solid var(--b2);display:flex;align-items:center;justify-content:center}
+.brand-logo svg{width:16px;height:16px}
+.brand-name{font-family:var(--font);font-size:14px;font-weight:700;letter-spacing:-0.01em;color:var(--white)}
+.brand-sub{font-size:8px;letter-spacing:0.2em;text-transform:uppercase;color:var(--m2);display:block}
+nav{display:flex;gap:2px}
+nav a{padding:5px 13px;border-radius:8px;font-family:var(--fontb);font-size:13px;font-weight:500;color:var(--m2);transition:all .15s}
+nav a:hover{color:var(--text);background:rgba(255,255,255,.06)}
+.back-btn{display:inline-flex;align-items:center;gap:7px;padding:6px 14px;border-radius:8px;background:rgba(255,255,255,.05);border:1px solid var(--b1);color:var(--m2);font-family:var(--fontb);font-size:13px;transition:all .15s;flex-shrink:0}
+.back-btn:hover{color:var(--text);border-color:var(--b2)}
+.led{display:inline-block;border-radius:50%;flex-shrink:0;animation:lp 2.4s ease-in-out infinite}
+.led-g{width:7px;height:7px;background:var(--green);box-shadow:0 0 0 2px rgba(34,197,94,.2),0 0 10px rgba(34,197,94,.8)}
+.led-b{width:7px;height:7px;background:var(--blue);box-shadow:0 0 0 2px rgba(56,189,248,.2),0 0 10px rgba(56,189,248,.8)}
+.led-a{width:7px;height:7px;background:var(--amber);box-shadow:0 0 0 2px rgba(245,158,11,.2),0 0 10px rgba(245,158,11,.8)}
+.led-sg{width:5px;height:5px;background:var(--green);box-shadow:0 0 0 1px rgba(34,197,94,.2),0 0 7px rgba(34,197,94,.8)}
+.led-sb{width:5px;height:5px;background:var(--blue);box-shadow:0 0 0 1px rgba(56,189,248,.2),0 0 7px rgba(56,189,248,.8)}
+@keyframes lp{0%,100%{opacity:1}50%{opacity:.5}}
+.page{max-width:960px;margin:0 auto;padding:40px 22px 80px}
+.notice{display:flex;gap:12px;align-items:flex-start;padding:14px 16px;border-radius:12px;margin-bottom:28px;background:rgba(245,158,11,.07);border:1px solid rgba(245,158,11,.22);font-family:var(--fontb);font-size:13px;color:#fde68a;line-height:1.6}
+.page-kicker{display:inline-flex;align-items:center;gap:7px;font-family:var(--fontb);font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--m2);margin-bottom:12px}
+.page-title{font-family:var(--font);font-size:clamp(22px,4vw,34px);font-weight:700;letter-spacing:-.02em;color:var(--white);margin-bottom:10px;line-height:1.1}
+.page-title span{color:var(--blue3)}
+.page-sub{font-family:var(--fontb);font-size:14px;color:var(--m2);line-height:1.65;max-width:640px;margin-bottom:28px}
+.card{background:var(--card);border:1px solid var(--b1);border-radius:16px;padding:24px 22px;margin-bottom:18px;position:relative;overflow:hidden}
+.card::before{content:'';position:absolute;top:0;left:8%;right:8%;height:1px;background:linear-gradient(90deg,transparent,var(--b2),transparent);opacity:.5}
+.card.green::before{background:linear-gradient(90deg,transparent,rgba(34,197,94,.45),transparent)}
+.card.amber::before{background:linear-gradient(90deg,transparent,rgba(245,158,11,.45),transparent)}
+.card-kicker{display:inline-flex;align-items:center;gap:7px;font-family:var(--fontb);font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--m2);margin-bottom:10px}
+.card-title{font-family:var(--font);font-size:18px;font-weight:700;color:var(--white);margin-bottom:8px}
+.card-text{font-family:var(--fontb);font-size:14px;color:var(--m2);line-height:1.65;margin-bottom:10px}
+.card-list{padding-left:16px;margin-top:6px}
+.card-list li{font-family:var(--fontb);font-size:13px;color:var(--m2);line-height:1.75}
+.card-list li b{color:var(--text);font-weight:500}
+.card-note{font-family:var(--fontb);font-size:12px;color:var(--muted);margin-top:14px;padding:11px 14px;background:rgba(255,255,255,.02);border:1px solid var(--b1);border-radius:9px;line-height:1.6}
+.axes-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:12px}
+.axis-item{padding:12px 14px;border-radius:10px;background:rgba(255,255,255,.03);border:1px solid var(--b1)}
+.axis-label{font-family:var(--fontb);font-size:9px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:5px}
+.axis-val{font-family:var(--font);font-size:14px;font-weight:600;color:var(--white)}
+.axis-sub{font-family:var(--fontb);font-size:11px;color:var(--m2);margin-top:2px}
+.table-wrap{border:1px solid var(--b1);border-radius:12px;overflow-x:auto;margin:14px 0}
+table{width:100%;border-collapse:collapse;min-width:380px}
+thead tr{background:rgba(255,255,255,.03)}
+th{padding:10px 14px;text-align:left;font-family:var(--fontb);font-size:9px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--b1);white-space:nowrap}
+td{padding:10px 14px;font-family:var(--fontb);font-size:13px;border-bottom:1px solid rgba(255,255,255,.04)}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover td{background:rgba(255,255,255,.02)}
+.tval{font-family:var(--font);font-weight:700;color:var(--amber)}
+.row-hl td{background:rgba(34,197,94,.05)}
+.scenario-wrap{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:14px}
+.model-box{background:rgba(34,197,94,.05);border:1px solid rgba(34,197,94,.2);border-radius:14px;padding:22px 20px}
+.model-stat{display:flex;justify-content:space-between;align-items:baseline;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.05)}
+.model-stat:last-child{border-bottom:none}
+.ms-label{font-family:var(--fontb);font-size:12px;color:var(--m2)}
+.ms-val{font-family:var(--font);font-size:14px;font-weight:700;color:var(--white)}
+.crx-big{font-family:var(--font);font-size:38px;font-weight:700;color:var(--green);text-shadow:0 0 20px rgba(34,197,94,.4);line-height:1;margin:12px 0 4px}
+.crx-unit{font-family:var(--fontb);font-size:12px;color:var(--m2)}
+.ben-list{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+.ben-item{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:10px;background:rgba(255,255,255,.03);border:1px solid var(--b1);font-family:var(--fontb);font-size:13px;color:var(--text);transition:border-color .15s}
+.ben-item:hover{border-color:var(--b2)}
+.ben-icon{font-size:16px;flex-shrink:0}
+.ben-name{flex:1;font-weight:500}
+.ben-code{font-family:var(--font);font-size:11px;color:var(--blue3);font-weight:600;letter-spacing:.06em}
+.foot{border-top:1px solid var(--b1);margin-top:40px;padding:18px;text-align:center;font-family:var(--fontb);font-size:13px;color:var(--m2);font-style:italic}
+@media(max-width:768px){.axes-grid{grid-template-columns:1fr 1fr}.scenario-wrap{grid-template-columns:1fr}nav{display:none}}
+@media(max-width:640px){.topbar{padding:0 14px;height:50px}.brand-sub{display:none}.page{padding:24px 14px 60px}.page-title{font-size:20px}.card{padding:18px 14px}.axes-grid{grid-template-columns:1fr}.crx-big{font-size:30px}th,td{padding:8px 10px;font-size:12px}}
 </style>
 </head>
-
 <body>
+
+<div class="topbar">
+  <a href="/login/member.html" class="brand">
+    <div class="brand-logo">
+      <svg viewBox="0 0 24 24" fill="none">
+        <path d="M12 2L20 7V12L12 17L4 12V7L12 2Z" stroke="#38bdf8" stroke-width="1.5" stroke-linejoin="round"/>
+        <path d="M12 7L16 10V14L12 17L8 14V10L12 7Z" fill="rgba(56,189,248,0.2)" stroke="#38bdf8" stroke-width="1"/>
+      </svg>
+    </div>
+    <div><span class="brand-name">WIN.WIN</span><span class="brand-sub">Cooperative</span></div>
+  </a>
+  <nav>
+    <a href="/login/member.html">Dashboard</a>
+    <a href="/login/benefits.html">Benefity</a>
+    <a href="/login/affiliate.html">Síť</a>
+  </nav>
+  <a href="/login/benefits.html" class="back-btn">← Zpět na benefity</a>
+</div>
+
 <div class="page">
 
-<!-- ================= HEADER ================= -->
-<section class="section">
-  <div class="kicker">
-    <span class="dot" style="color:var(--green)"></span>
-    Politika rozdělování benefitů · WIN.WIN
-  </div>
+  <div class="page-kicker"><span class="led led-sg"></span>Politika rozdělování benefitů · WIN.WIN</div>
+  <div class="page-title">Modelový příklad <span>rozdělování</span></div>
+  <div class="page-sub">Ilustrace interní logiky systému WIN.WIN řízeného systémem <strong style="color:var(--blue3)">AYAS-7</strong>. Uvedené hodnoty jsou modelové — nejde o nárok ani příslib.</div>
 
-  <h1>Modelový příklad člena družstva WIN.WIN</h1>
-
- <p>
-  Následující příklad slouží <b>výhradně k ilustraci interní logiky systému</b>.
-  Nejedná se o nabídku, příslib ani garantovaný výsledek.
-  Uvedené hodnoty nemají investiční ani peněžní povahu.
-</p>
-</section>
-
-<!-- ================= PRINCIP ================= -->
-<section class="section card">
-  <div class="kicker">
-    <span class="dot" style="color:var(--blue)"></span>
-    Základní princip
-  </div>
-
-  <h2>Benefit není právo, ale zpřístupněná možnost</h2>
-
-  <ul>
-  <li>jedná se o <b>modelový a ilustrační scénář</b></li>
-  <li>hodnoty nejsou garantované ani nárokové</li>
-  <li>CRX jsou interní věrnostní poukázky</li>
-  <li>rozhodnutí o přídělu vždy náleží družstvu</li>
-</ul>
-
-</section>
-
-<!-- ================= AXES ================= -->
-<section class="section card">
-  <div class="kicker">
-    <span class="dot" style="color:var(--green)"></span>
-    Vyhodnocovací osy
-  </div>
-
-  <h2>Co systém AYAS-7 skutečně posuzuje</h2>
-
-  <ul>
-    <li><b>WW-KEY</b> – váhový index člena</li>
-    <li><b>CRX</b> – čas a stabilita účasti</li>
-    <li><b>Stav členství</b> – aktivní / pozastavené</li>
-    <li><b>Rozhodnutí družstva</b> – schvalovací vrstva</li>
-  </ul>
-</section>
-
-<!-- ================= LEVELS TABLE ================= -->
-<section class="section card">
-  <div class="kicker">
-    <span class="dot" style="color:var(--blue)"></span>
-    Úrovně členství
-  </div>
-
-  <h2>Levelový model přístupu</h2>
-
-  <table>
-    <thead>
-      <tr>
-        <th>Úroveň</th>
-        <th>Rozsah WW-KEY</th>
-        <th>Charakteristika</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>L0</td>
-        <td>0–99</td>
-        <td>evidenční člen</td>
-      </tr>
-      <tr>
-        <td>L1</td>
-        <td>100–299</td>
-        <td>aktivní člen</td>
-      </tr>
-      <tr>
-        <td>L2</td>
-        <td>300–499</td>
-        <td>stabilní člen</td>
-      </tr>
-      <tr>
-  <td><b>GOLD</b></td>
-  <td><b>12 000 WW-KEY</b></td>
-  <td><b>rozšířený přístup – modelový příklad</b></td>
-</tr>
-
-      <tr>
-        <td>L4</td>
-        <td>800+</td>
-        <td>prioritní člen</td>
-      </tr>
-    </tbody>
-  </table>
-</section>
-
-<!-- ================= SCENARIO ================= -->
-<section class="section grid">
-
-  <div class="card">
-    <div class="kicker">
-      <span class="dot" style="color:var(--green)"></span>
-      Modelová situace
-    </div>
-
-    <h2>Modelový člen – GOLD</h2>
-
-    <ul>
-  <li>Angažovanost: 300 000 Kč</li>
-  <li>WW-KEY: 12 000</li>
-  <li>Status: GOLD</li>
-  <li>Koeficient: 0,33 CRX / WW-KEY / měsíc</li>
-</ul>
-
-    <p>
-      <b>Měsíční příděl (model): 3 960 CRX</b>
-    </p>
+  <div class="notice">
+    <span style="font-size:18px;flex-shrink:0">⚠️</span>
+    <span>Ilustrační obsah. Nejedná se o veřejnou nabídku investic ani finančních produktů. Hodnoty nejsou garantované.</span>
   </div>
 
   <div class="card">
-    <div class="kicker">
-      <span class="dot" style="color:var(--blue)"></span>
-      Co se otevře
+    <div class="card-kicker"><span class="led led-sb"></span>Základní princip</div>
+    <div class="card-title">Benefit není právo, ale zpřístupněná možnost</div>
+    <ul class="card-list">
+      <li>jedná se o <b>modelový a ilustrační scénář</b></li>
+      <li>hodnoty nejsou garantované ani nárokové</li>
+      <li>CRX jsou interní věrnostní poukázky bez peněžní hodnoty</li>
+      <li>rozhodnutí o přídělu vždy náleží družstvu</li>
+    </ul>
+  </div>
+
+  <div class="card green">
+    <div class="card-kicker"><span class="led led-sg"></span>Vyhodnocovací osy AYAS-7</div>
+    <div class="card-title">Co systém skutečně posuzuje</div>
+    <div class="axes-grid">
+      <div class="axis-item"><div class="axis-label">WW-Key</div><div class="axis-val" style="color:var(--blue3)">Váhový index</div><div class="axis-sub">relativní pozice v systému</div></div>
+      <div class="axis-item"><div class="axis-label">CRX</div><div class="axis-val" style="color:var(--green)">Čas a stabilita</div><div class="axis-sub">délka a kontinuita účasti</div></div>
+      <div class="axis-item"><div class="axis-label">Stav členství</div><div class="axis-val">Aktivní / Pozastavené</div><div class="axis-sub">aktuální status</div></div>
+      <div class="axis-item"><div class="axis-label">Rozhodnutí družstva</div><div class="axis-val" style="color:var(--amber)">Schvalovací vrstva</div><div class="axis-sub">finální schválení</div></div>
     </div>
-
-    <ul>
-  <li>ELEKTŘINA (SHX)</li>
-  <li>PHM (FLX)</li>
-  <li>PLUXEE tržiště</li>
-  <li>AURIX – AUX / AGX</li>
-  <li>AUTOBONUS (ATX)</li>
-</ul>
-<p class="muted" style="margin-top:16px;">
-  Tento modelový příklad slouží výhradně k ilustraci interní logiky systému WIN.WIN.
-  Uvedené hodnoty nepředstavují nárok, nejsou garantované a nemají investiční
-  ani peněžní povahu.
-</p>
-
   </div>
 
-</section>
-
-<!-- ================= AYAS ROLE ================= -->
-<section class="section card">
-  <div class="kicker">
-    <span class="dot" style="color:var(--green)"></span>
-    Role systému AYAS-7
+  <div class="card">
+    <div class="card-kicker"><span class="led led-sb"></span>Statusy a koeficienty CRX</div>
+    <div class="card-title">Levelový model přístupu k benefitům</div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Status</th><th>Rozsah WW-Key</th><th>Koeficient CRX / měsíc</th><th>Charakteristika</th></tr></thead>
+        <tbody>
+          <tr><td>Member</td><td>0 – 999</td><td class="tval">0,23 – 0,25</td><td style="color:var(--m2)">evidenční člen</td></tr>
+          <tr><td>Metal</td><td>1 000 – 1 999</td><td class="tval">0,25 – 0,30</td><td style="color:var(--m2)">aktivní člen</td></tr>
+          <tr><td>Bronze</td><td>2 000 – 5 999</td><td class="tval">0,30 – 0,32</td><td style="color:var(--m2)">stabilní člen</td></tr>
+          <tr><td>Silver</td><td>6 000 – 11 999</td><td class="tval">0,32 – 0,34</td><td style="color:var(--m2)">angažovaný člen</td></tr>
+          <tr class="row-hl"><td><strong style="color:var(--green)">Gold ★</strong></td><td><strong>12 000 – 19 999</strong></td><td class="tval">0,34 – 0,36</td><td style="color:var(--green)">modelový příklad níže</td></tr>
+          <tr><td>Platinum</td><td>20 000 – 39 999</td><td class="tval">0,36 – 0,38</td><td style="color:var(--m2)">prioritní člen</td></tr>
+          <tr><td>Diamond</td><td>40 000+</td><td class="tval">0,38 – 0,45</td><td style="color:var(--blue3)">prémiový člen</td></tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 
-  <ul>
-    <li>zajišťuje neměnnost pravidel</li>
-    <li>odděluje finance, členství a benefity</li>
-    <li>loguje veškerá rozhodnutí</li>
-    <li>umožňuje auditovatelnost</li>
-  </ul>
-</section>
+  <div class="card amber">
+    <div class="card-kicker"><span class="led led-a"></span>Modelový scénář · pouze ilustrační</div>
+    <div class="card-title">Modelový člen – status GOLD</div>
+    <div class="card-text">Čísla níže jsou výhradně modelová. Neslouží jako nabídka, příslib ani garantovaný výsledek.</div>
+    <div class="scenario-wrap">
+      <div class="model-box">
+        <div class="card-kicker" style="margin-bottom:14px"><span class="led led-sg"></span>Vstupní parametry</div>
+        <div class="model-stat"><span class="ms-label">Angažovanost (modelová)</span><span class="ms-val">300 000 Kč</span></div>
+        <div class="model-stat"><span class="ms-label">WW-Key</span><span class="ms-val" style="color:var(--blue3)">12 000</span></div>
+        <div class="model-stat"><span class="ms-label">Status</span><span class="ms-val" style="color:var(--amber)">GOLD</span></div>
+        <div class="model-stat"><span class="ms-label">Koeficient CRX</span><span class="ms-val">0,33 / WW-Key / měsíc</span></div>
+        <div style="margin-top:16px;padding-top:16px;border-top:1px solid rgba(255,255,255,.06)">
+          <div style="font-family:var(--fontb);font-size:11px;color:var(--muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:.1em">Modelový měsíční příděl</div>
+          <div class="crx-big">3 960</div>
+          <div class="crx-unit">CRX / měsíc (modelová hodnota)</div>
+        </div>
+      </div>
+      <div>
+        <div class="card-kicker" style="margin-bottom:10px"><span class="led led-sb"></span>Přístupné programy na statusu GOLD</div>
+        <div class="ben-list">
+          <div class="ben-item"><span class="ben-icon">⚡</span><span class="ben-name">Elektřina</span><span class="ben-code">SHX</span></div>
+          <div class="ben-item"><span class="ben-icon">⛽</span><span class="ben-name">Pohonné hmoty</span><span class="ben-code">FLX</span></div>
+          <div class="ben-item"><span class="ben-icon">🛒</span><span class="ben-name">Pluxee tržiště</span><span class="ben-code">PLX</span></div>
+          <div class="ben-item"><span class="ben-icon">🥇</span><span class="ben-name">AURIX – Zlato / Stříbro</span><span class="ben-code">AUX / AGX</span></div>
+          <div class="ben-item"><span class="ben-icon">🚗</span><span class="ben-name">Autobonus</span><span class="ben-code">ATX</span></div>
+        </div>
+        <div class="card-note">Přístup závisí na aktuální kapacitě a schválení družstvem. Nejde o nárok ani automatické přidělení.</div>
+      </div>
+    </div>
+  </div>
 
-<!-- ================= FOOTER ================= -->
-<section class="section">
-  <p>
-    WIN.WIN nestaví na slibech. Staví na systému.
-    AYAS-7 zajišťuje, že pravidla platí pro každého stejně.
-  </p>
-</section>
+  <div class="card green">
+    <div class="card-kicker"><span class="led led-sg"></span>Řídicí vrstva</div>
+    <div class="card-title">Role systému AYAS-7</div>
+    <ul class="card-list">
+      <li>zajišťuje neměnnost pravidel pro všechny členy stejně</li>
+      <li>odděluje finance, členství a benefity</li>
+      <li>loguje veškerá rozhodnutí a přidělení</li>
+      <li>umožňuje plnou auditovatelnost systému</li>
+    </ul>
+  </div>
+
+  <div style="background:rgba(56,189,248,.04);border:1px solid var(--b2);border-radius:14px;padding:20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px">
+    <div>
+      <div style="font-family:var(--font);font-size:15px;font-weight:600;color:var(--white);margin-bottom:4px">Kompletní politika benefitů WIN.WIN</div>
+      <div style="font-family:var(--fontb);font-size:13px;color:var(--m2)">Filozofie, WW-Key, CRX/PLX/AURIX, kariérní tabulka 18 stupňů</div>
+    </div>
+    <a href="/login/benefits-policy.html" style="display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:10px;background:rgba(56,189,248,.1);border:1px solid var(--b2);color:var(--blue3);font-family:var(--font);font-size:13px;font-weight:600;white-space:nowrap">
+      <span class="led-sb" style="width:5px;height:5px;background:var(--blue);border-radius:50%;display:inline-block"></span>
+      Plná politika →
+    </a>
+  </div>
 
 </div>
+
+<footer class="foot">WIN.WIN nestaví na slibech. Staví na systému. AYAS-7 zajišťuje, že pravidla platí pro každého stejně.</footer>
 </body>
 </html>
