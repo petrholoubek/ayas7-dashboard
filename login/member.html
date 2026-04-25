@@ -586,6 +586,157 @@ nav a.active {
 .act-btn.o { background: rgba(255,255,255,0.05); color: var(--text); border: 1px solid var(--border); }
 .act-btn.o:hover { background: rgba(255,255,255,0.09); border-color: var(--border2); transform: translateY(-1px); }
 
+/* ══ CTA BUTTONS — RAISED CLICKABLE ══ */
+.cta-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 16px 24px;
+  border-radius: 12px;
+  font-family: var(--font);
+  font-size: 15px;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all .2s;
+  position: relative;
+}
+.cta-primary {
+  background: var(--blue2);
+  color: #fff;
+  box-shadow: 
+    0 4px 14px rgba(14,165,233,0.3),
+    0 2px 6px rgba(0,0,0,0.2);
+}
+.cta-primary:hover {
+  background: var(--blue);
+  transform: translateY(-2px);
+  box-shadow: 
+    0 6px 20px rgba(56,189,248,0.4),
+    0 4px 10px rgba(0,0,0,0.25);
+}
+.cta-live {
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  color: #fff;
+  box-shadow: 
+    0 4px 14px rgba(34,197,94,0.4),
+    0 2px 6px rgba(0,0,0,0.2);
+}
+.cta-live:hover {
+  background: linear-gradient(135deg, #16a34a, #15803d);
+  transform: translateY(-2px);
+  box-shadow: 
+    0 6px 20px rgba(34,197,94,0.5),
+    0 4px 10px rgba(0,0,0,0.25);
+}
+.cta-secondary {
+  background: rgba(255,255,255,0.06);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255,255,255,0.12);
+  color: rgba(255,255,255,0.85);
+  box-shadow: 
+    0 2px 8px rgba(0,0,0,0.2);
+}
+.cta-secondary:hover {
+  background: rgba(255,255,255,0.10);
+  border-color: rgba(255,255,255,0.2);
+  transform: translateY(-2px);
+  box-shadow: 
+    0 4px 12px rgba(0,0,0,0.25);
+}
+.cta-text {
+  font-size: 15px;
+  letter-spacing: 0.01em;
+}
+
+/* ══ MAIN CARDS — BANK STYLE ══ */
+.main-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 28px 24px;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+  transition: all .2s;
+  position: relative;
+  overflow: hidden;
+}
+.main-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--card-accent, var(--blue)), transparent);
+  opacity: 0.6;
+}
+.main-card:hover {
+  border-color: rgba(56,189,248,0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px rgba(0,0,0,0.4);
+}
+.mc-tag {
+  font-family: var(--fontb);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+.mc-title {
+  font-family: var(--font);
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--white);
+  margin-bottom: 20px;
+}
+.mc-value {
+  font-family: var(--font);
+  font-size: 44px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  margin-bottom: 8px;
+}
+.mc-green {
+  color: var(--green);
+  text-shadow: 0 0 24px rgba(34,197,94,0.4);
+}
+.mc-blue {
+  color: var(--blue3);
+  text-shadow: 0 0 24px rgba(56,189,248,0.4);
+}
+.mc-label {
+  font-family: var(--fontb);
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 16px;
+}
+.mc-progress {
+  height: 4px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 999px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+.mc-prog-bar {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--green), #4ade80);
+  border-radius: 999px;
+  transition: width 1.2s cubic-bezier(.25,.46,.45,.94);
+}
+.mc-hint {
+  font-family: var(--fontb);
+  font-size: 11px;
+  color: var(--muted);
+}
+
 /* ══ PAGE FOOTER ══ */
 .foot { border-top: 1px solid var(--border); margin-top: 48px; padding: 20px; text-align: center; font-family: var(--fontb); font-size: 11px; font-weight: 400; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
 
@@ -790,6 +941,29 @@ nav a.active {
     font-size: 15px;
   }
 
+  /* CTA Buttons — mobile */
+  .cta-btn {
+    padding: 15px 20px;
+    font-size: 14px;
+  }
+  .cta-text {
+    font-size: 14px;
+  }
+
+  /* Main Cards — mobile stack */
+  .main-card {
+    padding: 24px 20px;
+  }
+  .mc-value {
+    font-size: 38px;
+  }
+  .mc-title {
+    font-size: 15px;
+  }
+  .mc-label {
+    font-size: 11px;
+  }
+
   .foot { 
     font-size: 10px; 
     padding: 18px 14px;
@@ -905,49 +1079,53 @@ nav a.active {
 <!-- MAIN -->
 <div class="main">
 
-  <!-- Sekce: Přehled -->
+  <!-- CTA TLAČÍTKA — 3 V ŘADĚ -->
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:48px;">
+    <a href="/login/benefits.html" class="cta-btn cta-primary">
+      <span class="cta-text">Uplatnit CRX</span>
+    </a>
+    <a href="/info-snapshot.html" class="cta-btn cta-live">
+      <div class="led-dot" style="width:8px;height:8px;"></div>
+      <span class="cta-text">Stav systému</span>
+    </a>
+    <a href="/login/affiliate.html" class="cta-btn cta-secondary">
+      <span class="cta-text">Moje síť</span>
+    </a>
+  </div>
+
+  <!-- HLAVNÍ KARTY — CRX + WW-KEY -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:32px;">
+    
+    <!-- CRX -->
+    <a href="/crx.html" class="main-card" style="--card-accent:var(--green);">
+      <div class="mc-tag">Věrnostní poukázky</div>
+      <div class="mc-title">CRX Účet</div>
+      <div class="mc-value mc-green" id="crxMainVal">—</div>
+      <div class="mc-label">CRX k dispozici</div>
+      <div class="mc-progress">
+        <div class="mc-prog-bar" id="crxMainBar"></div>
+      </div>
+      <div class="mc-hint">Využito tento měsíc: <span id="crxMainPct">—</span></div>
+    </a>
+
+    <!-- WW-KEY -->
+    <a href="/login/certificate-info.html" class="main-card" style="--card-accent:var(--blue);">
+      <div class="mc-tag">Členské jednotky</div>
+      <div class="mc-title">WW-Key Certifikát</div>
+      <div class="mc-value mc-blue" id="wwkeyMainVal">—</div>
+      <div class="mc-label">WW-Key · Vklad: <span id="depositMainVal">—</span></div>
+    </a>
+
+  </div>
+
+  <!-- Sekce: Další informace -->
   <div class="sec">
-    <div class="sec-title">Přehled</div>
+    <div class="sec-title">Další informace</div>
     <div class="sec-line"></div>
     <div class="sec-dot"><div class="led-dot blue" style="width:5px;height:5px;"></div>Live</div>
   </div>
 
   <div class="grid3">
-
-    <!-- CRX -->
-    <a href="/crx.html" class="fcard c-green">
-      <div class="fc-head">
-        <div class="fc-icon">💎</div>
-        <div class="fc-badge"><div class="led-dot" style="width:5px;height:5px;animation:none;background:var(--green);box-shadow:none;"></div>Aktivní</div>
-      </div>
-      <div class="fc-tag">Věrnostní poukázky</div>
-      <div class="fc-title">CRX Účet</div>
-      <div class="fc-desc">Vaše interní CRX — uplatněte v tržnici na elektřinu, PHM, zlato, autobonus a Pluxee.</div>
-      <div class="fc-bottom">
-        <div class="fc-val g" id="crxVal">—</div>
-        <div class="fc-unit">CRX k dispozici</div>
-        <div class="prog">
-          <div class="prog-row"><span>Využito tento měsíc</span><span id="crxPct">—</span></div>
-          <div class="prog-bg"><div class="prog-fill" id="crxBar"></div></div>
-        </div>
-      </div>
-      <div class="fc-arrow">→</div>
-    </a>
-
-    <!-- WW-KEY -->
-    <a href="/login/certificate-info.html" class="fcard c-blue">
-      <div class="fc-head">
-        <div class="fc-icon">🔑</div>
-      </div>
-      <div class="fc-tag">Členské jednotky</div>
-      <div class="fc-title">WW-Key Certifikát</div>
-      <div class="fc-desc">Váš certifikát angažovanosti. Určuje výši měsíční CRX alokace a kariérní status.</div>
-      <div class="fc-bottom">
-        <div class="fc-val b" id="wwkeyVal">—</div>
-        <div class="fc-unit">WW-Key · Vklad: <span id="depositVal">—</span></div>
-      </div>
-      <div class="fc-arrow">→</div>
-    </a>
 
     <!-- KARIÉRA -->
     <a href="/login/affiliate.html" class="fcard c-purple">
@@ -1193,10 +1371,10 @@ async function init() {
 
   if(acc) {
     const map = { active:'Aktivní', pending:'Čekající', inactive:'Neaktivní' };
-    $('hStatus').textContent    = map[acc.status] || acc.status;
-    $('hWwkey').textContent     = fmt(acc.ww_key_balance);
-    $('wwkeyVal').textContent   = fmt(acc.ww_key_balance);
-    $('depositVal').textContent = acc.total_paid ? fmt(acc.total_paid)+' Kč' : '—';
+    $('hStatus').textContent     = map[acc.status] || acc.status;
+    $('hWwkey').textContent      = fmt(acc.ww_key_balance);
+    $('wwkeyMainVal').textContent = fmt(acc.ww_key_balance);
+    $('depositMainVal').textContent = acc.total_paid ? fmt(acc.total_paid)+' Kč' : '—';
   }
 
   // CRX - pouzij member_id z member_accounts
@@ -1209,10 +1387,14 @@ async function init() {
   const used = crx ? Number(crx.used||0) : 0;
   const tot  = bal+used;
   const pct  = tot>0 ? Math.round((used/tot)*100) : 0;
-  $('hCrx').textContent    = fmt(bal.toFixed(0));
-  $('crxVal').textContent   = fmt(bal.toFixed(0));
-  $('crxPct').textContent   = pct+'%';
-  setTimeout(()=>{ $('crxBar').style.width = pct+'%'; }, 500);
+  
+  // Hero stat strip
+  $('hCrx').textContent = fmt(bal.toFixed(0));
+  
+  // Main cards
+  $('crxMainVal').textContent = fmt(bal.toFixed(0));
+  $('crxMainPct').textContent = pct+'%';
+  setTimeout(()=>{ $('crxMainBar').style.width = pct+'%'; }, 500);
 
   const { data: career } = await sb.from('member_career_roles').select('role_code,role_name').eq('member_id',acc?.member_id).order('created_at',{ascending:false}).limit(1).maybeSingle();
   if(career) {
