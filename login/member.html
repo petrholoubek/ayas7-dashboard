@@ -483,51 +483,59 @@ nav a.active {
 /* ═══ MOBIL ═══ */
 @media(max-width:640px) {
   /* Topbar */
-  .topbar { padding: 0 14px; height: 50px; }
+  .topbar { 
+    padding: 0 14px; 
+    height: 50px;
+    background: rgba(2,9,23,0.95);
+  }
   nav { display: none; }
   .user-name { display: none; }
-  .brand-name { font-size: 13px; }
+  .brand-name { font-size: 14px; color: #f8fafc; }
   .brand-sub { display: none; }
 
-  /* Hero — VĚTŠÍ, dramatičtější */
+  /* Hero — VĚTŠÍ, SVĚTLEJŠÍ */
   .hero {
-    height: 75vh;
-    min-height: 520px;
-    max-height: 720px;
-    padding-bottom: 90px;
+    height: 78vh;
+    min-height: 540px;
+    max-height: 760px;
+    padding-bottom: 100px;
   }
   
   .hero-label {
-    font-size: 11px;
-    margin-top: 20px;
-    margin-bottom: 10px;
-    letter-spacing: .12em;
+    font-size: 12px;
+    margin-top: 24px;
+    margin-bottom: 12px;
+    letter-spacing: .14em;
+    color: rgba(255,255,255,0.6);
   }
   
   .hero-name {
-    font-size: clamp(36px, 10vw, 56px);
+    font-size: clamp(40px, 11vw, 64px);
     letter-spacing: -0.03em;
-    margin-bottom: 12px;
+    margin-bottom: 14px;
+    color: #ffffff;
   }
   
   .hero-sub {
-    font-size: 11px;
-    letter-spacing: .08em;
-    margin-bottom: 22px;
-    display: block; /* ZOBRAZÍME zpět */
-    max-width: 90%;
+    font-size: 12px;
+    letter-spacing: .09em;
+    margin-bottom: 24px;
+    display: block;
+    max-width: 92%;
+    color: rgba(255,255,255,0.7);
   }
   
   .hero-live {
-    font-size: 10px;
-    padding: 6px 14px;
-    margin-bottom: 10px;
-    letter-spacing: .12em;
+    font-size: 11px;
+    padding: 7px 16px;
+    margin-bottom: 12px;
+    letter-spacing: .14em;
+    color: rgba(255,255,255,0.85);
   }
 
   /* Hero CTA buttons */
   .hero-cta {
-    gap: 10px;
+    gap: 12px;
     flex-direction: row;
     align-items: center;
     justify-content: center;
@@ -538,58 +546,136 @@ nav a.active {
   .btn-primary {
     flex: 1;
     justify-content: center;
-    padding: 13px 18px;
-    font-size: 14px;
+    padding: 14px 20px;
+    font-size: 15px;
   }
   .btn-secondary {
     flex: 1;
     justify-content: center;
-    padding: 13px 18px;
-    font-size: 14px;
+    padding: 14px 20px;
+    font-size: 15px;
   }
 
-  /* Stat strip */
-  .strip-inner { border-radius: 14px 14px 0 0; }
-  .sstat { padding: 14px 8px; }
-  .sstat-val { font-size: 16px; letter-spacing: -0.01em; }
-  .sstat-lbl { font-size: 8px; letter-spacing: .1em; }
+  /* Stat strip — SVĚTLEJŠÍ */
+  .strip-inner { 
+    border-radius: 16px 16px 0 0;
+    background: rgba(2,9,23,0.98);
+    border-top: 1px solid rgba(56,189,248,0.3);
+  }
+  .sstat { 
+    padding: 16px 10px;
+  }
+  .sstat-val { 
+    font-size: 18px; 
+    letter-spacing: -0.01em;
+  }
+  .sstat-lbl { 
+    font-size: 9px; 
+    letter-spacing: .12em;
+    color: rgba(255,255,255,0.4);
+  }
 
-  /* Main content */
-  .main { padding: 32px 16px 80px; }
-  .sec-title { font-size: 11px; }
-  .grid3 { grid-template-columns: 1fr; gap: 12px; }
-  .grid2 { grid-template-columns: 1fr; gap: 12px; }
+  /* Main content — SVĚTLEJŠÍ */
+  .main { padding: 36px 18px 100px; }
+  .sec-title { 
+    font-size: 12px;
+    color: rgba(255,255,255,0.6);
+  }
+  .grid3 { grid-template-columns: 1fr; gap: 16px; }
+  .grid2 { grid-template-columns: 1fr; gap: 16px; }
 
-  /* Cards */
-  .fcard { padding: 20px 18px 18px; border-radius: 14px; }
-  .fc-title { font-size: 16px; }
-  .fc-val { font-size: 26px; }
-  .fc-desc { font-size: 13px; line-height: 1.6; }
+  /* Cards — SVĚTLEJŠÍ & VĚTŠÍ */
+  .fcard { 
+    padding: 24px 20px 22px; 
+    border-radius: 16px;
+    background: rgba(6,14,31,0.95);
+    border: 1px solid rgba(56,189,248,0.15);
+  }
+  .fc-title { 
+    font-size: 17px;
+    color: #f8fafc;
+  }
+  .fc-val { 
+    font-size: 30px;
+  }
+  .fc-desc { 
+    font-size: 14px; 
+    line-height: 1.65;
+    color: rgba(226,232,240,0.8);
+  }
+  .fc-tag {
+    color: rgba(148,163,184,0.8);
+  }
+  .fc-icon {
+    width: 50px;
+    height: 50px;
+    font-size: 24px;
+    background: rgba(255,255,255,0.06);
+  }
   .fc-arrow { display: none; }
 
-  /* Benefits */
-  .ben-wrap { flex-direction: column; gap: 14px; }
-  .ben-list { flex-direction: column; width: 100%; }
+  /* Benefits — ŽIVÉ BARVY */
+  .ben-wrap { flex-direction: column; gap: 16px; }
+  .ben-list { flex-direction: column; width: 100%; gap: 10px; }
   .ben-row { 
-    padding: 14px 16px; 
-    font-size: 14px;
-    border-radius: 12px;
+    padding: 16px 18px; 
+    font-size: 15px;
+    border-radius: 14px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
   }
-  .ben-icon { font-size: 18px; }
-  .ben-name { font-size: 11px; flex: 1; }
-  .ben-price { font-size: 14px; }
+  .ben-icon { 
+    font-size: 22px;
+    filter: drop-shadow(0 0 6px currentColor);
+  }
+  .ben-name { 
+    font-size: 12px; 
+    flex: 1;
+    color: rgba(226,232,240,0.9);
+  }
+  .ben-price { 
+    font-size: 15px;
+    color: #7dd3fc;
+    text-shadow: 0 0 10px rgba(56,189,248,0.5);
+  }
 
-  /* Snapshot */
-  .snap { padding: 20px 16px; }
-  .snap-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
-  .snap-val { font-size: 17px; }
-  .snap-title { font-size: 14px; }
+  /* Snapshot — SVĚTLEJŠÍ */
+  .snap { 
+    padding: 22px 18px;
+    background: rgba(6,14,31,0.95);
+    border: 1px solid rgba(56,189,248,0.15);
+  }
+  .snap-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .snap-item {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+  .snap-val { 
+    font-size: 18px;
+  }
+  .snap-title { 
+    font-size: 15px;
+    color: #f8fafc;
+  }
+  .snap-lbl {
+    color: rgba(148,163,184,0.8);
+  }
 
   /* Actions */
-  .actions { flex-direction: column; gap: 10px; }
-  .act-btn { width: 100%; justify-content: center; padding: 13px; }
+  .actions { flex-direction: column; gap: 12px; }
+  .act-btn { 
+    width: 100%; 
+    justify-content: center; 
+    padding: 15px;
+    font-size: 15px;
+  }
 
-  .foot { font-size: 9px; padding: 16px 12px; }
+  .foot { 
+    font-size: 10px; 
+    padding: 18px 14px;
+    color: rgba(100,116,139,0.8);
+  }
+}
 }
 
 /* ═══ MALY MOBIL ═══ */
@@ -688,6 +774,27 @@ nav a.active {
 
 <!-- MAIN -->
 <div class="main">
+
+  <!-- LIVE STATUS CTA — HNED VIDITELNÉ -->
+  <div style="margin-bottom:32px;">
+    <a href="/info-snapshot.html" style="
+      display:block;
+      padding:20px 24px;
+      border-radius:16px;
+      background:linear-gradient(135deg,#22c55e,#16a34a);
+      box-shadow:0 0 32px rgba(34,197,94,0.5),0 6px 20px rgba(0,0,0,0.3);
+      text-decoration:none;
+      text-align:center;
+      transition:all .2s;
+      border:1px solid rgba(34,197,94,0.4);
+    " onmouseover="this.style.transform='translateY(-3px)';this.style.boxShadow='0 0 40px rgba(34,197,94,0.6),0 10px 30px rgba(0,0,0,0.4)'" onmouseout="this.style.transform='';this.style.boxShadow='0 0 32px rgba(34,197,94,0.5),0 6px 20px rgba(0,0,0,0.3)'">
+      <div style="display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;">
+        <div class="led-dot" style="width:12px;height:12px;"></div>
+        <span style="font-family:var(--font);font-size:16px;font-weight:700;color:#fff;letter-spacing:0.02em;">📊 Stav systému · Live Snapshot</span>
+      </div>
+      <div style="margin-top:6px;font-family:var(--fontb);font-size:12px;color:rgba(255,255,255,0.8);letter-spacing:0.04em;">Klikni pro detail AYAS-7 engine</div>
+    </a>
+  </div>
 
   <!-- Sekce: Přehled -->
   <div class="sec">
@@ -865,7 +972,6 @@ nav a.active {
   </div>
   <div class="actions">
     <a href="/login/benefits.html"         class="act-btn p">🎁 Uplatnit CRX</a>
-    <a href="/info-snapshot.html"          class="act-btn p" style="background:linear-gradient(135deg,#22c55e,#16a34a);box-shadow:0 0 28px rgba(34,197,94,0.5),0 4px 16px rgba(0,0,0,0.3);">📊 Stav systému · Live</a>
     <a href="/login/affiliate.html"        class="act-btn o">🌐 Partnerský program</a>
     <a href="/login/support.html"          class="act-btn o">💬 Podpora</a>
   </div>
