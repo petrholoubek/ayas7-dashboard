@@ -15,7 +15,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
-  
+
 <style>
 :root {
   --bg:      #020917;
@@ -139,11 +139,16 @@ nav a.active {
 ══════════════════════════════ */
 .hero {
   position: relative;
-  height: 100vh; min-height: 600px; max-height: 960px;
-  display: flex; flex-direction: column;
-  align-items: center; justify-content: flex-end;
+  height: 50vh; 
+  min-height: 380px; 
+  max-height: 560px;
+  display: flex; 
+  flex-direction: column;
+  align-items: center; 
+  justify-content: center;
   overflow: hidden;
-  padding-bottom: 200px; /* zvětšeno z 100px - prostor pro tlačítka + strip */
+  padding: 0;
+  margin-bottom: 0;
 }
 
 /* Background image */
@@ -615,65 +620,12 @@ nav a.active {
   .brand-name { font-size: 14px; color: #f8fafc; }
   .brand-sub { display: none; }
 
-  /* Hero — VĚTŠÍ, SVĚTLEJŠÍ */
+  /* Hero */
   .hero {
-    height: 78vh;
-    min-height: 540px;
-    max-height: 760px;
-    padding-bottom: 180px; /* prostor pro tlačítka + strip */
-  }
-  
-  .hero-label {
-    font-size: 12px;
-    margin-top: 24px;
-    margin-bottom: 12px;
-    letter-spacing: .14em;
-    color: rgba(255,255,255,0.6);
-  }
-  
-  .hero-name {
-    font-size: clamp(40px, 11vw, 64px);
-    letter-spacing: -0.03em;
-    margin-bottom: 14px;
-    color: #ffffff;
-  }
-  
-  .hero-sub {
-    font-size: 12px;
-    letter-spacing: .09em;
-    margin-bottom: 24px;
-    display: block;
-    max-width: 92%;
-    color: rgba(255,255,255,0.7);
-  }
-  
-  .hero-live {
-    font-size: 11px;
-    padding: 7px 16px;
-    margin-bottom: 12px;
-    letter-spacing: .14em;
-    color: rgba(255,255,255,0.85);
-  }
-
-  /* Hero CTA buttons */
-  .hero-cta {
-    gap: 10px;
-    flex-direction: column;
-    align-items: stretch;
-    width: 100%;
-    padding: 0 20px;
-  }
-  .btn-glass {
-    width: 100%;
-    min-width: auto;
-    padding: 16px 24px;
-    font-size: 15px;
-  }
-  .btn-label {
-    font-size: 15px;
-  }
-  .btn-sub {
-    font-size: 11px;
+    height: 40vh;
+    min-height: 300px;
+    max-height: 450px;
+    padding: 0;
   }
 
   /* Stat strip — SVĚTLEJŠÍ */
@@ -854,34 +806,27 @@ nav a.active {
   <div class="hero-bloom"></div>
 
   <div class="hero-content">
-    <div class="hero-live">
-      <div class="led-dot"></div>
-      Členský dashboard · WIN.WIN Cooperative
-    </div>
-
-    <div class="hero-label">Vítejte</div>
-    <h1 class="hero-name" id="heroName">—</h1>
-    <p class="hero-sub">Kooperativní ekonomický systém · CRX · WW-Key · DeFi</p>
-
-    <div class="hero-cta">
-      <a href="/login/benefits.html" class="btn-glass btn-blue">
-        <span class="btn-label">Uplatnit CRX</span>
-        <span class="btn-line"></span>
-      </a>
-      <a href="/login/affiliate.html" class="btn-glass btn-neutral">
-        <span class="btn-label">Moje síť</span>
-      </a>
-      <a href="/info-snapshot.html" class="btn-glass btn-live">
-        <div class="led-dot" style="width:8px;height:8px;margin-right:6px;"></div>
-        <span class="btn-label">Stav systému</span>
-        <span class="btn-sub">Live</span>
-      </a>
-    </div>
+    <!-- Žádný text - jen čistý vizuál -->
   </div>
 </section>
 
 <!-- MAIN -->
 <div class="main">
+
+  <!-- CTA TLAČÍTKA HNED POD HERO -->
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:40px;">
+    <a href="/login/benefits.html" class="btn-glass btn-blue">
+      <span class="btn-label">Uplatnit CRX</span>
+    </a>
+    <a href="/login/affiliate.html" class="btn-glass btn-neutral">
+      <span class="btn-label">Moje síť</span>
+    </a>
+    <a href="/info-snapshot.html" class="btn-glass btn-live">
+      <div class="led-dot" style="width:8px;height:8px;margin-right:6px;"></div>
+      <span class="btn-label">Stav systému</span>
+      <span class="btn-sub">Live</span>
+    </a>
+  </div>
 
   <!-- Sekce: Přehled -->
   <div class="sec">
