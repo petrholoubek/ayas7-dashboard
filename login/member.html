@@ -239,12 +239,134 @@ nav a.active {
   animation: fadeUp .5s .15s ease both;
 }
 
-/* CTA buttons */
+/* Hero CTA buttons - FUTURISTIC GLASS */
 .hero-cta {
-  display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;
+  display: flex; 
+  gap: 12px; 
+  justify-content: center; 
+  flex-wrap: wrap;
   animation: fadeUp .5s .2s ease both;
 }
 
+.btn-glass {
+  position: relative;
+  display: inline-flex; 
+  flex-direction: column;
+  align-items: center; 
+  justify-content: center;
+  padding: 14px 24px;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.03);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: #fff; 
+  font-family: var(--font); 
+  font-size: 13px; 
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-decoration: none;
+  transition: all .3s cubic-bezier(.25,.46,.45,.94);
+  overflow: hidden;
+  min-width: 140px;
+}
+
+/* Glow layer */
+.btn-glass::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: 12px;
+  padding: 1px;
+  background: linear-gradient(135deg, var(--btn-glow-1, rgba(56,189,248,0.4)), var(--btn-glow-2, rgba(56,189,248,0.1)));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity .3s;
+}
+
+/* Inner glow */
+.btn-glass::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 12px;
+  background: radial-gradient(ellipse at top, var(--btn-radial, rgba(56,189,248,0.15)), transparent 60%);
+  opacity: 0;
+  transition: opacity .3s;
+}
+
+.btn-glass:hover {
+  background: rgba(255,255,255,0.08);
+  border-color: var(--btn-border, rgba(56,189,248,0.4));
+  transform: translateY(-3px);
+  box-shadow: 
+    0 0 30px var(--btn-shadow, rgba(56,189,248,0.3)),
+    0 10px 30px rgba(0,0,0,0.4);
+}
+.btn-glass:hover::before { opacity: 1; }
+.btn-glass:hover::after { opacity: 1; }
+
+/* Blue variant */
+.btn-blue {
+  --btn-glow-1: rgba(56,189,248,0.5);
+  --btn-glow-2: rgba(56,189,248,0.2);
+  --btn-border: rgba(56,189,248,0.4);
+  --btn-shadow: rgba(56,189,248,0.4);
+  --btn-radial: rgba(56,189,248,0.2);
+}
+
+/* Neutral variant */
+.btn-neutral {
+  --btn-glow-1: rgba(148,163,184,0.3);
+  --btn-glow-2: rgba(148,163,184,0.1);
+  --btn-border: rgba(148,163,184,0.3);
+  --btn-shadow: rgba(148,163,184,0.15);
+  --btn-radial: rgba(148,163,184,0.1);
+}
+
+/* Live variant - GREEN */
+.btn-live {
+  --btn-glow-1: rgba(34,197,94,0.6);
+  --btn-glow-2: rgba(34,197,94,0.2);
+  --btn-border: rgba(34,197,94,0.5);
+  --btn-shadow: rgba(34,197,94,0.5);
+  --btn-radial: rgba(34,197,94,0.2);
+  flex-direction: row;
+  gap: 6px;
+}
+
+.btn-label {
+  position: relative;
+  z-index: 1;
+  font-size: 14px;
+  letter-spacing: 0.02em;
+}
+
+.btn-sub {
+  position: relative;
+  z-index: 1;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.6);
+  margin-left: 2px;
+}
+
+/* Decorative line for blue button */
+.btn-line {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 32px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--blue), transparent);
+  margin-top: 6px;
+  opacity: 0.6;
+}
+
+/* OLD BUTTONS - KEEP FOR DESKTOP FALLBACK */
 .btn-primary {
   display: inline-flex; align-items: center; gap: 8px;
   padding: 12px 28px; border-radius: 10px;
@@ -535,25 +657,23 @@ nav a.active {
 
   /* Hero CTA buttons */
   .hero-cta {
-    gap: 12px;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
+    gap: 10px;
+    flex-direction: column;
+    align-items: stretch;
     width: 100%;
     padding: 0 20px;
-    flex-wrap: nowrap;
   }
-  .btn-primary {
-    flex: 1;
-    justify-content: center;
-    padding: 14px 20px;
+  .btn-glass {
+    width: 100%;
+    min-width: auto;
+    padding: 16px 24px;
     font-size: 15px;
   }
-  .btn-secondary {
-    flex: 1;
-    justify-content: center;
-    padding: 14px 20px;
+  .btn-label {
     font-size: 15px;
+  }
+  .btn-sub {
+    font-size: 11px;
   }
 
   /* Stat strip — SVĚTLEJŠÍ */
@@ -744,8 +864,18 @@ nav a.active {
     <p class="hero-sub">Kooperativní ekonomický systém · CRX · WW-Key · DeFi</p>
 
     <div class="hero-cta">
-      <a href="/login/benefits.html" class="btn-primary">Uplatnit CRX →</a>
-      <a href="/login/affiliate.html" class="btn-secondary">Moje síť</a>
+      <a href="/login/benefits.html" class="btn-glass btn-blue">
+        <span class="btn-label">Uplatnit CRX</span>
+        <span class="btn-line"></span>
+      </a>
+      <a href="/login/affiliate.html" class="btn-glass btn-neutral">
+        <span class="btn-label">Moje síť</span>
+      </a>
+      <a href="/info-snapshot.html" class="btn-glass btn-live">
+        <div class="led-dot" style="width:8px;height:8px;margin-right:6px;"></div>
+        <span class="btn-label">Stav systému</span>
+        <span class="btn-sub">Live</span>
+      </a>
     </div>
   </div>
 
@@ -774,27 +904,6 @@ nav a.active {
 
 <!-- MAIN -->
 <div class="main">
-
-  <!-- LIVE STATUS CTA — HNED VIDITELNÉ -->
-  <div style="margin-bottom:32px;">
-    <a href="/info-snapshot.html" style="
-      display:block;
-      padding:20px 24px;
-      border-radius:16px;
-      background:linear-gradient(135deg,#22c55e,#16a34a);
-      box-shadow:0 0 32px rgba(34,197,94,0.5),0 6px 20px rgba(0,0,0,0.3);
-      text-decoration:none;
-      text-align:center;
-      transition:all .2s;
-      border:1px solid rgba(34,197,94,0.4);
-    " onmouseover="this.style.transform='translateY(-3px)';this.style.boxShadow='0 0 40px rgba(34,197,94,0.6),0 10px 30px rgba(0,0,0,0.4)'" onmouseout="this.style.transform='';this.style.boxShadow='0 0 32px rgba(34,197,94,0.5),0 6px 20px rgba(0,0,0,0.3)'">
-      <div style="display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;">
-        <div class="led-dot" style="width:12px;height:12px;"></div>
-        <span style="font-family:var(--font);font-size:16px;font-weight:700;color:#fff;letter-spacing:0.02em;">📊 Stav systému · Live Snapshot</span>
-      </div>
-      <div style="margin-top:6px;font-family:var(--fontb);font-size:12px;color:rgba(255,255,255,0.8);letter-spacing:0.04em;">Klikni pro detail AYAS-7 engine</div>
-    </a>
-  </div>
 
   <!-- Sekce: Přehled -->
   <div class="sec">
@@ -971,7 +1080,6 @@ nav a.active {
     <div class="sec-line"></div>
   </div>
   <div class="actions">
-    <a href="/login/benefits.html"         class="act-btn p">🎁 Uplatnit CRX</a>
     <a href="/login/affiliate.html"        class="act-btn o">🌐 Partnerský program</a>
     <a href="/login/support.html"          class="act-btn o">💬 Podpora</a>
   </div>
