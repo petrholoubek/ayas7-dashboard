@@ -438,13 +438,18 @@ const { data: crxRow } = await db
   .eq("period", auditPeriod)
   .maybeSingle();
 
+// 🆕 FIXED — a period with no matching row here (like our newly
+// closed 2026-03..2026-07, which genuinely had zero CRX activity
+// during the pause) is NOT an error — it's a real zero. This used
+// to log "CRX NOT LOADED", show "ERROR", and `return` early,
+// which silently stopped every field below it (SPF section,
+// Rozhodl/Schválil, certificate summary) from ever being filled
+// in. Treat a missing row as 0 and keep going instead.
 if (!crxRow) {
-  console.error("CRX NOT LOADED");
-  document.getElementById("crx-total").textContent = "ERROR";
-  return;
+  console.warn("[AUDIT] no v_crx_period_with_pool row for period", auditPeriod, "— treating as 0 CRX (not an error).");
 }
 
-const crxTotalEngine = Number(crxRow.total_crx);
+const crxTotalEngine = Number(crxRow?.total_crx || 0);
 
 // 2️⃣ SPF
 const { data: spfRow } = await db
