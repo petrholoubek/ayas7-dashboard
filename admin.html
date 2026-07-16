@@ -444,6 +444,9 @@ tbody tr:hover td{background:rgba(255,255,255,.02)}
         <button class="btn btn-danger" id="closePeriodBtn" onclick="closePeriod()" disabled>
           Uzavřít období
         </button>
+        <button class="btn btn-success" id="newPeriodBtn" onclick="createNewPeriod()" style="margin-left:8px">
+          + Založit nové období
+        </button>
       </div>
     </div>
 
@@ -594,6 +597,31 @@ async function closePeriod() {
     const { data, error } = await sb.rpc('close_spf_period_admin', { p_period_id: id });
     if (error) throw error;
     alert('Období bylo auditně uzavřeno.');
+    await loadPeriod();
+  } catch(e) {
+    alert('Chyba: ' + e.message);
+  }
+}
+
+// 🆕 Založení nového SPF období — zeptá se na text období (YYYY-MM),
+// zapíše do spf_periods i spf_fund_periods přes create_spf_period_admin.
+async function createNewPeriod() {
+  const period = prompt('Zadej nové období ve formátu YYYY-MM (např. 2026-09):');
+  if (!period) return;
+  if (!/^\d{4}-\d{2}$/.test(period)) {
+    alert('Špatný formát. Použij YYYY-MM, např. 2026-09.');
+    return;
+  }
+  if (!confirm(`Založit období ${period}?`)) return;
+  try {
+    const { data, error } = await sb.rpc('create_spf_period_admin', { p_period: period });
+    if (error) throw error;
+    const row = data?.[0];
+    if (row?.already_existed) {
+      alert(`Období ${period} už existovalo — nic nového se nezaložilo.`);
+    } else {
+      alert(`Období ${period} bylo založeno (draft).`);
+    }
     await loadPeriod();
   } catch(e) {
     alert('Chyba: ' + e.message);
