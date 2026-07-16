@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <title>AYAS-7 · Admin</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" type="image/png" sizes="192x192" href="/ayas7-192.png">
 <meta name="theme-color" content="#020917">
 <script type="module" src="/assets/js/gate.js"></script>
@@ -585,12 +585,14 @@ async function closePeriod() {
   const id = window.__PERIOD_ID__;
   if (!id) { alert('Nelze určit aktivní období'); return; }
   try {
-    const res = await fetch(`${SB_URL}/functions/v1/close-period`, {
-      method: 'POST',
-      headers: { 'Content-Type':'application/json', 'apikey':SB_ANON, 'Authorization':'Bearer '+SB_ANON },
-      body: JSON.stringify({ period: id })
-    });
-    if (!res.ok) throw new Error('HTTP ' + res.status);
+    // 🆕 FIXED — the Edge Function "close-period" this used to call
+    // returned HTTP 404 (never deployed / wrong name), and the
+    // underlying SQL function it likely called referenced columns
+    // that don't exist. Calling the new, verified RPC function
+    // directly instead — no separate serverless function to keep
+    // in sync anymore.
+    const { data, error } = await sb.rpc('close_spf_period_admin', { p_period_id: id });
+    if (error) throw error;
     alert('Období bylo auditně uzavřeno.');
     await loadPeriod();
   } catch(e) {
