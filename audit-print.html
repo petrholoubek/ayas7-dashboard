@@ -269,7 +269,6 @@ za auditované období. Nejedná se o finanční plnění, nárok ani závazek.
   <th>Member ID</th>
   <th>WW-KEY</th>
   <th>Deposit (CZK)</th>
-  <th>Hash (SHA-256)</th>
   <th>Issued At</th>
 </tr>
 </thead>
@@ -461,7 +460,21 @@ const { data: spfRow } = await db
 const crxSpf = Number(spfRow?.spf_amount_total || 0);
 
 // 3️⃣ výpočty
-const crxMembers = 45;
+// 🆕 FIXED — crxMembers used to be hardcoded as 45, which made no
+// sense once crxTotal could genuinely be 0 (produced a negative,
+// nonsensical "reserve"). Now sums real member-type CRX from
+// crx_ledger for this period instead of a fixed guess.
+let crxMembers = 0;
+try {
+  const { data: memberCrxRows } = await db
+    .from("crx_ledger")
+    .select("amount")
+    .eq("period", auditPeriod)
+    .eq("crx_type", "member");
+  crxMembers = (memberCrxRows || []).reduce((sum, r) => sum + Number(r.amount || 0), 0);
+} catch (e) {
+  console.warn("[AUDIT] could not compute real crxMembers, defaulting to 0:", e.message);
+}
 const crxTotal = crxTotalEngine;
 const crxReserve = crxTotal - crxMembers - crxSpf;
 
