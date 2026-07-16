@@ -303,10 +303,11 @@ document.addEventListener("DOMContentLoaded", async () => {
   // hardcoded value kept only as a last-resort fallback if no
   // closed period exists yet at all.
   let auditPeriod = "2026-02";
+  let realPeriodUuid = null; // 🆕 spf_periods.id (uuid) — different from spf_fund_periods.id (bigint)!
   try {
     const { data: latestPeriodRow } = await db
       .from("spf_periods")
-      .select("period")
+      .select("id, period")
       .eq("status", "closed")
       .order("period", { ascending: false })
       .limit(1)
@@ -314,6 +315,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     if (latestPeriodRow?.period) {
       auditPeriod = latestPeriodRow.period;
+      realPeriodUuid = latestPeriodRow.id;
     }
   } catch (e) {
     console.warn("[AUDIT] could not fetch latest closed period, falling back to hardcoded 2026-02:", e.message);
@@ -484,12 +486,15 @@ const crxReserve = crxTotal - crxMembers - crxSpf;
 let spfDistributed = 0;
 let spfRemaining = crxSpf;
 
-// 5️⃣ POUZE POKUD SPF EXISTUJE
-if (spfRow?.id) {
+// 🆕 FIXED — was passing spfRow.id (bigint, from spf_fund_periods)
+// into a column that's actually a foreign key to spf_periods.id
+// (uuid). Postgres rejected the comparison outright (HTTP 400).
+// Use the real uuid captured above instead.
+if (realPeriodUuid) {
   const { data: spfDistRows } = await db
     .from("spf_distributions")
     .select("crx_amount")
-    .eq("spf_period_id", spfRow.id);
+    .eq("spf_period_id", realPeriodUuid);
 
   spfDistributed = (spfDistRows || []).reduce(
     (sum, r) => sum + Number(r.crx_amount || 0),
