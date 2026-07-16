@@ -132,6 +132,8 @@ select:hover{border-color:var(--b2)}
 .btn-danger{background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.2);color:var(--red2)}
 .btn-danger:hover{background:rgba(239,68,68,.14);box-shadow:0 0 20px rgba(239,68,68,.2)}
 .btn-danger:disabled{opacity:.35;cursor:not-allowed;box-shadow:none}
+.btn-success{background:rgba(34,197,94,.07);border:1px solid rgba(34,197,94,.2);color:var(--green2)}
+.btn-success:hover{background:rgba(34,197,94,.14)}
 .btn-link{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:8px;background:rgba(34,197,94,.07);border:1px solid rgba(34,197,94,.18);color:var(--green2);font-size:13px;font-weight:500;cursor:pointer;transition:all .15s}
 .btn-link:hover{background:rgba(34,197,94,.13)}
 
@@ -247,6 +249,9 @@ select:hover{border-color:var(--b2)}
         <span class="sec-dot amber"></span>
         Rozhodnutí SPF za období
       </div>
+      <button class="btn btn-success" id="newPeriodBtn" onclick="createNewPeriod()">
+        + Založit nové období
+      </button>
     </div>
     <div class="tbl-wrap">
       <div class="tbl-scroll">
@@ -463,19 +468,46 @@ async function loadBenefits() {
 }
 
 /* ═══ AKCE ═══ */
+
+// 🆕 FIXED — this used to fetch a non-existent Edge Function
+// ("close-period" → HTTP 404), and sb.supabaseKey isn't even a
+// reliably public property on the v2 client. Now calls the
+// verified RPC function directly, same one wired up in admin.html
+// today, so both pages use the exact same, working code path.
 window.closePeriod = async () => {
   if (!window.selectedPeriod) { alert('Žádné aktivní období (draft) není k dispozici.'); return; }
   if (!confirm('Uzávěrka je auditní a nevratná.\nPokračovat?')) return;
   try {
-    const res = await fetch('https://azfrniqqtetoqploxwgq.supabase.co/functions/v1/close-period', {
-      method:'POST',
-      headers:{'Content-Type':'application/json','apikey':sb.supabaseKey,'Authorization':'Bearer '+sb.supabaseKey},
-      body:JSON.stringify({period: window.__PERIOD_ID__})
-    });
-    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const { error } = await sb.rpc('close_spf_period_admin', { p_period_id: window.__PERIOD_ID__ });
+    if (error) throw error;
     alert('Období bylo auditně uzavřeno.');
     await loadPeriods();
   } catch(e) { alert('Chyba: ' + e.message); }
+};
+
+// 🆕 Založení nového SPF období — stejná funkce jako v admin.html,
+// zeptá se na text období (YYYY-MM) a zavolá create_spf_period_admin.
+window.createNewPeriod = async () => {
+  const period = prompt('Zadej nové období ve formátu YYYY-MM (např. 2026-09):');
+  if (!period) return;
+  if (!/^\d{4}-\d{2}$/.test(period)) {
+    alert('Špatný formát. Použij YYYY-MM, např. 2026-09.');
+    return;
+  }
+  if (!confirm(`Založit období ${period}?`)) return;
+  try {
+    const { data, error } = await sb.rpc('create_spf_period_admin', { p_period: period });
+    if (error) throw error;
+    const row = data?.[0];
+    if (row?.out_already_existed) {
+      alert(`Období ${period} už existovalo — nic nového se nezaložilo.`);
+    } else {
+      alert(`Období ${period} bylo založeno (draft).`);
+    }
+    await loadPeriods();
+  } catch(e) {
+    alert('Chyba: ' + e.message);
+  }
 };
 
 window.updateBenefit = async (id, value) => {
