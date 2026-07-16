@@ -168,8 +168,15 @@ Deterministic FSM · SSOT · Multisignature Governance
     <span id="spfApprovedAt">—</span>
   </div>
   <div>
+    <!-- 🆕 FIXED — this used to share id="spfApprovedBy" with the
+         "Rozhodl" field above, so getElementById always found only
+         the FIRST match and this one stayed permanently blank.
+         There is only one decided_by column in the database (no
+         separate "approver" field distinct from "decider"), so
+         this now shows the same value under its own id rather than
+         inventing a second data source that doesn't exist. -->
     <strong>Schválil:</strong>
-    <span id="spfApprovedBy">—</span>
+    <span id="spfApprovedByHeader">—</span>
   </div>
   <div>
     <strong>Zdroj rozhodnutí:</strong>
@@ -288,8 +295,30 @@ document.addEventListener("DOMContentLoaded", async () => {
   const supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF6ZnJuaXFxdGV0b3FwbG94d2dxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc3MzQ1OTYsImV4cCI6MjA4MzMxMDU5Nn0.QchmzNhs8owd6pkjZCk04u6PJoJ2Bhzz7oGV0KFyqdU";
 
   const db = supabase.createClient(supabaseUrl, supabaseAnonKey);
-// 🔥 MUSÍ BÝT ÚPLNĚ NAHOŘE
-const auditPeriod = "2026-02";
+
+  // ================= AUDIT PERIOD (FIXED) =================
+  // 🆕 FIXED — this used to be hardcoded as "2026-02" ("MUSÍ BÝT
+  // ÚPLNĚ NAHOŘE" — literally could never show any other month.
+  // Now picks the most recently CLOSED period from spf_periods
+  // (the authoritative table — confirmed today), with the old
+  // hardcoded value kept only as a last-resort fallback if no
+  // closed period exists yet at all.
+  let auditPeriod = "2026-02";
+  try {
+    const { data: latestPeriodRow } = await db
+      .from("spf_periods")
+      .select("period")
+      .eq("status", "closed")
+      .order("period", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
+    if (latestPeriodRow?.period) {
+      auditPeriod = latestPeriodRow.period;
+    }
+  } catch (e) {
+    console.warn("[AUDIT] could not fetch latest closed period, falling back to hardcoded 2026-02:", e.message);
+  }
 
 // ================= GENESIS AUDIT SUMMARY =================
 
@@ -494,6 +523,11 @@ document.getElementById("spfApprovedAt").textContent =
     : "—";
 
 document.getElementById("spfApprovedBy").textContent =
+  spfRow?.decided_by ?? "—";
+
+// 🆕 FIXED — second occurrence, now has its own unique id
+// (spfApprovedByHeader) instead of duplicating spfApprovedBy.
+document.getElementById("spfApprovedByHeader").textContent =
   spfRow?.decided_by ?? "—";
 
 document.getElementById("spfDecisionSource").textContent = "AYAS-7 ENGINE";
