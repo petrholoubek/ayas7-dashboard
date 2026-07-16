@@ -393,7 +393,9 @@ async function loadPeriods() {
   const tbody = $('periodsTable');
   try {
     const [{ data: periods }, { data: crxTotals }] = await Promise.all([
-      sb.from('spf_periods_ui').select('id,period,status').order('period',{ascending:false}),
+      sb.from('spf_periods_ui').select('id,period,status')
+        .not('period','ilike','%TEST%').not('period','ilike','%LIVE%')
+        .order('period',{ascending:false}),
       sb.from('crx_period_totals').select('period,total_crx')
     ]);
 
