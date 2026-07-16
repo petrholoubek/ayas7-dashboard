@@ -545,13 +545,15 @@ document.getElementById("spfApprovedAt").textContent =
     ? new Date(spfRow.decided_at).toLocaleString("cs-CZ")
     : "—";
 
+// 🆕 když decided_by chybí (systémové/administrátorské uzavření,
+// ne konkrétní osoba), ukaž to poctivě, ne jen prázdnou pomlčku
 document.getElementById("spfApprovedBy").textContent =
-  spfRow?.decided_by ?? "—";
+  spfRow?.decided_by ?? "AYAS-7 System (administrativní uzavření)";
 
 // 🆕 FIXED — second occurrence, now has its own unique id
 // (spfApprovedByHeader) instead of duplicating spfApprovedBy.
 document.getElementById("spfApprovedByHeader").textContent =
-  spfRow?.decided_by ?? "—";
+  spfRow?.decided_by ?? "AYAS-7 System (administrativní uzavření)";
 
 document.getElementById("spfDecisionSource").textContent = "AYAS-7 ENGINE";
 
