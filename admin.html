@@ -617,7 +617,7 @@ async function createNewPeriod() {
     const { data, error } = await sb.rpc('create_spf_period_admin', { p_period: period });
     if (error) throw error;
     const row = data?.[0];
-    if (row?.already_existed) {
+    if (row?.out_already_existed) {
       alert(`Období ${period} už existovalo — nic nového se nezaložilo.`);
     } else {
       alert(`Období ${period} bylo založeno (draft).`);
